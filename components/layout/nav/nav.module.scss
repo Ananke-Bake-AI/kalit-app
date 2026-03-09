@@ -1,0 +1,12 @@
+@use "@/styles/mixins" as *;
+
+.nav {
+  font-size: 0.85em;
+
+  ul {
+    gap: 2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

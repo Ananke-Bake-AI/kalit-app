@@ -43,6 +43,9 @@
   --size-80: 20rem; /* 320px */
   --size-96: 24rem; /* 384px */
 
+  /* radius */
+  --radius-rounded: 9999px;
+
   /* Container */
   --container-width: calc(700px + 400 * (100vw - 320px) / 1080);
   --container-max: 85vw;

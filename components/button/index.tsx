@@ -28,13 +28,20 @@ export const Button = ({
 }: ButtonProps) => {
   const Content = (
     <>
-      {icon && iconPosition == "left" && (
-        <Icon icon={icon} className={s.icon} />
-      )}
+      {icon && iconPosition == "left" && <Icon icon={icon} className={s.icon} />}
       {children && <span>{children}</span>}
-      {icon && iconPosition == "right" && (
-        <Icon icon={icon} className={s.icon} />
-      )}
+      {icon && iconPosition == "right" && <Icon icon={icon} className={s.icon} />}
+      <svg xmlns="http://www.w3.org/2000/svg" width="34" height="30" viewBox="0 0 34 30" fill="none">
+        <path d="M4.5 30C4.5 15.9167 15.9167 4.5 30 4.5H34" stroke="url(#paint0_linear_126_2555)" stroke-width="9" />
+        <defs>
+          <linearGradient id="paint0_linear_126_2555" x1="34" y1="2.5" x2="4.5" y2="28" gradientUnits="userSpaceOnUse">
+            <stop offset="0" className={s.stop1} />
+            <stop offset="0.33" className={s.stop2} />
+            <stop offset="0.66" className={s.stop3} />
+            <stop offset="1" className={s.stop4} />
+          </linearGradient>
+        </defs>
+      </svg>
     </>
   )
 
@@ -48,20 +55,13 @@ export const Button = ({
 
   if (href) {
     return (
-      <Link
-        {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
-        {...attrs}
-        href={href}
-      >
+      <Link {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)} {...attrs} href={href}>
         {Content}
       </Link>
     )
   } else {
     return (
-      <button
-        {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)}
-        {...attrs}
-      >
+      <button {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)} {...attrs}>
         {Content}
       </button>
     )

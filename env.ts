@@ -14,7 +14,7 @@ export const env = createEnv({
    */
   client: {
     NEXT_PUBLIC_NODE_ENV: z.enum(["development", "production", "test"]),
-    NEXT_PUBLIC_BASE_URL: z.httpUrl().default("http://localhost:3000")
+    NEXT_PUBLIC_BASE_URL: z.string().default("http://localhost:3000")
   },
   /*
    * Due to how Next.js bundles environment variables on Edge and Client,

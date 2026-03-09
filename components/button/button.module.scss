@@ -1,1 +1,63 @@
 @use "@/styles/mixins" as *;
+
+.btn {
+  --btn-bg: var(--text);
+  --btn-color: var(--white);
+  --btn-padding-x: 1.75em;
+  --btn-padding-y: 1.1em;
+  --btn-padding: var(--btn-padding-y) var(--btn-padding-x);
+  --btn-radius: var(--radius-rounded);
+
+  position: relative;
+  background-color: var(--btn-bg);
+  color: var(--btn-color);
+  font-family: var(--font-heading);
+  padding: var(--btn-padding);
+  line-height: 1;
+  border-radius: var(--btn-radius);
+  display: inline-flex;
+  overflow: hidden;
+
+  span {
+    margin-right: 1.25em;
+  }
+
+  svg {
+    position: absolute;
+    right: 0;
+  }
+}
+
+.stop {
+  &1 {
+    stop-color: #98f000;
+  }
+
+  &2 {
+    stop-color: #12bcff;
+  }
+
+  &3 {
+    stop-color: #2f44ff;
+  }
+
+  &4 {
+    stop-color: #8200df;
+  }
+
+  @keyframes gradient {
+    0%,
+    100% {
+      stop-color: #98f000;
+    }
+    25% {
+      stop-color: #12bcff;
+    }
+    50% {
+      stop-color: #2f44ff;
+    }
+    75% {
+      stop-color: #8200df;
+    }
+  }
+}
