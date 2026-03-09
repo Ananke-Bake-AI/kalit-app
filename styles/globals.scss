@@ -1,0 +1,30 @@
+@charset "UTF-8";
+
+@use "reset";
+@use "colors";
+@use "easing";
+@use "variables";
+@use "mixins" as *;
+
+html {
+  background-color: var(--body);
+  color: var(--text);
+  font-size: calc(15px + 1 * ((100vw - 320px) / 680));
+  line-height: 1.15;
+  @include no-scrollbar;
+}
+
+body {
+  font-weight: 400;
+  font-family: var(--font-main);
+  font-feature-settings: "salt" on;
+}
+
+svg {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+img {
+  @include user-select;
+}

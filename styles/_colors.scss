@@ -1,0 +1,12 @@
+:root {
+  $colors: (
+    body: "242, 246, 254",
+    success: "68, 255, 121",
+    danger: "255, 81, 81"
+  );
+
+  @each $color, $rgb in $colors {
+    --#{$color}-rgb: #{$rgb};
+    --#{$color}: rgb(var(--#{$color}-rgb));
+  }
+}

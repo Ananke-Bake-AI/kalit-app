@@ -1,0 +1,147 @@
+// Responsive
+@mixin max($width) {
+  @media screen and (max-width: $width) {
+    @content;
+  }
+}
+
+@mixin min($width) {
+  @media screen and (min-width: $width) {
+    @content;
+  }
+}
+
+@mixin min-max($min, $max) {
+  @media screen and (max-width: $max) and (min-width: $min) {
+    @content;
+  }
+}
+
+@mixin max-min($max, $min) {
+  @include min-max($min, $max);
+}
+
+// Interaction
+@mixin is-hover {
+  @media (hover: hover) {
+    &:hover {
+      @content;
+    }
+  }
+}
+
+@mixin no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@mixin user-select($value: none) {
+  user-select: $value;
+  -webkit-user-select: $value;
+  -moz-user-select: $value;
+  -ms-user-select: $value;
+}
+
+// Performance helpers
+@mixin performance($will-change: false) {
+  perspective: 1000px;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+  @if $will-change {
+    will-change: $will-change;
+  }
+}
+
+@mixin backdrop($px: var(--size-2)) {
+  backdrop-filter: blur($px);
+  -webkit-backdrop-filter: blur($px);
+  @include performance("backdrop-filter");
+}
+
+@mixin blur($px: var(--size-6)) {
+  filter: blur($px);
+  -webkit-filter: blur($px);
+  @include performance("filter");
+}
+
+// Layout
+@mixin translate-center {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@mixin translate-x {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@mixin translate-y {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+// Text
+@mixin ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+@mixin clamp($line: 3) {
+  display: -webkit-box;
+  -webkit-line-clamp: $line;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@mixin text-vertical($direction: vertical-lr) {
+  writing-mode: $direction;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+}
+
+@mixin text-gradient($gradient) {
+  background: $gradient;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+// Effects
+@mixin mask($gradient) {
+  mask: $gradient;
+  -webkit-mask: $gradient;
+}
+
+@mixin auto-alpha($alpha) {
+  opacity: $alpha;
+  visibility: if($alpha == 0, hidden, visible);
+}
+
+@mixin border-gradient($gradient, $radius: inherit, $width: 1px) {
+  border: $width solid transparent;
+  background: $gradient border-box;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  border-radius: $radius;
+}
+
+@mixin selection($bg, $color) {
+  ::selection {
+    background-color: $bg;
+    color: $color;
+    -webkit-text-fill-color: $color;
+  }
+
+  ::-moz-selection {
+    background-color: $bg;
+    color: $color;
+    -webkit-text-fill-color: $color;
+  }
+}

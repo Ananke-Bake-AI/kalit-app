@@ -1,0 +1,81 @@
+@use "@/styles/mixins" as *;
+
+.toast {
+  --padding: 1rem;
+  background: var(--bg-opacity-1);
+  color: var(--tertiary);
+  padding: var(--padding);
+  border-radius: 0.75em;
+  @include backdrop(16px);
+  position: relative;
+  display: flex;
+  font-family: var(--font-main);
+  gap: calc(var(--padding) / 1.5);
+  font-size: 13px;
+  display: flex;
+  gap: 6px;
+  z-index: 110000;
+
+  & > * {
+    z-index: 1;
+  }
+
+  &[data-type="success"] {
+    --color: var(--success-rgb);
+  }
+
+  &[data-type="error"] {
+    --color: var(--danger-rgb);
+  }
+
+  &[data-type="warning"] {
+    --color: var(--warning-rgb);
+  }
+
+  &[data-type="info"],
+  &[data-type="loading"] {
+    --color: var(--secondary);
+  }
+
+  [data-icon] {
+    svg {
+      position: relative;
+      font-size: 1.1em;
+      left: -0.15em;
+      color: rgb(var(--color));
+
+      * {
+        stroke-width: 2 !important;
+      }
+    }
+  }
+
+  :global(.sonner-loader) {
+    position: relative;
+
+    &[data-visible="false"] {
+      display: none !important;
+    }
+  }
+
+  .title {
+    font-weight: bold;
+  }
+
+  .description {
+    color: var(--light-300);
+    margin-top: 0.25em;
+  }
+
+  .close {
+    position: absolute;
+    right: calc(var(--padding) / 1.5);
+    top: calc(var(--padding) / 1.5);
+    cursor: pointer;
+    opacity: 0.5;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
