@@ -21,7 +21,9 @@ export const Header = () => {
           <span>kalit</span>
         </Link>
         <Nav />
-        <Button className={s.btn}>Start my project</Button>
+        <Button className={s.btn} circle>
+          Start my project
+        </Button>
         <button className={s.bnav} onClick={() => setNav(!nav)}>
           <svg viewBox="0 0 100 100">
             <path className={s.l1} d="M0,42h62c13,0,6,26-4,16L35,35" />

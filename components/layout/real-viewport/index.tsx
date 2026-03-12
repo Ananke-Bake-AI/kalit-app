@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 
 const setViewportCssVars = () => {
   const el = document.documentElement
@@ -11,13 +11,36 @@ const setViewportCssVars = () => {
 }
 
 export const RealViewport = () => {
-  useEffect(() => {
-    setViewportCssVars()
+  const resizeTimeoutRef = useRef<number | null>(null)
 
-    window.addEventListener("resize", setViewportCssVars, { passive: true })
+  useEffect(() => {
+    const el = document.documentElement
+
+    const handleResize = () => {
+      if (!el.classList.contains("is-resizing")) {
+        el.classList.add("is-resizing")
+      }
+
+      setViewportCssVars()
+
+      if (resizeTimeoutRef.current !== null) {
+        window.clearTimeout(resizeTimeoutRef.current)
+      }
+
+      resizeTimeoutRef.current = window.setTimeout(() => {
+        el.classList.remove("is-resizing")
+      }, 200)
+    }
+
+    setViewportCssVars()
+    window.addEventListener("resize", handleResize, { passive: true })
 
     return () => {
-      window.removeEventListener("resize", setViewportCssVars)
+      window.removeEventListener("resize", handleResize)
+      if (resizeTimeoutRef.current !== null) {
+        window.clearTimeout(resizeTimeoutRef.current)
+      }
+      el.classList.remove("is-resizing")
     }
   }, [])
 

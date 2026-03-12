@@ -1,13 +1,15 @@
 :root {
   --body: oklch(0.9589 0.0011 17.18);
   --text: oklch(0.1902 0.0261 287.16);
+  --text-secondary: oklch(0.5965 0 0);
   --white: oklch(1 0 0);
   --success: oklch(0.75 0.2 145);
   --danger: oklch(0.65 0.22 25);
 
   --glass-50: oklch(1 0 0 / 0.5);
+  --glass-75: oklch(1 0 0 / 0.75);
 
-  --color-1: oklch(0.8654 0.2373 131.23);
+  --color-1: oklch(0.8354 0.229 131.2);
   --color-2: oklch(0.7494 0.153657 233.6982);
   --color-3: oklch(0.5165 0.269955 268.2377);
   --color-4: oklch(0.5019 0.2667 300.81);

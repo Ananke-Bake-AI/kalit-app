@@ -39,7 +39,7 @@ export const RevealText = ({
     () => {
       if (!elementRef.current) return
 
-      const svg = elementRef.current.querySelectorAll("svg")
+      const svg = elementRef.current?.querySelectorAll("[data-icon-svg]")
       const split = SplitText.create(elementRef.current, {
         type: "words",
         wordsClass: s.word,
@@ -48,7 +48,6 @@ export const RevealText = ({
 
       if (!split.words || split.words.length === 0) return
 
-      // Envelopper chaque mot dans un span à l'intérieur du div
       const wordSpans: HTMLSpanElement[] = []
       split.words.forEach((word) => {
         const textContent = word.textContent || ""
@@ -77,6 +76,20 @@ export const RevealText = ({
             onComplete?.()
           }
         })
+
+        if (svg && svg.length > 0) {
+          tl.to(
+            svg,
+            {
+              scale: 1,
+              ease: "back.out(1.2)",
+              duration: 1,
+              stagger: 0.2,
+              delay: 0.5
+            },
+            "<"
+          )
+        }
       }
 
       // Cleanup function pour réinitialiser SplitText

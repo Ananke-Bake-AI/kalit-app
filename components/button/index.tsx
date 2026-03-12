@@ -14,6 +14,8 @@ export interface ButtonProps {
   className?: string
   disabled?: boolean
   onClick?: () => void
+  secondary?: boolean
+  circle?: boolean
 }
 
 export const Button = ({
@@ -24,6 +26,8 @@ export const Button = ({
   className,
   onClick,
   disabled = false,
+  secondary = false,
+  circle = false,
   ...props
 }: ButtonProps) => {
   const Content = (
@@ -31,13 +35,15 @@ export const Button = ({
       {icon && iconPosition == "left" && <Icon icon={icon} className={s.icon} />}
       {children && <span>{children}</span>}
       {icon && iconPosition == "right" && <Icon icon={icon} className={s.icon} />}
-      <svg xmlns="http://www.w3.org/2000/svg" width="59" height="59" viewBox="0 0 59 59" fill="none">
-        <circle cx="29.3669" cy="29.3669" r="25.3669" stroke="url(#button-stroke)" />
-      </svg>
+      {circle && (
+        <svg viewBox="0 0 59 59" className={s.circleSvg}>
+          <circle cx="29.3669" cy="29.3669" r="25.3669" stroke="url(#button-stroke)" />
+        </svg>
+      )}
     </>
   )
 
-  const classNames = clsx(s.btn, className)
+  const classNames = clsx(s.btn, className, circle && s.circle, secondary && s.secondary)
 
   const attrs = {
     className: classNames,

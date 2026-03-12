@@ -111,13 +111,11 @@
   inset: 0;
   height: 100%;
   z-index: -1;
-  background-color: var(--glass-50);
   border-radius: var(--size-8);
   box-shadow:
     0 -4px 8px 4px oklch(1 0 0 / 0.75) inset,
     0 24px 40px -24px oklch(0 0 0 / 0.1);
-  backdrop-filter: blur(16px) saturate(300%);
-  @include performance("backdrop-filter");
+  @include glass($bg: var(--glass-75));
   @include border-glass;
 }
 
@@ -133,7 +131,6 @@
 
   span {
     position: relative;
-    top: -0.065em;
     line-height: 1;
   }
 

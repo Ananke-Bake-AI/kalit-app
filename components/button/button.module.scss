@@ -1,6 +1,11 @@
 @use "@/styles/mixins" as *;
 
 .btn {
+  transition:
+    color var(--btn-transition),
+    background-color var(--btn-transition),
+    border-color var(--btn-transition),
+    transform var(--transition-scale);
   position: relative;
   background-color: var(--btn-bg);
   color: var(--btn-color);
@@ -17,14 +22,12 @@
 
   span {
     transition: var(--btn-transition);
-    margin-right: 1.25em;
     position: relative;
     z-index: 5;
     left: 0;
-    top: -0.075em;
   }
 
-  svg {
+  .circleSvg {
     transition: var(--btn-transition);
     position: absolute;
     right: -1.75em;
@@ -35,17 +38,39 @@
     top: 35%;
   }
 
-  &:hover {
-    svg {
-      animation: rotate 2s linear infinite;
-      animation-play-state: running;
-      width: 100%;
-      stroke-width: 80 !important;
-      right: 0;
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &.circle {
+    span {
+      margin-right: 1.25em;
     }
 
-    span {
-      left: 0.625em;
+    @include is-hover {
+      .circleSvg {
+        animation: rotate 2s linear infinite;
+        animation-play-state: running;
+        width: 100%;
+        stroke-width: 80 !important;
+        right: 0;
+      }
+
+      span {
+        left: 0.625em;
+      }
+    }
+  }
+
+  &.secondary {
+    --btn-bg: transparent;
+    --btn-color: var(--text);
+    border: 1px solid oklch(from var(--text) l c h / 0.15);
+
+    @include is-hover {
+      background-color: var(--text);
+      color: var(--white);
+      border-color: var(--text);
     }
   }
 }
@@ -65,11 +90,23 @@
   justify-content: center;
   gap: var(--size-2);
   width: 100%;
-  gap: var(--size-1);
+  gap: var(--size-4);
+
+  &.column {
+    flex-direction: column;
+  }
 
   @include max($responsive) {
-    & > * {
-      flex: 1 1 0;
+    &:not(.column) {
+      & > * {
+        flex: 1 1 0;
+      }
+    }
+
+    &.column {
+      & > * {
+        width: 100%;
+      }
     }
   }
 }

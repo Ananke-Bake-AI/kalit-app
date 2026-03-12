@@ -5,12 +5,14 @@ import { ButtonGroup } from "@/components/button/group"
 import { Container } from "@/components/container"
 import { Paragraph } from "@/components/paragraph"
 import { RevealText } from "@/components/reveal-text"
+import { Sprite } from "@/components/sprite"
 import { Subtitle } from "@/components/subtitle"
 import { Line } from "@/components/svg/line"
 import { useGSAP } from "@gsap/react"
 import clsx from "clsx"
 import gsap from "gsap"
 import { useRef } from "react"
+import { HeroCard } from "./card"
 import s from "./hero.module.scss"
 
 export const Hero = () => {
@@ -26,7 +28,8 @@ export const Hero = () => {
 
   useGSAP(() => {
     gsap
-      .timeline({ delay: 0.4 })
+      .timeline()
+      .to(titleRef.current, { visibility: "visible", delayAfter: 0.3 })
       .fromTo(titleRef.current, { scale: 1.15 }, { scale: 1, duration: 2, ease: "back.inOut" }, "a")
       .fromTo(
         [path1Ref.current, path2Ref.current, path3Ref.current, path4Ref.current],
@@ -34,7 +37,8 @@ export const Hero = () => {
         {
           "--dash-offset": 0,
           ease: "power1.inOut",
-          duration: 4
+          duration: 4,
+          delay: 0.4
         },
         "a"
       )
@@ -45,8 +49,14 @@ export const Hero = () => {
           "--dash-offset": 0,
           ease: "power1.inOut",
           duration: 0.8,
-          delay: 2
+          delay: 2.2
         },
+        "a"
+      )
+      .fromTo(
+        "[data-cards] > *",
+        { scale: 0 },
+        { scale: 1, stagger: 0.25, duration: 1, ease: "back.out", delay: 1.5 },
         "a"
       )
   }, [])
@@ -66,7 +76,7 @@ export const Hero = () => {
                   d="M614.025 111.307V61.694c0-30.481-24.706-55.193-55.187-55.2l-56.152-.014c-30.491-.007-55.213 24.709-55.213 55.2v73.986c0 13.034 10.566 23.6 23.6 23.6s23.6-10.764 23.6-23.798c0-13.255-10.746-24.202-24-24.202h-24.8c-26.952 0-48.8 21.849-48.8 48.8v207c-.001 30.486-24.714 55.2-55.2 55.2H191.472c-30.486 0-55.2-24.714-55.2-55.2v-7c0-30.486-24.713-55.2-55.2-55.2h-90.63"
                   stroke="url(#hero_line_1)"
                 />
-                <line ref={line1Ref} pathLength={1} x1="-97" x2="-300" y1="69" y2="69" stroke="var(--color-4)" />
+                <line ref={line1Ref} pathLength={1} x1="-95" x2="-300" y1="70" y2="70" stroke="var(--color-4)" />
               </Line>
               <Line viewBox="0 0 557 173" className={clsx(s.line, s.line2)}>
                 <path
@@ -87,7 +97,7 @@ export const Hero = () => {
                   d="M549.713 177.32V190.92C549.713 221.406 524.999 246.12 494.513 246.12L336.913 246.12C306.426 246.12 281.713 221.406 281.713 190.92V126.92C281.713 96.4339 256.999 71.72 226.513 71.72L138.612 71.72C123.977 71.72 112.113 83.5845 112.113 98.22V99.055C112.113 113.229 123.603 124.72 137.777 124.72C151.952 124.72 163.442 113.229 163.442 99.0551V61.92C163.442 31.4339 138.728 6.71997 108.242 6.71997H-8.55762"
                   stroke="url(#hero_line_3)"
                 />
-                <line ref={line3Ref} pathLength={1} x1="69" x2="-200" y1="214.2" y2="214.2" stroke="var(--color-4)" />
+                <line ref={line3Ref} pathLength={1} x1="69" x2="-200" y1="211" y2="211" stroke="var(--color-4)" />
               </Line>
               <Line viewBox="0 0 604 211" className={clsx(s.line, s.line4)}>
                 <path
@@ -100,6 +110,40 @@ export const Hero = () => {
               </Line>
             </span>
           </RevealText>
+          <div data-cards className={s.cards}>
+            <HeroCard
+              className={s.c1}
+              name="Gwen"
+              description="Testing & Dev Ops"
+              model="o1-mini"
+              color="var(--color-4)"
+              icon="hugeicons:server-stack-03"
+            />
+            <HeroCard
+              className={s.c4}
+              name="Fiora"
+              description="Developer Fullstack"
+              model="Claude-3.5-sonnet"
+              color="var(--color-1)"
+              icon="hugeicons:developer"
+            />
+            <HeroCard
+              className={s.c2}
+              name="Amara"
+              description="CEO & Project Management"
+              model="ChatGPT-4o-latest"
+              color="var(--color-3)"
+              icon="hugeicons:manager"
+            />
+            <HeroCard
+              className={s.c3}
+              name="Ryan"
+              description="UX & UI Designer"
+              model="Gemini-2.5-pro"
+              color="var(--color-2)"
+              icon="hugeicons:paint-bucket"
+            />
+          </div>
         </div>
         <Paragraph className={s.paragraph}>
           <p>
@@ -107,9 +151,20 @@ export const Hero = () => {
             your project from A to Z, across the globe.
           </p>
         </Paragraph>
-        <ButtonGroup>
-          <Button className={s.btn}>Start my project</Button>
+        <ButtonGroup direction="column">
+          <Button className={s.btn} circle>
+            Start my project
+          </Button>
+          <Button secondary>See it in action</Button>
         </ButtonGroup>
+        <div className={s.ai}>
+          <h2>Powered by the best AI</h2>
+          <div className={s.list}>
+            <Sprite className={s.openai} id="open-ai" viewBox="0 0 89 23" />
+            <Sprite className={s.anthropic} id="anthropic" viewBox="0 0 143 16" />
+            <Sprite className={s.google} id="google" viewBox="0 0 88 30" />
+          </div>
+        </div>
       </Container>
     </section>
   )

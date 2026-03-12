@@ -150,6 +150,15 @@ $responsiveNav: 800px;
   }
 }
 
+@mixin glass($shadow: true, $bg: var(--glass-50)) {
+  background-color: $bg;
+  backdrop-filter: blur(16px) saturate(200%);
+  @if $shadow {
+    box-shadow: 0 -4px 8px 4px oklch(1 0 0 / 0.75) inset;
+  }
+  @include performance("backdrop-filter");
+}
+
 @mixin border-glass() {
   &::after {
     content: "";
@@ -157,5 +166,18 @@ $responsiveNav: 800px;
     position: absolute;
     @include border-gradient(var(--gradient-border-glass));
     inset: 0;
+  }
+}
+
+@mixin cornerShape($radius) {
+  border-radius: $radius;
+
+  @supports (corner-shape: squircle) {
+    corner-shape: squircle;
+    border-radius: calc($radius * 1.75);
+
+    &::after {
+      corner-shape: squircle;
+    }
   }
 }

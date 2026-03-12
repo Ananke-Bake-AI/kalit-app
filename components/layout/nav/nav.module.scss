@@ -1,10 +1,16 @@
 @use "@/styles/mixins" as *;
 
+@mixin hover-sub {
+  opacity: 1;
+  visibility: visible;
+  top: 100%;
+}
+
 .nav {
   font-size: 0.85em;
   margin-inline: -0.5em;
 
-  ul {
+  > ul {
     gap: 0.5em;
     display: flex;
     align-items: center;
@@ -13,6 +19,36 @@
 
   @include max($responsiveNav) {
     display: none;
+  }
+}
+
+.subnav {
+  --transition-sub: var(--transition-link);
+
+  .link {
+    &::before {
+      content: "";
+      width: 65px;
+      margin-left: -1em;
+      height: 100px;
+      z-index: 100%;
+      position: absolute;
+      pointer-events: none;
+    }
+  }
+
+  &:hover {
+    .link {
+      background-color: oklch(0 0 0 / 0.05);
+
+      &::before {
+        pointer-events: auto;
+      }
+
+      & + .sub {
+        @include hover-sub;
+      }
+    }
   }
 }
 
@@ -25,5 +61,69 @@
 
   &:hover {
     background-color: oklch(0 0 0 / 0.05);
+  }
+}
+
+.sub {
+  --sub-padding: var(--size-2);
+  transition:
+    opacity var(--transition-sub),
+    visibility var(--transition-sub),
+    top var(--transition-sub);
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  min-width: 100%;
+  left: 0;
+  top: 125%;
+  @include cornerShape(var(--size-8));
+  margin-top: var(--size-2);
+  @include glass($bg: var(--glass-75));
+  @include border-glass;
+  box-shadow:
+    0 -4px 8px 4px oklch(1 0 0 / 0.75) inset,
+    0 24px 100px -8px oklch(0 0 0 / 0.15);
+  display: flex;
+  padding: var(--sub-padding);
+  gap: calc(var(--sub-padding) * 0.5);
+  // @include hover-sub;
+
+  li {
+    flex: 1;
+
+    a {
+      display: block;
+      padding: var(--size-2);
+      @include cornerShape(var(--size-6));
+
+      [data-illustration] {
+        background: linear-gradient(
+          to top,
+          oklch(from var(--color) l c h / 0.25) 0%,
+          oklch(from var(--color) l c h / 0.05) 100%
+        );
+        @include cornerShape(var(--size-5));
+        stroke: var(--color);
+        stroke-width: 30;
+        width: 100%;
+      }
+
+      &:hover {
+        background-color: oklch(from var(--color) l c h / 0.15);
+      }
+    }
+
+    .title {
+      font-family: var(--font-heading);
+      font-size: calc(14px + 4 * (100vw - 320px) / 1080);
+      padding: 0.5em 0.25em 0.1em;
+      display: block;
+      text-align: center;
+      color: var(--color);
+    }
+  }
+
+  &:hover {
+    @include hover-sub;
   }
 }

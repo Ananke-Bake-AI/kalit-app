@@ -22,7 +22,10 @@ export const Subtitle = forwardRef<HTMLDivElement, SubtitleProps>(({ children, c
     gsap.to(containerRef.current, {
       width,
       ease: easings.quartOut,
-      duration: 1.2
+      duration: 1.2,
+      scrollTrigger: {
+        trigger: containerRef.current
+      }
     })
   }, [width])
 

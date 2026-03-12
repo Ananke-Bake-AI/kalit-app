@@ -3,15 +3,15 @@
 $responsive: $responsive;
 
 .hero {
-  padding: calc(40px + 32 * (100vw - 320px) / 1080) 0 300px;
+  padding: calc(40px + 32 * (100vw - 320px) / 1080) 0 var(--margin-4);
   overflow: hidden;
 
   @include min($responsive) {
     text-align: center;
-  }
 
-  .btn {
-    font-size: 1.25em;
+    .btn {
+      font-size: 1.25em;
+    }
   }
 
   .paragraph {
@@ -29,6 +29,7 @@ $responsive: $responsive;
 .title {
   @include fs(48px, 36, 128px);
   margin: var(--size-10) 0 var(--size-7);
+  visibility: hidden;
 
   @include max($responsive) {
     margin-top: 0;
@@ -37,7 +38,6 @@ $responsive: $responsive;
   }
 
   h1 {
-    font-family: var(--font-heading);
     line-height: 1.35;
     padding-top: 0.2em;
     font-size: 1em;
@@ -119,19 +119,176 @@ $responsive: $responsive;
   &3 {
     top: 0;
     right: 96.9%;
-    transform: translateY(-35%);
+    transform: translateY(-37%);
   }
 
   &4 {
     top: 0;
     left: 88.175%;
-    transform: translateY(9%);
+    transform: translateY(7%);
+  }
+}
 
-    // @include max($responsive) {
-    //   display: block;
-    //   transform: scaleY(-1) translateY(0);
-    //   left: 3.62em;
-    //   top: 0.25em;
-    // }
+.cards {
+  @include user-select;
+  pointer-events: none;
+  position: absolute;
+  inset: -100px -80px;
+
+  @include max(1084px) {
+    display: none;
+  }
+
+  .c1 {
+    --animation-duration: 2.5s;
+    top: 5vh;
+    left: -3vw;
+
+    @include max(1500px) {
+      top: 16vh;
+      left: 2vw;
+    }
+  }
+
+  .c2 {
+    --animation-duration: 3s;
+    bottom: -5vh;
+    left: 4vw;
+  }
+
+  .c3 {
+    --animation-duration: 2.75s;
+    top: 8vh;
+    right: 8vw;
+  }
+
+  .c4 {
+    --animation-duration: 3.25s;
+    right: -5vw;
+    bottom: -1vh;
+
+    @include max(1500px) {
+      right: 10vw;
+      bottom: 6vh;
+    }
+  }
+}
+
+.card {
+  --card-padding: var(--size-5);
+  position: absolute;
+  transform: scale(0);
+  will-change: transform;
+
+  .inside {
+    font-size: 1rem;
+    @include cornerShape(var(--radius-2));
+    @include glass;
+    @include border-glass;
+    text-align: left;
+    display: flex;
+    align-items: flex-start;
+    padding: var(--card-padding);
+    gap: calc(var(--card-padding) * 0.65);
+    position: relative;
+    // animation: float-card var(--animation-duration) infinite alternate;
+  }
+
+  @keyframes float-card {
+    0% {
+      top: -5px;
+    }
+    100% {
+      top: 5px;
+    }
+  }
+
+  .right {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35em;
+    padding-right: 0.5em;
+    position: relative;
+  }
+
+  .name {
+    font-weight: normal;
+    font-family: var(--font-heading);
+  }
+
+  .description {
+    font-size: 0.875em;
+    font-weight: 300;
+  }
+
+  .model {
+    position: absolute;
+    top: calc(var(--card-padding) * -1);
+    background-color: var(--white);
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-weight: 400;
+    font-size: 0.55em;
+    padding: 0.25em 0.75em;
+    border-radius: var(--radius-rounded);
+    transform: translateY(-45%);
+  }
+
+  .icon {
+    width: 2em;
+    height: 2em;
+    background-color: var(--color);
+    border-radius: var(--radius-rounded);
+    display: grid;
+    place-items: center;
+    color: var(--white);
+
+    svg {
+      font-size: 1.25em;
+    }
+  }
+}
+
+.ai {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-top: var(--size-12);
+
+  h2 {
+    font-size: 1em;
+    font-weight: 300;
+    margin-top: var(--size-2);
+  }
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-10);
+  justify-content: center;
+  margin-top: var(--size-6);
+
+  @include max($responsive) {
+    font-size: 0.9em;
+    gap: var(--size-8);
+  }
+
+  svg {
+    fill: var(--text-secondary);
+
+    &.openai {
+      height: 1.5em;
+    }
+
+    &.anthropic {
+      height: 1em;
+      position: relative;
+      top: -0.1em;
+    }
+
+    &.google {
+      height: 1.75em;
+    }
   }
 }

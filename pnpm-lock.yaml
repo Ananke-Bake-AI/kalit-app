@@ -38,6 +38,9 @@ dependencies:
   sonner:
     specifier: ^2.0.7
     version: 2.0.7(react-dom@19.2.0)(react@19.2.0)
+  swiper:
+    specifier: ^12.1.2
+    version: 12.1.2
   tempus:
     specifier: 1.0.0-dev.15
     version: 1.0.0-dev.15(react@19.2.0)
@@ -3410,6 +3413,11 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
     dev: true
+
+  /swiper@12.1.2:
+    resolution: {integrity: sha512-4gILrI3vXZqoZh71I1PALqukCFgk+gpOwe1tOvz5uE9kHtl2gTDzmYflYCwWvR4LOvCrJi6UEEU+gnuW5BtkgQ==}
+    engines: {node: '>= 4.7.0'}
+    dev: false
 
   /tempus@1.0.0-dev.15(react@19.2.0):
     resolution: {integrity: sha512-D03RLYrfEuvbJn7fPxPFtQ1zq1AEAcUc06DMS6xceDzTje5MXOBdhxkYS3f6BiUg2b3m/HUPqWsOiEpHfRvRUw==}

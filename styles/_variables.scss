@@ -57,9 +57,13 @@
 
   /* radius */
   --radius-rounded: 9999px;
+  --radius-0: var(--size-10);
+  --radius-1: var(--size-8);
+  --radius-2: var(--size-6);
+  --radius-3: var(--size-4);
 
   /* Container */
-  --container-width: calc(700px + 400 * (100vw - 320px) / 1080);
+  --container-width: calc(700px + 450 * (100vw - 320px) / 1080);
   --container-max: 85vw;
   --container-padding: calc((100vw - var(--container-max)) / 2);
   --container-middle: calc(var(--container-width) / 1.75);
@@ -71,6 +75,7 @@
   --margin-2: calc(32px + 16 * (100vw - 320px) / 1080);
   --margin-2-5: calc(40px + 24 * (100vw - 320px) / 1080);
   --margin-3: calc(72px + 56 * (100vw - 320px) / 1080);
+  --margin-4: calc(96px + 72 * (100vw - 320px) / 1080);
 
   @include max(700px) {
     --container-max: 86vw;
