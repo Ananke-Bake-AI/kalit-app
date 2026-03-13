@@ -1,9 +1,10 @@
+import { LinearGradient } from "@/components/svg/linear-gradient"
 import { RadialGradient } from "@/components/svg/radial-gradient"
-import { LinearGradient } from "../../svg/linear-gradient"
+import s from "./wrapper.module.scss"
 
 export const Defs = () => {
   return (
-    <svg aria-hidden="true" width="0" height="0">
+    <svg aria-hidden="true" width="0" height="0" className={s.defs}>
       <defs>
         <LinearGradient
           id="button-stroke"

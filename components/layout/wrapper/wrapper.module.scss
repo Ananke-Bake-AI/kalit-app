@@ -3,3 +3,13 @@
 .main {
   overflow: hidden;
 }
+
+.defs {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+  bottom: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
