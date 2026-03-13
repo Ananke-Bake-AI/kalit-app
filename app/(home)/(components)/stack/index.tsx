@@ -52,10 +52,10 @@ export const Stack = () => {
               </p>
             </Paragraph>
             <div className={s.nav}>
-              <button onClick={handlePrev}>
+              <button onClick={handlePrev} aria-label="Previous">
                 <Icon icon="hugeicons:arrow-left-02" />
               </button>
-              <button onClick={handleNext}>
+              <button onClick={handleNext} aria-label="Next">
                 <Icon icon="hugeicons:arrow-right-02" />
               </button>
             </div>
@@ -88,13 +88,13 @@ export const Stack = () => {
                   <Illustration suite={id} />
                 </div>
                 <div className={s.bottom}>
-                  <h3>
+                  <h3 data-reveal>
                     <span>kalit</span> <strong>{title}</strong>
                   </h3>
                   <Paragraph className={s.paragraph}>
                     <p>{description}</p>
                   </Paragraph>
-                  <Link href="/stack" className={s.link}>
+                  <Link href="/stack" className={s.link} aria-label={title.charAt(0).toUpperCase() + title.slice(1)}>
                     <Sprite id="arrow-top-right" viewBox="0 0 20 20" />
                   </Link>
                 </div>

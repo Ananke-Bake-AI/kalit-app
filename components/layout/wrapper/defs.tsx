@@ -74,6 +74,50 @@ export const Defs = () => {
             { offset: 1, color: "var(--color-4)" }
           ]}
         />
+        <RadialGradient
+          id="architecture_line_1"
+          cx={0}
+          cy={0}
+          r={1}
+          gradientUnits="userSpaceOnUse"
+          gradientTransform="matrix(816.75 0 0 816.75 6.75 238.75)"
+          stops={[
+            { offset: 0, color: "var(--text)" },
+            { offset: 0.089783, color: "var(--color-1)" },
+            { offset: 0.163893, color: "var(--color-1)" },
+            { offset: 0.377558, color: "var(--color-2)" },
+            { offset: 0.745238, color: "var(--color-3)" },
+            { offset: 1, color: "var(--color-4)" }
+          ]}
+        />
+        <RadialGradient
+          id="join_line_1"
+          cx="0"
+          cy="0"
+          r="1"
+          gradientTransform="matrix(395.238 162.341 -55.259 376.24 454.762 46.1593)"
+          gradientUnits="userSpaceOnUse"
+          stops={[
+            { offset: 0, color: "var(--color-1)" },
+            { offset: 0.33, color: "var(--color-2)" },
+            { offset: 0.66, color: "var(--color-3)" },
+            { offset: 1, color: "var(--color-4)" }
+          ]}
+        />
+        <RadialGradient
+          id="join_line_2"
+          cx="0"
+          cy="0"
+          r="1"
+          gradientTransform="matrix(-406.762 267.659 -314.812 -432.285 406.762 6.49997)"
+          gradientUnits="userSpaceOnUse"
+          stops={[
+            { offset: 0, color: "var(--color-1)" },
+            { offset: 0.33, color: "var(--color-2)" },
+            { offset: 0.66, color: "var(--color-3)" },
+            { offset: 1, color: "var(--color-4)" }
+          ]}
+        />
       </defs>
     </svg>
   )

@@ -16,7 +16,7 @@
   --btn-color: var(--white);
   --btn-padding-x: calc(var(--btn-size) * 1.75);
   --btn-radius: var(--radius-rounded);
-  --btn-transition: 0.5s var(--cubic);
+  --btn-transition: 0.3s var(--cubic);
 
   /* Sizes */
   --size-0: 0;
@@ -55,6 +55,15 @@
   --size-80: 20rem; /* 320px */
   --size-96: 24rem; /* 384px */
 
+  /* Spacing (formerly margin) */
+  --spacing-0: calc(16px + 4 * (100vw - 320px) / 1080);
+  --spacing-1: calc(24px + 8 * (100vw - 320px) / 1080);
+  --spacing-1-5: calc(24px + 16 * (100vw - 320px) / 1080);
+  --spacing-2: calc(32px + 16 * (100vw - 320px) / 1080);
+  --spacing-2-5: calc(40px + 24 * (100vw - 320px) / 1080);
+  --spacing-3: calc(72px + 56 * (100vw - 320px) / 1080);
+  --spacing-4: calc(96px + 72 * (100vw - 320px) / 1080);
+
   /* radius */
   --radius-rounded: 9999px;
   --radius-0: var(--size-10);
@@ -67,17 +76,10 @@
   --container-max: 85vw;
   --container-padding: calc((100vw - var(--container-max)) / 2);
   --container-middle: calc(var(--container-width) / 1.75);
+  --container-margin: var(--spacing-0);
 
-  /* Margin */
-  --margin-0: calc(16px + 4 * (100vw - 320px) / 1080);
-  --margin-1: calc(24px + 8 * (100vw - 320px) / 1080);
-  --margin-1-5: calc(24px + 16 * (100vw - 320px) / 1080);
-  --margin-2: calc(32px + 16 * (100vw - 320px) / 1080);
-  --margin-2-5: calc(40px + 24 * (100vw - 320px) / 1080);
-  --margin-3: calc(72px + 56 * (100vw - 320px) / 1080);
-  --margin-4: calc(96px + 72 * (100vw - 320px) / 1080);
-
-  @include max(700px) {
+  @include max($responsive) {
     --container-max: 86vw;
+    --container-margin: 0;
   }
 }

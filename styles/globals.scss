@@ -45,3 +45,48 @@ h5,
 h6 {
   font-family: var(--font-heading);
 }
+
+[data-stop-animated] {
+  animation: defs-stop-color 4s linear infinite;
+}
+
+[data-stop-animated="var(--color-1)"] {
+  animation-delay: 0s;
+}
+
+[data-stop-animated="var(--color-2)"] {
+  animation-delay: 1.5s;
+}
+
+[data-stop-animated="var(--color-3)"] {
+  animation-delay: 3s;
+}
+
+[data-stop-animated="var(--color-4)"] {
+  animation-delay: 4.5s;
+}
+
+@keyframes defs-stop-color {
+  0% {
+    stop-color: var(--color-1);
+  }
+  25% {
+    stop-color: var(--color-2);
+  }
+  50% {
+    stop-color: var(--color-3);
+  }
+  75% {
+    stop-color: var(--color-4);
+  }
+  100% {
+    stop-color: var(--color-1);
+  }
+}
+
+/* Reveal */
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(100px);
+}

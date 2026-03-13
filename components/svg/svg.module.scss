@@ -1,0 +1,18 @@
+@keyframes svg-lights-move {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -1000;
+  }
+}
+
+.lightsPath {
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 6px currentColor);
+  animation-name: svg-lights-move;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-duration: var(--lights-duration, 4s);
+}
+

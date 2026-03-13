@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react"
 
+import { useReveal } from "@/hooks/useReveal"
 import { GSAP } from "../gsap"
 import { Header } from "../header"
 import { Lenis } from "../lenis"
@@ -15,6 +16,8 @@ interface WrapperProps {
 }
 
 export const Wrapper = ({ children }: WrapperProps) => {
+  useReveal()
+
   return (
     <>
       <GSAP scrollTrigger />

@@ -3,7 +3,7 @@
 $responsive: $responsive;
 
 .hero {
-  padding: calc(40px + 32 * (100vw - 320px) / 1080) 0 var(--margin-4);
+  padding: calc(40px + 32 * (100vw - 320px) / 1080) 0 0;
   overflow: hidden;
 
   @include min($responsive) {
@@ -258,37 +258,5 @@ $responsive: $responsive;
     font-size: 1em;
     font-weight: 300;
     margin-top: var(--size-2);
-  }
-}
-
-.list {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--size-10);
-  justify-content: center;
-  margin-top: var(--size-6);
-
-  @include max($responsive) {
-    font-size: 0.9em;
-    gap: var(--size-8);
-  }
-
-  svg {
-    fill: var(--text-secondary);
-
-    &.openai {
-      height: 1.5em;
-    }
-
-    &.anthropic {
-      height: 1em;
-      position: relative;
-      top: -0.1em;
-    }
-
-    &.google {
-      height: 1.75em;
-    }
   }
 }

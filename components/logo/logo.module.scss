@@ -1,0 +1,21 @@
+@use "@/styles/mixins" as *;
+
+.logo {
+  overflow: visible;
+
+  * {
+    stroke-width: 21;
+  }
+
+  [data-logo-id="pentest"] {
+    transform: translateX(15%);
+  }
+
+  [data-logo-id="flow"] {
+    transform: translateX(13%);
+  }
+
+  [data-logo-id="project"] {
+    transform: translateX(15%);
+  }
+}

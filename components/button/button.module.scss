@@ -21,7 +21,9 @@
   text-align: center;
 
   span {
-    transition: var(--btn-transition);
+    transition:
+      left var(--btn-transition),
+      right var(--btn-transition);
     position: relative;
     z-index: 5;
     left: 0;

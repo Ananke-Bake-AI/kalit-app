@@ -9,7 +9,7 @@ interface ParagraphProps {
 
 export const Paragraph = forwardRef<HTMLDivElement, ParagraphProps>(({ children, className }, ref) => {
   return (
-    <div className={clsx(s.paragraph, className)} ref={ref}>
+    <div className={clsx(s.paragraph, className)} ref={ref} data-paragraph data-reveal>
       {children}
     </div>
   )

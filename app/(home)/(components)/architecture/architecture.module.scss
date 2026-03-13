@@ -1,0 +1,229 @@
+@use "@/styles/mixins" as *;
+
+$responsiveArchitecture: 900px;
+
+.architecture {
+  --width-line: calc(500px + 100 * (100vw - 320px) / 1080);
+  @include section;
+  margin-top: var(--spacing-4);
+
+  .heading {
+    h2 {
+      line-height: 0.85;
+    }
+
+    .strong {
+      position: relative;
+      display: inline-block;
+      font-size: 1.55em;
+    }
+
+    [data-paragraph] {
+      width: calc(400px + 50 * (100vw - 320px) / 1080);
+    }
+  }
+}
+
+.line {
+  pointer-events: none;
+  position: absolute;
+  stroke-width: 0.14em;
+  max-width: none;
+  width: var(--width-line);
+  bottom: 0.45em;
+  overflow: visible;
+  left: 95.25%;
+  transform: translateY(30%);
+
+  @include max($responsiveArchitecture) {
+    display: none;
+  }
+
+  @include max(1600px) {
+    transform: translateY(32%);
+  }
+
+  * {
+    vector-effect: non-scaling-stroke;
+    stroke-dasharray: 2;
+    stroke-dashoffset: var(--dash-offset, 2);
+  }
+}
+
+.layers {
+  position: absolute;
+  width: var(--width-line);
+  right: 8%;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  @include max(2200px) {
+    right: 3%;
+  }
+  @include max(1700px) {
+    right: 0%;
+  }
+  @include max(1500px) {
+    right: -4%;
+  }
+  @include max(1300px) {
+    right: -8%;
+  }
+  @include max(1000px) {
+    right: -12%;
+    top: 51%;
+  }
+  @include max($responsiveArchitecture) {
+    position: relative;
+    transform: none;
+    top: 0;
+    right: 0;
+    width: 100%;
+    margin-top: var(--spacing-2-5);
+  }
+
+  .layer {
+    transition: transform 0.8s var(--cubic);
+    width: 55%;
+    height: calc(90px + 8 * (100vw - 320px) / 1080);
+    position: relative;
+    @include cornerShape(var(--radius-1));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    @include user-select;
+
+    @include max($responsiveArchitecture) {
+      width: 100%;
+    }
+
+    @include is-hover {
+      transition: transform 0.4s var(--cubic);
+      transform: scale(1.1) !important;
+    }
+
+    &.layer1 {
+      background-color: var(--text);
+      color: var(--white);
+
+      h3 {
+        font-size: 0.875em;
+      }
+
+      .list {
+        font-size: 0.6em;
+        gap: 3em;
+        margin-top: var(--size-3);
+      }
+    }
+
+    &.layer2 {
+      @include glass;
+      @include border-glass;
+      flex-direction: row;
+      gap: var(--size-5);
+      z-index: 5;
+
+      h3 {
+        font-size: 1.5em;
+        position: relative;
+        z-index: 5;
+      }
+
+      .logo {
+        --size: 3em;
+        margin-left: -0.5em;
+        width: var(--size);
+        height: var(--size);
+        background: var(--gradient-radial-1);
+        @include cornerShape(var(--radius-rounded));
+        display: grid;
+        place-items: center;
+
+        svg {
+          stroke: var(--white);
+          width: 50%;
+        }
+      }
+    }
+
+    &.layer3 {
+      background-color: var(--success);
+      color: var(--white);
+      overflow: hidden;
+
+      h3 {
+        font-size: 1.5em;
+        position: relative;
+        z-index: 5;
+      }
+
+      .icon {
+        position: absolute;
+        font-size: 6em;
+        z-index: 0;
+        bottom: 50%;
+      }
+    }
+  }
+}
+
+.layer1Line {
+  height: 60px;
+  margin-top: -1px;
+  stroke: var(--text);
+  stroke-linecap: round;
+  @include performance;
+
+  path {
+    stroke-dasharray: 8 4;
+    stroke-dashoffset: 0;
+    animation: line-dash-move 0.2s linear infinite;
+  }
+}
+
+@keyframes line-dash-move {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: 12; // multiple de 12 => pas de "saut"
+  }
+}
+
+.layer2Line {
+  height: 60px;
+  margin-top: -1px;
+  stroke: var(--text);
+  stroke-linecap: round;
+  @include performance;
+
+  line {
+    stroke-dasharray: 8 4;
+    stroke-dashoffset: 0;
+    animation: line-dash-move 0.2s linear infinite reverse;
+
+    &:nth-child(1) {
+      animation-duration: 0.2s;
+    }
+
+    &:nth-child(2) {
+      animation-duration: 0.175s;
+    }
+
+    &:nth-child(3) {
+      animation-duration: 0.15s;
+    }
+
+    &:nth-child(4) {
+      animation-duration: 0.22s;
+    }
+  }
+}

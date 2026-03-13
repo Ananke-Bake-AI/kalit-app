@@ -1,0 +1,10 @@
+.root {
+  position: absolute;
+  inset: 0;
+
+  :global(canvas) {
+    position: absolute;
+    inset: 0;
+    display: block;
+  }
+}

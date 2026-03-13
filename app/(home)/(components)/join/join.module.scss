@@ -1,0 +1,351 @@
+@use "@/styles/mixins" as *;
+
+$responsiveJoin: 900px;
+$responsiveJoinItem: 600px;
+$responsiveJoinItem2: 500px;
+
+.join {
+  --screen-width: calc(700px + 200 * (100vw - 320px) / 1080);
+  @include section;
+  padding-bottom: 0;
+  text-align: center;
+  overflow: hidden;
+
+  .heading {
+    position: relative;
+    z-index: 10;
+
+    @include max(650px) {
+      h2 {
+        br {
+          display: none;
+        }
+      }
+    }
+
+    [data-paragraph] {
+      width: calc(500px + 50 * (100vw - 320px) / 1080);
+      margin-inline: auto;
+    }
+  }
+}
+
+.bottom {
+  margin-top: var(--spacing-2-5);
+  position: relative;
+  z-index: 0;
+  @include performance;
+}
+
+.list {
+  position: absolute;
+  width: calc(var(--screen-width) + 100px);
+  max-width: 105%;
+  margin: auto;
+  @include backdrop(16px);
+  @include cornerShape(var(--radius-1));
+  @include border-glass;
+  bottom: var(--spacing-2-5);
+  z-index: 15;
+  background-color: var(--glass-75);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+
+  @include max($responsiveJoin) {
+    --list-padding: calc(16px + 4 * (100vw - 320px) / 1080);
+    position: relative;
+    padding: var(--list-padding);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: calc(var(--list-padding) / 2);
+    margin-bottom: -1.75em;
+  }
+
+  @include max($responsiveJoinItem2) {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    margin-bottom: -1em;
+  }
+}
+
+.item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-5);
+  z-index: 5;
+
+  @include max($responsiveJoin) {
+    --item-padding: calc(16px + 4 * (100vw - 320px) / 1080);
+    position: relative;
+    padding: var(--item-padding);
+    background-color: var(--glass-50);
+    @include cornerShape(var(--radius-1));
+    @include border-glass;
+  }
+
+  @include max($responsiveJoinItem) {
+    width: 100%;
+    gap: var(--size-4);
+  }
+
+  @include max($responsiveJoinItem2) {
+    padding: 0;
+    background-color: transparent;
+    border: 0;
+
+    &::after {
+      display: none;
+    }
+  }
+
+  .btn {
+    font-size: 0.7em;
+
+    @include min($responsiveJoin) {
+      margin-bottom: -1em;
+    }
+
+    @include max($responsiveJoinItem) {
+      width: 100%;
+    }
+
+    @include max($responsiveJoinItem2) {
+      display: none;
+    }
+
+    @include is-hover {
+      background-color: var(--color);
+    }
+
+    &::after {
+      content: "";
+      width: 4em;
+      height: 4em;
+      border: 0.65em solid var(--color);
+      border-radius: var(--radius-rounded);
+      position: absolute;
+    }
+
+    &[data-button-id="pentest"] {
+      padding-right: 3em;
+
+      @include is-hover {
+        span {
+          left: 0.55em;
+        }
+      }
+
+      &::after {
+        bottom: 25%;
+        right: -1.75em;
+      }
+    }
+
+    &[data-button-id="flow"] {
+      padding-right: 3em;
+
+      @include is-hover {
+        span {
+          left: 0.55em;
+        }
+      }
+
+      &::after {
+        top: 25%;
+        right: -1.75em;
+      }
+    }
+
+    &[data-button-id="marketing"] {
+      padding-left: 3em;
+
+      @include is-hover {
+        span {
+          left: -0.55em;
+        }
+      }
+
+      &::after {
+        bottom: 25%;
+        left: -1.75em;
+      }
+    }
+
+    &[data-button-id="project"] {
+      padding-left: 3em;
+
+      @include is-hover {
+        span {
+          left: -0.55em;
+        }
+      }
+
+      &::after {
+        top: 25%;
+        left: -1.75em;
+      }
+    }
+  }
+}
+
+.top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-5);
+
+  @include max($responsiveJoinItem) {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--size-5);
+  }
+}
+
+.icon {
+  --icon-size: 3.5em;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  background-color: var(--color);
+  @include cornerShape(calc(var(--icon-size) / 2.75));
+  display: grid;
+  place-items: center;
+  z-index: 5;
+
+  @include min($responsiveJoin) {
+    margin-top: -1em;
+  }
+
+  @include max($responsiveJoinItem2) {
+    --icon-size: calc(56px + 100 * (100vw - 320px) / 1080);
+  }
+
+  svg {
+    width: 55%;
+    stroke: var(--white);
+  }
+}
+
+.name {
+  font-family: var(--font-heading);
+  line-height: 0.9;
+  font-size: calc(16px + 6 * (100vw - 320px) / 1080);
+
+  @include max($responsiveJoinItem2) {
+    display: none;
+  }
+
+  strong {
+    display: block;
+    font-size: 1.4em;
+    color: var(--color);
+  }
+}
+
+.screen {
+  --screen-padding: calc(8px + 8 * (100vw - 320px) / 1080);
+  background-color: var(--glass-15);
+  aspect-ratio: 16/11;
+  width: var(--screen-width);
+  max-width: 100%;
+  margin-inline: auto;
+  z-index: 5;
+  position: relative;
+  @include cornerShape(var(--radius-1));
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  @include mask(linear-gradient(to top, oklch(from var(--bg-1) l c h / 0) 0%, var(--bg-1) 30%));
+
+  @include max($responsiveJoin) {
+    aspect-ratio: 16/9;
+    @include mask(linear-gradient(to top, oklch(from var(--bg-1) l c h / 0) -100%, var(--bg-1) 40%));
+  }
+
+  &::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    @include border-gradient(var(--gradient-border-glass-2));
+    inset: 0;
+  }
+
+  &Inside {
+    position: absolute;
+    inset: var(--screen-padding);
+    bottom: 0;
+    background-color: var(--body);
+    @include cornerShape(var(--radius-2));
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    box-shadow: 0 0 16px oklch(0 0 0 / 0.05);
+  }
+}
+
+.bg {
+  position: absolute;
+  z-index: 0;
+  inset: -30% -15%;
+  bottom: 0;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    background: radial-gradient(circle at 50% 100%, oklch(from var(--bg-1) l c h / 0) 30%, var(--bg-1) 80%);
+    z-index: 1;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    z-index: 1;
+    background: linear-gradient(to right, var(--bg-1) 0%, oklch(from var(--bg-1) l c h / 0) 15% 85%, var(--bg-1) 100%);
+  }
+
+  .gradient {
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(to bottom, var(--bg-1) 0%, oklch(from var(--bg-1) l c h / 0) 30%);
+    }
+  }
+}
+
+.line {
+  position: absolute;
+  stroke-width: 13;
+  max-width: none;
+  overflow: visible;
+  width: 100%;
+  top: 30%;
+  transform: translateY(-50%);
+  z-index: 1;
+  width: calc(600px + 200 * (100vw - 320px) / 1080);
+
+  * {
+    vector-effect: non-scaling-stroke;
+    stroke-dasharray: 2;
+    stroke-dashoffset: var(--dash-offset, 2);
+  }
+
+  &.line1 {
+    right: 85%;
+  }
+
+  &.line2 {
+    left: 85%;
+    transform: translateY(-56.5%);
+  }
+
+  @include max(1100px) {
+    display: none;
+  }
+}

@@ -9,6 +9,7 @@ interface RadialGradientProps {
   r?: number | string
   fx?: number | string
   fy?: number | string
+  animated?: boolean
   gradientUnits?: "userSpaceOnUse" | "objectBoundingBox"
   gradientTransform?: string
   stops?:
@@ -26,6 +27,7 @@ export const RadialGradient = ({
   r = 1,
   fx,
   fy,
+  animated = false,
   gradientUnits = "userSpaceOnUse",
   gradientTransform,
   stops
@@ -60,10 +62,14 @@ export const RadialGradient = ({
       gradientUnits={gradientUnits}
       gradientTransform={gradientTransform}
     >
-      {normalizedStops.map(stop => (
-        <stop key={stop.offset} offset={stop.offset} style={{ stopColor: stop.color }} />
+      {normalizedStops.map((stop) => (
+        <stop
+          key={stop.offset}
+          offset={stop.offset}
+          {...(stop.color !== "var(--text)" && animated && { "data-stop-animated": stop.color })}
+          style={{ stopColor: stop.color }}
+        />
       ))}
     </radialGradient>
   )
 }
-

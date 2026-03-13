@@ -1,0 +1,14 @@
+@use "@/styles/mixins" as *;
+
+.features {
+  text-align: center;
+  padding: var(--spacing-4) 0;
+
+  .heading {
+    [data-paragraph] {
+      width: var(--container-middle);
+      margin-inline: auto;
+      text-wrap: balance;
+    }
+  }
+}

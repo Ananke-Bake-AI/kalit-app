@@ -18,6 +18,7 @@ interface LinearGradientProps {
   y1?: number
   x2?: number
   y2?: number
+  animated?: boolean
   gradientUnits?: "userSpaceOnUse" | "objectBoundingBox"
   direction?: GradientDirection
   stops?:
@@ -34,6 +35,7 @@ export const LinearGradient = ({
   y1,
   x2,
   y2,
+  animated = false,
   gradientUnits = "userSpaceOnUse",
   direction,
   stops
@@ -94,7 +96,12 @@ export const LinearGradient = ({
       gradientUnits={gradientUnits}
     >
       {normalizedStops.map((stop) => (
-        <stop key={stop.offset} offset={stop.offset} style={{ stopColor: stop.color }} />
+        <stop
+          key={stop.offset}
+          offset={stop.offset}
+          {...(stop.color !== "var(--text)" && animated && { "data-stop-animated": stop.color })}
+          style={{ stopColor: stop.color }}
+        />
       ))}
     </linearGradient>
   )

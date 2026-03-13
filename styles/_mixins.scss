@@ -181,3 +181,11 @@ $responsiveNav: 800px;
     }
   }
 }
+
+@mixin section {
+  margin: 0 var(--container-margin);
+  position: relative;
+  background-color: var(--bg-1);
+  padding: var(--spacing-3) 0;
+  @include cornerShape(var(--radius-0));
+}

@@ -3,9 +3,9 @@
 import { Button } from "@/components/button"
 import { ButtonGroup } from "@/components/button/group"
 import { Container } from "@/components/container"
+import { Models } from "@/components/models"
 import { Paragraph } from "@/components/paragraph"
 import { RevealText } from "@/components/reveal-text"
-import { Sprite } from "@/components/sprite"
 import { Subtitle } from "@/components/subtitle"
 import { Line } from "@/components/svg/line"
 import { useGSAP } from "@gsap/react"
@@ -151,19 +151,15 @@ export const Hero = () => {
             your project from A to Z, across the globe.
           </p>
         </Paragraph>
-        <ButtonGroup direction="column">
+        <ButtonGroup direction="column" data-reveal>
           <Button className={s.btn} circle>
             Start my project
           </Button>
           <Button secondary>See it in action</Button>
         </ButtonGroup>
-        <div className={s.ai}>
+        <div className={s.ai} data-reveal>
           <h2>Powered by the best AI</h2>
-          <div className={s.list}>
-            <Sprite className={s.openai} id="open-ai" viewBox="0 0 89 23" />
-            <Sprite className={s.anthropic} id="anthropic" viewBox="0 0 143 16" />
-            <Sprite className={s.google} id="google" viewBox="0 0 88 30" />
-          </div>
+          <Models />
         </div>
       </Container>
     </section>

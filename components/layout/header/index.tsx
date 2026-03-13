@@ -1,6 +1,7 @@
 "use client"
 
 import { Button } from "@/components/button"
+import { Logo } from "@/components/logo"
 import { useAppStore } from "@/stores/app"
 import clsx from "clsx"
 import Link from "next/link"
@@ -14,17 +15,14 @@ export const Header = () => {
     <header className={clsx(s.header, nav && s.open)}>
       <div className={s.content}>
         <Link href="/" className={s.logo}>
-          <svg viewBox="0 0 82 82">
-            <path d="M71.878.065c0 17.053-13.824 30.878-30.878 30.878m30.878 51.034c0-17.053-13.824-30.878-30.878-30.878S10.122 64.924 10.122 81.977" />
-            <path d="M10.122.023v81.954" />
-          </svg>
+          <Logo id="kalit" />
           <span>kalit</span>
         </Link>
         <Nav />
         <Button className={s.btn} circle>
           Start my project
         </Button>
-        <button className={s.bnav} onClick={() => setNav(!nav)}>
+        <button className={s.bnav} onClick={() => setNav(!nav)} aria-label="Navigation">
           <svg viewBox="0 0 100 100">
             <path className={s.l1} d="M0,42h62c13,0,6,26-4,16L35,35" />
             <path className={s.l2} d="M0,50h70" />

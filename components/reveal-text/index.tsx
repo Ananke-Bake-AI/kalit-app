@@ -54,6 +54,7 @@ export const RevealText = ({
         const span = document.createElement("span")
         span.textContent = textContent
         word.textContent = ""
+        span.setAttribute("data-word", "")
         word.appendChild(span)
         wordSpans.push(span)
       })

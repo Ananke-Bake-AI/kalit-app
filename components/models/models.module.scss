@@ -1,0 +1,33 @@
+@use "@/styles/mixins" as *;
+
+.list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-10);
+  justify-content: center;
+  margin-top: var(--size-6);
+
+  @include max($responsive) {
+    font-size: 0.9em;
+    gap: var(--size-8);
+  }
+
+  svg {
+    fill: currentColor;
+
+    &.openai {
+      height: 1.5em;
+    }
+
+    &.anthropic {
+      height: 1em;
+      position: relative;
+      top: -0.1em;
+    }
+
+    &.google {
+      height: 1.75em;
+    }
+  }
+}

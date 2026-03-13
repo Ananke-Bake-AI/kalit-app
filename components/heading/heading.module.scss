@@ -3,12 +3,20 @@
 .heading {
   h2 {
     @include fs(40px, 24, 128px);
-    line-height: 1;
+    line-height: 0.85;
     margin-top: var(--size-10);
+
+    [data-word] {
+      padding-bottom: 0.14em;
+    }
+
+    & + .paragraph {
+      margin-top: var(--size-6);
+    }
 
     [data-icon-svg] {
       position: absolute;
-      top: -0.15em;
+      top: -0.25em;
       transform: scale(0);
     }
 
@@ -32,6 +40,19 @@
         svg {
           border-bottom-left-radius: 0;
           transform: translateX(125%);
+          overflow: visible;
+        }
+      }
+
+      &[data-icon="left"] {
+        [data-icon-svg] {
+          left: 0;
+        }
+
+        svg {
+          border-bottom-right-radius: 0;
+          transform: translateX(-125%);
+          overflow: visible;
         }
       }
     }
