@@ -1,22 +1,16 @@
 "use client"
 
-import { Button } from "@/components/app/button"
-import { Card } from "@/components/app/card"
-import { Input } from "@/components/app/input"
-import { SUITES, type SuiteId } from "@/lib/app-suites"
+import { Button } from "@/components/button"
+import { Logo } from "@/components/logo"
+import { SUITES } from "@/lib/suites"
 import { completeOnboarding } from "@/server/actions/onboarding"
-import { Code, Globe, Megaphone, Shield } from "lucide-react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { toast } from "sonner"
-
-const SUITE_ICONS: Record<SuiteId, React.ReactNode> = {
-  project: <Code className="h-6 w-6" />,
-  flow: <Globe className="h-6 w-6" />,
-  marketing: <Megaphone className="h-6 w-6" />,
-  pentest: <Shield className="h-6 w-6" />,
-}
+import s from "../setup.module.scss"
+import clsx from "clsx"
+import type { SuiteId } from "@/lib/app-suites"
 
 export default function SetupPage() {
   const router = useRouter()
@@ -47,50 +41,46 @@ export default function SetupPage() {
       return
     }
 
-    // Refresh the JWT token so middleware sees onboardingDone=true
     await update({ onboardingDone: true, orgId: result.orgId })
     router.push(result.redirectTo || "/dashboard")
     router.refresh()
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <div className="w-full max-w-lg">
-        <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold text-foreground font-heading">Welcome to Kalit</h1>
-          <p className="mt-1 text-sm text-muted-fg">
-            {step === 1 ? "Set up your workspace" : "What do you want to do first?"}
-          </p>
-          <div className="mt-4 flex justify-center gap-2">
-            {[1, 2].map((s) => (
-              <div
-                key={s}
-                className={`h-1.5 w-12 rounded-full transition-colors ${
-                  s <= step ? "bg-accent" : "bg-muted"
-                }`}
-              />
+    <div className={s.page}>
+      <div className={s.wrapper}>
+        <div className={s.header}>
+          <h1>Welcome to Kalit</h1>
+          <p>{step === 1 ? "Set up your workspace" : "What do you want to do first?"}</p>
+          <div className={s.progress}>
+            {[1, 2].map((i) => (
+              <span key={i} className={clsx(i <= step && s.active)} />
             ))}
           </div>
         </div>
 
-        <Card>
+        <div className={s.card}>
           {step === 1 && (
-            <div className="flex flex-col gap-4">
-              <Input
-                id="orgName"
-                label="Workspace name"
-                placeholder="My Company"
-                value={orgName}
-                onChange={(e) => setOrgName(e.target.value)}
-                required
-              />
-              <Input
-                id="websiteUrl"
-                label="Website (optional)"
-                placeholder="https://example.com"
-                value={websiteUrl}
-                onChange={(e) => setWebsiteUrl(e.target.value)}
-              />
+            <>
+              <div className={s.field}>
+                <label htmlFor="orgName">Workspace name</label>
+                <input
+                  id="orgName"
+                  placeholder="My Company"
+                  value={orgName}
+                  onChange={(e) => setOrgName(e.target.value)}
+                  required
+                />
+              </div>
+              <div className={s.field}>
+                <label htmlFor="websiteUrl">Website (optional)</label>
+                <input
+                  id="websiteUrl"
+                  placeholder="https://example.com"
+                  value={websiteUrl}
+                  onChange={(e) => setWebsiteUrl(e.target.value)}
+                />
+              </div>
               <Button
                 onClick={() => {
                   if (orgName.length < 2) {
@@ -99,30 +89,27 @@ export default function SetupPage() {
                   }
                   setStep(2)
                 }}
-                className="w-full"
               >
                 Continue
               </Button>
-            </div>
+            </>
           )}
 
           {step === 2 && (
-            <div className="flex flex-col gap-4">
-              <div className="grid grid-cols-2 gap-3">
+            <>
+              <div className={s.suites}>
                 {SUITES.map((suite) => (
                   <button
                     key={suite.id}
                     type="button"
-                    onClick={() => setPrimarySuite(suite.id)}
-                    className={`flex flex-col items-center gap-2 rounded-xl border p-4 text-center transition-all cursor-pointer ${
-                      primarySuite === suite.id
-                        ? "border-accent bg-accent/10"
-                        : "border-border hover:border-muted-fg"
-                    }`}
+                    onClick={() => setPrimarySuite(suite.id as SuiteId)}
+                    className={clsx(s.suiteCard, primarySuite === suite.id && s.active)}
                   >
-                    <div style={{ color: suite.color }}>{SUITE_ICONS[suite.id]}</div>
-                    <span className="text-sm font-medium text-foreground">{suite.name}</span>
-                    <span className="text-xs text-muted-fg leading-tight">
+                    <div className={s.icon} style={{ color: suite.color }}>
+                      <Logo id={suite.id} />
+                    </div>
+                    <span className={s.name}>{suite.title}</span>
+                    <span className={s.desc}>
                       {suite.id === "project" && "Build an app"}
                       {suite.id === "flow" && "Create a site"}
                       {suite.id === "marketing" && "Launch growth"}
@@ -132,17 +119,17 @@ export default function SetupPage() {
                 ))}
               </div>
 
-              <div className="flex gap-3">
-                <Button variant="secondary" onClick={() => setStep(1)} className="flex-1">
+              <div className={s.actions}>
+                <Button variant="secondary" onClick={() => setStep(1)}>
                   Back
                 </Button>
-                <Button onClick={handleComplete} loading={loading} className="flex-1">
-                  Get started
+                <Button onClick={handleComplete} disabled={loading}>
+                  {loading ? "Setting up..." : "Get started"}
                 </Button>
               </div>
-            </div>
+            </>
           )}
-        </Card>
+        </div>
       </div>
     </div>
   )

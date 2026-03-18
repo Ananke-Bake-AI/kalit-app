@@ -1,0 +1,151 @@
+@use "@/styles/mixins" as *;
+
+.page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: var(--spacing-2) var(--spacing-0);
+  background: var(--body);
+}
+
+.wrapper {
+  width: 100%;
+  max-width: 28rem;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: var(--spacing-1-5);
+
+  h1 {
+    font-family: var(--font-heading);
+    font-size: 1.75em;
+    color: var(--text);
+    margin-bottom: var(--size-2);
+  }
+
+  p {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+  }
+}
+
+.card {
+  background: var(--white);
+  border: 1px solid var(--glass-15);
+  border-radius: var(--radius-1);
+  padding: var(--spacing-1);
+  box-shadow: 0 4px 24px oklch(0 0 0 / 0.06);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-5);
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: 1.25em;
+  color: var(--text);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-1-5);
+
+  label {
+    font-size: 0.85em;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  input {
+    height: var(--btn-height);
+    border: 1px solid oklch(0 0 0 / 0.1);
+    border-radius: var(--radius-4);
+    padding: 0 var(--size-4);
+    font-size: 0.9em;
+    color: var(--text);
+    background: var(--body);
+    outline: none;
+    transition: border-color 0.2s;
+
+    &::placeholder {
+      color: var(--text-secondary);
+      opacity: 0.5;
+    }
+
+    &:focus {
+      border-color: var(--color-4);
+      box-shadow: 0 0 0 3px oklch(from var(--color-4) l c h / 0.1);
+    }
+  }
+}
+
+.error {
+  font-size: 0.8em;
+  color: var(--danger);
+}
+
+.submit {
+  margin-top: var(--size-2);
+}
+
+.divider {
+  position: relative;
+  text-align: center;
+  margin: var(--size-3) 0;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    background: oklch(0 0 0 / 0.08);
+  }
+
+  span {
+    position: relative;
+    background: var(--white);
+    padding: 0 var(--size-4);
+    font-size: 0.8em;
+    color: var(--text-secondary);
+  }
+}
+
+.oauth {
+  display: flex;
+  gap: var(--size-3);
+
+  button {
+    flex: 1;
+  }
+}
+
+.footer {
+  text-align: center;
+  font-size: 0.85em;
+  color: var(--text-secondary);
+  margin-top: var(--size-5);
+
+  a {
+    color: var(--color-4);
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}

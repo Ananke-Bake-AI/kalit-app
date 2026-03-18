@@ -1,0 +1,152 @@
+@use "@/styles/mixins" as *;
+
+.page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: var(--spacing-2) var(--spacing-0);
+  background: var(--body);
+}
+
+.wrapper {
+  width: 100%;
+  max-width: 32rem;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: var(--spacing-1-5);
+
+  h1 {
+    font-family: var(--font-heading);
+    font-size: 1.75em;
+    color: var(--text);
+    margin-bottom: var(--size-2);
+  }
+
+  p {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+  }
+}
+
+.progress {
+  display: flex;
+  justify-content: center;
+  gap: var(--size-2);
+  margin-top: var(--size-5);
+
+  span {
+    height: 4px;
+    width: 3rem;
+    border-radius: var(--radius-rounded);
+    background: oklch(0 0 0 / 0.08);
+    transition: background 0.3s;
+
+    &.active {
+      background: var(--color-4);
+    }
+  }
+}
+
+.card {
+  background: var(--white);
+  border: 1px solid var(--glass-15);
+  border-radius: var(--radius-1);
+  padding: var(--spacing-1);
+  box-shadow: 0 4px 24px oklch(0 0 0 / 0.06);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-1-5);
+  margin-bottom: var(--size-5);
+
+  label {
+    font-size: 0.85em;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  input {
+    height: 3.25em;
+    border: 1px solid oklch(0 0 0 / 0.1);
+    border-radius: var(--radius-4);
+    padding: 0 var(--size-4);
+    font-size: 0.9em;
+    color: var(--text);
+    background: var(--body);
+    outline: none;
+    transition: border-color 0.2s;
+
+    &::placeholder {
+      color: var(--text-secondary);
+      opacity: 0.5;
+    }
+
+    &:focus {
+      border-color: var(--color-4);
+      box-shadow: 0 0 0 3px oklch(from var(--color-4) l c h / 0.1);
+    }
+  }
+}
+
+.suites {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--size-3);
+  margin-bottom: var(--size-5);
+}
+
+.suiteCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--size-2);
+  padding: var(--size-5) var(--size-3);
+  border: 1px solid oklch(0 0 0 / 0.08);
+  border-radius: var(--radius-2);
+  background: var(--body);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+
+  &:hover {
+    border-color: oklch(0 0 0 / 0.15);
+  }
+
+  &.active {
+    border-color: var(--color-4);
+    background: oklch(from var(--color-4) l c h / 0.04);
+    box-shadow: 0 0 0 3px oklch(from var(--color-4) l c h / 0.08);
+  }
+
+  .icon {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .name {
+    font-weight: 600;
+    font-size: 0.9em;
+    color: var(--text);
+  }
+
+  .desc {
+    font-size: 0.75em;
+    color: var(--text-secondary);
+    line-height: 1.3;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: var(--size-3);
+
+  > * {
+    flex: 1;
+  }
+}

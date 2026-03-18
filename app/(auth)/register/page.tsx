@@ -1,14 +1,14 @@
 "use client"
 
-import { Button } from "@/components/app/button"
-import { Card } from "@/components/app/card"
-import { Input } from "@/components/app/input"
+import { Button } from "@/components/button"
 import { register } from "@/server/actions/auth"
 import { signIn } from "next-auth/react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { toast } from "sonner"
+import s from "../auth.module.scss"
+import clsx from "clsx"
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -29,7 +29,6 @@ export default function RegisterPage() {
       return
     }
 
-    // Auto sign-in after registration
     const signInResult = await signIn("credentials", {
       email,
       password,
@@ -53,70 +52,71 @@ export default function RegisterPage() {
   }
 
   return (
-    <Card>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <h2 className="text-lg font-semibold text-foreground font-heading">Create your account</h2>
+    <div className={s.card}>
+      <form onSubmit={handleSubmit} className={clsx(s.form, loading && s.loading)}>
+        <h2 className={s.title}>Create your account</h2>
 
-        <Input
-          id="name"
-          label="Name"
-          type="text"
-          placeholder="Your name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-
-        <Input
-          id="email"
-          label="Email"
-          type="email"
-          placeholder="you@example.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-
-        <Input
-          id="password"
-          label="Password"
-          type="password"
-          placeholder="Min. 8 characters"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          minLength={8}
-        />
-
-        <Button type="submit" loading={loading} className="w-full">
-          Create account
-        </Button>
-
-        <div className="relative my-2">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-border" />
-          </div>
-          <div className="relative flex justify-center text-xs">
-            <span className="bg-card px-2 text-muted-fg">or continue with</span>
-          </div>
+        <div className={s.field}>
+          <label htmlFor="name">Name</label>
+          <input
+            id="name"
+            type="text"
+            placeholder="Your name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
         </div>
 
-        <div className="flex gap-3">
-          <Button type="button" variant="secondary" className="flex-1" onClick={() => handleOAuth("google")}>
+        <div className={s.field}>
+          <label htmlFor="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            placeholder="you@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className={s.field}>
+          <label htmlFor="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            placeholder="Min. 8 characters"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength={8}
+          />
+        </div>
+
+        <div className={s.submit}>
+          <Button type="submit" disabled={loading}>
+            {loading ? "Creating..." : "Create account"}
+          </Button>
+        </div>
+
+        <div className={s.divider}>
+          <span>or continue with</span>
+        </div>
+
+        <div className={s.oauth}>
+          <Button type="button" variant="secondary" onClick={() => handleOAuth("google")}>
             Google
           </Button>
-          <Button type="button" variant="secondary" className="flex-1" onClick={() => handleOAuth("github")}>
+          <Button type="button" variant="secondary" onClick={() => handleOAuth("github")}>
             GitHub
           </Button>
         </div>
 
-        <p className="text-center text-sm text-muted-fg">
+        <p className={s.footer}>
           Already have an account?{" "}
-          <Link href="/login" className="text-accent hover:underline">
-            Sign in
-          </Link>
+          <Link href="/login">Sign in</Link>
         </p>
       </form>
-    </Card>
+    </div>
   )
 }
