@@ -19,7 +19,7 @@ export const Header = () => {
         </Link>
         <Nav />
         <Button className={s.btn} circle>
-          Start my project
+          Get early access
         </Button>
         <button className={s.bnav} onClick={() => setNav(!nav)} aria-label="Navigation">
           <svg viewBox="0 0 100 100">

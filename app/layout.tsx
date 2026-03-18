@@ -5,9 +5,9 @@ import "@/styles/globals.scss"
 import { fonts } from "./fonts"
 
 export const metadata = MetadataSeo({
-  title: "The world’s most advanced AI agent models",
+  title: "Build, Launch, Grow, and Secure with AI",
   description:
-    "Let Kalit build your team using the world’s most advanced AI agent models — and together, launch and scale your project from A to Z, across the globe."
+    "Kalit is the AI suite for startups and digital teams. Build apps, launch landing pages, run marketing campaigns, and secure your product — all from one platform."
 })
 
 export const viewport = {

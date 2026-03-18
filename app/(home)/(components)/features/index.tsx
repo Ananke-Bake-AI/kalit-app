@@ -7,23 +7,23 @@ import s from "./features.module.scss"
 const FEATURES = [
   {
     img: "/img/img1.png",
-    title: "A team of high-performing and adaptable AI agents",
-    description: "Elite AI agents working in sync. Scale output without scaling your team. Pure power, zero overhead."
+    title: "Specialized AI agents coordinated as one team",
+    description: "Each agent handles a role — planning, coding, design, testing, deployment. They coordinate so you don't have to."
   },
   {
     img: "/img/img2.png",
-    title: "Describe your project and add your references screenshots & assets",
-    description: "Describe it. Add screenshots. Watch it come alive. No coding. No limits. Only results."
+    title: "Describe your project, add references and assets",
+    description: "Share screenshots, describe what you need, and let the agents match your vision. No coding required."
   },
   {
     img: "/img/img3.png",
-    title: "Simultaneous generation without effort",
-    description: "One click. Multiple outputs. Faster iteration. Ship more, worry less. Dominate the market."
+    title: "Run multiple workflows at once",
+    description: "Build your app, generate your landing page, and prepare your launch in parallel — instead of waiting on one step at a time."
   },
   {
     img: "/img/img4.png",
-    title: "Publish your landing pages — no skills required",
-    description: "From idea to live in minutes. Zero code. Zero friction. Unlimited possibilities. Launch now."
+    title: "Go live with one click — hosting included",
+    description: "Publish landing pages, deploy apps, and launch campaigns directly from Kalit. No external tools needed."
   }
 ]
 
@@ -33,13 +33,13 @@ export const Features = () => {
       <Container>
         <Heading
           className={s.heading}
-          subtitle="Our Features"
-          paragraph="The most powerful AI platform. Ship world-class apps in minutes, not months."
+          subtitle="How it works"
+          paragraph="Go from idea to execution faster with AI workflows designed for real product, growth, and security work."
         >
-          Tailored AI features
-          <br /> for maximum{" "}
+          Built to ship
+          <br /> not just{" "}
           <span data-icon="right">
-            success
+            prototype
             <span data-icon-svg>
               <Icon icon="hugeicons:chart-up" />
             </span>

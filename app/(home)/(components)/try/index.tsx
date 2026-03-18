@@ -169,16 +169,16 @@ export const Try = () => {
         <Heading
           className={s.heading}
           subtitle="Try Kalit Flow"
-          paragraph="Describe your vision. Our AI builds it. The future of creation starts right here."
+          paragraph="Describe your site. Kalit builds the page, the copy, and the structure — ready to publish in minutes."
         >
-          Don't wait{" "}
+          Describe your{" "}
           <span data-icon="right">
-            any
+            vision
             <span data-icon-svg>
               <Icon icon="hugeicons:stars" />
             </span>
-          </span>{" "}
-          <br /> longer, <Underline>start now</Underline>
+          </span>
+          , <br /> <Underline>Kalit builds it</Underline>
         </Heading>
         <div className={s.form}>
           <div className={s.textarea}>

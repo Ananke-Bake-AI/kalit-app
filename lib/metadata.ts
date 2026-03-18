@@ -15,7 +15,7 @@ export const MetadataSeo = ({
   fullTitle,
   title,
   description,
-  locale = "fr",
+  locale = "en_US",
   image = "/img/thumbnail.jpg",
   url,
   type = "website"

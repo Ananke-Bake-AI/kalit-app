@@ -50,9 +50,9 @@ export const Portfolio = () => {
           subtitle="Kalit Portfolio"
           paragraph={
             <>
-              Over{" "}
-              <Underline>+1000 users</Underline>{" "}
-              have already launched their projects with Kalit.
+              Real projects{" "}
+              <Underline>built and shipped</Underline>{" "}
+              by founders using Kalit.
             </>
           }
         >

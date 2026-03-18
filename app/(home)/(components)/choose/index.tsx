@@ -22,57 +22,57 @@ const Cross = () => {
 export const Choose = () => {
   const iconCol = [
     "hugeicons:apple-reminder",
+    "hugeicons:global",
+    "hugeicons:megaphone-02",
+    "hugeicons:shield-01",
     "hugeicons:user-group",
     "hugeicons:keyframes-multiple-add",
-    "hugeicons:artificial-intelligence-03",
+    "hugeicons:rocket-01",
     "hugeicons:magic-wand-01",
-    "hugeicons:translate",
-    "hugeicons:property-search",
-    "hugeicons:bug-02",
-    "hugeicons:chart-breakout-circle",
-    "hugeicons:chrome"
+    "hugeicons:artificial-intelligence-03",
+    "hugeicons:chart-breakout-circle"
   ] as const
 
   const rows = [
     {
-      label: "No-Code App Builder",
-      description: "Build like a pro, code zero lines"
+      label: "Build Full Apps",
+      description: "End-to-end app development from a prompt"
     },
     {
-      label: "AI Agents Team",
-      description: "Your dream team, always online"
+      label: "Launch Websites",
+      description: "Generate and publish landing pages"
     },
     {
-      label: "Multiple Generation",
-      description: "Parallel outputs, instant results"
+      label: "Marketing Workflows",
+      description: "Create and run acquisition campaigns"
     },
     {
-      label: "AI Co-Founder",
-      description: "Strategic AI at your side"
+      label: "Security Scanning",
+      description: "Automated vulnerability detection and fixes"
     },
     {
-      label: "Suitable for Beginners",
-      description: "Anyone can ship. Anyone."
+      label: "Multi-Agent Execution",
+      description: "Specialized agents working together"
     },
     {
-      label: "One-click Translated Apps",
-      description: "Go global in one click"
+      label: "Parallel Tasks",
+      description: "Run multiple workflows simultaneously"
     },
     {
-      label: "AI Audience Research",
-      description: "Know your users, win the market"
+      label: "Deployment Included",
+      description: "Ship to production in one click"
     },
     {
-      label: "AI Auto Bug Fixing",
-      description: "Bugs crushed before you see them"
+      label: "Beginner Friendly",
+      description: "Accessible for non-technical founders"
     },
     {
-      label: "Advanced App Analytics",
-      description: "Data that drives real growth"
+      label: "AI Strategic Planning",
+      description: "AI-driven project architecture and roadmap"
     },
     {
-      label: "Build Chrome Extensions",
-      description: "Extend your reach everywhere"
+      label: "End-to-End Workflow",
+      description: "From idea to live product in one platform"
     }
   ] as const
 
@@ -94,28 +94,28 @@ export const Choose = () => {
     },
     {
       key: "col-1",
-      logo: "claude",
-      cells: ["check", "cross", "cross", "check", "cross", "cross", "cross", "check", "cross", "cross"]
+      logo: "lovable",
+      cells: ["check", "check", "cross", "cross", "cross", "cross", "check", "check", "cross", "cross"]
     },
     {
       key: "col-2",
-      logo: "lovable",
-      cells: ["cross", "cross", "check", "check", "cross", "cross", "check", "cross", "cross", "cross"]
+      logo: "bolt",
+      cells: ["check", "check", "cross", "cross", "cross", "cross", "check", "check", "cross", "cross"]
     },
     {
       key: "col-3",
-      logo: "bolt",
-      cells: ["cross", "check", "cross", "cross", "cross", "cross", "cross", "cross", "cross", "check"]
+      logo: "replit",
+      cells: ["check", "cross", "cross", "cross", "cross", "cross", "check", "cross", "cross", "cross"]
     },
     {
       key: "col-4",
       logo: "base44",
-      cells: ["cross", "cross", "cross", "cross", "cross", "cross", "cross", "cross", "cross", "cross"]
+      cells: ["check", "cross", "cross", "cross", "cross", "cross", "cross", "check", "cross", "cross"]
     },
     {
       key: "col-5",
-      logo: "replit",
-      cells: ["cross", "cross", "cross", "cross", "cross", "cross", "check", "cross", "cross", "cross"]
+      logo: "claude",
+      cells: ["cross", "cross", "cross", "cross", "cross", "cross", "cross", "cross", "check", "cross"]
     }
   ] as const
 
@@ -158,8 +158,8 @@ export const Choose = () => {
       <Container>
         <Heading
           className={s.heading}
-          subtitle="All Features"
-          paragraph="The only platform that delivers everything. When others fall short, we ship it all."
+          subtitle="Compare"
+          paragraph="Compare Kalit with other tools across the capabilities that matter most to founders and digital teams."
         >
           Why choose{" "}
           <span data-icon="right">

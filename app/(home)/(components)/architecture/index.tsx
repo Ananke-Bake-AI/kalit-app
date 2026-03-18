@@ -43,7 +43,7 @@ export const Architecture = () => {
         <Heading
           className={s.heading}
           subtitle="The Architecture"
-          paragraph="It is execution layer that turns AI Intelligence into structured, persistent systems."
+          paragraph="An execution layer that turns AI intelligence into structured workflows, deployed systems, and real business outcomes."
         >
           Kalit is not <br />
           <strong className={s.strong}>

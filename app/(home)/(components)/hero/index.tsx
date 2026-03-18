@@ -64,11 +64,11 @@ export const Hero = () => {
   return (
     <section className={s.hero}>
       <Container>
-        <Subtitle>Now in early access — 2026</Subtitle>
+        <Subtitle>Early access — Now open</Subtitle>
         <div ref={titleRef} className={s.title}>
           <RevealText tag="h1">
             <span>
-              Build Anything
+              Build, Launch
               <Line viewBox="0 0 621 429" className={clsx(s.line, s.line1)}>
                 <path
                   ref={path1Ref}
@@ -89,7 +89,7 @@ export const Hero = () => {
               </Line>
             </span>
             <span>
-              Run Everything
+              Grow, Secure
               <Line viewBox="0 0 557 253" className={clsx(s.line, s.line3)}>
                 <path
                   ref={path3Ref}
@@ -115,7 +115,7 @@ export const Hero = () => {
               className={s.c1}
               name="Gwen"
               description="Testing & Dev Ops"
-              model="o1-mini"
+              model="Claude Opus"
               color="var(--color-4)"
               icon="hugeicons:server-stack-03"
             />
@@ -123,7 +123,7 @@ export const Hero = () => {
               className={s.c4}
               name="Fiora"
               description="Developer Fullstack"
-              model="Claude-3.5-sonnet"
+              model="Claude Sonnet"
               color="var(--color-1)"
               icon="hugeicons:developer"
             />
@@ -131,7 +131,7 @@ export const Hero = () => {
               className={s.c2}
               name="Amara"
               description="CEO & Project Management"
-              model="ChatGPT-4o-latest"
+              model="GPT-4.1"
               color="var(--color-3)"
               icon="hugeicons:manager"
             />
@@ -139,7 +139,7 @@ export const Hero = () => {
               className={s.c3}
               name="Ryan"
               description="UX & UI Designer"
-              model="Gemini-2.5-pro"
+              model="Gemini 2.5 Pro"
               color="var(--color-2)"
               icon="hugeicons:paint-bucket"
             />
@@ -147,18 +147,18 @@ export const Hero = () => {
         </div>
         <Paragraph className={s.paragraph}>
           <p>
-            Let Kalit build your team using the world’s most advanced AI agent models — and together, launch and scale
-            your project from A to Z, across the globe.
+            Four AI suites to build your app, launch your site, acquire users, and secure your product. One platform,
+            zero overhead.
           </p>
         </Paragraph>
         <ButtonGroup direction="column" data-reveal>
           <Button className={s.btn} circle>
-            Start my project
+            Choose your suite
           </Button>
-          <Button variant="secondary">See it in action</Button>
+          <Button variant="secondary">See how it works</Button>
         </ButtonGroup>
         <div className={s.ai} data-reveal>
-          <h2>Powered by the best AI</h2>
+          <h2>Powered by leading AI models, orchestrated by Kalit</h2>
           <Models />
         </div>
       </Container>

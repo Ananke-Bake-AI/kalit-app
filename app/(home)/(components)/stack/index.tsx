@@ -47,8 +47,8 @@ export const Stack = () => {
           <div className={s.right}>
             <Paragraph>
               <p>
-                Covering X major areas, web pages, security and marketing. Helping everyone to efficiently build
-                intelligent applications end to end.
+                Covering four major areas — apps, websites, growth, and security. Everything you need to build and scale
+                a digital product end to end.
               </p>
             </Paragraph>
             <div className={s.nav}>

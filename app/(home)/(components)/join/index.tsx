@@ -48,14 +48,14 @@ export const Join = () => {
       <Container>
         <Heading
           className={s.heading}
-          subtitle="Join Kalit now!"
-          paragraph="We're almost there! Get a sneak peek into the Kalit universe and start working on your first projects."
+          subtitle="Get started"
+          paragraph="Use one suite on its own or combine all four to build, launch, grow, and secure your business from one platform."
         >
-          Choose the right suite,
+          Start with the suite
           <br />
-          start your project{" "}
+          that matches your{" "}
           <span data-icon="right">
-            today
+            goal
             <span data-icon-svg>
               <Icon icon="hugeicons:rocket-01" />
             </span>

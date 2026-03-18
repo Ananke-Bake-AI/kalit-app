@@ -5,12 +5,12 @@ export const Newsletter = () => {
   return (
     <div className={s.newsletter}>
       <div className={s.left}>
-        <h2>Join our newsletter</h2>
-        <p>Get early access, exclusive tips, and build the future before everyone else.</p>
+        <h2>Get early access</h2>
+        <p>Be the first to try Kalit. Enter your email for early access and product updates.</p>
       </div>
       <form className={s.form}>
         <input type="email" placeholder="Your email address" />
-        <Button type="submit">Subscribe</Button>
+        <Button type="submit">Join waitlist</Button>
       </form>
     </div>
   )
