@@ -18,11 +18,13 @@ export function ScrollTriggerConfig() {
 
   useEffect(() => ScrollTrigger.refresh(), [lenis])
 
-  // Refresh ScrollTrigger on route changes so animations re-trigger
+  // Refresh ScrollTrigger on route changes
   useEffect(() => {
-    // Kill all existing ScrollTriggers and let components re-create them
-    ScrollTrigger.getAll().forEach((st) => st.kill())
-    ScrollTrigger.refresh()
+    // Small delay to let new page components mount and register their animations
+    const timeout = setTimeout(() => {
+      ScrollTrigger.refresh()
+    }, 100)
+    return () => clearTimeout(timeout)
   }, [pathname])
 
   return null

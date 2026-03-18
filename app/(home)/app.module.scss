@@ -1,40 +1,53 @@
 @use "@/styles/mixins" as *;
 
 .page {
-  padding: var(--spacing-2) 0;
+  padding: var(--spacing-3) 0;
   min-height: 50vh;
 }
 
 .pageHeader {
   margin-bottom: var(--spacing-1-5);
+  text-align: center;
 
   h1 {
     font-family: var(--font-heading);
-    font-size: 1.75em;
+    font-size: 2.5em;
     color: var(--text);
     margin-bottom: var(--size-2);
+
+    @include max($responsive) {
+      font-size: 1.75em;
+    }
   }
 
   p {
     color: var(--text-secondary);
-    font-size: 0.9em;
+    font-size: 0.95em;
+    max-width: 32rem;
+    margin: 0 auto;
   }
 }
+
+// ─── Cards ────────────────────────────────────────────
 
 .card {
   background: var(--white);
   border: 1px solid oklch(0 0 0 / 0.06);
   border-radius: var(--radius-1);
   padding: var(--spacing-1);
-  box-shadow: 0 2px 12px oklch(0 0 0 / 0.04);
+  box-shadow: 0 2px 16px oklch(0 0 0 / 0.04);
 }
 
 .cardTitle {
   font-family: var(--font-heading);
-  font-size: 1.1em;
+  font-size: 1.15em;
   color: var(--text);
   margin-bottom: var(--size-5);
+  padding-bottom: var(--size-4);
+  border-bottom: 1px solid oklch(0 0 0 / 0.06);
 }
+
+// ─── Stats ────────────────────────────────────────────
 
 .statsGrid {
   display: grid;
@@ -51,38 +64,43 @@
   background: var(--white);
   border: 1px solid oklch(0 0 0 / 0.06);
   border-radius: var(--radius-2);
-  padding: var(--size-5);
-  display: flex;
-  align-items: center;
-  gap: var(--size-4);
+  padding: var(--size-5) var(--size-6);
+  box-shadow: 0 1px 8px oklch(0 0 0 / 0.03);
+  position: relative;
+  overflow: hidden;
 
-  .statIcon {
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: var(--radius-3);
-    background: var(--bg-1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-secondary);
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient-linear-3);
+    opacity: 0.4;
   }
 
   .statLabel {
     font-size: 0.75em;
     color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--size-1);
   }
 
   .statValue {
     font-family: var(--font-heading);
-    font-size: 1.25em;
+    font-size: 1.5em;
     color: var(--text);
   }
 }
 
+// ─── Suites Grid ──────────────────────────────────────
+
 .suitesGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: var(--size-4);
+  gap: var(--size-5);
 
   @include max($responsive) {
     grid-template-columns: 1fr;
@@ -94,7 +112,7 @@
   border: 1px solid oklch(0 0 0 / 0.06);
   border-radius: var(--radius-1);
   padding: var(--spacing-1);
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: all 0.25s var(--cubic);
   display: flex;
   flex-direction: column;
   gap: var(--size-3);
@@ -102,70 +120,38 @@
   overflow: hidden;
   text-decoration: none;
 
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 8rem;
+    height: 8rem;
+    border-radius: 50%;
+    filter: blur(3rem);
+    opacity: 0.06;
+    pointer-events: none;
+    transition: opacity 0.25s;
+  }
+
   &:hover {
-    border-color: oklch(0 0 0 / 0.12);
-    box-shadow: 0 4px 16px oklch(0 0 0 / 0.06);
+    border-color: oklch(0 0 0 / 0.1);
+    box-shadow: 0 8px 32px oklch(0 0 0 / 0.06);
+    transform: translateY(-2px);
+
+    &::after {
+      opacity: 0.12;
+    }
   }
 
   .suiteIcon {
     width: 2.5rem;
     height: 2.5rem;
-  }
 
-  h3 {
-    font-family: var(--font-heading);
-    font-size: 1.1em;
-    color: var(--text);
-  }
-
-  p {
-    font-size: 0.85em;
-    color: var(--text-secondary);
-    line-height: 1.5;
-  }
-
-  .suiteAction {
-    display: flex;
-    align-items: center;
-    gap: var(--size-1);
-    font-size: 0.85em;
-    font-weight: 500;
-    margin-top: auto;
-  }
-
-  &.locked {
-    opacity: 0.6;
-
-    .suiteAction {
-      color: var(--text-secondary);
+    svg {
+      width: 100%;
+      height: 100%;
     }
-  }
-}
-
-.sectionTitle {
-  font-family: var(--font-heading);
-  font-size: 1.25em;
-  color: var(--text);
-  margin-bottom: var(--size-5);
-}
-
-.emptyState {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--size-4);
-  padding: var(--spacing-2) 0;
-  text-align: center;
-
-  .emptyIcon {
-    width: 3rem;
-    height: 3rem;
-    border-radius: 50%;
-    background: oklch(from var(--color-4) l c h / 0.08);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-4);
   }
 
   h3 {
@@ -175,44 +161,170 @@
   }
 
   p {
+    font-size: 0.85em;
     color: var(--text-secondary);
-    font-size: 0.9em;
-    max-width: 24rem;
+    line-height: 1.6;
+  }
+
+  .suiteAction {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--size-1-5);
+    font-size: 0.85em;
+    font-weight: 600;
+    margin-top: auto;
+    padding-top: var(--size-3);
+    text-decoration: none;
+  }
+
+  &.locked {
+    opacity: 0.55;
+
+    &:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    .suiteAction {
+      color: var(--text-secondary);
+    }
   }
 }
 
+.sectionTitle {
+  font-family: var(--font-heading);
+  font-size: 1.35em;
+  color: var(--text);
+  margin-bottom: var(--size-6);
+}
+
+// ─── Empty State ──────────────────────────────────────
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--size-5);
+  padding: var(--spacing-3) 0;
+  text-align: center;
+
+  .emptyIcon {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background: oklch(from var(--color-4) l c h / 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-4);
+
+    svg {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+  }
+
+  h3 {
+    font-family: var(--font-heading);
+    font-size: 1.25em;
+    color: var(--text);
+  }
+
+  p {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    max-width: 24rem;
+    line-height: 1.6;
+  }
+}
+
+// ─── Settings Tabs ────────────────────────────────────
+
 .settingsTabs {
   display: flex;
-  gap: var(--size-1);
+  gap: 0;
   border-bottom: 1px solid oklch(0 0 0 / 0.08);
   margin-bottom: var(--spacing-1);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   a {
-    padding: var(--size-2) var(--size-4);
+    padding: var(--size-3) var(--size-5);
     font-size: 0.9em;
+    font-weight: 500;
     color: var(--text-secondary);
     text-decoration: none;
     border-bottom: 2px solid transparent;
     margin-bottom: -1px;
     transition: color 0.2s, border-color 0.2s;
+    white-space: nowrap;
 
     &:hover {
       color: var(--text);
     }
 
     &.active {
-      color: var(--text);
+      color: var(--color-4);
       border-bottom-color: var(--color-4);
     }
   }
 }
 
-.infoRow {
+// ─── Info Rows (Profile/Workspace) ────────────────────
+
+.profileCard {
+  composes: card;
   display: flex;
   flex-direction: column;
-  gap: var(--size-1);
+  gap: 0;
+}
+
+.profileHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--size-5);
+  padding-bottom: var(--size-5);
+  margin-bottom: var(--size-2);
+  border-bottom: 1px solid oklch(0 0 0 / 0.06);
+
+  .profileAvatar {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background: var(--gradient-linear-3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-family: var(--font-heading);
+    font-size: 1.5em;
+    flex-shrink: 0;
+  }
+
+  .profileName {
+    font-family: var(--font-heading);
+    font-size: 1.25em;
+    color: var(--text);
+  }
+
+  .profileEmail {
+    font-size: 0.85em;
+    color: var(--text-secondary);
+    margin-top: var(--size-0-5);
+  }
+}
+
+.infoRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--size-4);
   padding: var(--size-4) 0;
-  border-bottom: 1px solid oklch(0 0 0 / 0.05);
+  border-bottom: 1px solid oklch(0 0 0 / 0.04);
 
   &:last-child {
     border-bottom: none;
@@ -223,18 +335,22 @@
     color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    flex-shrink: 0;
   }
 
   span {
     color: var(--text);
     font-size: 0.95em;
+    text-align: right;
   }
 }
+
+// ─── Plans ────────────────────────────────────────────
 
 .planGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--size-4);
+  gap: var(--size-5);
 
   @include max($responsive) {
     grid-template-columns: 1fr;
@@ -247,9 +363,15 @@
   border-radius: var(--radius-1);
   padding: var(--spacing-1);
   position: relative;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    box-shadow: 0 4px 20px oklch(0 0 0 / 0.06);
+  }
 
   &.popular {
     border-color: var(--color-4);
+    box-shadow: 0 4px 24px oklch(from var(--color-4) l c h / 0.1);
   }
 
   h3 {
@@ -260,12 +382,13 @@
 
   .price {
     font-family: var(--font-heading);
-    font-size: 2em;
+    font-size: 2.5em;
     color: var(--text);
-    margin: var(--size-2) 0;
+    margin: var(--size-3) 0;
+    line-height: 1;
 
     small {
-      font-size: 0.4em;
+      font-size: 0.35em;
       color: var(--text-secondary);
       font-family: inherit;
     }
@@ -274,10 +397,12 @@
   ul {
     list-style: none;
     padding: 0;
-    margin: var(--size-4) 0 0;
+    margin: var(--size-5) 0 0;
+    padding-top: var(--size-5);
+    border-top: 1px solid oklch(0 0 0 / 0.06);
     display: flex;
     flex-direction: column;
-    gap: var(--size-2);
+    gap: var(--size-3);
 
     li {
       font-size: 0.85em;
@@ -288,8 +413,9 @@
 
       &::before {
         content: "✓";
-        color: var(--color-4);
+        color: var(--color-1);
         font-weight: bold;
+        font-size: 1.1em;
       }
     }
   }
@@ -301,7 +427,7 @@
   padding: var(--size-1) var(--size-3);
   border-radius: var(--radius-rounded);
   font-size: 0.75em;
-  font-weight: 500;
+  font-weight: 600;
   background: oklch(from var(--color-4) l c h / 0.08);
   color: var(--color-4);
 
@@ -311,44 +437,54 @@
     right: var(--size-4);
     background: var(--color-4);
     color: var(--white);
+    padding: var(--size-1-5) var(--size-4);
+    font-size: 0.8em;
   }
 
   &.success {
     background: oklch(from var(--color-1) l c h / 0.1);
-    color: oklch(0.4 0.15 131);
+    color: oklch(0.35 0.15 131);
   }
 }
 
+// ─── Usage Bar ────────────────────────────────────────
+
 .usageBar {
-  height: 6px;
+  height: 8px;
   border-radius: var(--radius-rounded);
-  background: oklch(0 0 0 / 0.06);
+  background: oklch(0 0 0 / 0.05);
   overflow: hidden;
-  margin-top: var(--size-3);
+  margin-top: var(--size-4);
 
   .fill {
     height: 100%;
     border-radius: var(--radius-rounded);
-    background: var(--color-4);
-    transition: width 0.3s;
+    background: var(--gradient-linear-3);
+    transition: width 0.5s var(--cubic);
   }
 }
+
+// ─── Team Members ─────────────────────────────────────
 
 .memberRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--size-3) 0;
-  border-bottom: 1px solid oklch(0 0 0 / 0.05);
+  padding: var(--size-4) 0;
+  border-bottom: 1px solid oklch(0 0 0 / 0.04);
 
   &:last-child {
     border-bottom: none;
   }
 
   .memberInfo {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-0-5);
+
     .memberName {
       font-size: 0.9em;
-      font-weight: 500;
+      font-weight: 600;
       color: var(--text);
     }
 
@@ -360,10 +496,11 @@
 
   .memberRole {
     font-size: 0.75em;
-    padding: var(--size-1) var(--size-2-5);
+    font-weight: 500;
+    padding: var(--size-1) var(--size-3);
     border-radius: var(--radius-rounded);
-    background: var(--bg-1);
-    color: var(--text-secondary);
+    background: oklch(from var(--color-4) l c h / 0.06);
+    color: var(--color-4);
     text-transform: lowercase;
   }
 }

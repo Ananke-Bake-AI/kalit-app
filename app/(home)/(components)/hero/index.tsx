@@ -16,6 +16,7 @@ import { HeroCard } from "./card"
 import s from "./hero.module.scss"
 
 export const Hero = () => {
+  const containerRef = useRef<HTMLElement>(null)
   const titleRef = useRef<HTMLDivElement>(null)
   const path1Ref = useRef<SVGPathElement>(null)
   const line1Ref = useRef<SVGLineElement>(null)
@@ -59,10 +60,10 @@ export const Hero = () => {
         { scale: 1, stagger: 0.25, duration: 1, ease: "back.out", delay: 1.5 },
         "a"
       )
-  }, [])
+  }, { scope: containerRef, revertOnUpdate: true })
 
   return (
-    <section className={s.hero}>
+    <section ref={containerRef} className={s.hero}>
       <Container>
         <Subtitle>Early access — Now open</Subtitle>
         <div ref={titleRef} className={s.title}>
