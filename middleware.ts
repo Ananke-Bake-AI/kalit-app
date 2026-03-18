@@ -1,23 +1,24 @@
-import { auth } from "@/lib/auth"
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
+import { getToken } from "next-auth/jwt"
 
 const authPages = ["/login", "/register"]
 const appPages = ["/dashboard", "/project", "/flow", "/marketing", "/pentest", "/jobs", "/settings"]
 
-export default auth((req) => {
-  const { nextUrl } = req
-  const isAuthenticated = !!req.auth
-  const pathname = nextUrl.pathname
+export async function middleware(req: NextRequest) {
+  const pathname = req.nextUrl.pathname
 
   // API routes — pass through
   if (pathname.startsWith("/api")) {
     return NextResponse.next()
   }
 
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
+  const isAuthenticated = !!token
+
   // Auth pages — redirect authenticated users to dashboard
   if (authPages.includes(pathname)) {
     if (isAuthenticated) {
-      return NextResponse.redirect(new URL("/dashboard", nextUrl))
+      return NextResponse.redirect(new URL("/dashboard", req.url))
     }
     return NextResponse.next()
   }
@@ -25,10 +26,10 @@ export default auth((req) => {
   // Setup page — require auth, redirect if done
   if (pathname === "/setup") {
     if (!isAuthenticated) {
-      return NextResponse.redirect(new URL("/login", nextUrl))
+      return NextResponse.redirect(new URL("/login", req.url))
     }
-    if (req.auth?.user?.onboardingDone) {
-      return NextResponse.redirect(new URL("/dashboard", nextUrl))
+    if (token?.onboardingDone) {
+      return NextResponse.redirect(new URL("/dashboard", req.url))
     }
     return NextResponse.next()
   }
@@ -37,24 +38,24 @@ export default auth((req) => {
   const isAppPage = appPages.some((p) => pathname === p || pathname.startsWith(p + "/"))
   if (isAppPage) {
     if (!isAuthenticated) {
-      const loginUrl = new URL("/login", nextUrl)
+      const loginUrl = new URL("/login", req.url)
       loginUrl.searchParams.set("callbackUrl", pathname)
       return NextResponse.redirect(loginUrl)
     }
 
-    if (!req.auth?.user?.onboardingDone) {
-      return NextResponse.redirect(new URL("/setup", nextUrl))
+    if (!token?.onboardingDone) {
+      return NextResponse.redirect(new URL("/setup", req.url))
     }
 
     const suitePages = ["/project", "/flow", "/marketing", "/pentest"]
-    if (suitePages.some((s) => pathname.startsWith(s)) && !req.auth?.user?.orgId) {
-      return NextResponse.redirect(new URL("/setup", nextUrl))
+    if (suitePages.some((s) => pathname.startsWith(s)) && !token?.orgId) {
+      return NextResponse.redirect(new URL("/setup", req.url))
     }
   }
 
   // Everything else (landing page /, static) — pass through
   return NextResponse.next()
-})
+}
 
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico|fonts|img).*)"],
