@@ -42,3 +42,5 @@ next-env.d.ts
 .playwright-mcp/
 dashboard-screenshot.png
 .env
+*.png
+gpt_context.txt

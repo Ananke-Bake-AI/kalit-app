@@ -1,0 +1,2171 @@
+
+
+
+
+sharing u context of another conversation
+
+
+
+
+
+we are working on kalit ai for our suite service. 
+the landing page is being built here
+https://kalit.vercel.app/
+
+i need you to analyze it and let me know any suggestions in wording call to action ect - work as a marketing, seo. intent expert ect to engage our users while reading it
+
+I’m reviewing the live page from a conversion, messaging, and SEO angle, then I’ll turn that into concrete copy and CTA improvements you can apply fast.
+
+I’ve got the main structure and copy. There are already some strong hooks, but I’m also seeing a few trust and conversion leaks in the hero, suite positioning, and SEO language that are likely costing clarity.
+
+Réflexion durant 17s
+Here’s my honest take: the page already has good ambition and energy, but right now it reads more like an AI hype landing page than a clear high-conviction suite website for founders and businesses. The biggest issue is not design — it’s positioning clarity. The hero says “Build Anything Run Everything” and “the world’s most advanced AI agent models,” while the rest of the page presents Kalit as a suite with 4 concrete products: Pentest, Flow, Marketing, and Project. That creates message drift. 
+
+What is working
+The 4-suite structure is understandable, and the short descriptions for each suite are actually among the strongest parts of the page:
+
+Pentest: secure systems
+
+Flow: websites / landing pages
+
+Marketing: acquisition / conversions
+
+Project: prompt to deployed app 
+
+You also already have multiple action-oriented CTAs like “Start my project,” “Create my landing,” “Start my campaign,” and “Launch my project,” which is good because they map to user intent better than one generic button. 
+
+What is hurting conversion
+1. The hero is too broad
+Your current hero says:
+
+“Build Anything Run Everything”
+
+“Let Kalit build your team using the world’s most advanced AI agent models…” 
+
+That sounds powerful, but it does not immediately answer:
+
+Who is this for?
+
+What exactly can I buy?
+
+Why should I trust it?
+
+What happens after I click?
+
+For a buyer landing on this page, “AI agent models” is less compelling than:
+
+build my app
+
+launch my landing page
+
+run my marketing
+
+secure my product
+
+2. Too much generic hype, not enough concrete value
+Phrases like:
+
+“The most powerful AI platform”
+
+“No limits”
+
+“Only results”
+
+“Dominate the market”
+
+“The only platform that delivers everything” 
+
+sound aggressive, but they reduce trust unless supported by proof. For B2B buyers, strong copy usually wins when it is specific, believable, and outcome-focused.
+
+3. Trust leaks and copy quality issues
+There are several wording / polish issues visible in the page text:
+
+“It is execution layer” instead of “It is an execution layer”
+
+“Covering X major areas” still contains placeholder text
+
+“Why choose Kalit?Kalit — AI Platform” appears broken
+
+repeated “Kalit — AI Platform” fragments show up in multiple sections
+
+“Over +1000 users” is awkward phrasing
+
+“Now in early access — 2026” may feel strange without a waitlist / product-readiness explanation 
+
+Those are small individually, but together they hurt perceived product maturity.
+
+My top recommendation: change the messaging hierarchy
+Right now, the site seems to want to say:
+
+“Kalit is an AI execution layer powered by advanced models.”
+
+But for conversion, it should say:
+
+“Kalit is the AI startup suite that helps you build, launch, grow, and secure digital products.”
+
+Then the 4 suites become the proof.
+
+What I would change first
+New hero direction
+Instead of:
+
+Build Anything Run Everything
+
+Use something clearer like one of these:
+
+Option A
+Build, launch, grow, and secure your startup with AI
+
+Option B
+One AI suite to build and scale your digital business
+
+Option C
+From idea to product, traffic, and security — powered by AI
+
+Then subheadline:
+
+Kalit gives founders and teams 4 specialized AI suites: build your app, launch your site, acquire users, and secure your systems.
+
+That is much clearer than “the world’s most advanced AI agent models.”
+
+CTA recommendation
+Your CTA strategy should reflect the 2 main user intents:
+
+people who want to try something now
+
+people who want to understand how it works first
+
+So the hero should use:
+
+Primary CTA: Start with Kalit
+Secondary CTA: Explore the 4 suites
+
+Or:
+
+Primary CTA: Choose your suite
+Secondary CTA: See how Kalit works
+
+“Start my project” is decent, but it pushes everyone toward Project, even though some users may really want Flow or Marketing first. 
+
+Best wording for each suite
+I’d tighten each one so the value is instantly obvious.
+
+Kalit Project
+Current idea: prompt to deployed app. 
+
+Suggested:
+Build and deploy full applications with AI
+Turn an idea or prompt into a working product with frontend, backend, iteration, and deployment handled for you.
+
+CTA:
+Build my app
+
+Kalit Flow
+Current idea: create websites and landing pages in minutes. 
+
+Suggested:
+Launch high-converting websites and landing pages
+Create polished pages fast, with copy, design, structure, and hosting included.
+
+CTA:
+Create my landing page
+
+Kalit Marketing
+Current idea: AI campaigns, maximize conversions. 
+
+Suggested:
+Plan, create, run, and optimize acquisition campaigns
+Use AI to generate content, launch campaigns, analyze performance, and improve conversion over time.
+
+CTA:
+Launch my marketing
+
+Kalit Pentest
+Current idea: scan and secure your systems. 
+
+Suggested:
+Detect vulnerabilities before they become costly
+Continuously scan your apps and systems, uncover risks, and get actionable fixes fast.
+
+CTA:
+Secure my product
+
+SEO and intent advice
+Right now the page appears to target very broad AI language like “AI platform” and “AI agent models.” 
+
+That is not the best search strategy because those keywords are ultra-competitive and low-intent.
+
+You’ll likely perform better if your homepage targets intent around:
+
+AI app builder
+
+AI landing page builder
+
+AI startup builder
+
+AI marketing automation for startups
+
+AI pentest / AI security scanning
+
+build and deploy app with AI
+
+So homepage messaging should include actual searchable phrases naturally, for example:
+
+Kalit helps startups build apps, create landing pages, automate marketing, and secure products with AI.
+
+That is both clearer for humans and better for SEO.
+
+Strong additions I would add to the page
+1. Add a “Who it’s for” section
+Example:
+Built for founders, agencies, startups, and operators
+
+Launch a product faster
+
+Create landing pages without bottlenecks
+
+Run growth experiments
+
+Secure your stack before scaling
+
+2. Add proof before hype
+You currently reference “Over +1000 users have already launched their projects with Kalit.” 
+
+If that is real, support it with:
+
+number of projects launched
+
+landing pages published
+
+vulnerabilities found
+
+campaigns generated
+
+If it is not solidly defensible, remove it for now.
+
+3. Add one-sentence comparison framing
+The “Kalit is not a model” section is strategically smart, but the wording needs to be sharper. 
+
+Suggested:
+Kalit is not just another model wrapper. It is an AI execution layer that turns prompts into deployed systems, growth workflows, and security actions.
+
+That’s much stronger.
+
+Copy lines I would rewrite immediately
+Current:
+
+“Build Anything Run Everything”
+Suggested:
+
+Build, launch, grow, and secure with AI
+
+Current:
+
+“Let Kalit build your team using the world’s most advanced AI agent models...” 
+
+Suggested:
+
+Kalit gives you specialized AI suites to build products, launch pages, acquire users, and secure your systems.
+
+Current:
+
+“The most powerful AI platform. Ship world-class apps in minutes, not months.” 
+
+Suggested:
+
+Go from idea to execution faster with AI workflows designed for real product, growth, and security work.
+
+Current:
+
+“Don’t wait any longer, start now” 
+
+Suggested:
+
+Choose your suite and start building today
+
+Current:
+
+“Anyone can ship. Anyone.” 
+
+Suggested:
+
+Accessible for non-technical founders, powerful enough for serious teams
+
+Overall diagnosis
+The site’s current tone is:
+ambitious, futuristic, high-energy
+
+What it needs more of is:
+clarity, specificity, proof, and buyer-oriented language
+
+If you want Kalit to feel premium and credible, the copy should sound less like:
+“we are the most powerful AI platform”
+
+and more like:
+“here is exactly what we do, who it is for, and why it helps you move faster.”
+
+My priority order would be:
+
+Rewrite hero
+
+Reposition homepage around the 4 suites
+
+Clean broken / placeholder text
+
+Replace hype lines with concrete outcome copy
+
+Improve SEO wording around actual buyer intent
+
+Add proof and use-case clarity
+
+I can next turn this into a full rewritten homepage copy, section by section, with better headlines, subheadlines, CTA buttons, and SEO-friendly wording.
+
+
+
+
+
+
+Voice Typing
+
+Ready for your note — just start speaking...
+Copy
+Play 
+⌥
+A
+
+Talk to Assistant
+Dictate
+⌥
+S
+
+
+
+It it already working so just sharing as context.
+check aswell the vercel kalit app link and then in our context general memory about kalit (u will also see how we to make the business model..)
+now we need to make the tech infra for users sign up profile subscription stripe whatever ect how to give access to each suite is it on same app, separated ect so we get an agent that start designing it.
+
+I’m checking the live Kalit page first so the architecture matches the current positioning, then I’ll turn that into a concrete product/infra recommendation for signup, billing, and suite access.
+
+Réflexion durant 20s
+Yes — based on the current live page, Kalit should be built as one main app with one account, one billing system, one workspace, and 4 suite modules inside it, not 4 fully separate apps. The page already presents Kalit as a unified platform with 4 suites under one brand, one nav, and one early-access flow, even if the hero still leans too much toward “project” today. 
+
+Best product structure
+Recommended model
+Build:
+
+kalit.ai → marketing site
+app.kalit.ai → product app
+
+Inside app.kalit.ai, users get:
+
+one login
+
+one profile
+
+one organization/workspace
+
+one subscription
+
+one credit / usage balance
+
+access to one or more suites depending on plan and entitlements
+
+Then inside the app:
+
+/project
+
+/flow
+
+/marketing
+
+/pentest
+
+This is the cleanest approach because your homepage already sells Kalit as a suite universe, not as unrelated tools. The current site literally groups Pentest, Flow, Marketing, and Project as suites in one product experience. 
+
+Why not 4 separate apps first
+If you split too early into separate products, you create friction:
+
+multiple onboarding flows
+
+fragmented billing
+
+harder cross-sell
+
+duplicate user/profile/org logic
+
+weaker feeling of “Kalit is the AI startup suite”
+
+For your business model, a unified app is better because you already decided on a hybrid model with subscription + usage + bundles. That works much better with a single identity and entitlement layer.
+
+What the app should look like
+1. Auth and identity layer
+Use one auth system for all suites.
+
+Core entities:
+
+User
+
+Organization / Workspace
+
+Membership
+
+Role
+
+Subscription
+
+Entitlement
+
+Usage / Credits
+
+Recommended roles:
+
+Owner
+
+Admin
+
+Member
+
+Billing
+
+Viewer
+
+A user can belong to multiple orgs later, but V1 can be one user → one org.
+
+2. Suite access model
+Do not hardcode access by checking plan names everywhere.
+
+Instead create an entitlements layer.
+
+Example entitlements:
+
+suite.project.access
+
+suite.flow.access
+
+suite.marketing.access
+
+suite.pentest.access
+
+project.deploy
+
+flow.publish
+
+marketing.run_campaign
+
+pentest.scan
+
+team.members.max
+
+monthly.credits
+
+Then Stripe plan → maps to entitlements.
+
+That way:
+
+plans stay flexible
+
+bundles are easy
+
+enterprise custom deals are easy
+
+temporary promos / trials are easy
+
+Billing model to implement
+Since your positioning is suite-based, I’d structure billing like this:
+
+Core plans
+Starter
+
+Flow only or light Project access
+
+low credits
+
+single workspace
+
+ideal for solo founders
+
+Build
+
+Project + Flow
+
+more credits
+
+deploy access
+
+team members
+
+Growth
+
+Project + Flow + Marketing
+
+campaign actions
+
+analytics
+
+more credits
+
+Secure / Scale
+
+all 4 suites
+
+Pentest included
+
+higher limits
+
+priority execution
+
+team / org controls
+
+Add-ons
+extra credits
+
+extra seats
+
+extra domains / deployments
+
+premium pentest runs
+
+managed marketing execution
+
+That matches your hybrid model much better than forcing each suite into totally isolated SaaS billing.
+
+Stripe structure
+Use Stripe for:
+
+subscriptions
+
+add-on purchases
+
+metered usage if needed later
+
+customer portal
+
+invoices / tax
+
+Recommended Stripe logic
+Each workspace has:
+
+one Stripe customer
+
+one active subscription
+
+optional one-time purchases for credits/add-ons
+
+Webhook-driven sync:
+
+checkout.session.completed
+
+customer.subscription.created
+
+customer.subscription.updated
+
+customer.subscription.deleted
+
+invoice.paid
+
+invoice.payment_failed
+
+Never trust the frontend for access.
+Stripe updates your DB through webhooks, then your backend computes entitlements.
+
+Suggested backend architecture
+Use a modular monolith first, not microservices.
+
+Shared core modules
+Auth
+
+Organizations
+
+Billing
+
+Entitlements
+
+Files / assets
+
+Notifications
+
+Audit logs
+
+Agent orchestration / jobs
+
+Suite modules
+Project module
+
+Flow module
+
+Marketing module
+
+Pentest module
+
+Why modular monolith first
+You need speed, not premature infra complexity.
+All suites will share:
+
+users
+
+orgs
+
+billing
+
+assets
+
+agent runtime
+
+execution history
+
+A modular monolith lets you ship fast while keeping suite boundaries clear. Later, if one suite becomes much heavier, you can extract it.
+
+Frontend structure
+One app shell, suite-based navigation.
+
+Example:
+
+Dashboard
+
+Project
+
+Flow
+
+Marketing
+
+Pentest
+
+Files
+
+Usage
+
+Billing
+
+Team
+
+Settings
+
+Dashboard should be suite-aware
+When a user logs in, they should see:
+
+their enabled suites
+
+current credits / usage
+
+recent jobs
+
+quick actions
+
+upgrade prompts for locked suites
+
+If a suite is not included, show it in the UI but locked:
+
+explain value
+
+show upgrade CTA
+
+do not hide it completely
+
+That improves cross-sell.
+
+How the agent system should connect
+The most important technical decision:
+all suites should use the same execution backbone, but each suite has its own templates, tools, workflows, and output objects.
+
+So:
+
+Shared execution engine
+Job queue
+
+Agent orchestrator
+
+Step runner
+
+Tool permissions
+
+Execution logs
+
+Retry / failure handling
+
+Cost / credit accounting
+
+Per-suite orchestration
+Project
+
+app scope
+
+feature generation
+
+code tasks
+
+deployment tasks
+
+Flow
+
+page structure
+
+copy generation
+
+design generation
+
+publish / domain binding
+
+Marketing
+
+audience research
+
+content generation
+
+asset generation
+
+campaign creation
+
+reporting loop
+
+Pentest
+
+target config
+
+scan jobs
+
+vuln triage
+
+remediation report
+
+So yes: same app, same brain, different suite workflows.
+
+Best URL / information architecture
+Marketing site
+/
+
+/project
+
+/flow
+
+/marketing
+
+/pentest
+
+/pricing
+
+/how-it-works
+
+/security
+
+/contact
+
+App
+/dashboard
+
+/project/...
+
+/flow/...
+
+/marketing/...
+
+/pentest/...
+
+/settings/billing
+
+/settings/team
+
+/settings/profile
+
+This also helps SEO because each suite can target its own keywords and intent.
+
+Database model you likely need
+Core tables:
+
+users
+
+organizations
+
+organization_members
+
+subscriptions
+
+entitlement_grants
+
+usage_ledgers
+
+credits_ledgers
+
+workspaces or projects
+
+files
+
+jobs
+
+job_steps
+
+agent_runs
+
+suite_resources
+
+Suite-specific:
+
+project_apps
+
+flow_sites
+
+marketing_campaigns
+
+pentest_targets
+
+pentest_findings
+
+Access logic example
+When a user clicks “Marketing”:
+
+frontend asks backend for workspace entitlements
+
+backend checks suite.marketing.access
+
+if yes → load module
+
+if no → return upgrade state
+
+UI shows locked screen with plan CTA
+
+When a user launches an action:
+
+backend checks entitlement
+
+backend checks credit / quota
+
+backend creates job
+
+job routed to orchestration layer
+
+usage recorded after completion
+
+My recommendation for V1 packaging
+V1 should be:
+
+Public site
+unified homepage
+
+one pricing page
+
+one CTA: “Get started”
+
+Product app
+single app shell
+
+shared dashboard
+
+suite cards
+
+billing + team + profile
+
+unified files/assets area
+
+common execution history
+
+Billing
+one subscription per workspace
+
+suite bundles + credits
+
+upgrade / downgrade in-app
+
+Internal engineering
+modular monolith
+
+shared agent runtime
+
+suite-specific workflow templates
+
+Important product decision
+The homepage currently still pushes “Start my project” in the hero, while the rest of the page presents 4 suite choices. That mismatch matters. The app architecture should follow the suite-first vision, not the current hero bias. The live page shows both the suite model and that Project is being overemphasized in the hero CTA. 
+
+So product-wise:
+
+homepage CTA should become Choose your suite or Start with Kalit
+
+app onboarding should ask:
+“What do you want to do first?”
+
+Build an app
+
+Create a landing page
+
+Launch marketing
+
+Scan security
+
+That will align acquisition, onboarding, and architecture.
+
+What I would tell the agent to design
+Give the agent this brief:
+
+Kalit architecture brief
+Build Kalit as one unified SaaS platform with:
+
+one auth system
+
+one workspace model
+
+one billing system via Stripe
+
+one entitlement engine
+
+one shared agent execution backbone
+
+four suite modules: Project, Flow, Marketing, Pentest
+
+Design:
+
+user/org/subscription data model
+
+Stripe webhook sync
+
+entitlement resolution
+
+onboarding flow
+
+locked-suite upgrade flow
+
+dashboard IA
+
+suite module routing
+
+job orchestration architecture
+
+usage / credits ledger
+
+admin / billing settings
+
+deployment-ready V1 modular monolith
+
+Primary goal:
+maximize cross-sell, minimize product fragmentation, keep infra simple enough for fast V1 shipping, while preserving clean suite boundaries for future extraction.
+
+If you want, I’ll turn this now into a proper technical architecture spec with:
+
+database schema,
+
+route map,
+
+Stripe event flow,
+
+onboarding UX,
+
+agent handoff prompt for your builder.
+
+
+yes please do it
+
+I’m pulling the live Kalit structure again so the spec matches what’s actually being presented, then I’ll package it into a build-ready architecture with schema, flows, and an agent brief.
+
+I’ve got the live structure again. It confirms the suite-first model is real, but the hero still overweights “project,” so I’m making the backend and onboarding explicitly suite-aware rather than hero-aware.
+
+Réflexion durant 13s
+Kalit V1 Architecture Spec
+
+Kalit V1 Technical Architecture Spec
+1. Product decision
+Kalit V1 should be built as one unified SaaS platform:
+
+Marketing site: kalit.ai
+
+Product app: app.kalit.ai
+
+One account system
+
+One workspace / organization model
+
+One billing system
+
+One entitlement engine
+
+Four suite modules inside the same app
+
+Kalit Project
+
+Kalit Flow
+
+Kalit Marketing
+
+Kalit Pentest
+
+This matches the current public positioning of Kalit as a suite platform with four products under one brand.
+
+2. Core architecture principles
+Principle 1 — One app shell, multiple suite modules
+Users should not have to create separate accounts or manage separate billing for each suite.
+
+Principle 2 — Entitlements over plan-name logic
+Access should be controlled by entitlements, not by checking Stripe product names directly throughout the codebase.
+
+Principle 3 — Shared execution backbone
+All suites should reuse a common orchestration / jobs / usage accounting system.
+
+Principle 4 — Modular monolith first
+V1 should ship as a modular monolith with clean internal module boundaries. Avoid microservices until load, team size, or operational complexity justifies extraction.
+
+Principle 5 — Workspace-centric billing
+Billing, usage, limits, and suite access should be attached to a workspace / organization, not directly to an individual user.
+
+3. High-level system map
+Public layer
+Landing pages
+
+Pricing
+
+Suite pages
+
+Waitlist / onboarding CTA
+
+Docs / support / legal
+
+App layer
+Auth
+
+User profile
+
+Organization / workspace management
+
+Team / roles
+
+Billing / subscription / invoices
+
+Usage / credits
+
+Dashboard
+
+Suite modules
+
+Agent execution center
+
+Files / assets / history
+
+Notifications
+
+Platform layer
+API backend
+
+Database
+
+Job queue
+
+Agent orchestrator
+
+Stripe webhooks
+
+Storage
+
+Analytics / logging / audit
+
+4. Recommended frontend information architecture
+Marketing site
+/
+
+/pricing
+
+/how-it-works
+
+/project
+
+/flow
+
+/marketing
+
+/pentest
+
+/security
+
+/contact
+
+/docs
+
+Product app
+/dashboard
+
+/onboarding
+
+/project
+
+/flow
+
+/marketing
+
+/pentest
+
+/files
+
+/history
+
+/usage
+
+/settings/profile
+
+/settings/team
+
+/settings/billing
+
+/settings/workspace
+
+App navigation
+Primary nav:
+
+Dashboard
+
+Project
+
+Flow
+
+Marketing
+
+Pentest
+
+Files
+
+Usage
+
+Settings
+
+If a suite is not enabled, it should still appear in nav as locked, with upgrade messaging.
+
+5. Onboarding flow
+Goal
+Drive the user into the right suite quickly while creating the underlying workspace, billing state, and default preferences.
+
+Suggested onboarding sequence
+Step 1 — Account creation
+Email/password or magic link
+
+Social login optional later
+
+Email verification
+
+Step 2 — Create workspace
+Workspace / company name
+
+Optional website URL
+
+Team size
+
+Role / use case
+
+Step 3 — Primary intent selection
+Question: What do you want to do first?
+
+Build an app
+
+Create a landing page
+
+Launch marketing
+
+Scan security
+
+This should set the default post-login route and personalize the dashboard.
+
+Step 4 — Plan selection
+Free trial / starter / paid tiers
+
+Stripe checkout if required
+
+Step 5 — Initial setup by suite
+Examples:
+
+Project: app idea, stack preference, references
+
+Flow: page type, brand inputs, target audience
+
+Marketing: website URL, audience, channels
+
+Pentest: target URL / environment details
+
+Step 6 — First job launch
+Create the first suite-specific job immediately after onboarding to reduce drop-off.
+
+6. Auth, identity, and roles
+Core entities
+User
+
+Organization
+
+OrganizationMember
+
+Role
+
+WorkspaceSettings
+
+Roles
+Owner — full workspace and billing control
+
+Admin — operational access, can manage members and suite resources
+
+Member — standard product usage
+
+Billing — billing-only access
+
+Viewer — read-only access
+
+Permissions examples
+Manage subscription
+
+Invite/remove users
+
+Launch jobs
+
+Publish outputs
+
+Configure domains
+
+View pentest findings
+
+Export reports
+
+Use RBAC with optional suite-scoped permissions later.
+
+7. Billing architecture
+Billing ownership
+Billing belongs to the organization / workspace.
+
+Stripe objects
+1 Stripe Customer per workspace
+
+1 active subscription per workspace
+
+Optional add-on purchases
+
+Optional metered usage later
+
+Initial pricing model
+Attach entitlements to plans, for example:
+
+Starter
+Light Flow / starter access
+
+Small monthly credits
+
+Single member or small member cap
+
+Build
+Project + Flow
+
+More credits
+
+Deploy features
+
+Growth
+Project + Flow + Marketing
+
+More credits and campaign actions
+
+Secure / Scale
+All four suites
+
+Pentest access
+
+Higher limits / priority execution
+
+Add-ons
+Extra credits
+
+Extra seats
+
+Extra deployments
+
+Premium scans
+
+Managed execution services
+
+8. Entitlement system
+Why
+The backend must not hardcode logic like if plan == growth then marketing enabled everywhere. Instead use resolved entitlements.
+
+Examples
+suite.project.access
+
+suite.flow.access
+
+suite.marketing.access
+
+suite.pentest.access
+
+project.deploy
+
+flow.publish
+
+marketing.run_campaign
+
+marketing.analytics.access
+
+pentest.scan
+
+pentest.export_report
+
+workspace.members.max
+
+monthly.credits
+
+deployments.max
+
+Resolution model
+Resolved entitlements come from:
+
+subscription plan
+
+add-ons
+
+manual admin grants
+
+trial state
+
+promotional flags
+
+A single resolver should compute effective entitlements for a workspace.
+
+9. Suggested database schema
+Identity and organizations
+users
+id
+
+email
+
+password_hash or auth_provider_id
+
+name
+
+avatar_url
+
+email_verified_at
+
+created_at
+
+updated_at
+
+organizations
+id
+
+name
+
+slug
+
+website_url
+
+owner_user_id
+
+stripe_customer_id
+
+active_subscription_id
+
+created_at
+
+updated_at
+
+organization_members
+id
+
+organization_id
+
+user_id
+
+role
+
+invited_by_user_id
+
+joined_at
+
+created_at
+
+workspace_settings
+id
+
+organization_id
+
+default_suite
+
+onboarding_completed_at
+
+timezone
+
+preferences_json
+
+created_at
+
+updated_at
+
+Billing and entitlements
+subscriptions
+id
+
+organization_id
+
+stripe_subscription_id
+
+stripe_price_id
+
+status
+
+current_period_start
+
+current_period_end
+
+cancel_at_period_end
+
+trial_ends_at
+
+created_at
+
+updated_at
+
+entitlement_grants
+id
+
+organization_id
+
+source_type (plan, addon, manual, trial, promo)
+
+source_reference
+
+key
+
+value_json
+
+starts_at
+
+ends_at
+
+created_at
+
+usage_ledgers
+id
+
+organization_id
+
+suite
+
+action_key
+
+quantity
+
+unit
+
+source_job_id
+
+recorded_at
+
+credit_ledgers
+id
+
+organization_id
+
+direction (credit, debit)
+
+amount
+
+reason
+
+related_job_id
+
+related_invoice_id
+
+recorded_at
+
+Jobs and orchestration
+jobs
+id
+
+organization_id
+
+suite
+
+type
+
+status
+
+requested_by_user_id
+
+input_json
+
+output_json
+
+error_json
+
+started_at
+
+completed_at
+
+created_at
+
+job_steps
+id
+
+job_id
+
+step_key
+
+agent_name
+
+status
+
+input_json
+
+output_json
+
+logs_text
+
+started_at
+
+completed_at
+
+agent_runs
+id
+
+job_id
+
+step_id
+
+provider
+
+model
+
+token_input
+
+token_output
+
+estimated_cost
+
+duration_ms
+
+created_at
+
+Assets and files
+files
+id
+
+organization_id
+
+uploaded_by_user_id
+
+storage_key
+
+mime_type
+
+size_bytes
+
+source_type
+
+metadata_json
+
+created_at
+
+Suite-specific resources
+project_apps
+id
+
+organization_id
+
+name
+
+description
+
+repo_url
+
+deployment_url
+
+status
+
+metadata_json
+
+created_at
+
+updated_at
+
+flow_sites
+id
+
+organization_id
+
+name
+
+domain
+
+publish_status
+
+site_type
+
+metadata_json
+
+created_at
+
+updated_at
+
+marketing_campaigns
+id
+
+organization_id
+
+name
+
+channel
+
+status
+
+target_url
+
+metadata_json
+
+created_at
+
+updated_at
+
+pentest_targets
+id
+
+organization_id
+
+name
+
+target_url
+
+environment
+
+status
+
+metadata_json
+
+created_at
+
+updated_at
+
+pentest_findings
+id
+
+target_id
+
+severity
+
+category
+
+title
+
+description
+
+evidence_json
+
+remediation_text
+
+status
+
+created_at
+
+updated_at
+
+10. Stripe event flow
+Core rule
+The backend must treat Stripe webhooks as the source of truth for billing status.
+
+Key events
+checkout.session.completed
+
+customer.subscription.created
+
+customer.subscription.updated
+
+customer.subscription.deleted
+
+invoice.paid
+
+invoice.payment_failed
+
+Flow
+User selects a plan in app
+
+Backend creates Stripe Checkout Session
+
+User completes checkout
+
+Stripe sends webhook
+
+Webhook handler validates signature
+
+Backend creates or updates subscription record
+
+Backend updates entitlement grants
+
+Backend refreshes workspace access state
+
+App shows unlocked suites and updated limits
+
+Failure handling
+If payment fails:
+
+keep subscription record in failing state
+
+optionally grace-period access
+
+surface billing warning in app
+
+restrict premium actions if grace expires
+
+11. Access control flow
+Example: user opens Marketing suite
+Frontend requests workspace context
+
+Backend resolves effective entitlements
+
+If suite.marketing.access = true, suite loads
+
+If false, return locked state payload
+
+UI shows upgrade CTA and benefit framing
+
+Example: user launches Project deployment
+Backend checks role permissions
+
+Backend checks project.deploy
+
+Backend checks credit / quota availability
+
+Backend creates job
+
+Backend enqueues orchestration work
+
+Usage and credits are recorded after execution
+
+12. Shared agent execution backbone
+Shared platform services
+Job queue
+
+Orchestrator
+
+Step runner
+
+Tool permissioning
+
+Model routing
+
+Retries
+
+Failure handling
+
+Cost accounting
+
+Usage accounting
+
+Execution history
+
+Logs and observability
+
+Why shared
+All four suites need long-running execution, artifacts, cost tracking, and history. Reusing this layer avoids duplicated infra.
+
+Suite-specific workflow templates
+Project workflows
+Scope parsing
+
+Feature planning
+
+UI generation
+
+Backend generation
+
+QA / refinement
+
+Deployment
+
+Flow workflows
+Page strategy
+
+Copy generation
+
+Layout generation
+
+Asset binding
+
+Publish / domain connection
+
+Marketing workflows
+Audience research
+
+Content generation
+
+Creative generation
+
+Campaign launch
+
+Performance analysis
+
+Optimization loop
+
+Pentest workflows
+Target validation
+
+Scan execution
+
+Finding classification
+
+Remediation drafting
+
+Report generation
+
+13. Job states
+Suggested common status model:
+
+draft
+
+queued
+
+running
+
+awaiting_input
+
+succeeded
+
+failed
+
+cancelled
+
+This makes suite behavior consistent.
+
+14. Dashboard UX model
+Dashboard should show
+Enabled suites
+
+Locked suites with upgrade prompts
+
+Remaining credits / usage
+
+Recent jobs
+
+Last outputs created
+
+Recommended next action
+
+Billing health
+
+Team invites / pending tasks
+
+Personalization
+Use onboarding intent to personalize first dashboard view:
+
+Builders → Project first
+
+Marketers → Marketing first
+
+Security-focused users → Pentest first
+
+15. Locked-suite UX
+Do not hide unavailable suites entirely.
+
+For locked suites:
+
+show suite in nav
+
+show short description
+
+show what is included in upgrade
+
+show CTA: Upgrade to unlock or Add this suite
+
+This is important for cross-sell and reinforces Kalit as one system.
+
+16. Suggested API surface
+Auth / user
+POST /auth/signup
+
+POST /auth/login
+
+POST /auth/logout
+
+GET /me
+
+Workspace
+POST /organizations
+
+GET /organizations/:id
+
+GET /organizations/:id/context
+
+PATCH /organizations/:id/settings
+
+Team
+POST /organizations/:id/invitations
+
+GET /organizations/:id/members
+
+PATCH /organizations/:id/members/:memberId
+
+DELETE /organizations/:id/members/:memberId
+
+Billing
+POST /billing/checkout-session
+
+POST /billing/customer-portal
+
+POST /billing/webhooks/stripe
+
+GET /organizations/:id/subscription
+
+GET /organizations/:id/usage
+
+Jobs
+POST /jobs
+
+GET /jobs/:id
+
+GET /organizations/:id/jobs
+
+POST /jobs/:id/cancel
+
+Project
+POST /project/apps
+
+GET /project/apps/:id
+
+POST /project/apps/:id/deploy
+
+Flow
+POST /flow/sites
+
+GET /flow/sites/:id
+
+POST /flow/sites/:id/publish
+
+Marketing
+POST /marketing/campaigns
+
+GET /marketing/campaigns/:id
+
+POST /marketing/campaigns/:id/launch
+
+Pentest
+POST /pentest/targets
+
+GET /pentest/targets/:id
+
+POST /pentest/targets/:id/scan
+
+GET /pentest/targets/:id/findings
+
+17. Recommended stack for V1
+Frontend
+Next.js
+
+TypeScript
+
+Tailwind
+
+Component system
+
+Backend
+Next.js API routes or NestJS / Fastify-style backend
+
+TypeScript
+
+Modular monolith structure
+
+Database
+PostgreSQL
+
+Prisma or equivalent ORM
+
+Queue / async jobs
+Redis + BullMQ or equivalent
+
+Billing
+Stripe
+
+Storage
+S3-compatible object storage
+
+Auth
+Clerk, Auth.js, or custom depending on control preference
+
+Observability
+structured logs
+
+job traces
+
+error monitoring
+
+audit events
+
+18. Security and operational basics
+Must-have V1 controls
+verify all Stripe webhooks
+
+server-side entitlement checks
+
+role-based authorization
+
+audit logging for billing / member / publish / deploy actions
+
+secrets stored outside source control
+
+signed uploads
+
+rate limiting
+
+idempotency for webhook handlers and job creation
+
+19. V1 delivery order
+Phase 1 — Foundation
+Auth
+
+Organizations
+
+Roles
+
+Billing model
+
+Stripe checkout + webhook sync
+
+Entitlement engine
+
+App shell + dashboard
+
+Phase 2 — Shared execution layer
+Jobs
+
+Queue
+
+Execution logs
+
+Credit / usage accounting
+
+Files / assets
+
+Phase 3 — Suite modules
+Project V1
+
+Flow V1
+
+Marketing V1
+
+Pentest V1
+
+Phase 4 — Upgrade & retention UX
+Locked-suite flows
+
+Usage alerts
+
+Customer portal
+
+Upgrade prompts
+
+Invite teammates
+
+20. Product recommendation summary
+Kalit should launch as:
+
+one product ecosystem
+
+one app shell
+
+one workspace-based subscription model
+
+one entitlement system
+
+four suite modules
+
+one shared agent runtime
+
+This will maximize:
+
+clarity for users
+
+cross-sell between suites
+
+lower engineering duplication
+
+faster V1 shipping
+
+better fit for subscription + usage + bundle pricing
+
+21. Agent handoff prompt
+Design the V1 architecture for Kalit as a unified AI startup suite.
+
+Requirements:
+
+One SaaS app with shared auth, profile, workspace, billing, and team management
+
+Four suite modules inside the same app: Project, Flow, Marketing, Pentest
+
+Stripe-based subscription system attached to workspace / organization
+
+Entitlement engine controlling suite access, quotas, and feature permissions
+
+Shared jobs and agent orchestration backbone used by all suites
+
+Modular monolith backend for fast V1 shipping
+
+Database schema for users, organizations, memberships, subscriptions, entitlements, usage, credits, jobs, files, and suite resources
+
+Locked-suite upgrade flows for cross-sell
+
+Onboarding flow that asks user intent first, then routes them to the right suite
+
+Execution history, usage tracking, and billing visibility in app
+
+Deliverables:
+
+system architecture diagram
+
+database schema
+
+backend module map
+
+frontend route map
+
+Stripe checkout + webhook flow
+
+entitlement resolution logic
+
+onboarding UX flow
+
+V1 implementation roadmap
+
+Goal: Build a scalable but fast-to-ship Kalit V1 that feels like one premium platform rather than four disconnected tools.
+
+Done — I put the full build-ready spec into the canvas as Kalit V1 Architecture Spec.
+
+The live site still presents Kalit as one umbrella platform with 4 suites under one nav and one CTA flow, even though the hero currently overemphasizes “project,” so the spec is intentionally built around one unified app + suite modules, not separate products. 
+
+What’s inside the spec:
+
+unified app structure: kalit.ai + app.kalit.ai
+
+auth / profile / workspace / team model
+
+Stripe subscription architecture
+
+entitlement system for suite access
+
+database schema
+
+API route map
+
+shared jobs / agent orchestration backbone
+
+onboarding flow
+
+locked-suite upgrade flow
+
+V1 implementation order
+
+agent handoff prompt
+
+One important product note from the live page: the current homepage already groups Pentest, Flow, Marketing, and Project as suites, but the hero CTA is still “Start my project,” which can bias both onboarding and architecture in the wrong direction if copied directly into the product. The public site also exposes suite-specific CTAs like “Start with Pentest,” “Create my landing,” “Start my campaign,” and “Launch my project,” which supports a suite-aware onboarding model much better. 
+
+My recommendation remains:
+
+one login
+
+one workspace
+
+one billing system
+
+one shared execution engine
+
+4 suite modules
+
+entitlements controlling access
+
+That is the best match for Kalit’s current public positioning and for your hybrid pricing model. 
+
+Next best step is to turn this into either:
+
+a technical implementation blueprint for your dev agent, or
+
+a UI/UX app map with all screens and flow
