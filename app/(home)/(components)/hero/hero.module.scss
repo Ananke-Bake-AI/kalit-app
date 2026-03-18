@@ -74,6 +74,17 @@ $responsive: $responsive;
   }
 }
 
+.word {
+  position: relative;
+  display: inline-block;
+  transform-origin: bottom;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeSpeed;
+  will-change: transform, opacity;
+}
+
 .line {
   pointer-events: none;
   position: absolute;
@@ -86,7 +97,8 @@ $responsive: $responsive;
     display: none;
   }
 
-  * {
+  path,
+  line {
     vector-effect: non-scaling-stroke;
     stroke-dasharray: 2;
     stroke-dashoffset: var(--dash-offset, 2);
