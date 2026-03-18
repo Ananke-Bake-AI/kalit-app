@@ -1,5 +1,6 @@
 "use client"
 
+import type { Session } from "next-auth"
 import type { ReactNode } from "react"
 
 import { useReveal } from "@/hooks/useReveal"
@@ -14,16 +15,17 @@ import { Footer } from "../footer"
 
 interface WrapperProps {
   children: ReactNode
+  session?: Session | null
 }
 
-export const Wrapper = ({ children }: WrapperProps) => {
+export const Wrapper = ({ children, session = null }: WrapperProps) => {
   useReveal()
 
   return (
     <>
       <GSAP scrollTrigger />
       <Lenis root options={{}} />
-      <Header />
+      <Header initialSession={session} />
       <main className={s.main}>{children}</main>
       <Footer />
       <Toast />

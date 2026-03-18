@@ -1,5 +1,8 @@
+import { auth } from "@/lib/auth"
 import { Wrapper } from "@/components/layout/wrapper"
 
-export default function HomeLayout({ children }: { children: React.ReactNode }) {
-  return <Wrapper>{children}</Wrapper>
+export default async function HomeLayout({ children }: { children: React.ReactNode }) {
+  const session = await auth()
+
+  return <Wrapper session={session}>{children}</Wrapper>
 }

@@ -5,17 +5,23 @@ import { Icon } from "@/components/icon"
 import { Link } from "@/components/link"
 import { Logotype } from "@/components/logotype"
 import { useAppStore } from "@/stores/app"
+import type { Session } from "next-auth"
 import { useSession, signOut } from "next-auth/react"
 import clsx from "clsx"
 import { useState, useRef, useEffect } from "react"
 import { Nav } from "../nav"
 import s from "./header.module.scss"
 
-export const Header = () => {
+interface HeaderProps {
+  initialSession?: Session | null
+}
+
+export const Header = ({ initialSession = null }: HeaderProps) => {
   const { nav, setNav } = useAppStore()
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+  const resolvedSession = status === "loading" ? initialSession : session
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -35,7 +41,7 @@ export const Header = () => {
         </Link>
         <Nav />
 
-        {session?.user ? (
+        {resolvedSession?.user ? (
           <div className={s.userMenu} ref={menuRef}>
             <button
               className={s.userBtn}
@@ -45,10 +51,12 @@ export const Header = () => {
               aria-haspopup="menu"
             >
               <span className={s.avatar}>
-                {session.user.name?.charAt(0)?.toUpperCase() || session.user.email?.charAt(0)?.toUpperCase() || "U"}
+                {resolvedSession.user.name?.charAt(0)?.toUpperCase() ||
+                  resolvedSession.user.email?.charAt(0)?.toUpperCase() ||
+                  "U"}
               </span>
               <span className={s.userMeta}>
-                <span className={s.userName}>{session.user.name || "Account"}</span>
+                <span className={s.userName}>{resolvedSession.user.name || "Account"}</span>
               </span>
               <span className={s.userActions} aria-hidden="true">
                 <span className={clsx(s.userChevron, menuOpen && s.userChevronOpen)}>
@@ -60,11 +68,13 @@ export const Header = () => {
               <div className={s.dropdown} role="menu">
                 <div className={s.dropdownHeader}>
                   <span className={s.dropdownAvatar}>
-                    {session.user.name?.charAt(0)?.toUpperCase() || session.user.email?.charAt(0)?.toUpperCase() || "U"}
+                    {resolvedSession.user.name?.charAt(0)?.toUpperCase() ||
+                      resolvedSession.user.email?.charAt(0)?.toUpperCase() ||
+                      "U"}
                   </span>
                   <div className={s.dropdownIdentity}>
-                    <span className={s.dropdownName}>{session.user.name || "Account"}</span>
-                    <span>{session.user.email}</span>
+                    <span className={s.dropdownName}>{resolvedSession.user.name || "Account"}</span>
+                    <span>{resolvedSession.user.email}</span>
                   </div>
                 </div>
                 <div className={s.dropdownGroup}>
