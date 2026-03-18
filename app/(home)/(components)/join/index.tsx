@@ -92,7 +92,7 @@ export const Join = () => {
                     <span>kalit</span> <strong>{suite.title}</strong>
                   </div>
                 </div>
-                <Button href={`/${suite.id}`} className={s.btn} data-button-id={suite.id} variant="tertiary">
+                <Button href={`/register?suite=${suite.id}`} className={s.btn} data-button-id={suite.id} variant="tertiary">
                   {suite.button}
                 </Button>
               </div>

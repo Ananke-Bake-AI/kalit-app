@@ -29,7 +29,7 @@ export const Stack = () => {
   }, [])
 
   return (
-    <section className={s.stack}>
+    <section id="stack" className={s.stack}>
       <Container>
         <div className={s.top}>
           <Heading className={s.heading} subtitle="Kalit Execution Stack">

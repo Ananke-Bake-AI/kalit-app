@@ -152,10 +152,10 @@ export const Hero = () => {
           </p>
         </Paragraph>
         <ButtonGroup direction="column" data-reveal>
-          <Button className={s.btn} circle>
+          <Button className={s.btn} circle href="/register">
             Choose your suite
           </Button>
-          <Button variant="secondary">See how it works</Button>
+          <Button variant="secondary" href="#stack">See how it works</Button>
         </ButtonGroup>
         <div className={s.ai} data-reveal>
           <h2>Powered by leading AI models, orchestrated by Kalit</h2>

@@ -8,8 +8,8 @@ export const Newsletter = () => {
         <h2>Get early access</h2>
         <p>Be the first to try Kalit. Enter your email for early access and product updates.</p>
       </div>
-      <form className={s.form}>
-        <input type="email" placeholder="Your email address" />
+      <form className={s.form} action="/register" method="GET">
+        <input type="email" name="email" placeholder="Your email address" />
         <Button type="submit">Join waitlist</Button>
       </form>
     </div>

@@ -18,7 +18,7 @@ export const Header = () => {
           <Logotype />
         </Link>
         <Nav />
-        <Button className={s.btn} circle>
+        <Button className={s.btn} circle href="/register">
           Get early access
         </Button>
         <button className={s.bnav} onClick={() => setNav(!nav)} aria-label="Navigation">

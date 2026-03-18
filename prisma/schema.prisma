@@ -1,0 +1,336 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Auth ────────────────────────────────────────────────────
+
+model User {
+  id             String    @id @default(cuid())
+  name           String?
+  email          String    @unique
+  emailVerified  DateTime?
+  hashedPassword String?
+  image          String?
+  onboardingDone Boolean   @default(false)
+  defaultSuite   String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  accounts    Account[]
+  sessions    Session[]
+  memberships Membership[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ─── Organization ────────────────────────────────────────────
+
+model Organization {
+  id               String   @id @default(cuid())
+  name             String
+  slug             String   @unique
+  websiteUrl       String?
+  stripeCustomerId String?  @unique
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  memberships   Membership[]
+  subscriptions Subscription[]
+  entitlements  Entitlement[]
+  usageRecords  UsageRecord[]
+  creditLedger  CreditRecord[]
+  invitations   Invitation[]
+  jobs          Job[]
+  projectApps   ProjectApp[]
+  flowSites     FlowSite[]
+  campaigns     MarketingCampaign[]
+  pentestTargets PentestTarget[]
+}
+
+model Membership {
+  id        String         @id @default(cuid())
+  role      MembershipRole @default(MEMBER)
+  userId    String
+  orgId     String
+  isCurrent Boolean        @default(false)
+  createdAt DateTime       @default(now())
+
+  user User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  org  Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, orgId])
+}
+
+enum MembershipRole {
+  OWNER
+  ADMIN
+  MEMBER
+  VIEWER
+}
+
+model Invitation {
+  id        String           @id @default(cuid())
+  email     String
+  role      MembershipRole   @default(MEMBER)
+  status    InvitationStatus @default(PENDING)
+  orgId     String
+  createdAt DateTime         @default(now())
+  expiresAt DateTime
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@unique([email, orgId])
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REVOKED
+  EXPIRED
+}
+
+// ─── Billing ─────────────────────────────────────────────────
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  orgId                String
+  stripeSubscriptionId String             @unique
+  stripePriceId        String
+  planKey              String
+  status               SubscriptionStatus
+  currentPeriodStart   DateTime
+  currentPeriodEnd     DateTime
+  cancelAtPeriodEnd    Boolean            @default(false)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  TRIALING
+  UNPAID
+  INCOMPLETE
+}
+
+// ─── Entitlements ────────────────────────────────────────────
+
+model Entitlement {
+  id        String          @id @default(cuid())
+  orgId     String
+  key       String
+  value     Json?
+  source    EntitlementSource @default(PLAN)
+  expiresAt DateTime?
+  createdAt DateTime        @default(now())
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@unique([orgId, key])
+}
+
+enum EntitlementSource {
+  PLAN
+  ADDON
+  MANUAL
+  TRIAL
+  PROMO
+}
+
+// ─── Usage / Credits ─────────────────────────────────────────
+
+model UsageRecord {
+  id        String   @id @default(cuid())
+  orgId     String
+  suiteId   String
+  action    String
+  credits   Int
+  jobId     String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+}
+
+model CreditRecord {
+  id        String          @id @default(cuid())
+  orgId     String
+  direction CreditDirection
+  amount    Int
+  reason    String
+  jobId     String?
+  invoiceId String?
+  createdAt DateTime        @default(now())
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+}
+
+enum CreditDirection {
+  CREDIT
+  DEBIT
+}
+
+// ─── Jobs / Execution ────────────────────────────────────────
+
+model Job {
+  id          String    @id @default(cuid())
+  orgId       String
+  suiteId     String
+  type        String
+  status      JobStatus @default(QUEUED)
+  input       Json?
+  output      Json?
+  error       Json?
+  creditsUsed Int       @default(0)
+  requestedBy String?
+  startedAt   DateTime?
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  org   Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  steps JobStep[]
+}
+
+enum JobStatus {
+  DRAFT
+  QUEUED
+  RUNNING
+  AWAITING_INPUT
+  SUCCEEDED
+  FAILED
+  CANCELLED
+}
+
+model JobStep {
+  id          String    @id @default(cuid())
+  jobId       String
+  stepKey     String
+  agentName   String?
+  status      JobStatus @default(QUEUED)
+  input       Json?
+  output      Json?
+  logs        String?   @db.Text
+  startedAt   DateTime?
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  job Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
+}
+
+// ─── Suite Resources ─────────────────────────────────────────
+
+model ProjectApp {
+  id            String   @id @default(cuid())
+  orgId         String
+  name          String
+  description   String?
+  repoUrl       String?
+  deploymentUrl String?
+  status        String   @default("draft")
+  metadata      Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+}
+
+model FlowSite {
+  id            String   @id @default(cuid())
+  orgId         String
+  name          String
+  domain        String?
+  publishStatus String   @default("draft")
+  siteType      String?
+  metadata      Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+}
+
+model MarketingCampaign {
+  id        String   @id @default(cuid())
+  orgId     String
+  name      String
+  channel   String?
+  status    String   @default("draft")
+  targetUrl String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+}
+
+model PentestTarget {
+  id          String   @id @default(cuid())
+  orgId       String
+  name        String
+  targetUrl   String
+  environment String?
+  status      String   @default("idle")
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  org      Organization    @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  findings PentestFinding[]
+}
+
+model PentestFinding {
+  id              String   @id @default(cuid())
+  targetId        String
+  severity        String
+  category        String?
+  title           String
+  description     String?  @db.Text
+  evidence        Json?
+  remediation     String?  @db.Text
+  status          String   @default("open")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  target PentestTarget @relation(fields: [targetId], references: [id], onDelete: Cascade)
+}

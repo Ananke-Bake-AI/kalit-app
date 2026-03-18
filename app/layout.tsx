@@ -1,4 +1,4 @@
-import { Wrapper } from "@/components/layout/wrapper"
+import { Providers } from "@/components/app/providers"
 import { APP_THEME_COLOR } from "@/lib/config"
 import { MetadataSeo } from "@/lib/metadata"
 import "@/styles/globals.scss"
@@ -21,15 +21,8 @@ export interface LayoutProps {
 export default function RootLayout({ children }: LayoutProps) {
   return (
     <html lang="en" dir="ltr" suppressHydrationWarning={true}>
-      <link
-        rel="preload"
-        href="/fonts/cal-sans/CalSans-SemiBold.woff2"
-        as="font"
-        type="font/woff2"
-        crossOrigin="anonymous"
-      />
       <body className={fonts}>
-        <Wrapper>{children}</Wrapper>
+        <Providers>{children}</Providers>
       </body>
     </html>
   )
