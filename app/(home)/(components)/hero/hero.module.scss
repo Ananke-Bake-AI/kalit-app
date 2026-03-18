@@ -77,11 +77,6 @@ $responsive: $responsive;
 .word {
   position: relative;
   display: inline-block;
-  transform-origin: bottom;
-  backface-visibility: hidden;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeSpeed;
   will-change: transform, opacity;
 }
 
@@ -199,16 +194,6 @@ $responsive: $responsive;
     padding: var(--card-padding);
     gap: calc(var(--card-padding) * 0.65);
     position: relative;
-    // animation: float-card var(--animation-duration) infinite alternate;
-  }
-
-  @keyframes float-card {
-    0% {
-      top: -5px;
-    }
-    100% {
-      top: 5px;
-    }
   }
 
   .right {
