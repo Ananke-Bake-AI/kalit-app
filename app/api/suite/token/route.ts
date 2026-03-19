@@ -90,7 +90,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const redirectUrl = `${baseUrl}/auth/callback?token=${encodeURIComponent(token)}`
+    const redirectUrl = `${baseUrl}/api/auth/sso/callback?token=${encodeURIComponent(token)}`
 
     return NextResponse.json({ token, redirectUrl })
   } catch (error) {

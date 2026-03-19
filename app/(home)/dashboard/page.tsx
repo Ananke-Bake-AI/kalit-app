@@ -43,7 +43,9 @@ export default async function DashboardPage() {
   const stats = [
     {
       label: "Current plan",
-      value: entitlements.planKey ? entitlements.planKey.charAt(0).toUpperCase() + entitlements.planKey.slice(1) : "Free",
+      value: entitlements.planKey
+        ? entitlements.planKey.charAt(0).toUpperCase() + entitlements.planKey.slice(1)
+        : enabledSuites.length > 0 ? "Custom" : "Free",
       hint: "Billing, access, and execution limits stay synced here.",
     },
     {
