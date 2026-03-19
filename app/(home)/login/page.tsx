@@ -110,6 +110,10 @@ function LoginForm() {
                 />
               </div>
 
+              <p className={s.footer} style={{ marginTop: 0, textAlign: "right" }}>
+                <Link href="/forgot-password">Forgot password?</Link>
+              </p>
+
               <div className={s.submit}>
                 <Button type="submit" disabled={loading}>
                   {loading ? "Signing in..." : "Continue"}

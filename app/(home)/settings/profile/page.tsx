@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import s from "../../app.module.scss"
+import { EditNameForm, ChangePasswordForm } from "./forms"
 
 export default async function ProfilePage() {
   const session = await auth()
@@ -25,12 +26,11 @@ export default async function ProfilePage() {
         </div>
 
         <div className={s.infoRow}>
-          <label>Name</label>
-          <span>{user.name || "Not set yet"}</span>
-        </div>
-        <div className={s.infoRow}>
           <label>Email</label>
-          <span>{user.email}</span>
+          <span>
+            {user.email}
+            {user.emailVerified ? " ✓" : ""}
+          </span>
         </div>
         <div className={s.infoRow}>
           <label>Sign-in method</label>
@@ -45,6 +45,10 @@ export default async function ProfilePage() {
           <span>{user.createdAt.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>
         </div>
       </div>
+
+      <EditNameForm currentName={user.name || ""} />
+
+      {user.hashedPassword && <ChangePasswordForm />}
     </>
   )
 }
