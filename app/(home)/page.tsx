@@ -5,7 +5,6 @@ import { Hero } from "./(components)/hero"
 import { Join } from "./(components)/join"
 import { Portfolio } from "./(components)/portfolio"
 import { Stack } from "./(components)/stack"
-import { Try } from "./(components)/try"
 
 export default function HomePage() {
   return (
@@ -16,7 +15,6 @@ export default function HomePage() {
       <Features />
       <Join />
       <Portfolio />
-      <Try />
       <Choose />
     </>
   )

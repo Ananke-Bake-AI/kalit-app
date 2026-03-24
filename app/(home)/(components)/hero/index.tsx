@@ -1,20 +1,78 @@
 "use client"
 
-import { Button } from "@/components/button"
-import { ButtonGroup } from "@/components/button/group"
+import { Color4Bg } from "@/components/color4bg"
 import { Container } from "@/components/container"
+import { Icon } from "@/components/icon"
+import { Logo } from "@/components/logo"
 import { Models } from "@/components/models"
-import { Paragraph } from "@/components/paragraph"
 import { RevealText } from "@/components/reveal-text"
 import { Subtitle } from "@/components/subtitle"
 import { Line } from "@/components/svg/line"
 import clsx from "clsx"
 import gsap from "gsap"
-import { useId, useLayoutEffect, useRef } from "react"
+import { useRouter } from "next/navigation"
+import { useCallback, useId, useLayoutEffect, useRef, useState } from "react"
 import { HeroCard } from "./card"
 import s from "./hero.module.scss"
 
+const BG_COLORS = ["#91E500", "#8200DF", "#12BCFF", "#91E500", "#2F44FF", "#8200DF", "#91E500"]
+
+const PLACEHOLDERS = [
+  "Build me a SaaS app with auth, billing, and a dashboard...",
+  "Create a landing page for my AI startup with pricing tiers...",
+  "Run a marketing campaign across Instagram and Google Ads...",
+  "Scan my web app for security vulnerabilities and fix them..."
+]
+
+type SuiteMatch = {
+  id: "project" | "flow" | "marketing" | "pentest"
+  name: string
+  description: string
+  color: string
+  logo: "project" | "flow" | "marketing" | "pentest"
+}
+
+const SUITE_MATCHES: SuiteMatch[] = [
+  { id: "project", name: "Project", description: "AI agents will plan, build, test, and deploy your app end-to-end.", color: "#8200DF", logo: "project" },
+  { id: "flow", name: "Flow", description: "Design, copy, and structure — your site will be live in minutes.", color: "#2F44FF", logo: "flow" },
+  { id: "marketing", name: "Marketing", description: "AI will plan, create, and optimize your campaigns across channels.", color: "#12BCFF", logo: "marketing" },
+  { id: "pentest", name: "Pentest", description: "AI will scan your systems, find vulnerabilities, and suggest fixes.", color: "#91E500", logo: "pentest" }
+]
+
+const SUITE_KEYWORDS: Record<string, string> = {
+  app: "project", application: "project", saas: "project", dashboard: "project", backend: "project",
+  api: "project", database: "project", fullstack: "project", "full-stack": "project", mobile: "project",
+  ios: "project", android: "project", deploy: "project", software: "project", platform: "project",
+  crud: "project", auth: "project", authentication: "project", billing: "project", stripe: "project",
+  landing: "flow", website: "flow", "landing page": "flow", page: "flow", portfolio: "flow",
+  blog: "flow", site: "flow", homepage: "flow", design: "flow", restaurant: "flow", agency: "flow",
+  marketing: "marketing", campaign: "marketing", ads: "marketing", seo: "marketing", social: "marketing",
+  growth: "marketing", acquisition: "marketing", instagram: "marketing", facebook: "marketing",
+  google: "marketing", tiktok: "marketing", email: "marketing", newsletter: "marketing",
+  content: "marketing", leads: "marketing", funnel: "marketing",
+  security: "pentest", pentest: "pentest", vulnerability: "pentest", vulnerabilities: "pentest",
+  scan: "pentest", hack: "pentest", secure: "pentest", audit: "pentest", penetration: "pentest",
+  owasp: "pentest", xss: "pentest", injection: "pentest", firewall: "pentest"
+}
+
+function detectSuite(input: string): SuiteMatch {
+  const lower = input.toLowerCase()
+  const scores: Record<string, number> = { project: 0, flow: 0, marketing: 0, pentest: 0 }
+  for (const [keyword, suiteId] of Object.entries(SUITE_KEYWORDS)) {
+    if (lower.includes(keyword)) scores[suiteId] += keyword.split(" ").length
+  }
+  const best = Object.entries(scores).sort((a, b) => b[1] - a[1])[0]
+  if (best[1] === 0) return SUITE_MATCHES[0]
+  return SUITE_MATCHES.find((s) => s.id === best[0]) || SUITE_MATCHES[0]
+}
+
 export const Hero = () => {
+  const router = useRouter()
+  const [promptValue, setPromptValue] = useState("")
+  const [matchedSuite, setMatchedSuite] = useState<SuiteMatch | null>(null)
+  const [isThinking, setIsThinking] = useState(false)
+  const promptRef = useRef<HTMLTextAreaElement | null>(null)
+  const promptTimelineRef = useRef<gsap.core.Timeline | null>(null)
   const heroId = useId().replace(/:/g, "")
   const heroLine1Id = `${heroId}-hero-line-1`
   const heroLine2Id = `${heroId}-hero-line-2`
@@ -52,23 +110,13 @@ export const Hero = () => {
       .fromTo(
         animatedPaths,
         { "--dash-offset": 2 },
-        {
-          "--dash-offset": 0,
-          ease: "power1.inOut",
-          duration: 4,
-          delay: 0.4
-        },
+        { "--dash-offset": 0, ease: "power1.inOut", duration: 4, delay: 0.4 },
         "intro"
       )
       .fromTo(
         animatedLines,
         { "--dash-offset": 2 },
-        {
-          "--dash-offset": 0,
-          ease: "power1.inOut",
-          duration: 0.8,
-          delay: 2.2
-        },
+        { "--dash-offset": 0, ease: "power1.inOut", duration: 0.8, delay: 2.2 },
         "intro"
       )
       .fromTo(
@@ -78,10 +126,73 @@ export const Hero = () => {
         "intro"
       )
 
+    // Prompt placeholder animation
+    if (promptRef.current) {
+      const tl = gsap.timeline({ repeat: -1, repeatDelay: 1 })
+      PLACEHOLDERS.forEach((phrase) => {
+        const chars = phrase.split("")
+        tl.call(() => { if (promptRef.current) promptRef.current.placeholder = "|" })
+        chars.forEach((_, i) => {
+          tl.call(() => { if (promptRef.current) promptRef.current.placeholder = `${phrase.slice(0, i + 1)}|` }, [], "+=0.04")
+        })
+        tl.to({}, { duration: 1 })
+        chars.forEach((_, i) => {
+          tl.call(() => {
+            if (!promptRef.current) return
+            const r = phrase.length - i - 1
+            promptRef.current.placeholder = r ? `${phrase.slice(0, r)}|` : "|"
+          }, [], "+=0.02")
+        })
+      })
+      promptTimelineRef.current = tl
+    }
+
     return () => {
       timeline.kill()
+      promptTimelineRef.current?.kill()
     }
   }, [])
+
+  const handlePromptFocus = () => {
+    promptTimelineRef.current?.pause()
+    if (promptRef.current) promptRef.current.placeholder = "Describe what you want to build..."
+  }
+
+  const handlePromptBlur = () => {
+    if (!promptValue.trim()) promptTimelineRef.current?.play()
+  }
+
+  const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setPromptValue(e.target.value)
+    if (matchedSuite) setMatchedSuite(null)
+    if (isThinking) setIsThinking(false)
+  }
+
+  const handleSubmit = useCallback(() => {
+    const trimmed = promptValue.trim()
+    if (!trimmed) return
+    setIsThinking(true)
+    setMatchedSuite(null)
+    setTimeout(() => {
+      setIsThinking(false)
+      setMatchedSuite(detectSuite(trimmed))
+    }, 800)
+  }, [promptValue])
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSubmit() }
+  }
+
+  const handleSuiteClick = (suiteId: string) => {
+    router.push(`/${suiteId}?prompt=${encodeURIComponent(promptValue.trim())}`)
+  }
+
+  const handleQuickSelect = (suite: SuiteMatch, prompt: string) => {
+    setPromptValue(prompt)
+    promptTimelineRef.current?.pause()
+    setIsThinking(true)
+    setTimeout(() => { setIsThinking(false); setMatchedSuite(suite) }, 600)
+  }
 
   return (
     <section className={s.hero}>
@@ -232,18 +343,80 @@ export const Hero = () => {
             />
           </div>
         </div>
-        <Paragraph className={s.paragraph}>
-          <p>
-            Four AI suites to build your app, launch your site, acquire users, and secure your product. One platform,
-            zero overhead.
-          </p>
-        </Paragraph>
-        <ButtonGroup direction="column" data-reveal>
-          <Button className={s.btn} circle href="/register">
-            Choose your suite
-          </Button>
-          <Button variant="secondary" href="#stack">See how it works</Button>
-        </ButtonGroup>
+        <div className={s.promptWrapper} data-reveal>
+          <div className={s.promptForm}>
+            <div className={s.promptTextarea}>
+              <div className={s.promptInputRow}>
+                <Icon icon="hugeicons:message-edit-01" className={s.promptIcon} />
+                <textarea
+                  ref={promptRef}
+                  value={promptValue}
+                  onChange={handlePromptChange}
+                  onFocus={handlePromptFocus}
+                  onBlur={handlePromptBlur}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Describe what you want to build..."
+                  rows={3}
+                />
+              </div>
+              <div className={s.promptBottom}>
+                <button className={s.promptMic} type="button"><Icon icon="hugeicons:mic-02" /></button>
+                <button className={s.promptSend} type="button" onClick={handleSubmit} disabled={!promptValue.trim()}>
+                  <Logo id="kalit" />
+                  <span>Find my suite</span>
+                </button>
+              </div>
+
+              {isThinking && (
+                <div className={s.promptThinking}>
+                  <div className={s.promptDots}><span /><span /><span /></div>
+                  <span>Analyzing your request...</span>
+                </div>
+              )}
+
+              {matchedSuite && !isThinking && (
+                <div className={s.promptResult} style={{ "--suite-color": matchedSuite.color } as React.CSSProperties}>
+                  <div className={s.promptResultHeader}>
+                    <Icon icon="hugeicons:sparkles" />
+                    <span>Recommended suite</span>
+                  </div>
+                  <button className={s.promptResultCard} type="button" onClick={() => handleSuiteClick(matchedSuite.id)}>
+                    <div className={s.promptResultIcon}><Logo id={matchedSuite.logo} /></div>
+                    <div className={s.promptResultInfo}>
+                      <strong>Kalit {matchedSuite.name}</strong>
+                      <span>{matchedSuite.description}</span>
+                    </div>
+                    <Icon icon="hugeicons:arrow-right-02" className={s.promptResultArrow} />
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className={s.promptQuick}>
+            {SUITE_MATCHES.map((suite) => (
+              <button
+                key={suite.id}
+                type="button"
+                style={{ "--suite-color": suite.color } as React.CSSProperties}
+                onClick={() => handleQuickSelect(suite,
+                  suite.id === "project" ? "Build me a SaaS application with authentication and billing"
+                    : suite.id === "flow" ? "Create a landing page for my product with pricing"
+                    : suite.id === "marketing" ? "Launch a growth campaign across social media channels"
+                    : "Scan my web application for security vulnerabilities"
+                )}
+              >
+                <span className={s.promptQuickIcon}><Logo id={suite.logo} /></span>
+                <span>{suite.name}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className={s.promptBg}>
+            <Color4Bg style="blur-gradient" colors={BG_COLORS} seed={1000} loop={true} noise={0} />
+          </div>
+        </div>
+
         <div className={s.ai} data-reveal>
           <h2>Powered by leading AI models, orchestrated by Kalit</h2>
           <Models />
