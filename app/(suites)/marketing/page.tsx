@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth"
 import { checkSuiteAccess } from "@/lib/entitlements"
 import { redirect } from "next/navigation"
-import { SuiteWorkspaceView } from "../(components)/suite-workspace-view"
+import { SuiteWorkspaceView } from "@/components/suite-workspace-view"
 
 export default async function MarketingPage() {
   const session = await auth()

@@ -5,7 +5,9 @@ import { Button } from "@/components/button"
 import { Icon } from "@/components/icon"
 import { Link } from "@/components/link"
 import { Logotype } from "@/components/logotype"
+import { SUITES, type AppPageState, type SuiteId } from "@/lib/suites"
 import { useAppStore } from "@/stores/app"
+import { useElementSize } from "@reactuses/core"
 import clsx from "clsx"
 import type { Session } from "next-auth"
 import { signOut, useSession } from "next-auth/react"
@@ -13,16 +15,33 @@ import { useEffect, useRef, useState } from "react"
 import { Nav } from "../nav"
 import s from "./header.module.scss"
 
+const SUITE_LABEL_EXIT_MS = 620
+
 interface HeaderProps {
   initialSession?: Session | null
 }
 
 export const Header = ({ initialSession = null }: HeaderProps) => {
-  const { nav, setNav } = useAppStore()
+  const { nav, setNav, page } = useAppStore()
   const { data: session, status } = useSession()
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+  const labelRefs = useRef<Partial<Record<SuiteId, HTMLSpanElement | null>>>({})
+  const prevPageRef = useRef<AppPageState>(page)
+  const [exitingId, setExitingId] = useState<SuiteId | null>(null)
   const resolvedSession = status === "loading" ? initialSession : session
+
+  const [measuredLabelWidth] = useElementSize(() => (page !== "default" ? (labelRefs.current[page] ?? null) : null))
+  const suitesWidth = page === "default" ? 0 : measuredLabelWidth
+
+  useEffect(() => {
+    const prev = prevPageRef.current
+    if (prev === page) return
+    if (prev !== "default") setExitingId(prev)
+    prevPageRef.current = page
+    const t = window.setTimeout(() => setExitingId(null), SUITE_LABEL_EXIT_MS)
+    return () => clearTimeout(t)
+  }, [page])
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -37,8 +56,26 @@ export const Header = ({ initialSession = null }: HeaderProps) => {
   return (
     <header className={clsx(s.header, nav && s.open)}>
       <div className={s.content}>
-        <Link href="/" className={s.logo}>
-          <Logotype />
+        <Link href="/" className={s.logo} data-logo-active={page}>
+          <Logotype all={true} />
+          <span className={s.suites} style={{ "--suites-width": suitesWidth + "px" } as React.CSSProperties}>
+            {SUITES.map((suite) => {
+              const isActive = page !== "default" && suite.id === page
+              const isExiting = exitingId === suite.id
+              return (
+                <span
+                  key={suite.id}
+                  ref={(el) => {
+                    labelRefs.current[suite.id] = el
+                  }}
+                  style={{ color: suite.color } as React.CSSProperties}
+                  className={clsx(s.suiteLabel, isActive && s.active, isExiting && s.exiting)}
+                >
+                  {suite.title}
+                </span>
+              )
+            })}
+          </span>
         </Link>
         <Nav />
 

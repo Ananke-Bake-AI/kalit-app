@@ -21,7 +21,7 @@
   @include max($responsiveSettings) {
     position: fixed;
     bottom: var(--size-6);
-    z-index: 1000;
+    z-index: 9000;
     display: flex;
     @include glass($blur: true);
     border-radius: 100px;

@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import type { CSSProperties } from "react"
 import rows from "@/components/stacked-rows/stacked-rows.module.scss"
-import { SurfacePanel } from "../../(components)/surface-panel"
+import { SurfacePanel } from "@/components/surface-panel"
 import s from "./usage.module.scss"
 
 export default async function UsagePage() {

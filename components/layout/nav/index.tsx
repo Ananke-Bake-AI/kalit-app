@@ -9,16 +9,25 @@ import clsx from "clsx"
 import s from "./nav.module.scss"
 
 export const Nav = () => {
-  const { nav } = useAppStore()
+  const { nav, subOpen, setSubOpen } = useAppStore()
 
   return (
     <nav className={clsx(s.nav, nav && s.open)}>
       <ul>
         <li className={s.subnav}>
-          <span className={clsx(s.link, s.sublink)}>
-            Suites <Icon icon="hugeicons:arrow-down-01" />
+          <span
+            className={clsx(s.link, s.sublink)}
+            onMouseEnter={() => setSubOpen(true)}
+            onMouseLeave={() => setSubOpen(false)}
+          >
+            Suites <Icon icon="hugeicons:arrow-down-01" className={s.arrow} />
           </span>
-          <ul className={s.sub}>
+          <ul
+            className={clsx(s.sub, subOpen && s.subOpen)}
+            onMouseEnter={() => setSubOpen(true)}
+            onMouseLeave={() => setSubOpen(false)}
+            onClick={() => setSubOpen(false)}
+          >
             {SUITES.map(({ id, title, color, smallDescription }) => (
               <li key={id} style={{ "--color": color } as React.CSSProperties}>
                 <Link href={`/${id}`}>

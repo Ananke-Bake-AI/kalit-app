@@ -9,6 +9,7 @@ import NextTopLoader from "nextjs-toploader"
 import { Footer } from "../footer"
 import { GSAP } from "../gsap"
 import { Header } from "../header"
+import { SyncAppPageFromRoute } from "../sync-app-page-from-route"
 import { Lenis } from "../lenis"
 import { RealViewport } from "../real-viewport"
 import { Toast } from "../toast"
@@ -26,6 +27,7 @@ export const Wrapper = ({ children, session = null, color4bg = true }: WrapperPr
 
   return (
     <>
+      <SyncAppPageFromRoute />
       <GSAP scrollTrigger />
       <Lenis root options={{}} />
       <Header initialSession={session} />

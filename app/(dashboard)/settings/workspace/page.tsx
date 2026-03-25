@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import info from "@/components/settings-info-rows/settings-info-rows.module.scss"
-import { SurfacePanel } from "../../(components)/surface-panel"
+import { SurfacePanel } from "@/components/surface-panel"
 
 export default async function WorkspacePage() {
   const session = await auth()

@@ -1,7 +1,9 @@
 @use "@/styles/mixins" as *;
 
 .main {
-  overflow: hidden;
+  /* Pas de overflow ici : `hidden`/`auto` sur un ancêtre casse `position: sticky` des pages.
+     Débordement horizontal : cibler les sections concernées ou `html { overflow-x: clip }` si besoin. */
+  overflow: visible;
 }
 
 .defs {

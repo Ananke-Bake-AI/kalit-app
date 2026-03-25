@@ -1,8 +1,8 @@
 import { Container } from "@/components/container"
 import { Link } from "@/components/link"
 import { Metadata } from "next"
-import { PageHeader } from "../(components)/page-header"
-import { PageSection } from "../(components)/page-section"
+import { PageHeader } from "@/components/page-header"
+import { PageSection } from "@/components/page-section"
 import s from "./support.module.scss"
 
 export const metadata: Metadata = {

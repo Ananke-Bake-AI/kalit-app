@@ -1,9 +1,9 @@
 import { Container } from "@/components/container"
 import clsx from "clsx"
 import { Metadata } from "next"
-import { PageHeader } from "../(components)/page-header"
-import { PageSection } from "../(components)/page-section"
-import legal from "../(components)/legal-document/legal-document.module.scss"
+import { PageHeader } from "@/components/page-header"
+import { PageSection } from "@/components/page-section"
+import legal from "@/components/legal-document/legal-document.module.scss"
 
 export const metadata: Metadata = {
   title: "Privacy Policy — Kalit AI",

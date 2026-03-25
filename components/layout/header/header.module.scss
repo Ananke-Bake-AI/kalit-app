@@ -2,6 +2,7 @@
 
 .header {
   --transition: 0.5s var(--cubic);
+  --suites-transition: 0.6s var(--cubic);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -121,6 +122,98 @@
 
 .logo {
   margin-left: var(--size-5);
+  display: flex;
+  align-items: center;
+  gap: 0.1em;
+
+  [data-logo-id] {
+    transition: stroke-dashoffset 0.6s var(--cubic);
+    stroke: var(--color);
+    stroke-dasharray: 2;
+    stroke-dashoffset: 2;
+    position: relative;
+  }
+
+  &[data-logo-active="default"] {
+    [data-logo-id="kalit"] {
+      transition-delay: 0.5s;
+      stroke-dashoffset: 0;
+      z-index: 5;
+    }
+  }
+
+  &[data-logo-active="flow"] {
+    [data-logo-id="flow"] {
+      transition-delay: 0.5s;
+      stroke-dashoffset: 0;
+      z-index: 5;
+    }
+  }
+
+  &[data-logo-active="pentest"] {
+    [data-logo-id="pentest"] {
+      transition-delay: 0.5s;
+      stroke-dashoffset: 0;
+      z-index: 5;
+    }
+  }
+
+  &[data-logo-active="project"] {
+    [data-logo-id="project"] {
+      transition-delay: 0.5s;
+      stroke-dashoffset: 0;
+      z-index: 5;
+    }
+  }
+
+  &[data-logo-active="marketing"] {
+    [data-logo-id="marketing"] {
+      transition-delay: 0.5s;
+      stroke-dashoffset: 0;
+      z-index: 5;
+    }
+  }
+}
+
+.suites {
+  transition: width var(--suites-transition);
+  font-family: var(--font-heading);
+  font-size: var(--size-7);
+  line-height: 1;
+  display: inline-block;
+  overflow: hidden;
+  height: 1.1em;
+  position: relative;
+  top: 0.05em;
+  vertical-align: bottom;
+  width: calc(200px + var(--suites-width, 0));
+  margin-right: -200px;
+  pointer-events: none;
+
+  .suiteLabel {
+    transition:
+      transform var(--suites-transition),
+      opacity var(--suites-transition);
+    position: absolute;
+    left: 0;
+    top: 0;
+    white-space: nowrap;
+    transform: translate3d(0, 115%, 0);
+    opacity: 0;
+    pointer-events: none;
+
+    &.active {
+      transform: translate3d(0, 0, 0);
+      opacity: 1;
+      z-index: 1;
+    }
+
+    &.exiting {
+      transform: translate3d(0, -115%, 0);
+      opacity: 0;
+      z-index: 0;
+    }
+  }
 }
 
 .userMenu {
@@ -145,7 +238,7 @@
     transform var(--transition-scale);
 
   &:hover {
-    background: oklch(1 0 0 / 0.78);
+    background: var(--white);
   }
 
   &:active {

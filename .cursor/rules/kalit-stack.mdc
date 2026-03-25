@@ -9,7 +9,7 @@ alwaysApply: true
 
 - **`app/(home)/`** : page d’accueil + `(components)` marketing uniquement (hero, features, etc.). Pas de dashboard ni settings ici.
 - **`app/(auth)/`** : login, register, forgot/reset password, verify-email + `auth.module.scss`. Dossier `(auth)/(components)/` pour UI auth si besoin.
-- **`app/(dashboard)/`** : tout le reste connecté (dashboard, settings, jobs, suites, setup, FAQ, support, légal…) + `(components)/` partagés (`page-section`, `page-header`, `surface-panel`, `legal-document`, `suite-workspace-view`, etc.).
+- **`app/(dashboard)/`** : tout le reste connecté (dashboard, settings, jobs, suites, setup, FAQ, support, légal…). Composants partagés dashboard dans `@/components/` (`page-section`, `page-header`, `surface-panel`, `legal-document`, `suite-workspace-view`, etc.).
 
 Les groupes `(…)` n’apparaissent pas dans l’URL.
 

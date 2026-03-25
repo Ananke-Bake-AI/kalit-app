@@ -97,9 +97,9 @@
         pointer-events: auto;
       }
 
-      & + .sub {
-        @include hover-sub;
-      }
+      // & + .sub {
+      //   @include hover-sub;
+      // }
     }
   }
 }
@@ -131,6 +131,10 @@
   display: flex;
   padding: var(--sub-padding);
   gap: calc(var(--sub-padding) * 0.5);
+
+  &.subOpen {
+    @include hover-sub;
+  }
 
   @include min($responsiveNav) {
     opacity: 0;
@@ -235,7 +239,7 @@
     }
   }
 
-  &:hover {
-    @include hover-sub;
-  }
+  // &:hover {
+  //   @include hover-sub;
+  // }
 }

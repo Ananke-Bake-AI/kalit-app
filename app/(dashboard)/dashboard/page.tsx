@@ -8,9 +8,9 @@ import { getRemainingCredits, resolveEntitlements } from "@/lib/entitlements"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import type { CSSProperties } from "react"
-import { PageHeader } from "../(components)/page-header"
-import { PageSection } from "../(components)/page-section"
-import { SurfacePanel } from "../(components)/surface-panel"
+import { PageHeader } from "@/components/page-header"
+import { PageSection } from "@/components/page-section"
+import { SurfacePanel } from "@/components/surface-panel"
 import s from "./dashboard.module.scss"
 
 function formatMemberLimit(limit: number) {

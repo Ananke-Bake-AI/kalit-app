@@ -5,7 +5,7 @@ import { EmptyPlaceholder } from "@/components/empty-placeholder"
 import { Logo } from "@/components/logo"
 import type { SuiteId } from "@/lib/suites"
 import { SUITES } from "@/lib/suites"
-import { PageSection } from "../page-section"
+import { PageSection } from "@/components/page-section"
 import s from "./suite-workspace-view.module.scss"
 
 interface SuiteWorkspaceViewProps {

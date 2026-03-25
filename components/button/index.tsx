@@ -37,11 +37,6 @@ export const Button = ({
       {icon && iconPosition == "left" && <Icon icon={icon} className={s.icon} />}
       {children && <span>{children}</span>}
       {icon && iconPosition == "right" && <Icon icon={icon} className={s.icon} />}
-      {circle && (
-        <svg viewBox="0 0 59 59" className={s.circleSvg}>
-          <circle cx="29.3669" cy="29.3669" r="25.3669" stroke="url(#button-stroke)" />
-        </svg>
-      )}
     </>
   )
 

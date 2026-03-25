@@ -5,8 +5,8 @@ import { Icon } from "@/components/icon"
 import { Link } from "@/components/link"
 import clsx from "clsx"
 import { usePathname } from "next/navigation"
-import { PageHeader } from "../(components)/page-header"
-import { PageSection } from "../(components)/page-section"
+import { PageHeader } from "@/components/page-header"
+import { PageSection } from "@/components/page-section"
 import s from "./layout.module.scss"
 
 const TABS = [

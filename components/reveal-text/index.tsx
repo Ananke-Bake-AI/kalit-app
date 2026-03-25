@@ -5,13 +5,13 @@ import { Tag } from "@/types/Tag"
 import { useGSAP } from "@gsap/react"
 import clsx from "clsx"
 import gsap from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { SplitText } from "gsap/SplitText"
 import { useRef } from "react"
 import s from "./reveal-text.module.scss"
 
-// Enregistrer le plugin SplitText
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(SplitText)
+  gsap.registerPlugin(SplitText, ScrollTrigger)
 }
 
 interface RevealTextProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -41,17 +41,21 @@ export const RevealText = ({
     () => {
       if (!elementRef.current || !split) return
 
-      const svg = elementRef.current.querySelectorAll("[data-icon-svg]")
-      const splitText = new SplitText(elementRef.current, {
+      const root = elementRef.current
+
+      const splitText = new SplitText(root, {
         type: "words",
         wordsClass: s.word,
-        smartWrap: true
+        smartWrap: true,
+        ignore: "[data-icon]"
       })
+
+      const iconWrappers = root.querySelectorAll<HTMLElement>("[data-icon-svg]")
 
       const tl = gsap.timeline({
         defaults: { ease: easings.smoothOut },
         scrollTrigger: {
-          trigger: elementRef.current,
+          trigger: root,
           start,
           once: true
         }
@@ -69,9 +73,10 @@ export const RevealText = ({
           }
         })
 
-        if (svg && svg.length > 0) {
-          tl.to(
-            svg,
+        if (iconWrappers.length > 0) {
+          tl.fromTo(
+            iconWrappers,
+            { scale: 0 },
             {
               scale: 1,
               ease: "back.out(1.2)",
@@ -84,10 +89,38 @@ export const RevealText = ({
         }
       }
 
+      const syncScrollTriggerAndMaybePlay = () => {
+        ScrollTrigger.refresh()
+        tl.scrollTrigger?.update()
+        if (tl.progress() > 0.001) return
+        const r = root.getBoundingClientRect()
+        const vh = window.visualViewport?.height ?? window.innerHeight
+        if (r.top < vh && r.bottom > 0) tl.play(0)
+      }
+
+      let raf2 = 0
+      const raf1 = requestAnimationFrame(() => {
+        raf2 = requestAnimationFrame(syncScrollTriggerAndMaybePlay)
+      })
+
+      const tLate = window.setTimeout(syncScrollTriggerAndMaybePlay, 200)
+
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (!entries[0]?.isIntersecting) return
+          syncScrollTriggerAndMaybePlay()
+        },
+        { threshold: 0.01, rootMargin: "0px 0px 10% 0px" }
+      )
+      io.observe(root)
+
       return () => {
-        if (splitText) {
-          splitText.revert()
-        }
+        cancelAnimationFrame(raf1)
+        cancelAnimationFrame(raf2)
+        window.clearTimeout(tLate)
+        io.disconnect()
+        tl.kill()
+        splitText.revert()
       }
     },
     { scope: elementRef, dependencies: [animate, split, start, onComplete] }

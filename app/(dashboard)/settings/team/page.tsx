@@ -6,7 +6,7 @@ import { resolveEntitlements } from "@/lib/entitlements"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import rows from "@/components/stacked-rows/stacked-rows.module.scss"
-import { SurfacePanel } from "../../(components)/surface-panel"
+import { SurfacePanel } from "@/components/surface-panel"
 import s from "./team.module.scss"
 
 function formatSeats(limit: number) {

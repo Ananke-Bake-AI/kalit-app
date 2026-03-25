@@ -35,7 +35,7 @@ export default function RootLayout({ children }: LayoutProps) {
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
               gtag('config', 'AW-18025663729');
-            `,
+            `
           }}
         />
         <JsonLd />

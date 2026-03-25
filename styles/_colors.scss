@@ -13,20 +13,28 @@
   --glass-75: oklch(1 0 0 / 0.75);
 
   --color-1: oklch(0.8354 0.229 131.2);
+  --color-1-secondary: oklch(0.9402 0.2221 119.81);
   --color-2: oklch(0.7494 0.153657 233.6982);
+  --color-2-secondary: oklch(0.8947 0.1185 199.91);
   --color-3: oklch(0.5165 0.269955 268.2377);
+  --color-3-secondary: oklch(0.6272 0.2009 273.47);
   --color-4: oklch(0.5019 0.2667 300.81);
+  --color-4-secondary: oklch(0.6126 0.2984 313.96);
+
+  --shadow-1: 0 -4px 8px 4px oklch(1 0 0 / 0.75) inset, 0 24px 100px -8px oklch(0 0 0 / 0.15);
 
   --gradient-border-glass: linear-gradient(to top, oklch(1 0 0) 0%, oklch(1 0 0 / 0.1) 75%);
   --gradient-border-glass-2: linear-gradient(to bottom, oklch(1 0 0 / 0.25) 0%, oklch(1 0 0 / 0.1) 75%);
   --gradient-border-glass-3: linear-gradient(to bottom, oklch(1 0 0) 0%, oklch(1 0 0 / 0.1) 75%);
+
   --gradient-radial-1: radial-gradient(
-    119.57% 119.48% at 8.3% 7.88%,
+    120% 120% at 8% 8%,
     var(--color-1) 0%,
     var(--color-2) 33%,
     var(--color-3) 66%,
     var(--color-4) 100%
   );
+
   --gradient-linear-1: linear-gradient(to bottom, var(--color-1), var(--color-2), var(--color-3), var(--color-4));
   --gradient-linear-2: linear-gradient(
     to right,
@@ -42,5 +50,12 @@
   );
   --gradient-linear-3: linear-gradient(to right, var(--color-1), var(--color-2), var(--color-3), var(--color-4));
 
-  --shadow-1: 0 -4px 8px 4px oklch(1 0 0 / 0.75) inset, 0 24px 100px -8px oklch(0 0 0 / 0.15);
+  --gradient-color-1: linear-gradient(to right, var(--color-1), var(--color-1-secondary));
+  --gradient-color-1-radial: radial-gradient(120% 120% at 8% 8%, var(--color-1-secondary), var(--color-1));
+  --gradient-color-2: linear-gradient(to right, var(--color-2), var(--color-2-secondary));
+  --gradient-color-2-radial: radial-gradient(120% 120% at 8% 8%, var(--color-2-secondary), var(--color-2));
+  --gradient-color-3: linear-gradient(to right, var(--color-3), var(--color-3-secondary));
+  --gradient-color-3-radial: radial-gradient(120% 120% at 8% 8%, var(--color-3-secondary), var(--color-3));
+  --gradient-color-4: linear-gradient(to right, var(--color-4), var(--color-4-secondary));
+  --gradient-color-4-radial: radial-gradient(120% 120% at 8% 8%, var(--color-4-secondary), var(--color-4));
 }

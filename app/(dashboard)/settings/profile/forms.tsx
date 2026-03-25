@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/button"
 import { TextField } from "@/components/text-field"
-import { SurfacePanel } from "../../(components)/surface-panel"
+import { SurfacePanel } from "@/components/surface-panel"
 import { changePassword } from "@/server/actions/password"
 import { deleteAccount, updateProfile } from "@/server/actions/profile"
 import { signOut, useSession } from "next-auth/react"

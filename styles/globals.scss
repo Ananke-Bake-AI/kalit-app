@@ -7,10 +7,12 @@
 @use "mixins" as *;
 
 html {
+  --gradient-primary: var(--gradient-linear-3);
   background-color: var(--body);
   color: var(--text);
   font-size: calc(15px + 1 * (100vw - 320px) / 1080);
   line-height: 1.15;
+  overflow-x: clip;
   @include no-scrollbar;
   @include selection(oklch(from var(--text) l c h / 0.85), var(--white));
 

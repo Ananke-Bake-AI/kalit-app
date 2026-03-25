@@ -4,8 +4,8 @@ import { EmptyPlaceholder } from "@/components/empty-placeholder"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
-import { PageHeader } from "../(components)/page-header"
-import { PageSection } from "../(components)/page-section"
+import { PageHeader } from "@/components/page-header"
+import { PageSection } from "@/components/page-section"
 import s from "./jobs.module.scss"
 
 export default async function JobsPage() {
