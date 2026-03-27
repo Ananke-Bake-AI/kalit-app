@@ -1,7 +1,7 @@
 "use client"
 
-import { Button } from "@/components/button"
 import { Container } from "@/components/container"
+import { FlowSuiteCtaButton } from "@/components/flow-suite-cta-button"
 import { Heading } from "@/components/heading"
 import { useGSAP } from "@gsap/react"
 import gsap from "gsap"
@@ -11,28 +11,32 @@ import s from "./features.module.scss"
 
 const CARDS = [
   {
-    img: "/img/kalit-flow-feature-1.png",
+    img: "/img/flow1.png",
     title: "Prompt-Based Creation",
     text: "Describe your project in plain language. Our AI generates a complete, working web project instantly."
   },
   {
-    img: "/img/kalit-flow-feature-2.png",
+    img: "/img/flow2.png",
     title: "Live Preview",
     text: "See your project come to life in real-time with an interactive preview right in your browser."
   },
   {
-    img: "/img/kalit-flow-feature-3.png",
+    img: "/img/flow3.png",
     title: "Download & Deploy",
     text: "Export as a ready-to-deploy package. Take full ownership of your code and host it anywhere."
   },
   {
-    img: "/img/kalit-flow-feature-4.png",
+    img: "/img/flow4.png",
     title: "API Access",
     text: "Integrate Flow into your workflow. Generate projects programmatically with your API keys."
   }
 ]
 
-export const Features = () => {
+interface FeaturesProps {
+  suiteAppUrl: string
+}
+
+export const Features = ({ suiteAppUrl }: FeaturesProps) => {
   const cardsRef = useRef<HTMLDivElement>(null)
 
   useGSAP(
@@ -90,7 +94,9 @@ export const Features = () => {
               <div className={s.left}>
                 <h3>{card.title}</h3>
                 <p>{card.text}</p>
-                <Button circle>Start Building</Button>
+                <FlowSuiteCtaButton suiteAppUrl={suiteAppUrl} circle>
+                  Start Building
+                </FlowSuiteCtaButton>
               </div>
               <div className={s.right}>
                 <Image

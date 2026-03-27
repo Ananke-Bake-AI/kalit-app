@@ -1,6 +1,7 @@
 import { Providers } from "@/components/app/providers"
 import { JsonLd } from "@/components/seo/json-ld"
 import { APP_THEME_COLOR } from "@/lib/config"
+import { auth } from "@/lib/auth"
 import { MetadataSeo } from "@/lib/metadata"
 import "@/styles/globals.scss"
 import { fonts } from "./fonts"
@@ -19,7 +20,9 @@ export interface LayoutProps {
   children: React.ReactNode
 }
 
-export default function RootLayout({ children }: LayoutProps) {
+export default async function RootLayout({ children }: LayoutProps) {
+  const session = await auth()
+
   return (
     <html lang="en" dir="ltr" suppressHydrationWarning={true}>
       <head>
@@ -41,7 +44,7 @@ export default function RootLayout({ children }: LayoutProps) {
         <JsonLd />
       </head>
       <body className={fonts}>
-        <Providers>{children}</Providers>
+        <Providers session={session}>{children}</Providers>
       </body>
     </html>
   )

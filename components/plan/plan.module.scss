@@ -1,0 +1,151 @@
+@use "@/styles/mixins" as *;
+
+.plan {
+  --plan-padding: calc(24px + 4 * (100vw - 320px) / 1080);
+  flex: 1;
+  background-color: var(--glass-50);
+  position: relative;
+  @include border-glass(var(--gradient-border-glass-3));
+  @include cornerShape(var(--radius-1));
+  box-shadow: var(--shadow-2);
+  text-align: left;
+  padding: var(--size-1-5);
+  overflow: hidden;
+
+  &.recommended {
+    --puce-bg: var(--gradient-primary-radial);
+  }
+
+  &:not(.recommended) {
+    .top {
+      &::before {
+        height: 150%;
+        @include mask(
+          linear-gradient(to top, oklch(from var(--bg-1) l c h / 0) 0%, oklch(from var(--bg-1) l c h / 0.5) 100%)
+        );
+      }
+    }
+
+    .button,
+    .cta > * {
+      background-color: var(--glass-50);
+      color: var(--text);
+      @include border-glass(var(--gradient-border-glass-3));
+
+      &:hover {
+        color: var(--white);
+      }
+    }
+  }
+}
+
+.cta {
+  width: 100%;
+  z-index: 1;
+  flex: 1;
+  position: relative;
+
+  & > * {
+    width: 100%;
+  }
+}
+
+.button {
+  width: 100%;
+  flex: 1;
+}
+
+.top {
+  padding: var(--plan-padding);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--plan-padding) / 2);
+  position: relative;
+
+  & > * {
+    z-index: 1;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--gradient-primary-radial);
+    @include cornerShape(var(--radius-1), $pseudo: true);
+    z-index: 0;
+  }
+}
+
+.name {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--text);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 1em;
+  row-gap: 0.5rem;
+
+  .badge {
+    margin: -0.15em 0;
+    flex-shrink: 0;
+  }
+}
+
+.price {
+  font-size: calc(40px + 12 * (100vw - 320px) / 1080);
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+  line-height: 1;
+
+  small {
+    font-size: calc(14px + 2 * (100vw - 320px) / 1080);
+  }
+}
+
+.desc {
+  font-weight: 300;
+  margin-bottom: 0.5em;
+}
+
+.bottom {
+  position: relative;
+  padding: calc(var(--plan-padding) / 1.35) var(--plan-padding);
+  z-index: 5;
+
+  h4 {
+    font-size: 0.9em;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 1.5em 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    font-weight: 300;
+
+    li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75em;
+
+      &::before {
+        content: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjYiIHZpZXdCb3g9IjAgMCA4IDYiIGZpbGw9Im5vbmUiPjxwYXRoIGQ9Ik0wLjM0NzY1NiAzLjgxODM2QzAuMzQ3NjU2IDMuODE4MzYgMS4wNDE4OSAzLjgxODM2IDEuOTY3NTQgNS40MzgyNEMxLjk2NzU0IDUuNDM4MjQgNC41NDAzIDEuMTk1NjggNi44MjcyMSAwLjM0NzE2OCIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIwLjY5NDIzOCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9zdmc+");
+        flex-shrink: 0;
+        line-height: 0;
+        background: var(--puce-bg, var(--text));
+        width: 0.9em;
+        height: 0.9em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-rounded);
+      }
+    }
+  }
+}

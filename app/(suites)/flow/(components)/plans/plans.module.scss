@@ -1,0 +1,35 @@
+@use "@/styles/mixins" as *;
+
+.plans {
+  @include section;
+  margin-top: var(--spacing-4);
+  overflow: hidden;
+  text-align: center;
+
+  [data-paragraph] {
+    width: var(--container-middle);
+    margin-inline: auto;
+  }
+}
+
+.list {
+  margin-top: var(--spacing-2-5);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--spacing-1);
+
+  @include min(1200px) {
+    padding-inline: calc(100 * (100vw - 320px) / 1080);
+  }
+
+  @include max(1084px) {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  & > * {
+    width: calc(450px + 50 * (100vw - 320px) / 1080);
+    max-width: 100%;
+  }
+}

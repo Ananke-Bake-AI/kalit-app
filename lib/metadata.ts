@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 
 interface MetadataSeoProps {
   fullTitle?: string
-  title: string
+  title?: string
   description: string
   locale?: string
   image?: string
@@ -11,6 +11,7 @@ interface MetadataSeoProps {
   type?: "website" | "article"
   keywords?: string[]
   noIndex?: boolean
+  favicon?: string
 }
 
 export const MetadataSeo = ({
@@ -22,11 +23,12 @@ export const MetadataSeo = ({
   url,
   type = "website",
   keywords,
-  noIndex = false
+  noIndex = false,
+  favicon = "/favicon.svg"
 }: MetadataSeoProps): Metadata => {
   const headTitle = fullTitle ? fullTitle : `${APP_NAME} — ${title}`
   const fullUrl = url ? new URL(url, APP_BASE_URL) : APP_BASE_URL
-  const icon = "/favicon.svg"
+  const icon = favicon || "/favicon.svg"
 
   const defaultKeywords = [
     "AI app builder",

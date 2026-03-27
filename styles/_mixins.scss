@@ -172,15 +172,17 @@ $responsiveSettings: 950px;
   }
 }
 
-@mixin cornerShape($radius) {
+@mixin cornerShape($radius, $pseudo: false) {
   border-radius: $radius;
 
   @supports (corner-shape: squircle) {
     corner-shape: squircle;
     border-radius: calc($radius * 1.75);
 
-    &::after {
-      corner-shape: squircle;
+    @if $pseudo == false {
+      &::after {
+        corner-shape: squircle;
+      }
     }
   }
 }

@@ -4,7 +4,7 @@ import s from "./badge.module.scss"
 
 interface BadgeProps {
   children: ReactNode
-  variant?: "success" | "popular"
+  variant?: "success" | "popular" | "white"
   className?: string
 }
 
@@ -15,6 +15,7 @@ export function Badge({ children, variant, className }: BadgeProps) {
         s.root,
         variant === "success" && s.success,
         variant === "popular" && s.popular,
+        variant === "white" && s.white,
         className
       )}
     >

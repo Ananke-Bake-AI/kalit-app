@@ -10,9 +10,16 @@ interface CheckoutButtonProps {
   label: string
   variant?: "primary" | "secondary" | "tertiary"
   disabled?: boolean
+  className?: string
 }
 
-export function CheckoutButton({ planKey, label, variant = "primary", disabled = false }: CheckoutButtonProps) {
+export function CheckoutButton({
+  planKey,
+  label,
+  variant = "primary",
+  disabled = false,
+  className
+}: CheckoutButtonProps) {
   const [loading, setLoading] = useState(false)
 
   const handleCheckout = async () => {
@@ -31,7 +38,7 @@ export function CheckoutButton({ planKey, label, variant = "primary", disabled =
   }
 
   return (
-    <Button onClick={handleCheckout} disabled={disabled || loading} variant={variant}>
+    <Button className={className} onClick={handleCheckout} disabled={disabled || loading} variant={variant}>
       {loading ? "Redirecting..." : label}
     </Button>
   )
@@ -40,11 +47,13 @@ export function CheckoutButton({ planKey, label, variant = "primary", disabled =
 interface ManageBillingButtonProps {
   label?: string
   variant?: "primary" | "secondary" | "tertiary"
+  className?: string
 }
 
 export function ManageBillingButton({
   label = "Manage subscription",
   variant = "secondary",
+  className
 }: ManageBillingButtonProps) {
   const [loading, setLoading] = useState(false)
 
@@ -64,7 +73,7 @@ export function ManageBillingButton({
   }
 
   return (
-    <Button variant={variant} onClick={handlePortal} disabled={loading}>
+    <Button className={className} onClick={handlePortal} disabled={loading}>
       {loading ? "Loading..." : label}
     </Button>
   )

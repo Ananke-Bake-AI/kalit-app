@@ -14,6 +14,7 @@ export const Toast = () => {
         info: <Icon icon="hugeicons:information-circle" />,
         loading: <Icon icon="svg-spinners:90-ring-with-bg" />
       }}
+      duration={300000}
       toastOptions={{
         unstyled: true,
         closeButton: true,

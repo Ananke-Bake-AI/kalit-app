@@ -1,10 +1,12 @@
 import { Badge } from "@/components/badge"
+import { Plan } from "@/components/plan"
+import planStyles from "@/components/plan/plan.module.scss"
+import info from "@/components/settings-info-rows/settings-info-rows.module.scss"
+import { SurfacePanel } from "@/components/surface-panel"
 import { auth } from "@/lib/auth"
 import { getPlan, PLANS } from "@/lib/plans"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
-import { SurfacePanel } from "@/components/surface-panel"
-import info from "@/components/settings-info-rows/settings-info-rows.module.scss"
 import { CheckoutButton, ManageBillingButton } from "./actions"
 import s from "./billing.module.scss"
 
@@ -19,7 +21,7 @@ export default async function BillingPage() {
 
   const subscription = await prisma.subscription.findFirst({
     where: { orgId: session.user.orgId, status: { in: ["ACTIVE", "TRIALING"] } },
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: "desc" }
   })
 
   const currentPlan = subscription ? getPlan(subscription.planKey) : null
@@ -27,7 +29,6 @@ export default async function BillingPage() {
   return (
     <>
       <SurfacePanel
-        spaced
         title={currentPlan?.name || "Free workspace"}
         subtitle={
           currentPlan
@@ -35,11 +36,7 @@ export default async function BillingPage() {
             : "No active subscription yet."
         }
         headerAside={
-          subscription ? (
-            <Badge variant="success">{subscription.status.toLowerCase()}</Badge>
-          ) : (
-            <Badge>Free</Badge>
-          )
+          subscription ? <Badge variant="success">{subscription.status.toLowerCase()}</Badge> : <Badge>Free</Badge>
         }
       >
         {subscription ? (
@@ -49,7 +46,7 @@ export default async function BillingPage() {
               {subscription.currentPeriodEnd.toLocaleDateString("en-US", {
                 month: "short",
                 day: "numeric",
-                year: "numeric",
+                year: "numeric"
               })}
             </span>
           </div>
@@ -66,37 +63,47 @@ export default async function BillingPage() {
       <div className={s.planGrid}>
         {PLANS.map((plan) => {
           const isCurrent = subscription?.planKey === plan.key
+          const tagline = `${plan.suites.length} suite${plan.suites.length === 1 ? "" : "s"} included, ${plan.creditsPerMonth} credits per month, ${formatMembers(plan.maxMembers)}.`
+          const showBadges = plan.popular || isCurrent
 
           return (
-            <div key={plan.key} className={`${s.planCard} ${plan.popular ? s.planFeatured : ""}`}>
-              {plan.popular ? <Badge variant="popular">Most selected</Badge> : null}
-              {isCurrent ? <Badge variant="success">Current plan</Badge> : null}
-              <div>
-                <h2 className={s.planTitle}>{plan.name}</h2>
-                <p className={s.planSubtitle}>
-                  {plan.suites.length} suite{plan.suites.length === 1 ? "" : "s"} included,{" "}
-                  {plan.creditsPerMonth} credits per month, {formatMembers(plan.maxMembers)}.
-                </p>
-              </div>
-              <div className={s.price}>
-                ${(plan.monthlyPrice / 100).toFixed(0)}
-                <small>/ month</small>
-              </div>
-              <ul className={s.planList}>
-                {plan.features.map((feature) => (
-                  <li key={feature}>{feature}</li>
-                ))}
-              </ul>
-              {isCurrent ? (
-                <ManageBillingButton />
-              ) : (
-                <CheckoutButton
-                  planKey={plan.key}
-                  label={subscription ? `Switch to ${plan.name}` : `Choose ${plan.name}`}
-                  variant={plan.popular ? "primary" : "secondary"}
-                />
-              )}
-            </div>
+            <Plan
+              key={plan.key}
+              withReveal={false}
+              name={plan.name}
+              tagline={tagline}
+              features={plan.features}
+              recommended={Boolean(plan.popular)}
+              titleBadge={plan.popular ? null : undefined}
+              price={`$${(plan.monthlyPrice / 100).toFixed(0)}`}
+              priceSuffix="per month"
+              badges={
+                showBadges ? (
+                  <>
+                    {plan.popular ? (
+                      <Badge className={planStyles.badge} variant="popular">
+                        Most selected
+                      </Badge>
+                    ) : null}
+                    {isCurrent ? (
+                      <Badge className={planStyles.badge} variant="success">
+                        Current plan
+                      </Badge>
+                    ) : null}
+                  </>
+                ) : undefined
+              }
+              action={
+                isCurrent ? (
+                  <ManageBillingButton />
+                ) : (
+                  <CheckoutButton
+                    planKey={plan.key}
+                    label={subscription ? `Switch to ${plan.name}` : `Choose ${plan.name}`}
+                  />
+                )
+              }
+            />
           )
         })}
       </div>

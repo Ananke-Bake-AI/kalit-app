@@ -1,9 +1,11 @@
 "use client"
 
 import { HeroPromptChat } from "@/components/hero-prompt-chat"
+import { Icon } from "@/components/icon"
 import { useAnimatedPlaceholder } from "@/hooks/use-animated-placeholder"
-import { Icon } from "@iconify/react"
+import { flowLoginHref, flowSuiteEntryUrl } from "@/lib/flow-suite-entry"
 import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
 import { useCallback, useRef, useState } from "react"
 import s from "./hero.module.scss"
 
@@ -37,8 +39,13 @@ const BUTTONS = [
   }
 ]
 
-export function FlowHeroPrompt() {
+interface FlowHeroPromptProps {
+  suiteAppUrl: string
+}
+
+export function FlowHeroPrompt({ suiteAppUrl }: FlowHeroPromptProps) {
   const router = useRouter()
+  const { status } = useSession()
   const [promptValue, setPromptValue] = useState("")
   const promptRef = useRef<HTMLTextAreaElement | null>(null)
   const { handleFocus, handleBlur } = useAnimatedPlaceholder(promptRef, {
@@ -49,8 +56,13 @@ export function FlowHeroPrompt() {
   const handleSubmit = useCallback(() => {
     const trimmed = promptValue.trim()
     if (!trimmed) return
-    router.push(`/flow?prompt=${encodeURIComponent(trimmed)}`)
-  }, [promptValue, router])
+    if (status === "loading") return
+    if (status === "authenticated") {
+      window.location.assign(flowSuiteEntryUrl(suiteAppUrl, { prompt: trimmed }))
+      return
+    }
+    router.push(flowLoginHref({ prompt: trimmed }))
+  }, [promptValue, router, status, suiteAppUrl])
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {

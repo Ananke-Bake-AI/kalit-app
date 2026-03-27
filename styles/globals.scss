@@ -13,8 +13,35 @@ html {
   font-size: calc(15px + 1 * (100vw - 320px) / 1080);
   line-height: 1.15;
   overflow-x: clip;
-  @include no-scrollbar;
   @include selection(oklch(from var(--text) l c h / 0.85), var(--white));
+
+  &,
+  body {
+    scrollbar-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0);
+    scrollbar-width: thin;
+
+    &::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      min-height: 60px;
+      transition: background 120ms;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 0, 0, 0);
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+      border-radius: 8px;
+    }
+    &::-webkit-scrollbar-corner {
+      background: transparent;
+    }
+  }
 
   &.is-resizing {
     *,
@@ -32,6 +59,8 @@ html {
 }
 
 body {
+  overflow-x: clip;
+  width: 100vw;
   font-weight: 500;
   font-family: var(--font-main);
   font-feature-settings: "salt" on;

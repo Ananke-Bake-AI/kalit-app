@@ -7,6 +7,8 @@ $responsive: 1200px;
 
   @include max($responsive) {
     text-align: center;
+    // overflow: hidden;
+    width: 100vw;
 
     [data-paragraph] {
       margin-inline: auto;
@@ -139,6 +141,12 @@ $responsive: 1200px;
   bottom: -30%;
   top: -40%;
   overflow: hidden;
+
+  @include max(600px) {
+    left: -15vw;
+    bottom: 30%;
+    top: -60%;
+  }
 
   &::before {
     content: "";

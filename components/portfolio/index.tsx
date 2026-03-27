@@ -5,6 +5,7 @@ import clsx from "clsx"
 import gsap from "gsap"
 import { type ReactNode, useRef } from "react"
 
+import { FlowSuiteCtaButton } from "@/components/flow-suite-cta-button"
 import { Button } from "@/components/button"
 import { Container } from "@/components/container"
 import { Heading } from "@/components/heading"
@@ -15,11 +16,22 @@ export interface PortfolioProps {
   heading: ReactNode
   paragraph: ReactNode
   buttonText: string
-  link: string
+  /** Lien marketing (home, etc.) — ignoré si `suiteAppUrl` est défini */
+  link?: string
+  /** Si défini : connecté → app suite, sinon → login avec retour Flow */
+  suiteAppUrl?: string
   className?: string
 }
 
-export function Portfolio({ subtitle, heading, paragraph, buttonText, link, className }: PortfolioProps) {
+export function Portfolio({
+  subtitle,
+  heading,
+  paragraph,
+  buttonText,
+  link,
+  suiteAppUrl,
+  className
+}: PortfolioProps) {
   const carouselRef = useRef<HTMLDivElement | null>(null)
 
   useGSAP(
@@ -65,9 +77,15 @@ export function Portfolio({ subtitle, heading, paragraph, buttonText, link, clas
             </div>
           ))}
         </div>
-        <Button className={s.btn} circle href={link}>
-          {buttonText}
-        </Button>
+        {suiteAppUrl ? (
+          <FlowSuiteCtaButton suiteAppUrl={suiteAppUrl} className={s.btn} circle>
+            {buttonText}
+          </FlowSuiteCtaButton>
+        ) : (
+          <Button className={s.btn} circle href={link ?? "/"}>
+            {buttonText}
+          </Button>
+        )}
       </Container>
     </section>
   )

@@ -1,13 +1,19 @@
-import { Button } from "@/components/button"
+"use client"
+
 import { Color4Bg } from "@/components/color4bg"
 import { Container } from "@/components/container"
+import { FlowSuiteCtaButton } from "@/components/flow-suite-cta-button"
 import { Heading } from "@/components/heading"
 import { Icon } from "@/components/icon"
 import { AnimatedLine } from "@/components/svg/animated-line"
 import { FlowHeroPrompt } from "./flow-hero-prompt"
 import s from "./hero.module.scss"
 
-export const Hero = () => {
+interface HeroProps {
+  suiteAppUrl: string
+}
+
+export const Hero = ({ suiteAppUrl }: HeroProps) => {
   return (
     <section className={s.hero}>
       <Container>
@@ -43,12 +49,12 @@ export const Hero = () => {
                 <span>100 tokens included</span>
               </li>
             </ul>
-            <Button circle className={s.button}>
+            <FlowSuiteCtaButton suiteAppUrl={suiteAppUrl} circle className={s.button}>
               Get started
-            </Button>
+            </FlowSuiteCtaButton>
           </div>
           <div className={s.right}>
-            <FlowHeroPrompt />
+            <FlowHeroPrompt suiteAppUrl={suiteAppUrl} />
           </div>
         </div>
         <div className={s.bg} data-reveal>

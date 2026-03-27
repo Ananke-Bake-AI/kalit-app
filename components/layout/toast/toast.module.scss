@@ -1,40 +1,42 @@
 @use "@/styles/mixins" as *;
 
 .toast {
-  --padding: 1rem;
+  --padding: calc(24px + 4 * (100vw - 320px) / 1080);
   background: var(--bg-opacity-1);
   color: var(--tertiary);
   padding: var(--padding);
-  border-radius: 0.75em;
-  @include backdrop(16px);
+  padding-right: calc(var(--padding) * 2);
+  @include cornerShape(var(--radius-2));
+  @include glass($blur: true);
   position: relative;
   display: flex;
   font-family: var(--font-main);
+  font-weight: 300;
   gap: calc(var(--padding) / 1.5);
-  font-size: 13px;
-  display: flex;
   gap: 6px;
+  font-size: calc(14px + 2 * (100vw - 320px) / 1080);
   z-index: 110000;
+  box-shadow: var(--shadow-1);
 
   & > * {
     z-index: 1;
   }
 
   &[data-type="success"] {
-    --color: var(--success-rgb);
+    --color: var(--success);
   }
 
   &[data-type="error"] {
-    --color: var(--danger-rgb);
+    --color: var(--danger);
   }
 
   &[data-type="warning"] {
-    --color: var(--warning-rgb);
+    --color: var(--warning);
   }
 
   &[data-type="info"],
   &[data-type="loading"] {
-    --color: var(--secondary);
+    --color: var(--text-secondary);
   }
 
   [data-icon] {
@@ -42,10 +44,11 @@
       position: relative;
       font-size: 1.1em;
       left: -0.15em;
-      color: rgb(var(--color));
+      color: var(--color);
+      min-width: 1em;
 
       * {
-        stroke-width: 2 !important;
+        stroke-width: 1.5 !important;
       }
     }
   }
@@ -59,11 +62,11 @@
   }
 
   .title {
-    font-weight: bold;
+    font-family: var(--font-heading);
   }
 
   .description {
-    color: var(--light-300);
+    color: var(--text-secondary);
     margin-top: 0.25em;
   }
 

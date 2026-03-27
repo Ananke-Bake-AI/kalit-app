@@ -1,5 +1,7 @@
 @use "@/styles/mixins" as *;
 
+$responsive: 1200px;
+
 .how {
   margin-top: var(--spacing-4);
   margin-bottom: var(--spacing-4);
@@ -14,6 +16,19 @@
   .powered {
     margin-top: var(--spacing-3);
   }
+
+  .line {
+    position: absolute;
+    top: calc(50% + var(--gap) / 2);
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    stroke-width: 20;
+
+    @include max($responsive) {
+      display: none;
+    }
+  }
 }
 
 .steps {
@@ -23,11 +38,21 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  padding-inline: var(--spacing-2);
   gap: var(--gap);
   margin-top: var(--spacing-3);
   text-align: left;
   position: relative;
+
+  @include max($responsive) {
+    --gap: var(--spacing-1);
+    flex-direction: column;
+    align-items: center;
+    margin-top: var(--spacing-2-5);
+  }
+
+  @include min(500px) {
+    padding-inline: var(--spacing-2);
+  }
 }
 
 .step {
@@ -43,6 +68,17 @@
   @include border-glass(var(--gradient-border-glass-3));
   @include cornerShape(var(--radius-1));
   @include backdrop(24px);
+  max-width: 100%;
+
+  @include max($responsive) {
+    width: 100%;
+    max-width: calc(400px + 200 * (100vw - 320px) / 1080);
+    aspect-ratio: auto;
+
+    .top {
+      margin-bottom: calc(var(--padding) / 2);
+    }
+  }
 
   h3 {
     margin-bottom: calc(var(--padding) / 2);
@@ -82,13 +118,4 @@
   svg {
     font-size: 1.25em;
   }
-}
-
-.line {
-  position: absolute;
-  top: calc(50% + var(--gap) / 2);
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100vw;
-  stroke-width: 20;
 }

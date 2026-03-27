@@ -11,20 +11,22 @@
   background: oklch(from var(--text) l c h / 0.08);
   color: var(--text);
   font-size: 0.74rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-family: var(--font-heading);
 }
 
 .success {
-  background: oklch(from var(--color-1) l c h / 0.12);
-  color: oklch(0.42 0.13 145);
+  background: var(--success);
+  color: var(--white);
 }
 
 .popular {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
   background: oklch(from var(--text) l c h / 0.92);
   color: var(--white);
+}
+
+.white {
+  background: var(--glass-15);
+  position: relative;
+  color: var(--white);
+  @include border-glass(var(--gradient-border-glass-3));
 }
