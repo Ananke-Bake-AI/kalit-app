@@ -12,7 +12,6 @@ interface AnimatedLineProps {
   className?: string
   stroke?: string
   strokeWidth?: number
-  options?: ScrollTrigger
 }
 
 export const AnimatedLine = ({ d, viewBox, className, stroke = "currentColor", strokeWidth }: AnimatedLineProps) => {
@@ -38,7 +37,7 @@ export const AnimatedLine = ({ d, viewBox, className, stroke = "currentColor", s
 
   return (
     <svg viewBox={viewBox} className={clsx(className, s.animatedLine)}>
-      <path ref={pathRef} d={d} stroke={stroke} pathLength={1} />
+      <path ref={pathRef} d={d} stroke={stroke} pathLength={1} data-path />
     </svg>
   )
 }

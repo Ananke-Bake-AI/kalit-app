@@ -155,6 +155,27 @@ export const Defs = () => {
             { offset: 1, color: "var(--color-4)" }
           ]}
         />
+        <LinearGradient
+          id="flow-hero"
+          direction="to-right"
+          gradientUnits="objectBoundingBox"
+          stops={[
+            { offset: 0, color: "var(--text)" },
+            { offset: 0.0166806, color: "var(--text)" },
+            { offset: 0.0791456, color: "var(--color-2)" },
+            { offset: 0.3, color: "var(--color-2-secondary)" },
+            { offset: 0.8, color: "var(--white)" }
+          ]}
+        />
+        <LinearGradient
+          id="color-2"
+          direction="to-right"
+          gradientUnits="objectBoundingBox"
+          stops={[
+            { offset: 0, color: "var(--color-2)" },
+            { offset: 1, color: "var(--color-2-secondary)" }
+          ]}
+        />
       </defs>
     </svg>
   )

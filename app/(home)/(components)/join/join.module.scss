@@ -291,9 +291,32 @@ $responsiveJoinItem2: 500px;
   inset: -30% -15%;
   bottom: 0;
   overflow: hidden;
-  background-color: var(--bg-1);
-  opacity: 0.9;
-  pointer-events: none;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    background: radial-gradient(circle at 50% 100%, oklch(from var(--bg-1) l c h / 0) 30%, var(--bg-1) 80%);
+    z-index: 1;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    z-index: 1;
+    background: linear-gradient(to right, var(--bg-1) 0%, oklch(from var(--bg-1) l c h / 0) 15% 85%, var(--bg-1) 100%);
+  }
+
+  .gradient {
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(to bottom, var(--bg-1) 0%, oklch(from var(--bg-1) l c h / 0) 30%);
+    }
+  }
 }
 
 .line {

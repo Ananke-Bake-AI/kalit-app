@@ -1,0 +1,357 @@
+@use "@/styles/mixins" as *;
+
+.wrapper {
+  width: 100%;
+  position: relative;
+  z-index: 2;
+
+  &_centered {
+    max-width: 680px;
+    margin: var(--size-20) auto 0;
+
+    @include max($responsive) {
+      margin-top: var(--size-12);
+    }
+  }
+
+  &_flush {
+    max-width: none;
+    margin: 0;
+  }
+}
+
+.form {
+  position: relative;
+  z-index: 5;
+}
+
+.shell {
+  background: linear-gradient(to bottom, var(--glass-50), var(--glass-75));
+  @include cornerShape(var(--radius-1));
+  @include border-glass(var(--gradient-border-glass-3));
+  @include backdrop(24px);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+  textarea {
+    display: block;
+    width: 100%;
+    flex: 1;
+    background-color: transparent;
+    font-family: var(--font-main);
+    font-weight: 300;
+    font-size: calc(14px + 2 * (100vw - 320px) / 1080);
+    resize: none;
+    min-height: 80px;
+    @include no-scrollbar;
+
+    &::placeholder {
+      color: var(--text);
+    }
+
+    &:focus::placeholder {
+      color: var(--text-secondary);
+    }
+  }
+}
+
+.inputRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--size-4);
+  padding: var(--size-7) var(--size-7) var(--size-4);
+
+  @include max($responsive) {
+    padding: var(--size-5) var(--size-5) var(--size-3);
+    gap: var(--size-3);
+  }
+}
+
+.inputIcon {
+  font-size: 1.35em;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+  position: relative;
+  top: -0.1em;
+}
+
+.bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--size-5);
+}
+
+.mic {
+  --btn-s: calc(36px + 4 * (100vw - 320px) / 1080);
+  width: var(--btn-s);
+  height: var(--btn-s);
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-rounded);
+  background-color: oklch(from var(--text) l c h / 0.05);
+  color: var(--text-secondary);
+  font-size: 1.15em;
+  transition:
+    background-color var(--transition-link),
+    transform var(--transition-scale);
+
+  &:active {
+    transform: scale(0.9);
+  }
+
+  @include is-hover {
+    background-color: oklch(from var(--text) l c h / 0.1);
+  }
+}
+
+.send {
+  display: flex;
+  align-items: center;
+  gap: var(--size-3);
+  height: calc(36px + 4 * (100vw - 320px) / 1080);
+  padding: 0 var(--size-6) 0 var(--size-4);
+  border-radius: var(--radius-rounded);
+  background: var(--gradient-primary-radial);
+  color: var(--white);
+  font-family: var(--font-heading);
+  font-size: 0.875em;
+  transition:
+    opacity var(--transition-link),
+    transform var(--transition-scale);
+
+  svg {
+    width: 1.25em;
+    stroke: var(--white);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  &:not(:disabled):active {
+    transform: scale(0.95);
+  }
+
+  @include is-hover {
+    &:not(:disabled) {
+      opacity: 0.9;
+    }
+  }
+}
+
+.thinking {
+  display: flex;
+  align-items: center;
+  gap: var(--size-4);
+  padding: var(--size-6) var(--size-7);
+  color: var(--text-secondary);
+  font-size: 0.9em;
+  font-weight: 300;
+}
+
+.dots {
+  display: flex;
+  gap: 4px;
+
+  span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--text-secondary);
+    animation: heroPromptChatDotPulse 1.2s infinite ease-in-out;
+
+    &:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+
+    &:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+  }
+}
+
+.result {
+  padding: var(--size-5);
+  padding-top: var(--size-0-5);
+  animation: heroPromptChatSlideUp 0.35s ease-out;
+}
+
+.resultHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  font-size: 0.75em;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--suite-color);
+  margin-bottom: var(--size-4);
+  font-weight: 500;
+  padding-left: 0.5em;
+}
+
+.resultCard {
+  display: flex;
+  align-items: center;
+  gap: var(--size-5);
+  width: 100%;
+  padding: var(--size-5) var(--size-6);
+  background-color: oklch(from var(--suite-color) l c h / 0.08);
+  @include cornerShape(var(--radius-2));
+  position: relative;
+  text-align: left;
+  transition:
+    background-color var(--transition-link),
+    transform var(--transition-scale);
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  @include is-hover {
+    background-color: oklch(from var(--suite-color) l c h / 0.14);
+  }
+}
+
+.resultIcon {
+  width: 2.75em;
+  height: 2.75em;
+  background-color: var(--suite-color);
+  @include cornerShape(var(--radius-3));
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+
+  svg {
+    width: 50%;
+    stroke: var(--white);
+  }
+}
+
+.resultInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+
+  strong {
+    font-family: var(--font-heading);
+    font-weight: normal;
+    font-size: 1.1em;
+  }
+
+  span {
+    font-size: 0.85em;
+    font-weight: 300;
+  }
+}
+
+.resultArrow {
+  font-size: 1.5em;
+  color: var(--suite-color);
+  flex-shrink: 0;
+}
+
+.quick {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-3);
+  margin-top: var(--size-6);
+  position: relative;
+  z-index: 10;
+  @include user-select;
+
+  @include max(500px) {
+    gap: var(--size-2);
+    font-size: 0.9em;
+
+    button {
+      flex: 1;
+    }
+  }
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: var(--size-2);
+    padding: 0.5em 1.15em 0.5em 0.9em;
+    font-size: 0.825em;
+    color: var(--text);
+    font-family: var(--font-heading);
+    border-radius: var(--radius-rounded);
+    position: relative;
+    background-color: var(--glass-50);
+    border: 1px solid oklch(from var(--white) l c h / 0.25);
+    transition:
+      background-color var(--transition-link),
+      color var(--transition-link),
+      border-color var(--transition-link),
+      transform var(--transition-scale);
+
+    &:active {
+      transform: scale(0.92);
+    }
+
+    @include is-hover {
+      background-color: oklch(from var(--suite-color) l c h / 1);
+      border-color: oklch(from var(--suite-color) l c h / 0.15);
+      color: var(--white);
+    }
+  }
+}
+
+.quickIcon {
+  --icon: 1.75em;
+  width: var(--icon);
+  height: var(--icon);
+  display: grid;
+  place-items: center;
+  background-color: var(--suite-color);
+  border-radius: var(--radius-rounded);
+  padding: 0.4em;
+  margin-left: -0.4em;
+
+  svg {
+    width: 100%;
+    stroke: var(--white);
+  }
+}
+
+.bg {
+  position: absolute;
+  z-index: -1;
+  inset: -50% -20%;
+  pointer-events: none;
+  background-color: var(--bg-1);
+  opacity: 0.55;
+  @include mask(radial-gradient(ellipse at 50% 45%, #000 12%, transparent 58%));
+}
+
+@keyframes heroPromptChatDotPulse {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.8);
+  }
+
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes heroPromptChatSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

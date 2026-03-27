@@ -25,6 +25,8 @@ export interface SuiteConfig {
   logoD: string
   /** Texte `<title>` du SVG pour l’accessibilité */
   logoTitle: string
+  /** URL de base de l’app suite (SSO, redirections serveur) */
+  appUrl: string
 }
 
 /** Dégradé global quand aucune suite n’est « active » (dashboard, settings, landing, etc.) */
@@ -46,7 +48,8 @@ export const SUITES: SuiteConfig[] = [
     quickPrompt: "Scan my web application for security vulnerabilities",
     logoD:
       "M20.366 10.1298H30.6829C42.0383 10.1298 51.2437 19.3351 51.2437 30.6906C51.2437 42.046 42.0383 51.2513 30.6829 51.2513C19.3274 51.2513 10.1221 42.046 10.1221 30.6906V82.0436",
-    logoTitle: "Kalit — Pentest Suite"
+    logoTitle: "Kalit — Pentest Suite",
+    appUrl: process.env.SUITE_PENTEST_URL || "http://localhost:3005"
   },
   {
     id: "flow",
@@ -61,7 +64,8 @@ export const SUITES: SuiteConfig[] = [
     matchDescription: "Design, copy, and structure — your site will be live in minutes.",
     quickPrompt: "Create a landing page for my product with pricing",
     logoD: "M61.3701 10.5157H40.9951C16.2951 10.5157 10.1201 31.099 10.1201 41.3907V81.9811M40.9951 50.7657H61.3701",
-    logoTitle: "Kalit — Flow Orchestration"
+    logoTitle: "Kalit — Flow Orchestration",
+    appUrl: process.env.SUITE_FLOW_URL || "http://localhost:3004"
   },
   {
     id: "marketing",
@@ -77,7 +81,8 @@ export const SUITES: SuiteConfig[] = [
     quickPrompt: "Launch a growth campaign across social media channels",
     logoD:
       "M71.751 0C71.751 17.0534 57.9265 30.8779 40.873 30.8779C23.8196 30.8779 9.99512 17.0534 9.99512 0V81.9811M71.7665 36.1279L71.6221 81.9124",
-    logoTitle: "Kalit — Marketing Suite"
+    logoTitle: "Kalit — Marketing Suite",
+    appUrl: process.env.SUITE_MARKETING_URL || "http://localhost:3002"
   },
   {
     id: "project",
@@ -93,7 +98,8 @@ export const SUITES: SuiteConfig[] = [
     quickPrompt: "Build me a SaaS application with authentication and billing",
     logoD:
       "M30.6809 51.2513C42.0363 51.2513 51.2417 42.046 51.2417 30.6905C51.2417 19.3351 42.0363 10.1298 30.6809 10.1298C19.3255 10.1298 10.1201 19.3351 10.1201 30.6906L10.1201 81.9968",
-    logoTitle: "Kalit — Project Workspace"
+    logoTitle: "Kalit — Project Workspace",
+    appUrl: process.env.SUITE_PROJECT_URL || "http://localhost:3003"
   }
 ]
 
@@ -169,6 +175,11 @@ export function getSuiteDisplayTitle(suite: SuiteConfig): string {
 
 export function getSuiteById(id: SuiteId): SuiteConfig | undefined {
   return SUITES.find((s) => s.id === id)
+}
+
+/** URL de base de l’app suite (même logique que `appUrl` dans `SUITES`) */
+export function getSuiteAppUrl(id: SuiteId): string | undefined {
+  return getSuiteById(id)?.appUrl
 }
 
 export function resolveAppGradientPrimary(page: AppPageState): string {

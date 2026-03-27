@@ -6,7 +6,7 @@ import { Illustration } from "@/components/illustration"
 import { Paragraph } from "@/components/paragraph"
 import { Sprite } from "@/components/sprite"
 import { SUITES } from "@/lib/suites"
-import { Icon } from "@iconify/react"
+import { Icon } from "@/components/icon"
 import Link from "next/link"
 import { useCallback, useRef } from "react"
 import "swiper/css"
@@ -33,16 +33,7 @@ export const Stack = () => {
       <Container>
         <div className={s.top}>
           <Heading className={s.heading} subtitle="Kalit Execution Stack">
-            <span>
-              Full{" "}
-              <span data-icon="right">
-                Stack{" "}
-                <span data-icon-svg>
-                  <Icon icon="hugeicons:layers-01" />
-                </span>
-              </span>{" "}
-              <br /> Model Matrix
-            </span>
+            Full Stack <br /> Model Matrix
           </Heading>
           <div className={s.right}>
             <Paragraph>

@@ -108,14 +108,8 @@ export const Try = () => {
           subtitle="Try Kalit Flow"
           paragraph="Describe your site. Kalit builds the page, the copy, and the structure — ready to publish in minutes."
         >
-          Describe your{" "}
-          <span data-icon="right">
-            vision
-            <span data-icon-svg>
-              <Icon icon="hugeicons:stars" />
-            </span>
-          </span>
-          , <br /> <Underline>Kalit builds it</Underline>
+          Describe your vision, <br />
+          <Underline>Kalit builds it</Underline>
         </Heading>
         <div className={s.form}>
           <div className={s.textarea}>

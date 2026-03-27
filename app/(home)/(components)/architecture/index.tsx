@@ -4,39 +4,12 @@ import { Container } from "@/components/container"
 import { Heading } from "@/components/heading"
 import { Logo } from "@/components/logo"
 import { Models } from "@/components/models"
-import { Line } from "@/components/svg/line"
-import { useGSAP } from "@gsap/react"
+import { AnimatedLine } from "@/components/svg/animated-line"
 import { Icon } from "@iconify/react"
 import clsx from "clsx"
-import gsap from "gsap"
-import { useRef } from "react"
 import s from "./architecture.module.scss"
 
 export const Architecture = () => {
-  const path1Ref = useRef<SVGPathElement>(null)
-
-  useGSAP(() => {
-    gsap
-      .timeline({
-        scrollTrigger: {
-          trigger: path1Ref.current,
-          start: "top bottom",
-          once: true
-        }
-      })
-      .fromTo(
-        [path1Ref.current],
-        { "--dash-offset": 2 },
-        {
-          "--dash-offset": 0,
-          ease: "power1.inOut",
-          duration: 4,
-          delay: 0.4
-        },
-        "a"
-      )
-  }, [])
-
   return (
     <section className={s.architecture}>
       <Container>
@@ -48,14 +21,12 @@ export const Architecture = () => {
           Kalit is not <br />
           <strong className={s.strong}>
             a model
-            <Line viewBox="0 0 621 429" className={clsx(s.line, s.line1)}>
-              <path
-                ref={path1Ref}
-                pathLength={1}
-                d="M6.75 238.75C6.75 219.42 22.42 203.75 41.75 203.75H258.75C285.812 203.75 307.75 225.688 307.75 252.75V277.25C307.75 290.781 296.781 301.75 283.25 301.75H280.25C268.376 301.75 258.75 292.124 258.75 280.25C258.75 268.376 268.376 258.75 280.25 258.75H567.75H815.75C846.126 258.75 870.75 234.126 870.75 203.75V157.75C870.75 127.374 895.374 102.75 925.75 102.75H968.75C982.005 102.75 992.75 113.495 992.75 126.75C992.75 140.005 982.005 150.75 968.75 150.75H964.75C949.286 150.75 936.75 138.214 936.75 122.75V61.75C936.75 31.3743 961.374 6.75 991.75 6.75H1162.74"
-                stroke="url(#architecture_line_1)"
-              />
-            </Line>
+            <AnimatedLine
+              className={s.line}
+              viewBox="0 0 621 429"
+              stroke="url(#architecture_line_1)"
+              d="M6.75 238.75C6.75 219.42 22.42 203.75 41.75 203.75H258.75C285.812 203.75 307.75 225.688 307.75 252.75V277.25C307.75 290.781 296.781 301.75 283.25 301.75H280.25C268.376 301.75 258.75 292.124 258.75 280.25C258.75 268.376 268.376 258.75 280.25 258.75H567.75H815.75C846.126 258.75 870.75 234.126 870.75 203.75V157.75C870.75 127.374 895.374 102.75 925.75 102.75H968.75C982.005 102.75 992.75 113.495 992.75 126.75C992.75 140.005 982.005 150.75 968.75 150.75H964.75C949.286 150.75 936.75 138.214 936.75 122.75V61.75C936.75 31.3743 961.374 6.75 991.75 6.75H1162.74"
+            />
           </strong>
         </Heading>
         <div className={s.layers}>

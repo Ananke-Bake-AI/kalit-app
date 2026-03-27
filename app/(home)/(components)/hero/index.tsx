@@ -1,10 +1,10 @@
 "use client"
 
-import { Color4Bg } from "@/components/color4bg"
 import { Container } from "@/components/container"
+import { HeroPromptChat, heroPromptChatStyles as promptChat } from "@/components/hero-prompt-chat"
 import { Icon } from "@/components/icon"
 import { Logo } from "@/components/logo"
-import { Models } from "@/components/models"
+import { Powered } from "@/components/models/powered"
 import { RevealText } from "@/components/reveal-text"
 import { Subtitle } from "@/components/subtitle"
 import { AnimatedLine } from "@/components/svg/animated-line"
@@ -46,7 +46,8 @@ export const Hero = () => {
   useGSAP(() => {
     gsap
       .timeline()
-      .to(titleRef.current, { visibility: "visible", delayAfter: 0.3 })
+      .to(titleRef.current, { visibility: "visible", duration: 0 })
+      .addLabel("a", "+=0.3")
       .fromTo(titleRef.current, { scale: 1.15 }, { scale: 1, duration: 2, ease: "back.inOut" }, "a")
       .fromTo(
         "[data-cards] > *",
@@ -99,7 +100,7 @@ export const Hero = () => {
       <Container>
         <Subtitle>Early access — Now open</Subtitle>
         <div ref={titleRef} className={s.title}>
-          <RevealText tag="h1" split={false}>
+          <RevealText tag="h1">
             <span>
               Build, Launch
               <AnimatedLine
@@ -166,93 +167,73 @@ export const Hero = () => {
             />
           </div>
         </div>
-        <div className={s.promptWrapper} data-reveal>
-          <div className={s.promptForm}>
-            <div className={s.promptTextarea}>
-              <div className={s.promptInputRow}>
-                <Icon icon="hugeicons:message-edit-01" className={s.promptIcon} />
-                <textarea
-                  ref={promptRef}
-                  value={promptValue}
-                  onChange={handlePromptChange}
-                  onFocus={handlePromptFocus}
-                  onBlur={handlePromptBlur}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Describe what you want to build..."
-                  rows={3}
-                />
-              </div>
-              <div className={s.promptBottom}>
-                <button className={s.promptMic} type="button">
-                  <Icon icon="hugeicons:mic-02" />
-                </button>
-                <button className={s.promptSend} type="button" onClick={handleSubmit} disabled={!promptValue.trim()}>
-                  <Logo id="kalit" />
-                  <span>Find my suite</span>
-                </button>
-              </div>
-
-              {isThinking && (
-                <div className={s.promptThinking}>
-                  <div className={s.promptDots}>
-                    <span />
-                    <span />
-                    <span />
-                  </div>
-                  <span>Analyzing your request...</span>
-                </div>
-              )}
-
-              {matchedSuite && !isThinking && (
-                <div className={s.promptResult} style={{ "--suite-color": matchedSuite.color } as React.CSSProperties}>
-                  <div className={s.promptResultHeader}>
-                    <Icon icon="hugeicons:sparkles" />
-                    <span>Recommended suite</span>
-                  </div>
+        <div data-reveal>
+          <HeroPromptChat
+            layout="centered"
+            textareaRef={promptRef}
+            value={promptValue}
+            placeholder="Describe what you want to build..."
+            onChange={handlePromptChange}
+            onFocus={handlePromptFocus}
+            onBlur={handlePromptBlur}
+            onKeyDown={handleKeyDown}
+            onSend={handleSubmit}
+            sendLabel="Find my suite"
+            sendLogoId="kalit"
+            footer={
+              <div className={promptChat.quick}>
+                {getHeroPromptSuites().map((suite) => (
                   <button
-                    className={s.promptResultCard}
+                    key={suite.id}
                     type="button"
-                    onClick={() => handleSuiteClick(matchedSuite.id)}
+                    style={{ "--suite-color": suite.color } as React.CSSProperties}
+                    onClick={() => handleQuickSelect(suite)}
                   >
-                    <div className={s.promptResultIcon}>
-                      <Logo id={matchedSuite.id} />
-                    </div>
-                    <div className={s.promptResultInfo}>
-                      <strong>Kalit {getSuiteDisplayTitle(matchedSuite)}</strong>
-                      <span>{matchedSuite.matchDescription}</span>
-                    </div>
-                    <Icon icon="hugeicons:arrow-right-02" className={s.promptResultArrow} />
+                    <span className={promptChat.quickIcon}>
+                      <Logo id={suite.id} />
+                    </span>
+                    <span>{getSuiteDisplayTitle(suite)}</span>
                   </button>
+                ))}
+              </div>
+            }
+          >
+            {isThinking ? (
+              <div className={promptChat.thinking}>
+                <div className={promptChat.dots}>
+                  <span />
+                  <span />
+                  <span />
                 </div>
-              )}
-            </div>
-          </div>
+                <span>Analyzing your request...</span>
+              </div>
+            ) : null}
 
-          <div className={s.promptQuick}>
-            {getHeroPromptSuites().map((suite) => (
-              <button
-                key={suite.id}
-                type="button"
-                style={{ "--suite-color": suite.color } as React.CSSProperties}
-                onClick={() => handleQuickSelect(suite)}
-              >
-                <span className={s.promptQuickIcon}>
-                  <Logo id={suite.id} />
-                </span>
-                <span>{getSuiteDisplayTitle(suite)}</span>
-              </button>
-            ))}
-          </div>
-
-          <div className={s.promptBg} aria-hidden>
-            <Color4Bg style="blur-gradient" />
-          </div>
+            {matchedSuite && !isThinking ? (
+              <div className={promptChat.result} style={{ "--suite-color": matchedSuite.color } as React.CSSProperties}>
+                <div className={promptChat.resultHeader}>
+                  <Icon icon="hugeicons:sparkles" />
+                  <span>Recommended suite</span>
+                </div>
+                <button
+                  className={promptChat.resultCard}
+                  type="button"
+                  onClick={() => handleSuiteClick(matchedSuite.id)}
+                >
+                  <div className={promptChat.resultIcon}>
+                    <Logo id={matchedSuite.id} />
+                  </div>
+                  <div className={promptChat.resultInfo}>
+                    <strong>Kalit {getSuiteDisplayTitle(matchedSuite)}</strong>
+                    <span>{matchedSuite.matchDescription}</span>
+                  </div>
+                  <Icon icon="hugeicons:arrow-right-02" className={promptChat.resultArrow} />
+                </button>
+              </div>
+            ) : null}
+          </HeroPromptChat>
         </div>
-
-        <div className={s.ai} data-reveal>
-          <h2>Powered by leading AI models, orchestrated by Kalit</h2>
-          <Models />
-        </div>
+        <Powered title="Powered by leading AI models, orchestrated by Kalit" />
       </Container>
     </section>
   )

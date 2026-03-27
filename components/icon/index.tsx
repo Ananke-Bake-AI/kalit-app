@@ -16,5 +16,5 @@ export const Icon = ({ icon, ...props }: IconProps) => {
     return <Logo id="kalit" className={clsx(s.icon, props.className)} data-icon={icon} />
   }
 
-  return <Iconify {...props} className={clsx(s.icon, props.className)} icon={icon} data-icon={icon} />
+  return <Iconify {...props} className={clsx(s.icon, props.className)} icon={icon} data-icon={icon} ssr={true} />
 }

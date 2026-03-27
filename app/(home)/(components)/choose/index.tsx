@@ -161,13 +161,7 @@ export const Choose = () => {
           subtitle="Compare"
           paragraph="Compare Kalit with other tools across the capabilities that matter most to founders and digital teams."
         >
-          Why choose{" "}
-          <span data-icon="right">
-            Kalit?
-            <span data-icon-svg>
-              <Icon icon="kalit" />
-            </span>
-          </span>
+          Why choose Kalit?
           <svg viewBox="0 0 941 241" className={clsx(s.line, s.line1)}>
             <path
               ref={line1Ref}

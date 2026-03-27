@@ -7,6 +7,7 @@
   --width-icon: calc(100px + 10 * (100vw - 320px) / 1080);
   --width-kalit: calc(var(--table-space) + 20 * (100vw - 320px) / 1080);
   margin-top: var(--spacing-4);
+  margin-bottom: calc(var(--spacing-3) * -1);
 
   @include max(950px) {
     --width-label: calc(120px + 10 * (100vw - 320px) / 1080);

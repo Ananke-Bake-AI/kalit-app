@@ -47,10 +47,8 @@ export const RevealText = ({
         type: "words",
         wordsClass: s.word,
         smartWrap: true,
-        ignore: "[data-icon]"
+        ignore: "svg"
       })
-
-      const iconWrappers = root.querySelectorAll<HTMLElement>("[data-icon-svg]")
 
       const tl = gsap.timeline({
         defaults: { ease: easings.smoothOut },
@@ -72,21 +70,25 @@ export const RevealText = ({
             onComplete?.()
           }
         })
+      }
 
-        if (iconWrappers.length > 0) {
-          tl.fromTo(
-            iconWrappers,
-            { scale: 0 },
-            {
-              scale: 1,
-              ease: "back.out(1.2)",
-              duration: 1,
-              stagger: 0.2,
-              delay: 0.5
-            },
-            "<"
-          )
-        }
+      const paths = root.querySelectorAll<SVGPathElement>("[data-path]")
+      if (paths.length > 0) {
+        gsap.fromTo(
+          paths,
+          { "--dash-offset": 2 },
+          {
+            "--dash-offset": 0,
+            duration: 4,
+            ease: "power1.inOut",
+            delay: 0.4,
+            scrollTrigger: {
+              trigger: paths,
+              start: "top bottom",
+              once: true
+            }
+          }
+        )
       }
 
       const syncScrollTriggerAndMaybePlay = () => {

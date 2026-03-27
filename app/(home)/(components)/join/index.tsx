@@ -1,15 +1,15 @@
 "use client"
 
 import { Button } from "@/components/button"
+import { Color4Bg } from "@/components/color4bg"
 import { Container } from "@/components/container"
 import { Heading } from "@/components/heading"
+import { Link } from "@/components/link"
 import { Logo } from "@/components/logo"
 import { SUITES } from "@/lib/suites"
 import { useGSAP } from "@gsap/react"
-import { Icon } from "@iconify/react"
 import clsx from "clsx"
 import gsap from "gsap"
-import { Link } from "@/components/link"
 import { useRef } from "react"
 import s from "./join.module.scss"
 
@@ -50,13 +50,7 @@ export const Join = () => {
         >
           Start with the suite
           <br />
-          that matches your{" "}
-          <span data-icon="right">
-            goal
-            <span data-icon-svg>
-              <Icon icon="hugeicons:rocket-01" />
-            </span>
-          </span>
+          that matches your goal
         </Heading>
         <div className={s.bottom}>
           <div className={s.screen}>
@@ -89,13 +83,20 @@ export const Join = () => {
                     <span>kalit</span> <strong>{suite.title}</strong>
                   </div>
                 </div>
-                <Button href={`/register?suite=${suite.id}`} className={s.btn} data-button-id={suite.id} variant="tertiary">
+                <Button
+                  href={`/register?suite=${suite.id}`}
+                  className={s.btn}
+                  data-button-id={suite.id}
+                  variant="tertiary"
+                >
                   {suite.button}
                 </Button>
               </div>
             ))}
           </div>
-          <div className={s.bg} aria-hidden />
+          <div className={s.bg}>
+            <Color4Bg className={s.gradient} style="blur-gradient" />
+          </div>
         </div>
       </Container>
     </section>

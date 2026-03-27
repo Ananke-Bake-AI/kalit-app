@@ -1,6 +1,5 @@
 import { Container } from "@/components/container"
 import { Heading } from "@/components/heading"
-import { Icon } from "@iconify/react"
 import Image from "next/image"
 import s from "./features.module.scss"
 
@@ -37,13 +36,7 @@ export const Features = () => {
           paragraph="Go from idea to execution faster with AI workflows designed for real product, growth, and security work."
         >
           Built to ship
-          <br /> not just{" "}
-          <span data-icon="right">
-            prototype
-            <span data-icon-svg>
-              <Icon icon="hugeicons:chart-up" />
-            </span>
-          </span>
+          <br /> not just prototype
         </Heading>
         <div className={s.list}>
           {FEATURES.map((feature) => (

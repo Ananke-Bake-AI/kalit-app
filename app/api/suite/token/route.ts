@@ -3,8 +3,7 @@ import { SignJWT } from "jose"
 import { auth } from "@/lib/auth"
 import { checkSuiteAccess, resolveEntitlements } from "@/lib/entitlements"
 import { prisma } from "@/lib/prisma"
-import { SUITE_URLS } from "@/lib/suite-urls"
-import type { SuiteId } from "@/lib/suites"
+import { getSuiteAppUrl, type SuiteId } from "@/lib/suites"
 
 const VALID_SUITE_IDS: SuiteId[] = ["marketing", "project", "flow", "pentest"]
 
@@ -82,7 +81,7 @@ export async function POST(req: NextRequest) {
       .setAudience(suiteId)
       .sign(encoder.encode(secret))
 
-    const baseUrl = SUITE_URLS[suiteId]
+    const baseUrl = getSuiteAppUrl(suiteId)
     if (!baseUrl) {
       return NextResponse.json(
         { error: "Suite URL not configured" },

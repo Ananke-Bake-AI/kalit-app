@@ -1,57 +1,14 @@
 @use "@/styles/mixins" as *;
 
 .heading {
-  h2 {
+  h2,
+  h1 {
     @include fs(40px, 24, 128px);
     line-height: 1.05;
     margin-top: var(--size-10);
 
     & + .paragraph {
       margin-top: var(--size-6);
-    }
-
-    [data-icon-svg] {
-      position: absolute;
-      top: -0.25em;
-      transform: scale(0);
-    }
-
-    [data-icon] {
-      position: relative;
-
-      svg {
-        position: relative;
-        padding: 0.225em;
-        font-size: 0.6em;
-        border-radius: var(--radius-rounded);
-        color: var(--white);
-        background: var(--gradient-primary-radial);
-        top: 0.5em;
-      }
-
-      &[data-icon="right"] {
-        [data-icon-svg] {
-          right: 0;
-        }
-
-        svg {
-          border-bottom-left-radius: 0;
-          transform: translateX(125%);
-          overflow: visible;
-        }
-      }
-
-      &[data-icon="left"] {
-        [data-icon-svg] {
-          left: 0;
-        }
-
-        svg {
-          border-bottom-right-radius: 0;
-          transform: translateX(-125%);
-          overflow: visible;
-        }
-      }
     }
   }
 }

@@ -1,5 +1,168 @@
 @use "@/styles/mixins" as *;
 
+$responsive: 1200px;
+
 .hero {
-  // border: 1px solid red;
+  padding: var(--spacing-2-5) 0;
+
+  @include max($responsive) {
+    text-align: center;
+
+    [data-paragraph] {
+      margin-inline: auto;
+    }
+  }
+
+  .heading {
+    h1 {
+      @include fs(32px, 24, 128px);
+    }
+
+    .strong {
+      margin-top: -0.05em;
+      font-size: 2em;
+      display: inline-block;
+      position: relative;
+    }
+
+    .line {
+      width: 200%;
+      inset: 0 auto auto 96%;
+      transform: translateY(-71%);
+    }
+
+    [data-paragraph] {
+      max-width: 100%;
+
+      @include min($responsive) {
+        width: calc(400px + 100 * (100vw - 320px) / 1080);
+      }
+    }
+  }
+
+  .button {
+    font-size: 1.15em;
+    margin-top: var(--spacing-2);
+  }
+}
+
+.right {
+  min-width: 0;
+  position: absolute;
+  right: 0;
+  top: 42%;
+  transform: translateY(-50%);
+  width: calc(400px + 150 * (100vw - 320px) / 1080);
+
+  @include max($responsive) {
+    display: none;
+  }
+}
+
+.list {
+  font-family: var(--font-heading);
+  display: flex;
+  align-items: center;
+  gap: 0.75em 2em;
+  margin-top: var(--spacing-1-5);
+  white-space: nowrap;
+  flex-wrap: wrap;
+
+  @include max($responsive) {
+    justify-content: center;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.75em;
+  }
+
+  svg {
+    font-size: 1.25em;
+
+    * {
+      stroke-width: 1.5;
+    }
+  }
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  color: var(--white);
+  font-size: calc(11px + 2 * (100vw - 320px) / 1080);
+  margin: var(--spacing-1) 0;
+
+  .btn {
+    transition:
+      transform var(--transition-scale),
+      background-color var(--transition-link),
+      color var(--transition-link);
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    position: relative;
+    @include border-glass(var(--gradient-border-glass-3));
+    border-radius: var(--radius-rounded);
+    background-color: var(--glass-15);
+    padding: 0.7em 1em 0.65em;
+    line-height: 1;
+
+    @include is-hover {
+      background-color: var(--glass-50);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+}
+
+.mention {
+  text-align: center;
+  color: var(--white);
+  line-height: 1.5;
+  width: 80%;
+  margin-inline: auto;
+  font-weight: 300;
+}
+
+.bg {
+  position: absolute;
+  z-index: -1;
+  width: 130vw;
+  left: 0%;
+  bottom: -30%;
+  top: -40%;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    background: radial-gradient(circle at 50% 50%, oklch(from var(--body) l c h / 0) 0%, var(--body) 70%);
+    z-index: 1;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    z-index: 1;
+    background: linear-gradient(to bottom, var(--body) 0%, oklch(from var(--body) l c h / 0) 30%);
+  }
+
+  .gradient {
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(to top, var(--body) 0%, oklch(from var(--body) l c h / 0) 30%);
+    }
+  }
 }

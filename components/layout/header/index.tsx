@@ -7,7 +7,7 @@ import { Link } from "@/components/link"
 import { Logotype } from "@/components/logotype"
 import { SUITES, type AppPageState, type SuiteId } from "@/lib/suites"
 import { useAppStore } from "@/stores/app"
-import { useElementSize } from "@reactuses/core"
+import { useClickOutside, useElementSize } from "@reactuses/core"
 import clsx from "clsx"
 import type { Session } from "next-auth"
 import { signOut, useSession } from "next-auth/react"
@@ -25,6 +25,7 @@ export const Header = ({ initialSession = null }: HeaderProps) => {
   const { nav, setNav, page } = useAppStore()
   const { data: session, status } = useSession()
   const [menuOpen, setMenuOpen] = useState(false)
+  const headerRef = useRef<HTMLElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
   const labelRefs = useRef<Partial<Record<SuiteId, HTMLSpanElement | null>>>({})
   const prevPageRef = useRef<AppPageState>(page)
@@ -43,18 +44,11 @@ export const Header = ({ initialSession = null }: HeaderProps) => {
     return () => clearTimeout(t)
   }, [page])
 
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setMenuOpen(false)
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [])
+  useClickOutside(menuRef, () => setMenuOpen(false), menuOpen)
+  useClickOutside(headerRef, () => setNav(false), nav)
 
   return (
-    <header className={clsx(s.header, nav && s.open)}>
+    <header ref={headerRef} className={clsx(s.header, nav && s.open)}>
       <div className={s.content}>
         <Link href="/" className={s.logo} data-logo-active={page}>
           <Logotype all={true} />

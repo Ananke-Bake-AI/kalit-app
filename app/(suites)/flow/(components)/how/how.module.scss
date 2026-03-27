@@ -1,0 +1,94 @@
+@use "@/styles/mixins" as *;
+
+.how {
+  margin-top: var(--spacing-4);
+  margin-bottom: var(--spacing-4);
+  text-align: center;
+
+  [data-paragraph] {
+    width: var(--container-middle);
+    margin-inline: auto;
+    text-wrap: balance;
+  }
+
+  .powered {
+    margin-top: var(--spacing-3);
+  }
+}
+
+.steps {
+  --step-width: calc(350px + 100 * (100vw - 320px) / 1080);
+  --gap: var(--spacing-2-5);
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding-inline: var(--spacing-2);
+  gap: var(--gap);
+  margin-top: var(--spacing-3);
+  text-align: left;
+  position: relative;
+}
+
+.step {
+  --padding: calc(32px + 8 * (100vw - 320px) / 1080);
+  width: var(--step-width);
+  aspect-ratio: 16/9;
+  padding: var(--padding);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: calc(var(--padding) / 2);
+  background-color: var(--glass-50);
+  @include border-glass(var(--gradient-border-glass-3));
+  @include cornerShape(var(--radius-1));
+  @include backdrop(24px);
+
+  h3 {
+    margin-bottom: calc(var(--padding) / 2);
+    font-size: calc(18px + 4 * (100vw - 320px) / 1080);
+  }
+
+  p {
+    font-weight: 300;
+    line-height: 1.5;
+    margin-bottom: -0.25em;
+  }
+
+  &1 {
+    order: 1;
+  }
+
+  &2 {
+    order: 3;
+    align-self: center;
+    margin: auto;
+  }
+
+  &3 {
+    order: 2;
+  }
+}
+
+.top {
+  font-size: calc(20px + 4 * (100vw - 320px) / 1080);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 300;
+  color: var(--color-2);
+  margin-bottom: auto;
+
+  svg {
+    font-size: 1.25em;
+  }
+}
+
+.line {
+  position: absolute;
+  top: calc(50% + var(--gap) / 2);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100vw;
+  stroke-width: 20;
+}

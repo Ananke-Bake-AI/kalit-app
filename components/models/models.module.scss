@@ -31,3 +31,16 @@
     }
   }
 }
+
+.ai {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-top: var(--size-16);
+
+  h2 {
+    font-family: var(--font-main);
+    font-size: 1em;
+    font-weight: 300;
+    margin-top: var(--size-2);
+  }
+}

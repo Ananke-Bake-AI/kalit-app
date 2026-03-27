@@ -4,7 +4,6 @@ import { Button } from "@/components/button"
 import { Container } from "@/components/container"
 import { Heading } from "@/components/heading"
 import { useGSAP } from "@gsap/react"
-import { Icon } from "@iconify/react"
 import gsap from "gsap"
 import Image from "next/image"
 import { useRef } from "react"
@@ -43,13 +42,24 @@ export const Features = () => {
 
       const ctx = gsap.context(() => {
         const items = gsap.utils.toArray<HTMLElement>(root.children)
-        for (let i = 0; i < items.length - 1; i++) {
-          gsap.to(items[i], {
-            scale: 0.95,
+        for (let i = 0; i < items.length; i++) {
+          if (i !== items.length - 1) {
+            gsap.to(items[i], {
+              scale: 0.95,
+              scrollTrigger: {
+                trigger: items[i],
+                start: "50% 50%",
+                endTrigger: items[i + 1],
+                end: "50% 50%",
+                scrub: true
+              }
+            })
+          }
+          gsap.to(`[data-img="${i}"]`, {
+            scale: 1,
             scrollTrigger: {
               trigger: items[i],
-              start: "50% 50%",
-              endTrigger: items[i + 1],
+              start: "top bottom",
               end: "50% 50%",
               scrub: true
             }
@@ -70,26 +80,28 @@ export const Features = () => {
           subtitle="Our features"
           paragraph="From idea to deployed project in minutes. No barriers between your vision and a live website."
         >
-          <span data-icon="left">
-            Everything
-            <span data-icon-svg>
-              <Icon icon="hugeicons:ai-brain-02" />
-            </span>
-          </span>{" "}
-          you need
+          Everything you need
           <br />
           to ship faster
         </Heading>
         <div ref={cardsRef} className={s.cards}>
-          {CARDS.map((card) => (
-            <div className={s.card} key={card.title}>
+          {CARDS.map((card, i) => (
+            <div className={s.card} key={i}>
               <div className={s.left}>
                 <h3>{card.title}</h3>
                 <p>{card.text}</p>
                 <Button circle>Start Building</Button>
               </div>
               <div className={s.right}>
-                <Image src={card.img} alt={card.title} width={1314} height={1046} quality={100} draggable={false} />
+                <Image
+                  src={card.img}
+                  alt={card.title}
+                  width={1314}
+                  height={1046}
+                  quality={100}
+                  draggable={false}
+                  data-img={i}
+                />
               </div>
             </div>
           ))}

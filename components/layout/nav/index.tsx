@@ -1,18 +1,27 @@
 "use client"
 
+import { Icon } from "@/components/icon"
 import { Link } from "@/components/link"
 import { Logo } from "@/components/logo"
 import { SUITES } from "@/lib/suites"
 import { useAppStore } from "@/stores/app"
-import { Icon } from "@iconify/react"
 import clsx from "clsx"
+import type { MouseEvent } from "react"
 import s from "./nav.module.scss"
 
 export const Nav = () => {
-  const { nav, subOpen, setSubOpen } = useAppStore()
+  const { nav, subOpen, setSubOpen, setNav } = useAppStore()
+
+  const handleNavClick = (e: MouseEvent<HTMLElement>) => {
+    const el = e.target as HTMLElement
+    if (el.closest("a[href]")) {
+      setNav(false)
+      setSubOpen(false)
+    }
+  }
 
   return (
-    <nav className={clsx(s.nav, nav && s.open)}>
+    <nav className={clsx(s.nav, nav && s.open)} onClick={handleNavClick}>
       <ul>
         <li className={s.subnav}>
           <span
