@@ -51,7 +51,7 @@ export const PLANS: PlanConfig[] = [
     key: "enterprise",
     name: "Enterprise",
     monthlyPrice: 29900,
-    suites: ["flow", "project", "marketing", "pentest"],
+    suites: ["flow", "project", "marketing", "pentest", "search"],
     creditsPerMonth: 2000,
     maxMembers: -1,
     features: [
