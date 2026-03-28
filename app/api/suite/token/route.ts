@@ -5,7 +5,7 @@ import { checkSuiteAccess, resolveEntitlements } from "@/lib/entitlements"
 import { prisma } from "@/lib/prisma"
 import { getSuiteAppUrl, type SuiteId } from "@/lib/suites"
 
-const VALID_SUITE_IDS: SuiteId[] = ["marketing", "project", "flow", "pentest"]
+const VALID_SUITE_IDS: SuiteId[] = ["marketing", "project", "flow", "pentest", "search"]
 
 export async function POST(req: NextRequest) {
   try {

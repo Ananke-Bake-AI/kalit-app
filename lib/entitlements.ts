@@ -11,7 +11,7 @@ export interface ResolvedEntitlements {
 
 export async function resolveEntitlements(orgId: string): Promise<ResolvedEntitlements> {
   const defaults: ResolvedEntitlements = {
-    suites: { project: false, flow: false, marketing: false, pentest: false },
+    suites: { project: false, flow: false, marketing: false, pentest: false, search: false },
     creditsPerMonth: 0,
     maxMembers: 1,
     planKey: null,

@@ -1,4 +1,4 @@
-export type SuiteId = "pentest" | "flow" | "marketing" | "project"
+export type SuiteId = "pentest" | "flow" | "marketing" | "project" | "search"
 
 /** Contexte d’URL / store : hors suite ou id de suite active */
 export type AppPageState = "default" | SuiteId
@@ -100,6 +100,23 @@ export const SUITES: SuiteConfig[] = [
       "M30.6809 51.2513C42.0363 51.2513 51.2417 42.046 51.2417 30.6905C51.2417 19.3351 42.0363 10.1298 30.6809 10.1298C19.3255 10.1298 10.1201 19.3351 10.1201 30.6906L10.1201 81.9968",
     logoTitle: "Kalit — Project Workspace",
     appUrl: process.env.SUITE_PROJECT_URL || "http://localhost:3003"
+  },
+  {
+    id: "search",
+    color: "var(--color-2)",
+    gradient: "var(--gradient-color-2)",
+    gradientRadial: "var(--gradient-color-2-radial)",
+    title: "search",
+    button: "Find ideas",
+    description:
+      "Discover trending project ideas backed by real data. AI agents analyze markets, score viability, and generate build-ready specs for entrepreneurs.",
+    smallDescription: "R&D intelligence for entrepreneurs.",
+    matchDescription: "AI will scan trends, analyze markets, and surface the best project ideas to build.",
+    quickPrompt: "Find trending SaaS ideas with high monetization potential",
+    logoD:
+      "M30.6809 51.2513C42.0363 51.2513 51.2417 42.046 51.2417 30.6905C51.2417 19.3351 42.0363 10.1298 30.6809 10.1298C19.3255 10.1298 10.1201 19.3351 10.1201 30.6906L10.1201 81.9968",
+    logoTitle: "Kalit — Search Suite",
+    appUrl: process.env.SUITE_SEARCH_URL || "http://localhost:3003"
   }
 ]
 
