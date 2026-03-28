@@ -114,7 +114,7 @@ export const SUITES: SuiteConfig[] = [
     matchDescription: "AI will scan trends, analyze markets, and surface the best project ideas to build.",
     quickPrompt: "Find trending SaaS ideas with high monetization potential",
     logoD:
-      "M30.6809 51.2513C42.0363 51.2513 51.2417 42.046 51.2417 30.6905C51.2417 19.3351 42.0363 10.1298 30.6809 10.1298C19.3255 10.1298 10.1201 19.3351 10.1201 30.6906L10.1201 81.9968",
+      "M30.68 10.13C19.33 10.13 10.12 19.34 10.12 30.69C10.12 42.05 19.33 51.25 30.68 51.25C42.04 51.25 51.24 42.05 51.24 30.69C51.24 19.34 42.04 10.13 30.68 10.13M45.5 46.5L62 82",
     logoTitle: "Kalit — Search Suite",
     appUrl: process.env.SUITE_SEARCH_URL || "https://research.kalit.ai"
   }
