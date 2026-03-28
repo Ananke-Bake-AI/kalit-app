@@ -225,7 +225,8 @@ export function detectSuiteFromPrompt(input: string): SuiteConfig {
     project: 0,
     flow: 0,
     marketing: 0,
-    pentest: 0
+    pentest: 0,
+    search: 0
   }
   for (const [keyword, suiteId] of Object.entries(SUITE_KEYWORD_TO_ID)) {
     if (lower.includes(keyword)) scores[suiteId] += keyword.split(" ").length
