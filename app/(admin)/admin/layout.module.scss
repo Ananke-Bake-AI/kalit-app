@@ -1,0 +1,120 @@
+@use "@/styles/app-glass" as *;
+@use "@/styles/mixins" as *;
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-1);
+}
+
+.headerTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+  color: var(--text);
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: color var(--transition-link);
+
+  &:hover {
+    color: var(--text);
+  }
+}
+
+.shell {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(11rem, 13rem) minmax(0, 1fr);
+  gap: clamp(1rem, 2vw, 1.25rem);
+
+  @include max($responsiveSettings) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tabs {
+  display: grid;
+  gap: 0.35rem;
+  align-self: start;
+  position: sticky;
+  top: calc(var(--header-height, 80px) + 1rem);
+
+  @include max($responsiveSettings) {
+    position: fixed;
+    bottom: var(--size-6);
+    z-index: 9000;
+    display: flex;
+    @include glass($blur: true);
+    border-radius: 100px;
+    padding: var(--size-2);
+    box-shadow: var(--shadow-1);
+    transform: translateX(-50%);
+    left: 50%;
+
+    .tabLabel {
+      display: none;
+    }
+  }
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.7rem 0.9rem;
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  border-radius: var(--radius-2);
+  transition:
+    background-color var(--transition-link),
+    color var(--transition-link);
+
+  @include max($responsiveSettings) {
+    --size: calc(44px + 4 * (100vw - 320px) / 1080);
+    width: var(--size);
+    height: var(--size);
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
+
+  &:hover {
+    color: var(--text);
+    background-color: oklch(from var(--text) l c h / 0.04);
+  }
+
+  &.tabActive {
+    color: var(--white);
+    background-color: var(--text);
+  }
+}
+
+.tabIcon {
+  display: inline-flex;
+  font-size: 1.15rem;
+
+  :global(svg) {
+    width: 1.15em;
+    height: 1.15em;
+  }
+}
+
+.tabLabel {
+  font-weight: 400;
+}
+
+.content {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}

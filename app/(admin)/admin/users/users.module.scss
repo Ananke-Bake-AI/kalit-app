@@ -1,0 +1,128 @@
+@use "@/styles/app-glass" as *;
+@use "@/styles/mixins" as *;
+
+.search {
+  max-width: 280px;
+}
+
+.table {
+  display: grid;
+}
+
+.tableHeader {
+  display: grid;
+  grid-template-columns: 1.2fr 1.5fr 1fr 0.8fr 0.7fr 0.4fr;
+  gap: var(--size-3);
+  padding: var(--size-3) var(--size-5);
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid oklch(from var(--text) l c h / 0.06);
+
+  @include max($responsive) {
+    display: none;
+  }
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 1.2fr 1.5fr 1fr 0.8fr 0.7fr 0.4fr;
+  gap: var(--size-3);
+  padding: var(--size-4) var(--size-5);
+  font-size: 0.86rem;
+  color: var(--text);
+  border-bottom: 1px solid oklch(from var(--text) l c h / 0.04);
+  align-items: center;
+  transition: background-color var(--transition-link);
+
+  &:hover {
+    background-color: oklch(from var(--text) l c h / 0.02);
+  }
+
+  @include max($responsive) {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--size-2);
+  }
+}
+
+.name {
+  font-weight: 500;
+}
+
+.email {
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.org {
+  font-size: 0.82rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.date {
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+}
+
+.roleSelect {
+  appearance: none;
+  background: oklch(from var(--text) l c h / 0.05);
+  border: 1px solid oklch(from var(--text) l c h / 0.08);
+  border-radius: var(--radius-3);
+  padding: 0.3em 0.6em;
+  font-size: 0.78rem;
+  font-family: var(--font-main);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color var(--transition-link);
+
+  &:hover {
+    border-color: oklch(from var(--text) l c h / 0.2);
+  }
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.deleteBtn {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-rounded);
+  color: var(--text-secondary);
+  font-size: 1rem;
+  transition:
+    color var(--transition-link),
+    background-color var(--transition-link);
+
+  &:hover {
+    color: var(--color-error, #ef4444);
+    background-color: oklch(from #ef4444 l c h / 0.08);
+  }
+}
+
+.empty {
+  padding: var(--size-8);
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-4);
+}
+
+.pageInfo {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}

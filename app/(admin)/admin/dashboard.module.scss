@@ -1,0 +1,106 @@
+@use "@/styles/app-glass" as *;
+@use "@/styles/mixins" as *;
+
+.statsGrid {
+  display: grid;
+  gap: clamp(0.7rem, 1.5vw, 1rem);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  @include max($responsive) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.statCard {
+  @include glass-panel(1.25rem);
+  position: relative;
+  padding: var(--size-5) var(--size-6);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 0.18rem;
+    background: var(--gradient-linear-3);
+    border-radius: 1.25rem 1.25rem 0 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+}
+
+.statLabel {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.statValue {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  line-height: 1;
+  color: var(--text);
+}
+
+.table {
+  display: grid;
+  gap: 0;
+}
+
+.tableHeader {
+  display: grid;
+  grid-template-columns: 1.2fr 1.5fr 1fr 0.8fr;
+  gap: var(--size-3);
+  padding: var(--size-3) var(--size-5);
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid oklch(from var(--text) l c h / 0.06);
+
+  @include max($responsive) {
+    display: none;
+  }
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 1.2fr 1.5fr 1fr 0.8fr;
+  gap: var(--size-3);
+  padding: var(--size-4) var(--size-5);
+  font-size: 0.88rem;
+  color: var(--text);
+  border-bottom: 1px solid oklch(from var(--text) l c h / 0.04);
+  transition: background-color var(--transition-link);
+
+  &:hover {
+    background-color: oklch(from var(--text) l c h / 0.02);
+  }
+
+  @include max($responsive) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.name {
+  font-weight: 500;
+}
+
+.email {
+  color: var(--text-secondary);
+}
+
+.date {
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+}
+
+.empty {
+  padding: var(--size-8);
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+}

@@ -1,0 +1,95 @@
+@use "@/styles/app-glass" as *;
+@use "@/styles/mixins" as *;
+
+.filter {
+  appearance: none;
+  background: oklch(from var(--text) l c h / 0.05);
+  border: 1px solid oklch(from var(--text) l c h / 0.08);
+  border-radius: var(--radius-3);
+  padding: 0.4em 0.8em;
+  font-size: 0.82rem;
+  font-family: var(--font-main);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.table {
+  display: grid;
+}
+
+.tableHeader {
+  display: grid;
+  grid-template-columns: 1.3fr 0.8fr 0.8fr 0.7fr 0.6fr 0.7fr;
+  gap: var(--size-3);
+  padding: var(--size-3) var(--size-5);
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid oklch(from var(--text) l c h / 0.06);
+
+  @include max($responsive) {
+    display: none;
+  }
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 1.3fr 0.8fr 0.8fr 0.7fr 0.6fr 0.7fr;
+  gap: var(--size-3);
+  padding: var(--size-4) var(--size-5);
+  font-size: 0.84rem;
+  color: var(--text);
+  border-bottom: 1px solid oklch(from var(--text) l c h / 0.04);
+  align-items: center;
+
+  @include max($responsive) {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--size-2);
+  }
+}
+
+.tableRow5 {
+  display: grid;
+  grid-template-columns: 1.3fr 0.8fr 1fr 0.6fr 0.7fr;
+  gap: var(--size-3);
+  padding: var(--size-4) var(--size-5);
+  font-size: 0.84rem;
+  color: var(--text);
+  border-bottom: 1px solid oklch(from var(--text) l c h / 0.04);
+  align-items: center;
+
+  @include max($responsive) {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--size-2);
+  }
+}
+
+.orgName {
+  font-weight: 500;
+}
+
+.date {
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+}
+
+.empty {
+  padding: var(--size-8);
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-4);
+  padding: var(--size-4) 0;
+}
+
+.pageInfo {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
