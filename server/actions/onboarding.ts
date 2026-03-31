@@ -29,6 +29,12 @@ export async function completeOnboarding(input: OnboardingInput) {
     slug = `${slug}-${Date.now().toString(36)}`
   }
 
+  // Trial: 14 days, all suites, 50 credits
+  const trialExpiry = new Date()
+  trialExpiry.setDate(trialExpiry.getDate() + 14)
+
+  const trialSuites = ["project", "flow", "marketing", "pentest", "search"]
+
   const result = await prisma.$transaction(async (tx) => {
     const org = await tx.organization.create({
       data: {
@@ -40,6 +46,24 @@ export async function completeOnboarding(input: OnboardingInput) {
             userId: session.user.id,
             role: "OWNER",
             isCurrent: true,
+          },
+        },
+        entitlements: {
+          createMany: {
+            data: [
+              ...trialSuites.map((suiteId) => ({
+                key: `suite.${suiteId}.access`,
+                value: { granted: true },
+                source: "TRIAL" as const,
+                expiresAt: trialExpiry,
+              })),
+              {
+                key: "monthly.credits",
+                value: { amount: 50 },
+                source: "TRIAL" as const,
+                expiresAt: trialExpiry,
+              },
+            ],
           },
         },
       },
