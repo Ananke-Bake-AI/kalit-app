@@ -4,7 +4,7 @@
 .statsGrid {
   display: grid;
   gap: clamp(0.7rem, 1.5vw, 1rem);
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 
   @include max($responsive) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -44,6 +44,170 @@
   line-height: 1;
   color: var(--text);
 }
+
+.statHint {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+}
+
+// ─── Two-column layout ──────────────────────────────────
+
+.twoCol {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(0.7rem, 1.5vw, 1rem);
+
+  @include max($responsive) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ─── Suite breakdown ────────────────────────────────────
+
+.suiteBreakdown {
+  display: grid;
+  gap: var(--size-3);
+}
+
+.suiteRow {
+  display: grid;
+  grid-template-columns: 5rem 1fr 3rem;
+  gap: var(--size-3);
+  align-items: center;
+}
+
+.suiteName {
+  font-size: 0.82rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.suiteBar {
+  height: 0.5rem;
+  background: oklch(from var(--text) l c h / 0.06);
+  border-radius: var(--radius-rounded);
+  overflow: hidden;
+}
+
+.suiteBarFill {
+  height: 100%;
+  background: var(--gradient-linear-3);
+  border-radius: var(--radius-rounded);
+  min-width: 2px;
+  transition: width 0.3s ease;
+}
+
+.suiteCredits {
+  text-align: right;
+  font-size: 0.8rem;
+  font-family: var(--font-heading);
+  color: var(--text);
+}
+
+.emptySmall {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+// ─── Signups chart ──────────────────────────────────────
+
+.chartGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--size-2);
+  align-items: end;
+  height: 120px;
+}
+
+.chartCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  height: 100%;
+}
+
+.chartBarWrap {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.chartBar {
+  width: 60%;
+  max-width: 2rem;
+  min-height: 3px;
+  background: var(--gradient-linear-3);
+  border-radius: var(--radius-3) var(--radius-3) 0 0;
+  transition: height 0.3s ease;
+}
+
+.chartLabel {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.chartValue {
+  font-size: 0.72rem;
+  font-family: var(--font-heading);
+  color: var(--text);
+}
+
+// ─── Quick assign form ──────────────────────────────────
+
+.assignForm {
+  display: flex;
+  gap: var(--size-3);
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.assignEmail {
+  flex: 1;
+  min-width: 200px;
+}
+
+.assignSelect {
+  appearance: none;
+  background: oklch(from var(--text) l c h / 0.05);
+  border: 1px solid oklch(from var(--text) l c h / 0.08);
+  border-radius: var(--radius-3);
+  padding: 0.55em 0.9em;
+  font-size: 0.85rem;
+  font-family: var(--font-main);
+  color: var(--text);
+  cursor: pointer;
+  height: var(--btn-height);
+
+  &:hover {
+    border-color: oklch(from var(--text) l c h / 0.2);
+  }
+}
+
+.assignDate {
+  appearance: none;
+  background: oklch(from var(--text) l c h / 0.05);
+  border: 1px solid oklch(from var(--text) l c h / 0.08);
+  border-radius: var(--radius-3);
+  padding: 0.55em 0.9em;
+  font-size: 0.85rem;
+  font-family: var(--font-main);
+  color: var(--text);
+  cursor: pointer;
+  height: var(--btn-height);
+
+  &::-webkit-calendar-picker-indicator {
+    filter: invert(0.5);
+  }
+}
+
+// ─── Table ──────────────────────────────────────────────
 
 .table {
   display: grid;

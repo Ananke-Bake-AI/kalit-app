@@ -11,25 +11,99 @@ export async function getAdminMetrics() {
 
   const now = new Date()
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+  const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1)
+  const startOfWeek = new Date(now)
+  startOfWeek.setDate(now.getDate() - 7)
+  const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate())
 
-  const [totalUsers, totalOrgs, activeSubscriptions, newUsersThisMonth, activeJobs, creditsUsed] =
-    await Promise.all([
-      prisma.user.count(),
-      prisma.organization.count(),
-      prisma.subscription.count({ where: { status: "ACTIVE" } }),
-      prisma.user.count({ where: { createdAt: { gte: startOfMonth } } }),
-      prisma.job.count({ where: { status: { in: ["RUNNING", "QUEUED"] } } }),
-      prisma.usageRecord.aggregate({ _sum: { credits: true }, where: { createdAt: { gte: startOfMonth } } })
-    ])
+  const [
+    totalUsers, totalOrgs, activeSubscriptions,
+    newUsersThisMonth, newUsersLastMonth, newUsersThisWeek, newUsersToday,
+    activeJobs, completedJobs, failedJobs,
+    creditsUsed, creditsUsedLastMonth,
+    totalUsageRecords,
+    trialEntitlements
+  ] = await Promise.all([
+    prisma.user.count(),
+    prisma.organization.count(),
+    prisma.subscription.count({ where: { status: "ACTIVE" } }),
+    prisma.user.count({ where: { createdAt: { gte: startOfMonth } } }),
+    prisma.user.count({ where: { createdAt: { gte: startOfLastMonth, lt: startOfMonth } } }),
+    prisma.user.count({ where: { createdAt: { gte: startOfWeek } } }),
+    prisma.user.count({ where: { createdAt: { gte: startOfDay } } }),
+    prisma.job.count({ where: { status: { in: ["RUNNING", "QUEUED"] } } }),
+    prisma.job.count({ where: { status: "SUCCEEDED", createdAt: { gte: startOfMonth } } }),
+    prisma.job.count({ where: { status: "FAILED", createdAt: { gte: startOfMonth } } }),
+    prisma.usageRecord.aggregate({ _sum: { credits: true }, where: { createdAt: { gte: startOfMonth } } }),
+    prisma.usageRecord.aggregate({ _sum: { credits: true }, where: { createdAt: { gte: startOfLastMonth, lt: startOfMonth } } }),
+    prisma.usageRecord.count({ where: { createdAt: { gte: startOfMonth } } }),
+    prisma.entitlement.count({ where: { source: "TRIAL", expiresAt: { gt: now } } })
+  ])
+
+  // Credits usage per suite this month
+  const creditsBySuite = await prisma.usageRecord.groupBy({
+    by: ["suiteId"],
+    _sum: { credits: true },
+    where: { createdAt: { gte: startOfMonth } }
+  })
+
+  // Signups per day this week
+  const dailySignups = await prisma.user.groupBy({
+    by: ["createdAt"],
+    where: { createdAt: { gte: startOfWeek } },
+    _count: true
+  })
+
+  // Aggregate daily signups by date
+  const signupsByDay: Record<string, number> = {}
+  for (let d = 0; d < 7; d++) {
+    const date = new Date(startOfWeek)
+    date.setDate(startOfWeek.getDate() + d)
+    signupsByDay[date.toISOString().slice(0, 10)] = 0
+  }
+  for (const row of dailySignups) {
+    const key = new Date(row.createdAt).toISOString().slice(0, 10)
+    signupsByDay[key] = (signupsByDay[key] || 0) + 1
+  }
 
   return {
     totalUsers,
     totalOrgs,
     activeSubscriptions,
     newUsersThisMonth,
+    newUsersLastMonth,
+    newUsersThisWeek,
+    newUsersToday,
     activeJobs,
-    creditsUsedThisMonth: creditsUsed._sum.credits ?? 0
+    completedJobs,
+    failedJobs,
+    creditsUsedThisMonth: creditsUsed._sum.credits ?? 0,
+    creditsUsedLastMonth: creditsUsedLastMonth._sum.credits ?? 0,
+    totalUsageRecords,
+    activeTrials: trialEntitlements,
+    creditsBySuite: creditsBySuite.map((r) => ({ suite: r.suiteId, credits: r._sum.credits ?? 0 })),
+    signupsByDay
   }
+}
+
+// ─── Quick Assign by Email ──────────────────────────────
+
+export async function assignPlanByEmail(email: string, planKey: string, expiresAt?: string) {
+  await requireAdmin()
+
+  const user = await prisma.user.findUnique({
+    where: { email: email.trim().toLowerCase() },
+    include: { memberships: { where: { isCurrent: true }, include: { org: true }, take: 1 } }
+  })
+
+  if (!user) return { error: `No user found with email: ${email}` }
+  if (!user.memberships[0]) return { error: `User ${email} has no organization` }
+
+  const orgId = user.memberships[0].orgId
+  const result = await assignPlan(orgId, planKey, expiresAt)
+
+  if ("error" in result) return result
+  return { success: true, plan: result.plan, orgName: user.memberships[0].org.name }
 }
 
 // ─── Users ──────────────────────────────────────────────
