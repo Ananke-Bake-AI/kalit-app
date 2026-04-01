@@ -1,5 +1,8 @@
+"use client"
+
 import { Portfolio } from "@/components/portfolio"
 import { Underline } from "@/components/underline"
+import { useTranslation } from "@/stores/i18n"
 import { Architecture } from "./(components)/architecture"
 import { Choose } from "./(components)/choose"
 import { Features } from "./(components)/features"
@@ -8,6 +11,8 @@ import { Join } from "./(components)/join"
 import { Stack } from "./(components)/stack"
 
 export default function HomePage() {
+  const t = useTranslation()
+
   return (
     <>
       <Hero />
@@ -16,19 +21,15 @@ export default function HomePage() {
       <Features />
       <Join />
       <Portfolio
-        subtitle="Kalit Portfolio"
+        subtitle={t("portfolio.subtitle")}
         heading={
           <>
-            Let your imagination run wild, <br />
-            Kalit will create it
+            {t("portfolio.realProjects")} <Underline>{t("portfolio.builtAndShipped")}</Underline>{" "}
+            {t("portfolio.byFounders")}
           </>
         }
-        paragraph={
-          <>
-            Real projects <Underline>built and shipped</Underline> by founders using Kalit.
-          </>
-        }
-        buttonText="Explore more projects"
+        paragraph={t("portfolio.exploreMore")}
+        buttonText={t("portfolio.exploreMore")}
         link="/flow"
       />
       <Choose />

@@ -32,7 +32,16 @@
     "flowDesc": "Tasarım, metin ve yapı — siteniz dakikalar içinde yayında olacak.",
     "marketingDesc": "AI kampanyalarınızı tüm kanallarda planlayacak, oluşturacak ve optimize edecek.",
     "pentestDesc": "AI sistemlerinizi tarayacak, güvenlik açıklarını bulacak ve düzeltmeler önerecek.",
-    "searchDesc": "Girişimciler ve ürün ekipleri için Ar-Ge istihbaratı."
+    "searchDesc": "Girişimciler ve ürün ekipleri için Ar-Ge istihbaratı.",
+    "projectBtn": "Uygulamamı oluştur",
+    "flowBtn": "Sitemi oluştur",
+    "marketingBtn": "Büyümemi başlat",
+    "pentestBtn": "Ürünümü koru",
+    "searchBtn": "Fikir bul",
+    "projectDescLong": "Bir prompt ile tam kapsamlı uygulamalar geliştirin ve dağıtın. AI ajanları planlama, geliştirme, test ve teslimattan sorumludur.",
+    "flowDescLong": "Dakikalar içinde web siteleri ve açılış sayfaları yayınlayın. Tasarım, içerik, yapı ve barındırma dahil.",
+    "marketingDescLong": "Tüm kanallarda müşteri edinme kampanyaları planlayın, oluşturun, yürütün ve optimize edin. AI yürütmeyi üstlenir.",
+    "pentestDescLong": "Güvenlik açıklarını maliyetli hale gelmeden önce tespit edin. AI sistemlerinizi tarar ve düzeltmeler önerir."
   },
   "stack": {
     "subtitle": "Kalit Yürütme Yığını",

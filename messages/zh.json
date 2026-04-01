@@ -32,7 +32,16 @@
     "flowDesc": "设计、文案、结构 — 您的网站几分钟内即可上线。",
     "marketingDesc": "AI 将在各渠道规划、创作和优化您的营销活动。",
     "pentestDesc": "AI 将扫描您的系统、发现漏洞并提供修复建议。",
-    "searchDesc": "面向创业者和产品团队的研发情报。"
+    "searchDesc": "面向创业者和产品团队的研发情报。",
+    "projectBtn": "构建我的应用",
+    "flowBtn": "创建我的网站",
+    "marketingBtn": "启动增长",
+    "pentestBtn": "保护我的产品",
+    "searchBtn": "寻找创意",
+    "projectDescLong": "从提示词开发和部署完整应用。AI代理负责规划、构建、测试和交付您的产品。",
+    "flowDescLong": "几分钟内发布网站和落地页。设计、文案、结构和托管全部包含。",
+    "marketingDescLong": "跨渠道规划、创建、执行和优化获客活动。AI负责执行。",
+    "pentestDescLong": "在漏洞造成损失之前发现它们。AI扫描您的系统并提供修复建议。"
   },
   "stack": {
     "subtitle": "Kalit 执行栈",

@@ -32,7 +32,16 @@
     "flowDesc": "Design, Text und Struktur — deine Website ist in Minuten online.",
     "marketingDesc": "KI plant, erstellt und optimiert deine Kampagnen über alle Kanäle.",
     "pentestDesc": "KI scannt deine Systeme, findet Schwachstellen und schlägt Korrekturen vor.",
-    "searchDesc": "F&E-Intelligenz für Unternehmer und Produktteams."
+    "searchDesc": "F&E-Intelligenz für Unternehmer und Produktteams.",
+    "projectBtn": "Meine App bauen",
+    "flowBtn": "Meine Seite erstellen",
+    "marketingBtn": "Wachstum starten",
+    "pentestBtn": "Produkt absichern",
+    "searchBtn": "Ideen finden",
+    "projectDescLong": "Entwickle und deploye komplette Apps aus einem Prompt. KI-Agenten planen, bauen, testen und liefern dein Produkt.",
+    "flowDescLong": "Starte Websites und Landing Pages in Minuten. Design, Inhalte, Struktur und Hosting inklusive.",
+    "marketingDescLong": "Plane, erstelle, führe aus und optimiere Akquise-Kampagnen über alle Kanäle. Die KI übernimmt die Ausführung.",
+    "pentestDescLong": "Erkenne Schwachstellen, bevor sie teuer werden. KI scannt deine Systeme und schlägt Korrekturen vor."
   },
   "stack": {
     "subtitle": "Kalit Execution Stack",

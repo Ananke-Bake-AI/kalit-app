@@ -32,7 +32,16 @@
     "flowDesc": "Design, copy och struktur — din webbplats är live inom några minuter.",
     "marketingDesc": "AI planerar, skapar och optimerar dina kampanjer över alla kanaler.",
     "pentestDesc": "AI skannar dina system, hittar sårbarheter och föreslår åtgärder.",
-    "searchDesc": "FoU-intelligens för entreprenörer och produktteam."
+    "searchDesc": "FoU-intelligens för entreprenörer och produktteam.",
+    "projectBtn": "Bygg min app",
+    "flowBtn": "Skapa min sida",
+    "marketingBtn": "Starta tillväxt",
+    "pentestBtn": "Säkra min produkt",
+    "searchBtn": "Hitta idéer",
+    "projectDescLong": "Utveckla och driftsätt kompletta appar från en prompt. AI-agenter planerar, bygger, testar och levererar din produkt.",
+    "flowDescLong": "Lansera webbplatser och landningssidor på minuter. Design, innehåll, struktur och hosting ingår.",
+    "marketingDescLong": "Planera, skapa, kör och optimera kundanskaffningskampanjer över alla kanaler. AI sköter exekveringen.",
+    "pentestDescLong": "Upptäck sårbarheter innan de blir kostsamma. AI skannar dina system och föreslår åtgärder."
   },
   "stack": {
     "subtitle": "Kalits exekveringsstack",

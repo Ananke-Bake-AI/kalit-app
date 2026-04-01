@@ -32,7 +32,16 @@
     "flowDesc": "Design, copy, and structure — your site will be live in minutes.",
     "marketingDesc": "AI will plan, create, and optimize your campaigns across channels.",
     "pentestDesc": "AI will scan your systems, find vulnerabilities, and suggest fixes.",
-    "searchDesc": "R&D intelligence for entrepreneurs and product teams."
+    "searchDesc": "R&D intelligence for entrepreneurs and product teams.",
+    "projectBtn": "Build my app",
+    "flowBtn": "Create my site",
+    "marketingBtn": "Launch my growth",
+    "pentestBtn": "Secure my product",
+    "searchBtn": "Find ideas",
+    "projectDescLong": "Build and deploy full applications from a prompt. AI agents plan, build, test, and ship your product end-to-end.",
+    "flowDescLong": "Launch high-converting websites and landing pages in minutes. Design, copy, structure, and hosting included.",
+    "marketingDescLong": "Plan, create, run, and optimize acquisition campaigns across channels. AI handles the execution.",
+    "pentestDescLong": "Detect vulnerabilities before they become costly. AI scans your apps and systems, delivers actionable fixes."
   },
   "stack": {
     "subtitle": "Kalit Execution Stack",

@@ -125,7 +125,7 @@ export default async function DashboardPage() {
                   </div>
                   <Badge>Kalit {suite.name}</Badge>
                   <h3 className={s.suiteHeading}>{suite.name} {t("dashboard.suiteSuffix")}</h3>
-                  <p className={s.suiteBlurb}>{suite.description}</p>
+                  <p className={s.suiteBlurb}>{t(`suites.${suite.id}DescLong`)}</p>
                   <span className={s.suiteAction}>{t("dashboard.openSuite")}</span>
                 </Link>
               )
@@ -142,7 +142,7 @@ export default async function DashboardPage() {
                 </div>
                 <Badge>{t("dashboard.locked")}</Badge>
                 <h3 className={s.suiteHeading}>{suite.name} {t("dashboard.suiteSuffix")}</h3>
-                <p className={s.suiteBlurb}>{suite.description}</p>
+                <p className={s.suiteBlurb}>{t(`suites.${suite.id}DescLong`)}</p>
                 <Link href="/settings/billing" className={s.suiteAction}>
                   {t("dashboard.upgradeToUnlock")}
                 </Link>

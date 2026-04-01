@@ -89,7 +89,7 @@ export const Join = () => {
                   data-button-id={suite.id}
                   variant="tertiary"
                 >
-                  {suite.button}
+                  {t(`suites.${suite.id}Btn`)}
                 </Button>
               </div>
             ))}

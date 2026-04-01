@@ -32,7 +32,16 @@
     "flowDesc": "디자인, 카피, 구조 설계 — 몇 분 만에 사이트가 완성됩니다.",
     "marketingDesc": "AI가 모든 채널에서 캠페인을 기획, 제작, 최적화합니다.",
     "pentestDesc": "AI가 시스템을 스캔하고 취약점을 찾아 수정 방안을 제안합니다.",
-    "searchDesc": "창업자와 제품 팀을 위한 R&D 인텔리전스."
+    "searchDesc": "창업자와 제품 팀을 위한 R&D 인텔리전스.",
+    "projectBtn": "앱 만들기",
+    "flowBtn": "사이트 만들기",
+    "marketingBtn": "성장 시작",
+    "pentestBtn": "제품 보호",
+    "searchBtn": "아이디어 찾기",
+    "projectDescLong": "프롬프트에서 풀 앱을 개발하고 배포합니다. AI 에이전트가 계획, 개발, 테스트, 출시까지 담당합니다.",
+    "flowDescLong": "몇 분 만에 웹사이트와 랜딩 페이지를 출시합니다. 디자인, 카피, 구조, 호스팅 포함.",
+    "marketingDescLong": "모든 채널에서 고객 확보 캠페인을 계획, 생성, 실행, 최적화합니다. AI가 실행을 담당합니다.",
+    "pentestDescLong": "비용이 발생하기 전에 취약점을 감지합니다. AI가 시스템을 스캔하고 수정을 제안합니다."
   },
   "stack": {
     "subtitle": "Kalit 실행 스택",

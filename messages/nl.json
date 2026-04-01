@@ -32,7 +32,16 @@
     "flowDesc": "Design, tekst en structuur — je site is binnen enkele minuten live.",
     "marketingDesc": "AI plant, creëert en optimaliseert je campagnes over alle kanalen.",
     "pentestDesc": "AI scant je systemen, vindt kwetsbaarheden en stelt oplossingen voor.",
-    "searchDesc": "R&D-intelligence voor ondernemers en productteams."
+    "searchDesc": "R&D-intelligence voor ondernemers en productteams.",
+    "projectBtn": "Mijn app bouwen",
+    "flowBtn": "Mijn site maken",
+    "marketingBtn": "Groei starten",
+    "pentestBtn": "Product beveiligen",
+    "searchBtn": "Ideeën vinden",
+    "projectDescLong": "Ontwikkel en deploy complete apps vanuit een prompt. AI-agenten plannen, bouwen, testen en leveren je product.",
+    "flowDescLong": "Lanceer websites en landingspagina's in minuten. Design, content, structuur en hosting inbegrepen.",
+    "marketingDescLong": "Plan, maak, voer uit en optimaliseer acquisitiecampagnes over alle kanalen. AI regelt de uitvoering.",
+    "pentestDescLong": "Detecteer kwetsbaarheden voordat ze duur worden. AI scant je systemen en stelt fixes voor."
   },
   "stack": {
     "subtitle": "Kalit Executie Stack",

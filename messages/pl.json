@@ -32,7 +32,16 @@
     "flowDesc": "Design, treść i struktura — Twoja strona będzie gotowa w kilka minut.",
     "marketingDesc": "AI zaplanuje, stworzy i zoptymalizuje Twoje kampanie we wszystkich kanałach.",
     "pentestDesc": "AI przeskanuje Twoje systemy, znajdzie luki i zaproponuje poprawki.",
-    "searchDesc": "Analityka R&D dla przedsiębiorców i zespołów produktowych."
+    "searchDesc": "Analityka R&D dla przedsiębiorców i zespołów produktowych.",
+    "projectBtn": "Stwórz moją aplikację",
+    "flowBtn": "Stwórz moją stronę",
+    "marketingBtn": "Uruchom wzrost",
+    "pentestBtn": "Zabezpiecz produkt",
+    "searchBtn": "Znajdź pomysły",
+    "projectDescLong": "Twórz i wdrażaj pełne aplikacje z jednego prompta. Agenci AI planują, budują, testują i dostarczają Twój produkt.",
+    "flowDescLong": "Uruchom strony i landing page w kilka minut. Design, treść, struktura i hosting w cenie.",
+    "marketingDescLong": "Planuj, twórz, realizuj i optymalizuj kampanie pozyskiwania klientów. AI zajmuje się realizacją.",
+    "pentestDescLong": "Wykrywaj luki zanim staną się kosztowne. AI skanuje systemy i proponuje poprawki."
   },
   "stack": {
     "subtitle": "Stos Wykonawczy Kalit",

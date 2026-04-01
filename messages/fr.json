@@ -32,7 +32,16 @@
     "flowDesc": "Design, contenu et structure — votre site sera en ligne en quelques minutes.",
     "marketingDesc": "L'IA planifie, crée et optimise vos campagnes sur tous les canaux.",
     "pentestDesc": "L'IA scanne vos systèmes, trouve les vulnérabilités et propose des correctifs.",
-    "searchDesc": "Intelligence R&D pour les entrepreneurs et équipes produit."
+    "searchDesc": "Intelligence R&D pour les entrepreneurs et équipes produit.",
+    "projectBtn": "Créer mon app",
+    "flowBtn": "Créer mon site",
+    "marketingBtn": "Lancer ma croissance",
+    "pentestBtn": "Sécuriser mon produit",
+    "searchBtn": "Trouver des idées",
+    "projectDescLong": "Développez et déployez des applications complètes à partir d'un prompt. Les agents IA planifient, développent, testent et livrent votre produit.",
+    "flowDescLong": "Lancez des sites web et landing pages en quelques minutes. Design, contenu, structure et hébergement inclus.",
+    "marketingDescLong": "Planifiez, créez, exécutez et optimisez des campagnes d'acquisition sur tous les canaux. L'IA gère l'exécution.",
+    "pentestDescLong": "Détectez les vulnérabilités avant qu'elles ne coûtent cher. L'IA scanne vos systèmes et propose des correctifs."
   },
   "stack": {
     "subtitle": "Stack d'exécution Kalit",
