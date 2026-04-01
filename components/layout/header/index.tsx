@@ -3,6 +3,7 @@
 import { Avatar } from "@/components/avatar"
 import { Button } from "@/components/button"
 import { Icon } from "@/components/icon"
+import { LanguageSwitcher } from "@/components/language-switcher"
 import { Link } from "@/components/link"
 import { Logotype } from "@/components/logotype"
 import { SUITES, type AppPageState, type SuiteId } from "@/lib/suites"
@@ -72,6 +73,7 @@ export const Header = ({ initialSession = null }: HeaderProps) => {
           </span>
         </Link>
         <Nav />
+        <LanguageSwitcher className={s.langSwitcher} />
 
         {resolvedSession?.user ? (
           <div className={s.userMenu} ref={menuRef}>

@@ -1,0 +1,141 @@
+{
+  "nav": {
+    "suites": "スイート",
+    "howItWorks": "仕組み",
+    "tryNow": "今すぐ試す",
+    "whyKalit": "なぜKalit？",
+    "getEarlyAccess": "早期アクセス",
+    "dashboard": "ダッシュボード",
+    "profile": "プロフィール",
+    "billing": "請求",
+    "admin": "管理者",
+    "signOut": "ログアウト",
+    "language": "言語"
+  },
+  "hero": {
+    "subtitle": "早期アクセス — 受付中",
+    "title1": "構築、ローンチ",
+    "title2": "成長、セキュリティ",
+    "promptPlaceholder": "構築したいものを説明してください...",
+    "findMySuite": "スイートを見つける",
+    "recommended": "おすすめのスイート",
+    "analyzing": "リクエストを分析中...",
+    "poweredBy": "最先端のAIモデルを搭載、Kalitがオーケストレーション"
+  },
+  "suites": {
+    "project": "Project",
+    "flow": "Flow",
+    "marketing": "Marketing",
+    "pentest": "Pentest",
+    "search": "Search",
+    "projectDesc": "AIエージェントがアプリの計画、開発、テスト、デプロイをエンドツーエンドで実行します。",
+    "flowDesc": "デザイン、コピー、構造 — 数分でサイトが公開されます。",
+    "marketingDesc": "AIがあらゆるチャネルでキャンペーンを計画、作成、最適化します。",
+    "pentestDesc": "AIがシステムをスキャンし、脆弱性を発見し、修正を提案します。",
+    "searchDesc": "起業家とプロダクトチームのためのR&Dインテリジェンス。"
+  },
+  "stack": {
+    "subtitle": "Kalit実行スタック",
+    "title": "フルスタックモデルマトリックス",
+    "description": "アプリ、ウェブサイト、グロース、セキュリティの4つの主要領域をカバー。デジタルプロダクトの構築とスケールに必要なすべてが揃っています。"
+  },
+  "architecture": {
+    "subtitle": "アーキテクチャ",
+    "title": "Kalitはモデルではない",
+    "description": "AI知能を構造化されたワークフロー、デプロイされたシステム、実際のビジネス成果に変換する実行レイヤーです。",
+    "aiModels": "AIモデル",
+    "executionLayer": "Kalit実行レイヤー",
+    "runningSystems": "稼働中のシステム"
+  },
+  "features": {
+    "subtitle": "仕組み",
+    "title": "プロトタイプではなく、出荷するために作られた",
+    "description": "プロダクト、グロース、セキュリティのために設計されたAIワークフローで、アイデアから実行まで素早く進みます。",
+    "agents": "専門AIエージェントがチームとして連携",
+    "agentsDesc": "各エージェントが役割を担当 — 企画、コーディング、デザイン、テスト、デプロイ。あなたの代わりに連携します。",
+    "references": "プロジェクトを説明し、参考資料を追加",
+    "referencesDesc": "スクリーンショットを共有し、必要なものを説明するだけ。エージェントがあなたのビジョンに合わせます。コーディング不要。",
+    "parallel": "複数のワークフローを同時実行",
+    "parallelDesc": "アプリの構築、ランディングページの生成、ローンチの準備を並行して進めます — 一つずつ待つ必要はありません。",
+    "deploy": "ワンクリックで公開 — ホスティング込み",
+    "deployDesc": "ランディングページの公開、アプリのデプロイ、キャンペーンの開始をKalitから直接。外部ツールは不要です。"
+  },
+  "join": {
+    "subtitle": "始めましょう",
+    "title": "目標に合ったスイートを選ぶ",
+    "description": "一つのスイートを単独で使うか、すべてを組み合わせて、一つのプラットフォームからビジネスを構築、ローンチ、成長、保護しましょう。"
+  },
+  "portfolio": {
+    "subtitle": "Kalitポートフォリオ",
+    "builtAndShipped": "構築・出荷済み",
+    "byFounders": "Kalitを使う創業者たちによる。",
+    "realProjects": "実際のプロジェクト",
+    "exploreMore": "もっと見る"
+  },
+  "choose": {
+    "subtitle": "比較",
+    "description": "創業者やデジタルチームにとって最も重要な機能で、Kalitを他のツールと比較してみましょう。"
+  },
+  "footer": {
+    "rights": "全著作権所有。",
+    "suites": "スイート",
+    "resources": "リソース",
+    "company": "会社",
+    "faq": "FAQ",
+    "support": "サポート",
+    "documentation": "ドキュメント",
+    "careers": "採用情報",
+    "contactUs": "お問い合わせ",
+    "brandingKit": "ブランドキット",
+    "earlyAccess": "早期アクセス",
+    "earlyAccessDesc": "Kalitをいち早くお試しください。メールアドレスを入力して早期アクセスと製品アップデートを受け取りましょう。",
+    "emailPlaceholder": "メールアドレス",
+    "joinWaitlist": "ウェイトリストに参加",
+    "terms": "利用規約",
+    "privacy": "プライバシーポリシー",
+    "trademarks": "記載されているすべての社名は、各所有者の商標™または登録商標®です。"
+  },
+  "auth": {
+    "signIn": "ログイン",
+    "signInTitle": "ワークスペースにログイン",
+    "signInDesc": "プロダクト、ローンチ、グロース、セキュリティの作業を再開しましょう。",
+    "signInSubtitle": "メールまたはGoogle・GitHubで続行できます。",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "continue": "続行",
+    "forgotPassword": "パスワードをお忘れですか？",
+    "orContinueWith": "または以下で続行",
+    "noAccount": "アカウントをお持ちでないですか？",
+    "createOne": "アカウント作成",
+    "register": "アカウントを作成",
+    "registerDesc": "AIで構築、ローンチ、成長を始めましょう。",
+    "name": "氏名",
+    "alreadyHaveAccount": "すでにアカウントをお持ちですか？",
+    "signInLink": "ログイン"
+  },
+  "dashboard": {
+    "title": "ダッシュボード",
+    "welcomeBack": "{orgName}へお帰りなさい。プラン、使用状況、ジョブ、利用可能なスイートを確認しましょう。",
+    "currentPlan": "現在のプラン",
+    "creditsRemaining": "残りクレジット",
+    "activeJobs": "アクティブなジョブ",
+    "teamSeats": "チーム席数",
+    "shortcuts": "ショートカット",
+    "shortcutsDesc": "アカウント、請求、チーム、使用状況の設定に直接アクセス。",
+    "yourSuites": "あなたのKalitスイート",
+    "openSuite": "スイートを開く",
+    "upgradeToUnlock": "アップグレードして解放",
+    "locked": "ロック中"
+  },
+  "common": {
+    "previous": "前へ",
+    "next": "次へ",
+    "loading": "読み込み中...",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "confirm": "確認",
+    "search": "検索",
+    "noResults": "結果が見つかりません。"
+  }
+}

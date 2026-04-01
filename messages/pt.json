@@ -1,0 +1,141 @@
+{
+  "nav": {
+    "suites": "Suites",
+    "howItWorks": "Como funciona",
+    "tryNow": "Experimente",
+    "whyKalit": "Por que Kalit?",
+    "getEarlyAccess": "Acesso antecipado",
+    "dashboard": "Painel",
+    "profile": "Perfil",
+    "billing": "Faturamento",
+    "admin": "Admin",
+    "signOut": "Sair",
+    "language": "Idioma"
+  },
+  "hero": {
+    "subtitle": "Acesso antecipado — Aberto",
+    "title1": "Crie, Lance",
+    "title2": "Cresça, Proteja",
+    "promptPlaceholder": "Descreva o que você quer construir...",
+    "findMySuite": "Encontrar minha suite",
+    "recommended": "Suite recomendada",
+    "analyzing": "Analisando sua solicitação...",
+    "poweredBy": "Alimentado pelos melhores modelos de IA, orquestrado pela Kalit"
+  },
+  "suites": {
+    "project": "Project",
+    "flow": "Flow",
+    "marketing": "Marketing",
+    "pentest": "Pentest",
+    "search": "Search",
+    "projectDesc": "Agentes de IA planejam, desenvolvem, testam e implantam seu app do início ao fim.",
+    "flowDesc": "Design, conteúdo e estrutura — seu site estará no ar em minutos.",
+    "marketingDesc": "A IA planeja, cria e otimiza suas campanhas em todos os canais.",
+    "pentestDesc": "A IA escaneia seus sistemas, encontra vulnerabilidades e sugere correções.",
+    "searchDesc": "Inteligência de P&D para empreendedores e equipes de produto."
+  },
+  "stack": {
+    "subtitle": "Stack de Execução Kalit",
+    "title": "Matriz de Modelos Full Stack",
+    "description": "Cobrindo quatro áreas-chave — apps, sites, crescimento e segurança. Tudo que você precisa para construir e escalar um produto digital."
+  },
+  "architecture": {
+    "subtitle": "A Arquitetura",
+    "title": "Kalit não é um modelo",
+    "description": "Uma camada de execução que transforma inteligência artificial em fluxos de trabalho estruturados, sistemas implantados e resultados de negócios reais.",
+    "aiModels": "Modelos de IA",
+    "executionLayer": "Camada de Execução Kalit",
+    "runningSystems": "Sistemas em Produção"
+  },
+  "features": {
+    "subtitle": "Como funciona",
+    "title": "Feito para entregar, não apenas prototipar",
+    "description": "Vá da ideia à execução mais rápido com fluxos de trabalho de IA projetados para produto, crescimento e segurança.",
+    "agents": "Agentes de IA especializados coordenados como uma equipe",
+    "agentsDesc": "Cada agente cuida de um papel — planejamento, código, design, testes, implantação. Eles se coordenam para que você não precise.",
+    "references": "Descreva seu projeto, adicione referências e recursos",
+    "referencesDesc": "Compartilhe capturas de tela, descreva o que precisa e deixe os agentes se adaptarem à sua visão. Sem necessidade de código.",
+    "parallel": "Execute múltiplos fluxos de trabalho ao mesmo tempo",
+    "parallelDesc": "Construa seu app, gere sua landing page e prepare seu lançamento em paralelo — em vez de esperar etapa por etapa.",
+    "deploy": "Publique com um clique — hospedagem inclusa",
+    "deployDesc": "Publique landing pages, implante apps e lance campanhas diretamente da Kalit. Sem ferramentas externas."
+  },
+  "join": {
+    "subtitle": "Começar",
+    "title": "Escolha a suite que combina com seu objetivo",
+    "description": "Use uma suite sozinha ou combine as quatro para criar, lançar, crescer e proteger seu negócio a partir de uma única plataforma."
+  },
+  "portfolio": {
+    "subtitle": "Portfolio Kalit",
+    "builtAndShipped": "construídos e entregues",
+    "byFounders": "por fundadores usando Kalit.",
+    "realProjects": "Projetos reais",
+    "exploreMore": "Ver mais projetos"
+  },
+  "choose": {
+    "subtitle": "Comparar",
+    "description": "Compare a Kalit com outras ferramentas nas capacidades que mais importam para fundadores e equipes digitais."
+  },
+  "footer": {
+    "rights": "Todos os direitos reservados.",
+    "suites": "Suites",
+    "resources": "Recursos",
+    "company": "Empresa",
+    "faq": "FAQ",
+    "support": "Suporte",
+    "documentation": "Documentação",
+    "careers": "Carreiras",
+    "contactUs": "Contato",
+    "brandingKit": "Kit de Marca",
+    "earlyAccess": "Acesso antecipado",
+    "earlyAccessDesc": "Seja um dos primeiros a testar a Kalit. Insira seu email para acesso antecipado e atualizações do produto.",
+    "emailPlaceholder": "Seu endereço de email",
+    "joinWaitlist": "Entrar na lista",
+    "terms": "Termos e Condições",
+    "privacy": "Política de Privacidade",
+    "trademarks": "Todos os nomes de empresas listados são marcas ™ ou marcas registradas ® de seus respectivos titulares."
+  },
+  "auth": {
+    "signIn": "Entrar",
+    "signInTitle": "Acesse seu espaço de trabalho.",
+    "signInDesc": "Continue de onde parou — produto, lançamento, crescimento e segurança.",
+    "signInSubtitle": "Use seu email ou continue com Google ou GitHub.",
+    "email": "Email",
+    "password": "Senha",
+    "continue": "Continuar",
+    "forgotPassword": "Esqueceu a senha?",
+    "orContinueWith": "ou continuar com",
+    "noAccount": "Não tem conta?",
+    "createOne": "Criar uma",
+    "register": "Crie sua conta",
+    "registerDesc": "Comece a construir, lançar e crescer com IA.",
+    "name": "Nome completo",
+    "alreadyHaveAccount": "Já tem uma conta?",
+    "signInLink": "Entrar"
+  },
+  "dashboard": {
+    "title": "Painel",
+    "welcomeBack": "Bem-vindo de volta a {orgName}. Confira seu plano, uso, tarefas e suites disponíveis.",
+    "currentPlan": "Plano atual",
+    "creditsRemaining": "Créditos restantes",
+    "activeJobs": "Tarefas ativas",
+    "teamSeats": "Vagas da equipe",
+    "shortcuts": "Atalhos",
+    "shortcutsDesc": "Acesse diretamente os controles de conta, faturamento, equipe e consumo.",
+    "yourSuites": "Suas suites Kalit",
+    "openSuite": "Abrir suite",
+    "upgradeToUnlock": "Fazer upgrade para desbloquear",
+    "locked": "Bloqueado"
+  },
+  "common": {
+    "previous": "Anterior",
+    "next": "Próximo",
+    "loading": "Carregando...",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "confirm": "Confirmar",
+    "search": "Buscar",
+    "noResults": "Nenhum resultado encontrado."
+  }
+}

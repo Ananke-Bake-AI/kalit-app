@@ -1,0 +1,141 @@
+{
+  "nav": {
+    "suites": "Suites",
+    "howItWorks": "So funktioniert's",
+    "tryNow": "Jetzt testen",
+    "whyKalit": "Warum Kalit?",
+    "getEarlyAccess": "Früher Zugang",
+    "dashboard": "Dashboard",
+    "profile": "Profil",
+    "billing": "Abrechnung",
+    "admin": "Admin",
+    "signOut": "Abmelden",
+    "language": "Sprache"
+  },
+  "hero": {
+    "subtitle": "Früher Zugang — Jetzt verfügbar",
+    "title1": "Bauen, Starten",
+    "title2": "Wachsen, Sichern",
+    "promptPlaceholder": "Beschreibe, was du bauen möchtest...",
+    "findMySuite": "Meine Suite finden",
+    "recommended": "Empfohlene Suite",
+    "analyzing": "Analyse deiner Anfrage...",
+    "poweredBy": "Angetrieben von führenden KI-Modellen, orchestriert von Kalit"
+  },
+  "suites": {
+    "project": "Project",
+    "flow": "Flow",
+    "marketing": "Marketing",
+    "pentest": "Pentest",
+    "search": "Search",
+    "projectDesc": "KI-Agenten planen, entwickeln, testen und deployen deine App von Anfang bis Ende.",
+    "flowDesc": "Design, Text und Struktur — deine Website ist in Minuten online.",
+    "marketingDesc": "KI plant, erstellt und optimiert deine Kampagnen über alle Kanäle.",
+    "pentestDesc": "KI scannt deine Systeme, findet Schwachstellen und schlägt Korrekturen vor.",
+    "searchDesc": "F&E-Intelligenz für Unternehmer und Produktteams."
+  },
+  "stack": {
+    "subtitle": "Kalit Execution Stack",
+    "title": "Full Stack Modell-Matrix",
+    "description": "Vier Kernbereiche abgedeckt — Apps, Websites, Wachstum und Sicherheit. Alles, was du brauchst, um ein digitales Produkt aufzubauen und zu skalieren."
+  },
+  "architecture": {
+    "subtitle": "Die Architektur",
+    "title": "Kalit ist kein Modell",
+    "description": "Eine Ausführungsschicht, die KI-Intelligenz in strukturierte Workflows, deployed Systeme und echte Geschäftsergebnisse verwandelt.",
+    "aiModels": "KI-Modelle",
+    "executionLayer": "Kalit Ausführungsschicht",
+    "runningSystems": "Laufende Systeme"
+  },
+  "features": {
+    "subtitle": "So funktioniert's",
+    "title": "Gebaut zum Ausliefern, nicht nur zum Prototypen",
+    "description": "Von der Idee zur Umsetzung schneller mit KI-Workflows, die für echte Produkt-, Wachstums- und Sicherheitsarbeit konzipiert sind.",
+    "agents": "Spezialisierte KI-Agenten als koordiniertes Team",
+    "agentsDesc": "Jeder Agent übernimmt eine Rolle — Planung, Code, Design, Tests, Deployment. Sie koordinieren sich, damit du es nicht musst.",
+    "references": "Beschreibe dein Projekt, füge Referenzen hinzu",
+    "referencesDesc": "Teile Screenshots, beschreibe was du brauchst und lass die Agenten deine Vision umsetzen. Keine Programmierkenntnisse nötig.",
+    "parallel": "Führe mehrere Workflows gleichzeitig aus",
+    "parallelDesc": "Baue deine App, generiere deine Landing Page und bereite deinen Launch parallel vor — statt Schritt für Schritt zu warten.",
+    "deploy": "Mit einem Klick live — Hosting inklusive",
+    "deployDesc": "Veröffentliche Landing Pages, deploye Apps und starte Kampagnen direkt aus Kalit. Keine externen Tools nötig."
+  },
+  "join": {
+    "subtitle": "Loslegen",
+    "title": "Wähle die Suite, die zu deinem Ziel passt",
+    "description": "Nutze eine Suite allein oder kombiniere alle vier, um dein Business von einer Plattform aus aufzubauen, zu starten, zu wachsen und abzusichern."
+  },
+  "portfolio": {
+    "subtitle": "Kalit Portfolio",
+    "builtAndShipped": "gebaut und ausgeliefert",
+    "byFounders": "von Gründern mit Kalit.",
+    "realProjects": "Echte Projekte",
+    "exploreMore": "Mehr Projekte entdecken"
+  },
+  "choose": {
+    "subtitle": "Vergleichen",
+    "description": "Vergleiche Kalit mit anderen Tools in den Fähigkeiten, die für Gründer und digitale Teams am wichtigsten sind."
+  },
+  "footer": {
+    "rights": "Alle Rechte vorbehalten.",
+    "suites": "Suites",
+    "resources": "Ressourcen",
+    "company": "Unternehmen",
+    "faq": "FAQ",
+    "support": "Support",
+    "documentation": "Dokumentation",
+    "careers": "Karriere",
+    "contactUs": "Kontakt",
+    "brandingKit": "Branding-Kit",
+    "earlyAccess": "Früher Zugang",
+    "earlyAccessDesc": "Sei unter den Ersten, die Kalit testen. Gib deine E-Mail ein für frühen Zugang und Produkt-Updates.",
+    "emailPlaceholder": "Deine E-Mail-Adresse",
+    "joinWaitlist": "Auf die Warteliste",
+    "terms": "Nutzungsbedingungen",
+    "privacy": "Datenschutzrichtlinie",
+    "trademarks": "Alle genannten Firmennamen sind Marken ™ oder eingetragene Marken ® ihrer jeweiligen Inhaber."
+  },
+  "auth": {
+    "signIn": "Anmelden",
+    "signInTitle": "Melde dich in deinem Workspace an.",
+    "signInDesc": "Mach weiter, wo du aufgehört hast — Produkt, Launch, Wachstum und Sicherheit.",
+    "signInSubtitle": "Nutze deine E-Mail oder fahre mit Google oder GitHub fort.",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "continue": "Weiter",
+    "forgotPassword": "Passwort vergessen?",
+    "orContinueWith": "oder weiter mit",
+    "noAccount": "Noch kein Konto?",
+    "createOne": "Konto erstellen",
+    "register": "Erstelle dein Konto",
+    "registerDesc": "Starte mit KI zu bauen, zu launchen und zu wachsen.",
+    "name": "Vollständiger Name",
+    "alreadyHaveAccount": "Bereits ein Konto?",
+    "signInLink": "Anmelden"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcomeBack": "Willkommen zurück bei {orgName}. Prüfe deinen Plan, Verbrauch, Jobs und verfügbare Suites.",
+    "currentPlan": "Aktueller Plan",
+    "creditsRemaining": "Verbleibende Credits",
+    "activeJobs": "Aktive Jobs",
+    "teamSeats": "Team-Plätze",
+    "shortcuts": "Schnellzugriff",
+    "shortcutsDesc": "Gehe direkt zu Konto-, Abrechnungs-, Team- und Verbrauchseinstellungen.",
+    "yourSuites": "Deine Kalit Suites",
+    "openSuite": "Suite öffnen",
+    "upgradeToUnlock": "Upgraden zum Freischalten",
+    "locked": "Gesperrt"
+  },
+  "common": {
+    "previous": "Zurück",
+    "next": "Weiter",
+    "loading": "Laden...",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "confirm": "Bestätigen",
+    "search": "Suchen",
+    "noResults": "Keine Ergebnisse."
+  }
+}

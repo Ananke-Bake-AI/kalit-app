@@ -62,6 +62,12 @@
     font-size: 0.8em;
     margin-left: auto;
   }
+
+  .langSwitcher {
+    @include max($responsiveNav) {
+      display: none;
+    }
+  }
 }
 
 .bnav {

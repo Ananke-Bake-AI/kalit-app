@@ -1,0 +1,141 @@
+{
+  "nav": {
+    "suites": "Suites",
+    "howItWorks": "How it works",
+    "tryNow": "Try now",
+    "whyKalit": "Why Kalit?",
+    "getEarlyAccess": "Get early access",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "billing": "Billing",
+    "admin": "Admin",
+    "signOut": "Sign out",
+    "language": "Language"
+  },
+  "hero": {
+    "subtitle": "Early access — Now open",
+    "title1": "Build, Launch",
+    "title2": "Grow, Secure",
+    "promptPlaceholder": "Describe what you want to build...",
+    "findMySuite": "Find my suite",
+    "recommended": "Recommended suite",
+    "analyzing": "Analyzing your request...",
+    "poweredBy": "Powered by leading AI models, orchestrated by Kalit"
+  },
+  "suites": {
+    "project": "Project",
+    "flow": "Flow",
+    "marketing": "Marketing",
+    "pentest": "Pentest",
+    "search": "Search",
+    "projectDesc": "AI agents will plan, build, test, and deploy your app end-to-end.",
+    "flowDesc": "Design, copy, and structure — your site will be live in minutes.",
+    "marketingDesc": "AI will plan, create, and optimize your campaigns across channels.",
+    "pentestDesc": "AI will scan your systems, find vulnerabilities, and suggest fixes.",
+    "searchDesc": "R&D intelligence for entrepreneurs and product teams."
+  },
+  "stack": {
+    "subtitle": "Kalit Execution Stack",
+    "title": "Full Stack Model Matrix",
+    "description": "Covering four major areas — apps, websites, growth, and security. Everything you need to build and scale a digital product end to end."
+  },
+  "architecture": {
+    "subtitle": "The Architecture",
+    "title": "Kalit is not a model",
+    "description": "An execution layer that turns AI intelligence into structured workflows, deployed systems, and real business outcomes.",
+    "aiModels": "AI models",
+    "executionLayer": "Kalit Execution Layer",
+    "runningSystems": "Running Systems"
+  },
+  "features": {
+    "subtitle": "How it works",
+    "title": "Built to ship not just prototype",
+    "description": "Go from idea to execution faster with AI workflows designed for real product, growth, and security work.",
+    "agents": "Specialized AI agents coordinated as one team",
+    "agentsDesc": "Each agent handles a role — planning, coding, design, testing, deployment. They coordinate so you don't have to.",
+    "references": "Describe your project, add references and assets",
+    "referencesDesc": "Share screenshots, describe what you need, and let the agents match your vision. No coding required.",
+    "parallel": "Run multiple workflows at once",
+    "parallelDesc": "Build your app, generate your landing page, and prepare your launch in parallel — instead of waiting on one step at a time.",
+    "deploy": "Go live with one click — hosting included",
+    "deployDesc": "Publish landing pages, deploy apps, and launch campaigns directly from Kalit. No external tools needed."
+  },
+  "join": {
+    "subtitle": "Get started",
+    "title": "Start with the suite that matches your goal",
+    "description": "Use one suite on its own or combine all four to build, launch, grow, and secure your business from one platform."
+  },
+  "portfolio": {
+    "subtitle": "Kalit Portfolio",
+    "builtAndShipped": "built and shipped",
+    "byFounders": "by founders using Kalit.",
+    "realProjects": "Real projects",
+    "exploreMore": "Explore more projects"
+  },
+  "choose": {
+    "subtitle": "Compare",
+    "description": "Compare Kalit with other tools across the capabilities that matter most to founders and digital teams."
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "suites": "Suites",
+    "resources": "Resources",
+    "company": "Company",
+    "faq": "FAQ",
+    "support": "Support",
+    "documentation": "Documentation",
+    "careers": "Careers",
+    "contactUs": "Contact Us",
+    "brandingKit": "Branding Kit",
+    "earlyAccess": "Get early access",
+    "earlyAccessDesc": "Be the first to try Kalit. Enter your email for early access and product updates.",
+    "emailPlaceholder": "Your email address",
+    "joinWaitlist": "Join waitlist",
+    "terms": "Terms and Conditions",
+    "privacy": "Privacy Policy",
+    "trademarks": "All listed company names are trademarks ™ or registered trademarks ® of their respective holders."
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signInTitle": "Sign in to your workspace.",
+    "signInDesc": "Pick up where you left off across product, launch, growth, and security.",
+    "signInSubtitle": "Use your email or continue with Google or GitHub.",
+    "email": "Email",
+    "password": "Password",
+    "continue": "Continue",
+    "forgotPassword": "Forgot password?",
+    "orContinueWith": "or continue with",
+    "noAccount": "Don't have an account?",
+    "createOne": "Create one",
+    "register": "Create your account",
+    "registerDesc": "Start building, launching, and growing with AI.",
+    "name": "Full name",
+    "alreadyHaveAccount": "Already have an account?",
+    "signInLink": "Sign in"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcomeBack": "Welcome back to {orgName}. Check your plan, usage, jobs, and available suites.",
+    "currentPlan": "Current plan",
+    "creditsRemaining": "Credits remaining",
+    "activeJobs": "Active jobs",
+    "teamSeats": "Team seats",
+    "shortcuts": "Shortcuts",
+    "shortcutsDesc": "Go straight to the account, billing, team, and usage controls you are most likely to need next.",
+    "yourSuites": "Your Kalit suites",
+    "openSuite": "Open suite",
+    "upgradeToUnlock": "Upgrade to unlock",
+    "locked": "Locked"
+  },
+  "common": {
+    "previous": "Previous",
+    "next": "Next",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "search": "Search",
+    "noResults": "No results found."
+  }
+}
