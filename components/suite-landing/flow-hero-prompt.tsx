@@ -45,7 +45,7 @@ export function FlowHeroPrompt({ suiteAppUrl, marketingPath = FLOW_MARKETING_PAT
     if (!trimmed) return
     if (status === "loading") return
     if (status === "authenticated") {
-      window.location.assign(suiteEntryUrl(suiteAppUrl, { prompt: trimmed }))
+      window.open(suiteEntryUrl(suiteAppUrl, { prompt: trimmed }), "_blank")
       return
     }
     router.push(suiteMarketingLoginHref(marketingPath, { prompt: trimmed }))
