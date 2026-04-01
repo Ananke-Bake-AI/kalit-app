@@ -1,6 +1,5 @@
-import { useGSAP } from "@gsap/react"
 import gsap from "gsap"
-import { type RefObject, useCallback, useRef } from "react"
+import { type RefObject, useCallback, useEffect, useRef } from "react"
 
 export interface UseAnimatedPlaceholderOptions {
   phrases: readonly string[]
@@ -29,74 +28,83 @@ export function useAnimatedPlaceholder(
   }: UseAnimatedPlaceholderOptions
 ): UseAnimatedPlaceholderResult {
   const timelineRef = useRef<gsap.core.Timeline | null>(null)
+  const isFocusedRef = useRef(false)
   const phrasesKey = phrases.join("\0")
 
-  useGSAP(
-    () => {
-      const el = inputRef.current
-      if (!el) return
+  useEffect(() => {
+    const el = inputRef.current
+    if (!el) return
 
-      const tl = gsap.timeline({ repeat: -1, repeatDelay })
+    // Kill any existing timeline first
+    if (timelineRef.current) {
+      timelineRef.current.kill()
+      timelineRef.current = null
+    }
 
-      phrases.forEach((phrase) => {
-        const chars = phrase.split("")
+    // Don't start animation if input is focused
+    if (isFocusedRef.current) return
 
-        tl.call(() => {
-          if (inputRef.current) inputRef.current.placeholder = "|"
-        })
+    const tl = gsap.timeline({ repeat: -1, repeatDelay })
 
-        chars.forEach((_, index) => {
-          tl.call(
-            () => {
-              if (!inputRef.current) return
-              const text = phrase.slice(0, index + 1)
-              inputRef.current.placeholder = `${text}|`
-            },
-            [],
-            `+=${typeCharDelay}`
-          )
-        })
+    phrases.forEach((phrase) => {
+      const chars = phrase.split("")
 
-        tl.to({}, { duration: holdDuration })
-
-        chars.forEach((_, index) => {
-          tl.call(
-            () => {
-              if (!inputRef.current) return
-              const remaining = phrase.length - index - 1
-              const text = phrase.slice(0, remaining)
-              inputRef.current.placeholder = text ? `${text} |` : "|"
-            },
-            [],
-            `+=${eraseCharDelay}`
-          )
-        })
+      tl.call(() => {
+        if (inputRef.current) inputRef.current.placeholder = "|"
       })
 
-      timelineRef.current = tl
+      chars.forEach((_, index) => {
+        tl.call(
+          () => {
+            if (!inputRef.current) return
+            inputRef.current.placeholder = `${phrase.slice(0, index + 1)}|`
+          },
+          [],
+          `+=${typeCharDelay}`
+        )
+      })
 
-      return () => {
-        tl.kill()
-        timelineRef.current = null
-      }
-    },
-    {
-      dependencies: [phrasesKey, typeCharDelay, eraseCharDelay, holdDuration, repeatDelay]
+      tl.to({}, { duration: holdDuration })
+
+      chars.forEach((_, index) => {
+        tl.call(
+          () => {
+            if (!inputRef.current) return
+            const remaining = phrase.length - index - 1
+            const text = phrase.slice(0, remaining)
+            inputRef.current.placeholder = text ? `${text}|` : "|"
+          },
+          [],
+          `+=${eraseCharDelay}`
+        )
+      })
+    })
+
+    timelineRef.current = tl
+
+    return () => {
+      tl.kill()
+      timelineRef.current = null
     }
-  )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phrasesKey, typeCharDelay, eraseCharDelay, holdDuration, repeatDelay])
 
   const handleFocus = useCallback(() => {
     const el = inputRef.current
     if (!el) return
+    isFocusedRef.current = true
     timelineRef.current?.pause()
     el.placeholder = focusedPlaceholder
-  }, [focusedPlaceholder])
+  }, [focusedPlaceholder, inputRef])
 
   const handleBlur = useCallback(() => {
     const el = inputRef.current
     if (!el) return
-    if (!el.value.trim()) timelineRef.current?.play()
-  }, [])
+    isFocusedRef.current = false
+    if (!el.value.trim() && timelineRef.current) {
+      timelineRef.current.play()
+    }
+  }, [inputRef])
 
   return { timelineRef, handleFocus, handleBlur }
 }

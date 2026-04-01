@@ -36,6 +36,7 @@ export const Hero = () => {
   const promptRef = useRef<HTMLTextAreaElement | null>(null)
   const titleRef = useRef<HTMLDivElement>(null)
   const cardsRef = useRef<HTMLDivElement>(null)
+  const hasAnimatedRef = useRef(false)
 
   const {
     timelineRef: promptTimelineRef,
@@ -43,22 +44,28 @@ export const Hero = () => {
     handleBlur: handlePromptBlur
   } = useAnimatedPlaceholder(promptRef, {
     phrases: PLACEHOLDERS,
-    focusedPlaceholder: "Describe what you want to build..."
+    focusedPlaceholder: t("hero.promptPlaceholder")
   })
 
   useGSAP(() => {
-    gsap
-      .timeline()
-      .to(titleRef.current, { visibility: "visible", duration: 0 })
-      .addLabel("a", "+=0.3")
-      .fromTo(titleRef.current, { scale: 1.15 }, { scale: 1, duration: 2, ease: "back.inOut" }, "a")
-      .fromTo(
-        "[data-cards] > *",
-        { scale: 0 },
-        { scale: 1, stagger: 0.25, duration: 1, ease: "back.out", delay: 1.5 },
-        "a"
-      )
-  }, [])
+    const el = titleRef.current
+    if (!el) return
+
+    gsap.set(el, { visibility: "visible" })
+
+    if (!hasAnimatedRef.current) {
+      hasAnimatedRef.current = true
+      gsap
+        .timeline()
+        .fromTo(el, { scale: 1.15 }, { scale: 1, duration: 2, ease: "back.inOut" })
+        .fromTo(
+          "[data-cards] > *",
+          { scale: 0 },
+          { scale: 1, stagger: 0.25, duration: 1, ease: "back.out", delay: 0 },
+          "<0.5"
+        )
+    }
+  }, [locale])
 
   const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setPromptValue(e.target.value)
@@ -102,8 +109,8 @@ export const Hero = () => {
     <section className={s.hero}>
       <Container>
         <Subtitle>{t("hero.subtitle")}</Subtitle>
-        <div ref={titleRef} className={s.title} key={`hero-title-${locale}`}>
-          <RevealText tag="h1">
+        <div ref={titleRef} className={s.title}>
+          <RevealText tag="h1" key={`reveal-${locale}`}>
             <span>
               {t("hero.title1")}
               <AnimatedLine
