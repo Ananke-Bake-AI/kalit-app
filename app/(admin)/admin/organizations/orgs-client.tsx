@@ -117,6 +117,25 @@ export function OrgsClient({ initialData }: { initialData: OrgData }) {
           {data.orgs.map((org) => {
             const isExpanded = expandedOrg === org.id
             const entitlementKeys = org.entitlements.map((e) => e.key)
+            const activeEntitlements = org.entitlements.filter((e) => !e.expiresAt || new Date(e.expiresAt) > new Date())
+            const suiteCount = activeEntitlements.filter((e) => e.key.startsWith("suite.") && e.key.endsWith(".access")).length
+
+            // Detect plan: Stripe sub > manual entitlements > free
+            let planLabel = "Free"
+            let planVariant: "success" | undefined = undefined
+            if (org.subscriptions[0]) {
+              planLabel = org.subscriptions[0].planKey
+              planVariant = "success"
+            } else if (suiteCount >= 5) {
+              planLabel = "Enterprise (manual)"
+              planVariant = "success"
+            } else if (suiteCount >= 3) {
+              planLabel = "Pro (manual)"
+              planVariant = "success"
+            } else if (suiteCount >= 1) {
+              planLabel = "Starter (manual)"
+              planVariant = "success"
+            }
 
             return (
               <div key={org.id} className={s.orgItem}>
@@ -130,11 +149,7 @@ export function OrgsClient({ initialData }: { initialData: OrgData }) {
                   <span className={s.orgStat}>{org._count.memberships} members</span>
                   <span className={s.orgStat}>{org._count.jobs} jobs</span>
                   <span>
-                    {org.subscriptions[0] ? (
-                      <Badge variant="success">{org.subscriptions[0].planKey}</Badge>
-                    ) : (
-                      <Badge>Free</Badge>
-                    )}
+                    <Badge variant={planVariant}>{planLabel}</Badge>
                   </span>
                   <span className={s.chevron}>
                     <Icon icon={isExpanded ? "hugeicons:arrow-up-01" : "hugeicons:arrow-down-01"} />
@@ -186,7 +201,7 @@ export function OrgsClient({ initialData }: { initialData: OrgData }) {
                       <h4 className={s.detailTitle}>Suite Access</h4>
                       <div className={s.suiteGrid}>
                         {SUITE_ENTITLEMENTS.map((suite) => {
-                          const hasAccess = entitlementKeys.includes(suite.key)
+                          const hasAccess = activeEntitlements.some((e) => e.key === suite.key)
                           return (
                             <button
                               key={suite.key}
