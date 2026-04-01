@@ -1,6 +1,7 @@
 "use client"
 
 import { type Tag } from "@/types/Tag"
+import { useI18n } from "@/stores/i18n"
 
 import clsx from "clsx"
 import { usePathname } from "next/navigation"
@@ -21,11 +22,12 @@ interface HeadingProps {
 export const Heading = forwardRef<HTMLDivElement, HeadingProps>(
   ({ subtitle, className, children, paragraph, tag = "h2" }, ref) => {
     const pathname = usePathname()
+    const { locale } = useI18n()
 
     return (
       <div ref={ref} className={clsx(s.heading, className)}>
-        {subtitle && <Subtitle>{subtitle}</Subtitle>}
-        <RevealText key={pathname} tag={tag}>
+        {subtitle && <Subtitle key={`sub-${locale}`}>{subtitle}</Subtitle>}
+        <RevealText key={`${pathname}-${locale}`} tag={tag}>
           {children}
         </RevealText>
         {paragraph && <Paragraph className={s.paragraph}>{paragraph}</Paragraph>}
