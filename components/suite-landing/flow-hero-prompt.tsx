@@ -40,11 +40,27 @@ export function FlowHeroPrompt({ suiteAppUrl, marketingPath = FLOW_MARKETING_PAT
     focusedPlaceholder: "Describe the site you want to build..."
   })
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
     const trimmed = promptValue.trim()
     if (!trimmed) return
     if (status === "loading") return
     if (status === "authenticated") {
+      // Get SSO token so the user is auto-logged into Flow
+      try {
+        const res = await fetch("/api/suite/token", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ suiteId: "flow" })
+        })
+        if (res.ok) {
+          const { token } = await res.json()
+          const callbackUrl = `${suiteAppUrl}/api/auth/sso/callback?token=${encodeURIComponent(token)}&redirect=${encodeURIComponent("/?prompt=" + encodeURIComponent(trimmed))}`
+          window.open(callbackUrl, "_blank")
+          return
+        }
+      } catch {
+        // Fallback to direct URL without SSO
+      }
       window.open(suiteEntryUrl(suiteAppUrl, { prompt: trimmed }), "_blank")
       return
     }
