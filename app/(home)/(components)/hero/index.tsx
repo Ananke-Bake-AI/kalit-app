@@ -10,6 +10,7 @@ import { Subtitle } from "@/components/subtitle"
 import { AnimatedLine } from "@/components/svg/animated-line"
 import { useAnimatedPlaceholder } from "@/hooks/use-animated-placeholder"
 import { detectSuiteFromPrompt, getHeroPromptSuites, getSuiteDisplayTitle, type SuiteConfig } from "@/lib/suites"
+import { useTranslation } from "@/stores/i18n"
 import { useGSAP } from "@gsap/react"
 import clsx from "clsx"
 import gsap from "gsap"
@@ -27,6 +28,7 @@ const PLACEHOLDERS = [
 
 export const Hero = () => {
   const router = useRouter()
+  const t = useTranslation()
   const [promptValue, setPromptValue] = useState("")
   const [matchedSuite, setMatchedSuite] = useState<SuiteConfig | null>(null)
   const [isThinking, setIsThinking] = useState(false)
@@ -98,11 +100,11 @@ export const Hero = () => {
   return (
     <section className={s.hero}>
       <Container>
-        <Subtitle>Early access — Now open</Subtitle>
+        <Subtitle>{t("hero.subtitle")}</Subtitle>
         <div ref={titleRef} className={s.title}>
           <RevealText tag="h1">
             <span>
-              Build, Launch
+              {t("hero.title1")}
               <AnimatedLine
                 className={clsx(s.line, s.line1)}
                 viewBox="0 0 621 429"
@@ -117,7 +119,7 @@ export const Hero = () => {
               />
             </span>
             <span>
-              Grow, Secure
+              {t("hero.title2")}
               <AnimatedLine
                 className={clsx(s.line, s.line3)}
                 viewBox="0 0 557 253"
@@ -172,13 +174,13 @@ export const Hero = () => {
             layout="centered"
             textareaRef={promptRef}
             value={promptValue}
-            placeholder="Describe what you want to build..."
+            placeholder={t("hero.promptPlaceholder")}
             onChange={handlePromptChange}
             onFocus={handlePromptFocus}
             onBlur={handlePromptBlur}
             onKeyDown={handleKeyDown}
             onSend={handleSubmit}
-            sendLabel="Find my suite"
+            sendLabel={t("hero.findMySuite")}
             sendLogoId="kalit"
             footer={
               <div className={promptChat.quick}>
@@ -205,7 +207,7 @@ export const Hero = () => {
                   <span />
                   <span />
                 </div>
-                <span>Analyzing your request...</span>
+                <span>{t("hero.analyzing")}</span>
               </div>
             ) : null}
 
@@ -213,7 +215,7 @@ export const Hero = () => {
               <div className={promptChat.result} style={{ "--suite-color": matchedSuite.color } as React.CSSProperties}>
                 <div className={promptChat.resultHeader}>
                   <Icon icon="hugeicons:sparkles" />
-                  <span>Recommended suite</span>
+                  <span>{t("hero.recommended")}</span>
                 </div>
                 <button
                   className={promptChat.resultCard}
@@ -233,7 +235,7 @@ export const Hero = () => {
             ) : null}
           </HeroPromptChat>
         </div>
-        <Powered title="Powered by leading AI models, orchestrated by Kalit" />
+        <Powered title={t("hero.poweredBy")} />
       </Container>
     </section>
   )

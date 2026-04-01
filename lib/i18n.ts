@@ -1,4 +1,4 @@
-export const LOCALES = ["en", "fr", "es", "de", "pt", "ja"] as const
+export const LOCALES = ["en", "fr", "es", "de", "pt", "ja", "it", "nl", "ko", "zh", "ru", "tr", "pl", "ar", "hi", "sv"] as const
 export type Locale = (typeof LOCALES)[number]
 export const DEFAULT_LOCALE: Locale = "en"
 export const COOKIE_NAME = "kalit-locale"
@@ -9,7 +9,17 @@ export const LOCALE_CONFIG: Record<Locale, { label: string; flag: string; name: 
   es: { label: "ES", flag: "🇪🇸", name: "Español" },
   de: { label: "DE", flag: "🇩🇪", name: "Deutsch" },
   pt: { label: "PT", flag: "🇧🇷", name: "Português" },
-  ja: { label: "JA", flag: "🇯🇵", name: "日本語" }
+  ja: { label: "JA", flag: "🇯🇵", name: "日本語" },
+  it: { label: "IT", flag: "🇮🇹", name: "Italiano" },
+  nl: { label: "NL", flag: "🇳🇱", name: "Nederlands" },
+  ko: { label: "KO", flag: "🇰🇷", name: "한국어" },
+  zh: { label: "ZH", flag: "🇨🇳", name: "中文" },
+  ru: { label: "RU", flag: "🇷🇺", name: "Русский" },
+  tr: { label: "TR", flag: "🇹🇷", name: "Türkçe" },
+  pl: { label: "PL", flag: "🇵🇱", name: "Polski" },
+  ar: { label: "AR", flag: "🇸🇦", name: "العربية" },
+  hi: { label: "HI", flag: "🇮🇳", name: "हिन्दी" },
+  sv: { label: "SV", flag: "🇸🇪", name: "Svenska" }
 }
 
 export function isValidLocale(locale: string): locale is Locale {

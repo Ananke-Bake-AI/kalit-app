@@ -1,0 +1,141 @@
+{
+  "nav": {
+    "suites": "Suites",
+    "howItWorks": "Hoe het werkt",
+    "tryNow": "Probeer nu",
+    "whyKalit": "Waarom Kalit?",
+    "getEarlyAccess": "Vroege toegang",
+    "dashboard": "Dashboard",
+    "profile": "Profiel",
+    "billing": "Facturering",
+    "admin": "Beheer",
+    "signOut": "Uitloggen",
+    "language": "Taal"
+  },
+  "hero": {
+    "subtitle": "Vroege toegang — Nu beschikbaar",
+    "title1": "Bouw, Lanceer",
+    "title2": "Groei, Beveilig",
+    "promptPlaceholder": "Beschrijf wat je wilt bouwen...",
+    "findMySuite": "Vind mijn suite",
+    "recommended": "Aanbevolen suite",
+    "analyzing": "Je verzoek wordt geanalyseerd...",
+    "poweredBy": "Aangedreven door toonaangevende AI-modellen, georkestreerd door Kalit"
+  },
+  "suites": {
+    "project": "Project",
+    "flow": "Flow",
+    "marketing": "Marketing",
+    "pentest": "Pentest",
+    "search": "Search",
+    "projectDesc": "AI-agents plannen, bouwen, testen en deployen jouw app van begin tot eind.",
+    "flowDesc": "Design, tekst en structuur — je site is binnen enkele minuten live.",
+    "marketingDesc": "AI plant, creëert en optimaliseert je campagnes over alle kanalen.",
+    "pentestDesc": "AI scant je systemen, vindt kwetsbaarheden en stelt oplossingen voor.",
+    "searchDesc": "R&D-intelligence voor ondernemers en productteams."
+  },
+  "stack": {
+    "subtitle": "Kalit Executie Stack",
+    "title": "Volledige Model Matrix",
+    "description": "Vier kerngebieden — apps, websites, groei en beveiliging. Alles wat je nodig hebt om een digitaal product van begin tot eind te bouwen en te schalen."
+  },
+  "architecture": {
+    "subtitle": "De Architectuur",
+    "title": "Kalit is geen model",
+    "description": "Een executielaag die AI-intelligentie omzet in gestructureerde workflows, werkende systemen en echte bedrijfsresultaten.",
+    "aiModels": "AI-modellen",
+    "executionLayer": "Kalit Executielaag",
+    "runningSystems": "Draaiende Systemen"
+  },
+  "features": {
+    "subtitle": "Hoe het werkt",
+    "title": "Gebouwd om te leveren, niet alleen te prototypen",
+    "description": "Ga sneller van idee naar uitvoering met AI-workflows ontworpen voor echt product-, groei- en beveiligingswerk.",
+    "agents": "Gespecialiseerde AI-agents gecoördineerd als één team",
+    "agentsDesc": "Elke agent vervult een rol — planning, ontwikkeling, design, testen, deployment. Ze coördineren zodat jij dat niet hoeft te doen.",
+    "references": "Beschrijf je project, voeg referenties en bestanden toe",
+    "referencesDesc": "Deel screenshots, beschrijf wat je nodig hebt en laat de agents je visie waarmaken. Geen programmeerkennis vereist.",
+    "parallel": "Voer meerdere workflows tegelijkertijd uit",
+    "parallelDesc": "Bouw je app, genereer je landingspagina en bereid je lancering parallel voor — in plaats van stap voor stap te wachten.",
+    "deploy": "Ga live met één klik — hosting inbegrepen",
+    "deployDesc": "Publiceer landingspagina's, deploy apps en lanceer campagnes rechtstreeks vanuit Kalit. Geen externe tools nodig."
+  },
+  "join": {
+    "subtitle": "Aan de slag",
+    "title": "Begin met de suite die past bij jouw doel",
+    "description": "Gebruik één suite apart of combineer alle vier om te bouwen, lanceren, groeien en je bedrijf te beveiligen vanuit één platform."
+  },
+  "portfolio": {
+    "subtitle": "Kalit Portfolio",
+    "builtAndShipped": "gebouwd en gelanceerd",
+    "byFounders": "door founders die Kalit gebruiken.",
+    "realProjects": "Echte projecten",
+    "exploreMore": "Bekijk meer projecten"
+  },
+  "choose": {
+    "subtitle": "Vergelijk",
+    "description": "Vergelijk Kalit met andere tools op de mogelijkheden die het meest belangrijk zijn voor founders en digitale teams."
+  },
+  "footer": {
+    "rights": "Alle rechten voorbehouden.",
+    "suites": "Suites",
+    "resources": "Bronnen",
+    "company": "Bedrijf",
+    "faq": "FAQ",
+    "support": "Ondersteuning",
+    "documentation": "Documentatie",
+    "careers": "Vacatures",
+    "contactUs": "Neem contact op",
+    "brandingKit": "Branding Kit",
+    "earlyAccess": "Vroege toegang",
+    "earlyAccessDesc": "Wees de eerste die Kalit uitprobeert. Vul je e-mailadres in voor vroege toegang en productupdates.",
+    "emailPlaceholder": "Je e-mailadres",
+    "joinWaitlist": "Schrijf je in voor de wachtlijst",
+    "terms": "Algemene Voorwaarden",
+    "privacy": "Privacybeleid",
+    "trademarks": "Alle genoemde bedrijfsnamen zijn handelsmerken ™ of geregistreerde handelsmerken ® van hun respectievelijke houders."
+  },
+  "auth": {
+    "signIn": "Inloggen",
+    "signInTitle": "Log in op je workspace.",
+    "signInDesc": "Ga verder waar je gebleven was met product, lancering, groei en beveiliging.",
+    "signInSubtitle": "Gebruik je e-mail of ga verder met Google of GitHub.",
+    "email": "E-mail",
+    "password": "Wachtwoord",
+    "continue": "Doorgaan",
+    "forgotPassword": "Wachtwoord vergeten?",
+    "orContinueWith": "of ga verder met",
+    "noAccount": "Heb je nog geen account?",
+    "createOne": "Maak er een aan",
+    "register": "Maak je account aan",
+    "registerDesc": "Begin met bouwen, lanceren en groeien met AI.",
+    "name": "Volledige naam",
+    "alreadyHaveAccount": "Heb je al een account?",
+    "signInLink": "Inloggen"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcomeBack": "Welkom terug bij {orgName}. Bekijk je abonnement, verbruik, taken en beschikbare suites.",
+    "currentPlan": "Huidig abonnement",
+    "creditsRemaining": "Resterende credits",
+    "activeJobs": "Actieve taken",
+    "teamSeats": "Teamplaatsen",
+    "shortcuts": "Snelkoppelingen",
+    "shortcutsDesc": "Ga direct naar de account-, facturering-, team- en verbruiksopties die je het meest nodig hebt.",
+    "yourSuites": "Jouw Kalit suites",
+    "openSuite": "Suite openen",
+    "upgradeToUnlock": "Upgrade om te ontgrendelen",
+    "locked": "Vergrendeld"
+  },
+  "common": {
+    "previous": "Vorige",
+    "next": "Volgende",
+    "loading": "Laden...",
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "delete": "Verwijderen",
+    "confirm": "Bevestigen",
+    "search": "Zoeken",
+    "noResults": "Geen resultaten gevonden."
+  }
+}

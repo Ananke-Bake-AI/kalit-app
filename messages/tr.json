@@ -1,0 +1,141 @@
+{
+  "nav": {
+    "suites": "Paketler",
+    "howItWorks": "Nasıl çalışır",
+    "tryNow": "Hemen dene",
+    "whyKalit": "Neden Kalit?",
+    "getEarlyAccess": "Erken erişim al",
+    "dashboard": "Kontrol Paneli",
+    "profile": "Profil",
+    "billing": "Faturalandırma",
+    "admin": "Yönetim",
+    "signOut": "Çıkış yap",
+    "language": "Dil"
+  },
+  "hero": {
+    "subtitle": "Erken erişim — Şimdi açık",
+    "title1": "Oluştur, Yayınla",
+    "title2": "Büyü, Koru",
+    "promptPlaceholder": "Ne oluşturmak istediğinizi açıklayın...",
+    "findMySuite": "Bana uygun paketi bul",
+    "recommended": "Önerilen paket",
+    "analyzing": "İsteğiniz analiz ediliyor...",
+    "poweredBy": "Önde gelen AI modelleriyle desteklenir, Kalit tarafından yönetilir"
+  },
+  "suites": {
+    "project": "Project",
+    "flow": "Flow",
+    "marketing": "Marketing",
+    "pentest": "Pentest",
+    "search": "Search",
+    "projectDesc": "AI ajanları uygulamanızı uçtan uca planlayacak, geliştirecek, test edecek ve dağıtacak.",
+    "flowDesc": "Tasarım, metin ve yapı — siteniz dakikalar içinde yayında olacak.",
+    "marketingDesc": "AI kampanyalarınızı tüm kanallarda planlayacak, oluşturacak ve optimize edecek.",
+    "pentestDesc": "AI sistemlerinizi tarayacak, güvenlik açıklarını bulacak ve düzeltmeler önerecek.",
+    "searchDesc": "Girişimciler ve ürün ekipleri için Ar-Ge istihbaratı."
+  },
+  "stack": {
+    "subtitle": "Kalit Yürütme Yığını",
+    "title": "Tam Yığın Model Matrisi",
+    "description": "Dört ana alanı kapsar — uygulamalar, web siteleri, büyüme ve güvenlik. Dijital bir ürünü uçtan uca oluşturmak ve ölçeklendirmek için ihtiyacınız olan her şey."
+  },
+  "architecture": {
+    "subtitle": "Mimari",
+    "title": "Kalit bir model değildir",
+    "description": "AI zekasını yapılandırılmış iş akışlarına, çalışan sistemlere ve gerçek iş sonuçlarına dönüştüren bir yürütme katmanı.",
+    "aiModels": "AI modelleri",
+    "executionLayer": "Kalit Yürütme Katmanı",
+    "runningSystems": "Çalışan Sistemler"
+  },
+  "features": {
+    "subtitle": "Nasıl çalışır",
+    "title": "Sadece prototip değil, canlıya almak için tasarlandı",
+    "description": "Gerçek ürün, büyüme ve güvenlik çalışmaları için tasarlanmış AI iş akışlarıyla fikirden uygulamaya daha hızlı geçin.",
+    "agents": "Tek bir takım olarak koordine edilen uzman AI ajanları",
+    "agentsDesc": "Her ajan bir rol üstlenir — planlama, kodlama, tasarım, test, dağıtım. Siz uğraşmak zorunda kalmadan kendi aralarında koordine olurlar.",
+    "references": "Projenizi açıklayın, referanslar ve dosyalar ekleyin",
+    "referencesDesc": "Ekran görüntüleri paylaşın, ihtiyacınızı açıklayın ve ajanların vizyonunuzu gerçekleştirmesine izin verin. Kodlama gerekmez.",
+    "parallel": "Birden fazla iş akışını aynı anda çalıştırın",
+    "parallelDesc": "Uygulamanızı geliştirin, açılış sayfanızı oluşturun ve lansman hazırlığınızı paralel olarak yapın — adım adım beklemek yerine.",
+    "deploy": "Tek tıkla yayına alın — barındırma dahil",
+    "deployDesc": "Açılış sayfaları yayınlayın, uygulamalar dağıtın ve kampanyalar başlatın — doğrudan Kalit üzerinden. Harici araçlara gerek yok."
+  },
+  "join": {
+    "subtitle": "Başlayın",
+    "title": "Hedefinize uygun paketle başlayın",
+    "description": "Tek bir paketi bağımsız kullanın veya dördünü birleştirerek tek bir platformdan işinizi kurun, yayınlayın, büyütün ve koruyun."
+  },
+  "portfolio": {
+    "subtitle": "Kalit Portföy",
+    "builtAndShipped": "oluşturuldu ve yayınlandı",
+    "byFounders": "Kalit kullanan kurucular tarafından.",
+    "realProjects": "Gerçek projeler",
+    "exploreMore": "Daha fazla proje keşfet"
+  },
+  "choose": {
+    "subtitle": "Karşılaştır",
+    "description": "Kalit'i kurucular ve dijital ekipler için en önemli yetenekler açısından diğer araçlarla karşılaştırın."
+  },
+  "footer": {
+    "rights": "Tüm hakları saklıdır.",
+    "suites": "Paketler",
+    "resources": "Kaynaklar",
+    "company": "Şirket",
+    "faq": "SSS",
+    "support": "Destek",
+    "documentation": "Dokümantasyon",
+    "careers": "Kariyer",
+    "contactUs": "Bize Ulaşın",
+    "brandingKit": "Marka Kiti",
+    "earlyAccess": "Erken erişim al",
+    "earlyAccessDesc": "Kalit'i ilk deneyen siz olun. Erken erişim ve ürün güncellemeleri için e-postanızı girin.",
+    "emailPlaceholder": "E-posta adresiniz",
+    "joinWaitlist": "Bekleme listesine katıl",
+    "terms": "Kullanım Koşulları",
+    "privacy": "Gizlilik Politikası",
+    "trademarks": "Listelenen tüm şirket adları, ilgili sahiplerinin ticari markaları ™ veya tescilli ticari markaları ®'dir."
+  },
+  "auth": {
+    "signIn": "Giriş yap",
+    "signInTitle": "Çalışma alanınıza giriş yapın.",
+    "signInDesc": "Ürün, lansman, büyüme ve güvenlik çalışmalarınıza kaldığınız yerden devam edin.",
+    "signInSubtitle": "E-postanızı kullanın veya Google ya da GitHub ile devam edin.",
+    "email": "E-posta",
+    "password": "Şifre",
+    "continue": "Devam et",
+    "forgotPassword": "Şifrenizi mi unuttunuz?",
+    "orContinueWith": "veya şununla devam et",
+    "noAccount": "Hesabınız yok mu?",
+    "createOne": "Hesap oluştur",
+    "register": "Hesabınızı oluşturun",
+    "registerDesc": "AI ile oluşturmaya, yayınlamaya ve büyümeye başlayın.",
+    "name": "Ad soyad",
+    "alreadyHaveAccount": "Zaten hesabınız var mı?",
+    "signInLink": "Giriş yap"
+  },
+  "dashboard": {
+    "title": "Kontrol Paneli",
+    "welcomeBack": "{orgName} alanına tekrar hoş geldiniz. Planınızı, kullanımınızı, işlerinizi ve mevcut paketleri kontrol edin.",
+    "currentPlan": "Mevcut plan",
+    "creditsRemaining": "Kalan krediler",
+    "activeJobs": "Aktif işler",
+    "teamSeats": "Takım koltukları",
+    "shortcuts": "Kısayollar",
+    "shortcutsDesc": "Hesap, faturalandırma, takım ve kullanım ayarlarına doğrudan gidin.",
+    "yourSuites": "Kalit paketleriniz",
+    "openSuite": "Paketi aç",
+    "upgradeToUnlock": "Yükselt ve kilidi aç",
+    "locked": "Kilitli"
+  },
+  "common": {
+    "previous": "Önceki",
+    "next": "Sonraki",
+    "loading": "Yükleniyor...",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "delete": "Sil",
+    "confirm": "Onayla",
+    "search": "Ara",
+    "noResults": "Sonuç bulunamadı."
+  }
+}

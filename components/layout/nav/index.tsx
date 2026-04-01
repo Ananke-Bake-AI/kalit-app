@@ -5,12 +5,14 @@ import { Link } from "@/components/link"
 import { Logo } from "@/components/logo"
 import { SUITES } from "@/lib/suites"
 import { useAppStore } from "@/stores/app"
+import { useTranslation } from "@/stores/i18n"
 import clsx from "clsx"
 import type { MouseEvent } from "react"
 import s from "./nav.module.scss"
 
 export const Nav = () => {
   const { nav, subOpen, setSubOpen, setNav } = useAppStore()
+  const t = useTranslation()
 
   const handleNavClick = (e: MouseEvent<HTMLElement>) => {
     const el = e.target as HTMLElement
@@ -29,7 +31,7 @@ export const Nav = () => {
             onMouseEnter={() => setSubOpen(true)}
             onMouseLeave={() => setSubOpen(false)}
           >
-            Suites <Icon icon="hugeicons:arrow-down-01" className={s.arrow} />
+            {t("nav.suites")} <Icon icon="hugeicons:arrow-down-01" className={s.arrow} />
           </span>
           <ul
             className={clsx(s.sub, subOpen && s.subOpen)}
@@ -54,17 +56,17 @@ export const Nav = () => {
         </li>
         <li>
           <Link href="/" className={s.link}>
-            How it works
+            {t("nav.howItWorks")}
           </Link>
         </li>
         <li>
           <Link href="/" className={s.link}>
-            Try now
+            {t("nav.tryNow")}
           </Link>
         </li>
         <li>
           <Link href="/" className={s.link}>
-            Why Kalit?
+            {t("nav.whyKalit")}
           </Link>
         </li>
       </ul>

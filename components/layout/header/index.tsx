@@ -8,6 +8,7 @@ import { Link } from "@/components/link"
 import { Logotype } from "@/components/logotype"
 import { SUITES, type AppPageState, type SuiteId } from "@/lib/suites"
 import { useAppStore } from "@/stores/app"
+import { useTranslation } from "@/stores/i18n"
 import { useClickOutside, useElementSize } from "@reactuses/core"
 import clsx from "clsx"
 import type { Session } from "next-auth"
@@ -25,6 +26,7 @@ interface HeaderProps {
 export const Header = ({ initialSession = null }: HeaderProps) => {
   const { nav, setNav, page } = useAppStore()
   const { data: session, status } = useSession()
+  const t = useTranslation()
   const [menuOpen, setMenuOpen] = useState(false)
   const headerRef = useRef<HTMLElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
@@ -114,26 +116,26 @@ export const Header = ({ initialSession = null }: HeaderProps) => {
                     <span className={s.dropdownIcon}>
                       <Icon icon="hugeicons:dashboard-square-01" />
                     </span>
-                    <span className={s.dropdownLabel}>Dashboard</span>
+                    <span className={s.dropdownLabel}>{t("nav.dashboard")}</span>
                   </Link>
                   <Link href="/settings/profile" className={s.dropdownItem} onClick={() => setMenuOpen(false)}>
                     <span className={s.dropdownIcon}>
                       <Icon icon="hugeicons:user-circle" />
                     </span>
-                    <span className={s.dropdownLabel}>Profile</span>
+                    <span className={s.dropdownLabel}>{t("nav.profile")}</span>
                   </Link>
                   <Link href="/settings/billing" className={s.dropdownItem} onClick={() => setMenuOpen(false)}>
                     <span className={s.dropdownIcon}>
                       <Icon icon="hugeicons:credit-card" />
                     </span>
-                    <span className={s.dropdownLabel}>Billing</span>
+                    <span className={s.dropdownLabel}>{t("nav.billing")}</span>
                   </Link>
                   {resolvedSession.user.email && (process.env.NEXT_PUBLIC_ADMIN_EMAILS ?? "frederick.marinho@gmail.com,nico.style931@gmail.com").split(",").map(e => e.trim().toLowerCase()).includes(resolvedSession.user.email.toLowerCase()) && (
                     <Link href="/admin" className={s.dropdownItem} onClick={() => setMenuOpen(false)}>
                       <span className={s.dropdownIcon}>
                         <Icon icon="hugeicons:shield-01" />
                       </span>
-                      <span className={s.dropdownLabel}>Admin</span>
+                      <span className={s.dropdownLabel}>{t("nav.admin")}</span>
                     </Link>
                   )}
                 </div>
@@ -141,14 +143,14 @@ export const Header = ({ initialSession = null }: HeaderProps) => {
                   <span className={s.dropdownIcon}>
                     <Icon icon="hugeicons:logout-01" />
                   </span>
-                  <span className={s.dropdownLabel}>Sign out</span>
+                  <span className={s.dropdownLabel}>{t("nav.signOut")}</span>
                 </button>
               </div>
             )}
           </div>
         ) : (
           <Button className={s.btn} circle href="/register">
-            Get early access
+            {t("nav.getEarlyAccess")}
           </Button>
         )}
 

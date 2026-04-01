@@ -1,0 +1,141 @@
+{
+  "nav": {
+    "suites": "스위트",
+    "howItWorks": "작동 방식",
+    "tryNow": "지금 시작",
+    "whyKalit": "왜 Kalit인가?",
+    "getEarlyAccess": "얼리 액세스 신청",
+    "dashboard": "대시보드",
+    "profile": "프로필",
+    "billing": "결제",
+    "admin": "관리",
+    "signOut": "로그아웃",
+    "language": "언어"
+  },
+  "hero": {
+    "subtitle": "얼리 액세스 — 지금 오픈",
+    "title1": "만들고, 출시하고",
+    "title2": "성장하고, 보호하세요",
+    "promptPlaceholder": "만들고 싶은 것을 설명해 주세요...",
+    "findMySuite": "나에게 맞는 스위트 찾기",
+    "recommended": "추천 스위트",
+    "analyzing": "요청을 분석하고 있습니다...",
+    "poweredBy": "최고의 AI 모델 기반, Kalit이 조율합니다"
+  },
+  "suites": {
+    "project": "Project",
+    "flow": "Flow",
+    "marketing": "Marketing",
+    "pentest": "Pentest",
+    "search": "Search",
+    "projectDesc": "AI 에이전트가 앱을 기획, 개발, 테스트, 배포까지 전 과정을 처리합니다.",
+    "flowDesc": "디자인, 카피, 구조 설계 — 몇 분 만에 사이트가 완성됩니다.",
+    "marketingDesc": "AI가 모든 채널에서 캠페인을 기획, 제작, 최적화합니다.",
+    "pentestDesc": "AI가 시스템을 스캔하고 취약점을 찾아 수정 방안을 제안합니다.",
+    "searchDesc": "창업자와 제품 팀을 위한 R&D 인텔리전스."
+  },
+  "stack": {
+    "subtitle": "Kalit 실행 스택",
+    "title": "풀스택 모델 매트릭스",
+    "description": "앱, 웹사이트, 성장, 보안 — 네 가지 핵심 영역을 포괄합니다. 디지털 제품을 처음부터 끝까지 구축하고 확장하는 데 필요한 모든 것."
+  },
+  "architecture": {
+    "subtitle": "아키텍처",
+    "title": "Kalit은 모델이 아닙니다",
+    "description": "AI 지능을 구조화된 워크플로, 배포된 시스템, 실질적인 비즈니스 성과로 전환하는 실행 레이어입니다.",
+    "aiModels": "AI 모델",
+    "executionLayer": "Kalit 실행 레이어",
+    "runningSystems": "운영 중인 시스템"
+  },
+  "features": {
+    "subtitle": "작동 방식",
+    "title": "프로토타입이 아닌 실제 출시를 위해 설계",
+    "description": "실제 제품, 성장, 보안 작업을 위한 AI 워크플로로 아이디어에서 실행까지 더 빠르게 진행하세요.",
+    "agents": "하나의 팀으로 조율되는 전문 AI 에이전트",
+    "agentsDesc": "각 에이전트가 기획, 코딩, 디자인, 테스트, 배포 역할을 담당합니다. 에이전트들이 알아서 협력하므로 직접 관리할 필요가 없습니다.",
+    "references": "프로젝트를 설명하고 참고 자료와 에셋을 추가하세요",
+    "referencesDesc": "스크린샷을 공유하고 필요한 것을 설명하면 에이전트가 비전에 맞춰 작업합니다. 코딩이 필요 없습니다.",
+    "parallel": "여러 워크플로를 동시에 실행",
+    "parallelDesc": "앱 개발, 랜딩 페이지 생성, 출시 준비를 동시에 진행하세요 — 한 단계씩 기다릴 필요가 없습니다.",
+    "deploy": "원클릭으로 배포 — 호스팅 포함",
+    "deployDesc": "랜딩 페이지 게시, 앱 배포, 캠페인 실행까지 Kalit에서 직접 가능합니다. 외부 도구가 필요 없습니다."
+  },
+  "join": {
+    "subtitle": "시작하기",
+    "title": "목표에 맞는 스위트로 시작하세요",
+    "description": "하나의 스위트를 단독으로 사용하거나 네 가지를 모두 결합하여 하나의 플랫폼에서 비즈니스를 구축, 출시, 성장, 보호하세요."
+  },
+  "portfolio": {
+    "subtitle": "Kalit 포트폴리오",
+    "builtAndShipped": "구축 및 출시 완료",
+    "byFounders": "Kalit을 사용하는 창업자들이 만들었습니다.",
+    "realProjects": "실제 프로젝트",
+    "exploreMore": "더 많은 프로젝트 보기"
+  },
+  "choose": {
+    "subtitle": "비교하기",
+    "description": "창업자와 디지털 팀에게 가장 중요한 기능 기준으로 Kalit을 다른 도구와 비교해 보세요."
+  },
+  "footer": {
+    "rights": "모든 권리 보유.",
+    "suites": "스위트",
+    "resources": "리소스",
+    "company": "회사",
+    "faq": "FAQ",
+    "support": "지원",
+    "documentation": "문서",
+    "careers": "채용",
+    "contactUs": "문의하기",
+    "brandingKit": "브랜딩 키트",
+    "earlyAccess": "얼리 액세스 신청",
+    "earlyAccessDesc": "Kalit을 가장 먼저 체험해 보세요. 이메일을 입력하면 얼리 액세스와 제품 업데이트를 받을 수 있습니다.",
+    "emailPlaceholder": "이메일 주소",
+    "joinWaitlist": "대기자 명단 등록",
+    "terms": "이용약관",
+    "privacy": "개인정보처리방침",
+    "trademarks": "나열된 모든 회사명은 해당 소유자의 상표 ™ 또는 등록 상표 ®입니다."
+  },
+  "auth": {
+    "signIn": "로그인",
+    "signInTitle": "워크스페이스에 로그인하세요.",
+    "signInDesc": "제품, 출시, 성장, 보안 작업을 이어서 진행하세요.",
+    "signInSubtitle": "이메일 또는 Google, GitHub으로 계속하세요.",
+    "email": "이메일",
+    "password": "비밀번호",
+    "continue": "계속",
+    "forgotPassword": "비밀번호를 잊으셨나요?",
+    "orContinueWith": "또는 다음으로 계속",
+    "noAccount": "계정이 없으신가요?",
+    "createOne": "계정 만들기",
+    "register": "계정 만들기",
+    "registerDesc": "AI와 함께 구축, 출시, 성장을 시작하세요.",
+    "name": "이름",
+    "alreadyHaveAccount": "이미 계정이 있으신가요?",
+    "signInLink": "로그인"
+  },
+  "dashboard": {
+    "title": "대시보드",
+    "welcomeBack": "{orgName}에 다시 오신 것을 환영합니다. 플랜, 사용량, 작업, 이용 가능한 스위트를 확인하세요.",
+    "currentPlan": "현재 플랜",
+    "creditsRemaining": "잔여 크레딧",
+    "activeJobs": "진행 중인 작업",
+    "teamSeats": "팀 인원",
+    "shortcuts": "바로가기",
+    "shortcutsDesc": "계정, 결제, 팀, 사용량 관리 등 가장 필요한 항목으로 바로 이동하세요.",
+    "yourSuites": "내 Kalit 스위트",
+    "openSuite": "스위트 열기",
+    "upgradeToUnlock": "업그레이드하여 잠금 해제",
+    "locked": "잠김"
+  },
+  "common": {
+    "previous": "이전",
+    "next": "다음",
+    "loading": "로딩 중...",
+    "save": "저장",
+    "cancel": "취소",
+    "delete": "삭제",
+    "confirm": "확인",
+    "search": "검색",
+    "noResults": "결과를 찾을 수 없습니다."
+  }
+}

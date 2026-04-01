@@ -1,0 +1,141 @@
+{
+  "nav": {
+    "suites": "套件",
+    "howItWorks": "工作原理",
+    "tryNow": "立即体验",
+    "whyKalit": "为什么选择 Kalit？",
+    "getEarlyAccess": "获取抢先体验",
+    "dashboard": "控制面板",
+    "profile": "个人资料",
+    "billing": "账单",
+    "admin": "管理",
+    "signOut": "退出登录",
+    "language": "语言"
+  },
+  "hero": {
+    "subtitle": "抢先体验 — 现已开放",
+    "title1": "构建、发布",
+    "title2": "增长、守护",
+    "promptPlaceholder": "描述您想要构建的内容...",
+    "findMySuite": "找到适合我的套件",
+    "recommended": "推荐套件",
+    "analyzing": "正在分析您的需求...",
+    "poweredBy": "由顶尖 AI 模型驱动，Kalit 统一编排"
+  },
+  "suites": {
+    "project": "Project",
+    "flow": "Flow",
+    "marketing": "Marketing",
+    "pentest": "Pentest",
+    "search": "Search",
+    "projectDesc": "AI 代理将端到端地规划、构建、测试和部署您的应用。",
+    "flowDesc": "设计、文案、结构 — 您的网站几分钟内即可上线。",
+    "marketingDesc": "AI 将在各渠道规划、创作和优化您的营销活动。",
+    "pentestDesc": "AI 将扫描您的系统、发现漏洞并提供修复建议。",
+    "searchDesc": "面向创业者和产品团队的研发情报。"
+  },
+  "stack": {
+    "subtitle": "Kalit 执行栈",
+    "title": "全栈模型矩阵",
+    "description": "涵盖四大领域 — 应用、网站、增长和安全。构建和扩展数字产品所需的一切，端到端覆盖。"
+  },
+  "architecture": {
+    "subtitle": "架构",
+    "title": "Kalit 不是一个模型",
+    "description": "一个执行层，将 AI 智能转化为结构化工作流、已部署的系统和真实的商业成果。",
+    "aiModels": "AI 模型",
+    "executionLayer": "Kalit 执行层",
+    "runningSystems": "运行中的系统"
+  },
+  "features": {
+    "subtitle": "工作原理",
+    "title": "为交付而生，不止于原型",
+    "description": "通过专为真实产品、增长和安全工作设计的 AI 工作流，更快地从想法走向执行。",
+    "agents": "专业 AI 代理协同工作如同一个团队",
+    "agentsDesc": "每个代理负责一个角色 — 规划、编码、设计、测试、部署。它们自动协调，无需您手动管理。",
+    "references": "描述您的项目，添加参考资料和素材",
+    "referencesDesc": "分享截图、描述您的需求，让代理匹配您的愿景。无需编程。",
+    "parallel": "同时运行多个工作流",
+    "parallelDesc": "同时构建应用、生成落地页、准备发布 — 不必逐步等待。",
+    "deploy": "一键上线 — 含托管服务",
+    "deployDesc": "直接在 Kalit 发布落地页、部署应用、启动营销活动。无需外部工具。"
+  },
+  "join": {
+    "subtitle": "开始使用",
+    "title": "从最符合您目标的套件开始",
+    "description": "单独使用一个套件，或将四个套件结合使用，在一个平台上构建、发布、增长和保护您的业务。"
+  },
+  "portfolio": {
+    "subtitle": "Kalit 作品集",
+    "builtAndShipped": "已构建和发布",
+    "byFounders": "由使用 Kalit 的创始人打造。",
+    "realProjects": "真实项目",
+    "exploreMore": "探索更多项目"
+  },
+  "choose": {
+    "subtitle": "对比",
+    "description": "在创始人和数字团队最关注的能力维度上，将 Kalit 与其他工具进行对比。"
+  },
+  "footer": {
+    "rights": "版权所有。",
+    "suites": "套件",
+    "resources": "资源",
+    "company": "公司",
+    "faq": "常见问题",
+    "support": "支持",
+    "documentation": "文档",
+    "careers": "招聘",
+    "contactUs": "联系我们",
+    "brandingKit": "品牌资料包",
+    "earlyAccess": "获取抢先体验",
+    "earlyAccessDesc": "成为首批体验 Kalit 的用户。输入您的邮箱以获取抢先体验资格和产品更新。",
+    "emailPlaceholder": "您的邮箱地址",
+    "joinWaitlist": "加入候补名单",
+    "terms": "服务条款",
+    "privacy": "隐私政策",
+    "trademarks": "所列公司名称均为其各自持有人的商标 ™ 或注册商标 ®。"
+  },
+  "auth": {
+    "signIn": "登录",
+    "signInTitle": "登录您的工作空间。",
+    "signInDesc": "继续您在产品、发布、增长和安全方面的工作。",
+    "signInSubtitle": "使用邮箱登录，或通过 Google 或 GitHub 继续。",
+    "email": "邮箱",
+    "password": "密码",
+    "continue": "继续",
+    "forgotPassword": "忘记密码？",
+    "orContinueWith": "或通过以下方式继续",
+    "noAccount": "还没有账户？",
+    "createOne": "创建账户",
+    "register": "创建您的账户",
+    "registerDesc": "开始使用 AI 构建、发布和增长。",
+    "name": "姓名",
+    "alreadyHaveAccount": "已有账户？",
+    "signInLink": "登录"
+  },
+  "dashboard": {
+    "title": "控制面板",
+    "welcomeBack": "欢迎回到 {orgName}。查看您的方案、用量、任务和可用套件。",
+    "currentPlan": "当前方案",
+    "creditsRemaining": "剩余积分",
+    "activeJobs": "进行中的任务",
+    "teamSeats": "团队席位",
+    "shortcuts": "快捷入口",
+    "shortcutsDesc": "直接前往您最可能需要的账户、账单、团队和用量管理。",
+    "yourSuites": "您的 Kalit 套件",
+    "openSuite": "打开套件",
+    "upgradeToUnlock": "升级以解锁",
+    "locked": "已锁定"
+  },
+  "common": {
+    "previous": "上一页",
+    "next": "下一页",
+    "loading": "加载中...",
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "confirm": "确认",
+    "search": "搜索",
+    "noResults": "未找到结果。"
+  }
+}

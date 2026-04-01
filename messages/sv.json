@@ -1,0 +1,141 @@
+{
+  "nav": {
+    "suites": "Sviter",
+    "howItWorks": "Hur det fungerar",
+    "tryNow": "Testa nu",
+    "whyKalit": "Varför Kalit?",
+    "getEarlyAccess": "Få tidig åtkomst",
+    "dashboard": "Översikt",
+    "profile": "Profil",
+    "billing": "Fakturering",
+    "admin": "Administration",
+    "signOut": "Logga ut",
+    "language": "Språk"
+  },
+  "hero": {
+    "subtitle": "Tidig åtkomst — Nu öppen",
+    "title1": "Bygg, Lansera",
+    "title2": "Väx, Skydda",
+    "promptPlaceholder": "Beskriv vad du vill bygga...",
+    "findMySuite": "Hitta min svit",
+    "recommended": "Rekommenderad svit",
+    "analyzing": "Analyserar din förfrågan...",
+    "poweredBy": "Drivs av ledande AI-modeller, orkestrerat av Kalit"
+  },
+  "suites": {
+    "project": "Project",
+    "flow": "Flow",
+    "marketing": "Marketing",
+    "pentest": "Pentest",
+    "search": "Search",
+    "projectDesc": "AI-agenter planerar, bygger, testar och driftsätter din app från början till slut.",
+    "flowDesc": "Design, copy och struktur — din webbplats är live inom några minuter.",
+    "marketingDesc": "AI planerar, skapar och optimerar dina kampanjer över alla kanaler.",
+    "pentestDesc": "AI skannar dina system, hittar sårbarheter och föreslår åtgärder.",
+    "searchDesc": "FoU-intelligens för entreprenörer och produktteam."
+  },
+  "stack": {
+    "subtitle": "Kalits exekveringsstack",
+    "title": "Fullständig modellmatris",
+    "description": "Täcker fyra huvudområden — appar, webbplatser, tillväxt och säkerhet. Allt du behöver för att bygga och skala en digital produkt från början till slut."
+  },
+  "architecture": {
+    "subtitle": "Arkitekturen",
+    "title": "Kalit är inte en modell",
+    "description": "Ett exekveringslager som omvandlar AI-intelligens till strukturerade arbetsflöden, driftsatta system och verkliga affärsresultat.",
+    "aiModels": "AI-modeller",
+    "executionLayer": "Kalits exekveringslager",
+    "runningSystems": "Aktiva system"
+  },
+  "features": {
+    "subtitle": "Hur det fungerar",
+    "title": "Byggt för att leverera, inte bara prototypa",
+    "description": "Gå från idé till genomförande snabbare med AI-arbetsflöden designade för verkligt produkt-, tillväxt- och säkerhetsarbete.",
+    "agents": "Specialiserade AI-agenter koordinerade som ett team",
+    "agentsDesc": "Varje agent hanterar en roll — planering, kodning, design, testning, driftsättning. De koordinerar sig så att du inte behöver göra det.",
+    "references": "Beskriv ditt projekt, lägg till referenser och material",
+    "referencesDesc": "Dela skärmbilder, beskriv vad du behöver och låt agenterna matcha din vision. Ingen kodning krävs.",
+    "parallel": "Kör flera arbetsflöden samtidigt",
+    "parallelDesc": "Bygg din app, generera din landningssida och förbered lanseringen parallellt — istället för att vänta steg för steg.",
+    "deploy": "Gå live med ett klick — hosting ingår",
+    "deployDesc": "Publicera landningssidor, driftsätt appar och starta kampanjer direkt från Kalit. Inga externa verktyg behövs."
+  },
+  "join": {
+    "subtitle": "Kom igång",
+    "title": "Börja med den svit som matchar ditt mål",
+    "description": "Använd en svit enskilt eller kombinera alla fyra för att bygga, lansera, växa och skydda din verksamhet från en plattform."
+  },
+  "portfolio": {
+    "subtitle": "Kalit Portfolio",
+    "builtAndShipped": "byggda och lanserade",
+    "byFounders": "av grundare som använder Kalit.",
+    "realProjects": "Riktiga projekt",
+    "exploreMore": "Utforska fler projekt"
+  },
+  "choose": {
+    "subtitle": "Jämför",
+    "description": "Jämför Kalit med andra verktyg utifrån de funktioner som är viktigast för grundare och digitala team."
+  },
+  "footer": {
+    "rights": "Alla rättigheter förbehållna.",
+    "suites": "Sviter",
+    "resources": "Resurser",
+    "company": "Företag",
+    "faq": "FAQ",
+    "support": "Support",
+    "documentation": "Dokumentation",
+    "careers": "Karriär",
+    "contactUs": "Kontakta oss",
+    "brandingKit": "Varumärkespaket",
+    "earlyAccess": "Få tidig åtkomst",
+    "earlyAccessDesc": "Bli först med att testa Kalit. Ange din e-post för tidig åtkomst och produktuppdateringar.",
+    "emailPlaceholder": "Din e-postadress",
+    "joinWaitlist": "Anmäl dig till väntelistan",
+    "terms": "Villkor",
+    "privacy": "Integritetspolicy",
+    "trademarks": "Alla listade företagsnamn är varumärken ™ eller registrerade varumärken ® tillhörande respektive ägare."
+  },
+  "auth": {
+    "signIn": "Logga in",
+    "signInTitle": "Logga in på din arbetsyta.",
+    "signInDesc": "Fortsätt där du slutade med produkt, lansering, tillväxt och säkerhet.",
+    "signInSubtitle": "Använd din e-post eller fortsätt med Google eller GitHub.",
+    "email": "E-post",
+    "password": "Lösenord",
+    "continue": "Fortsätt",
+    "forgotPassword": "Glömt lösenord?",
+    "orContinueWith": "eller fortsätt med",
+    "noAccount": "Har du inget konto?",
+    "createOne": "Skapa ett",
+    "register": "Skapa ditt konto",
+    "registerDesc": "Börja bygga, lansera och växa med AI.",
+    "name": "Fullständigt namn",
+    "alreadyHaveAccount": "Har du redan ett konto?",
+    "signInLink": "Logga in"
+  },
+  "dashboard": {
+    "title": "Översikt",
+    "welcomeBack": "Välkommen tillbaka till {orgName}. Kontrollera din plan, användning, jobb och tillgängliga sviter.",
+    "currentPlan": "Nuvarande plan",
+    "creditsRemaining": "Återstående krediter",
+    "activeJobs": "Aktiva jobb",
+    "teamSeats": "Teamplatser",
+    "shortcuts": "Genvägar",
+    "shortcutsDesc": "Gå direkt till de konto-, fakturerings-, team- och användningsinställningar du troligast behöver.",
+    "yourSuites": "Dina Kalit-sviter",
+    "openSuite": "Öppna svit",
+    "upgradeToUnlock": "Uppgradera för att låsa upp",
+    "locked": "Låst"
+  },
+  "common": {
+    "previous": "Föregående",
+    "next": "Nästa",
+    "loading": "Laddar...",
+    "save": "Spara",
+    "cancel": "Avbryt",
+    "delete": "Ta bort",
+    "confirm": "Bekräfta",
+    "search": "Sök",
+    "noResults": "Inga resultat hittades."
+  }
+}
