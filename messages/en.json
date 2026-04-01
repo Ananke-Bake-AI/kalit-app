@@ -129,7 +129,8 @@
     "joinWaitlist": "Join waitlist",
     "terms": "Terms and Conditions",
     "privacy": "Privacy Policy",
-    "trademarks": "All listed company names are trademarks ™ or registered trademarks ® of their respective holders."
+    "trademarks": "All listed company names are trademarks ™ or registered trademarks ® of their respective holders.",
+    "aboutUs": "About Us"
   },
   "auth": {
     "signIn": "Sign in",

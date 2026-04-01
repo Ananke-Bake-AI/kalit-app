@@ -169,10 +169,10 @@ export default function TermsOfServicePage() {
 
           <h2>10. Governing Law</h2>
           <p>
-            These Terms shall be governed by and construed in accordance with the laws of France,
+            These Terms shall be governed by and construed in accordance with the laws of Malta,
             without regard to its conflict of law provisions. Any disputes arising from or relating
             to these Terms or the Service shall be subject to the exclusive jurisdiction of the
-            courts located in Paris, France.
+            courts located in Malta.
           </p>
 
           <h2>11. Changes to Terms</h2>
@@ -188,7 +188,11 @@ export default function TermsOfServicePage() {
             If you have any questions about these Terms of Service, please contact us at:
           </p>
           <p>
-            <strong>Kalit AI</strong>
+            <strong>Kalit AI</strong> — a product of Merkle Tech Labs LTD.
+            <br />
+            Company registration: C 107851 (Malta)
+            <br />
+            Northlink Business Centre, Level 2, Triq Burmarrad, Naxxar, NXR 6345, Malta
             <br />
             Email:{" "}
             <a href="mailto:contact@kalit.ai">

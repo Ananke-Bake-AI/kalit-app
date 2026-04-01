@@ -129,7 +129,8 @@
     "joinWaitlist": "Bekleme listesine katıl",
     "terms": "Kullanım Koşulları",
     "privacy": "Gizlilik Politikası",
-    "trademarks": "Listelenen tüm şirket adları, ilgili sahiplerinin ticari markaları ™ veya tescilli ticari markaları ®'dir."
+    "trademarks": "Listelenen tüm şirket adları, ilgili sahiplerinin ticari markaları ™ veya tescilli ticari markaları ®'dir.",
+    "aboutUs": "Hakkımızda"
   },
   "auth": {
     "signIn": "Giriş yap",

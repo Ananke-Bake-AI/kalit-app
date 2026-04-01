@@ -33,6 +33,7 @@ export const Footer = () => {
     {
       title: t("footer.company"),
       links: [
+        { title: t("footer.aboutUs"), href: "/about" },
         { title: t("footer.careers"), href: "/careers" },
         { title: t("footer.contactUs"), href: "/contact-us" },
         { title: t("footer.brandingKit"), href: "/branding-kit" }

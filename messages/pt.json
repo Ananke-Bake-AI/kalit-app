@@ -129,7 +129,8 @@
     "joinWaitlist": "Entrar na lista",
     "terms": "Termos e Condições",
     "privacy": "Política de Privacidade",
-    "trademarks": "Todos os nomes de empresas listados são marcas ™ ou marcas registradas ® de seus respectivos titulares."
+    "trademarks": "Todos os nomes de empresas listados são marcas ™ ou marcas registradas ® de seus respectivos titulares.",
+    "aboutUs": "Sobre nós"
   },
   "auth": {
     "signIn": "Entrar",

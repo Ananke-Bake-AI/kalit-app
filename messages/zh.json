@@ -129,7 +129,8 @@
     "joinWaitlist": "加入候补名单",
     "terms": "服务条款",
     "privacy": "隐私政策",
-    "trademarks": "所列公司名称均为其各自持有人的商标 ™ 或注册商标 ®。"
+    "trademarks": "所列公司名称均为其各自持有人的商标 ™ 或注册商标 ®。",
+    "aboutUs": "关于我们"
   },
   "auth": {
     "signIn": "登录",

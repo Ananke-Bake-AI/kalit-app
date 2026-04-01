@@ -129,7 +129,8 @@
     "joinWaitlist": "Dołącz do listy oczekujących",
     "terms": "Regulamin",
     "privacy": "Polityka Prywatności",
-    "trademarks": "Wszystkie wymienione nazwy firm są znakami towarowymi ™ lub zastrzeżonymi znakami towarowymi ® ich odpowiednich właścicieli."
+    "trademarks": "Wszystkie wymienione nazwy firm są znakami towarowymi ™ lub zastrzeżonymi znakami towarowymi ® ich odpowiednich właścicieli.",
+    "aboutUs": "O nas"
   },
   "auth": {
     "signIn": "Zaloguj się",
