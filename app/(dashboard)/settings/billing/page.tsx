@@ -4,20 +4,17 @@ import planStyles from "@/components/plan/plan.module.scss"
 import info from "@/components/settings-info-rows/settings-info-rows.module.scss"
 import { SurfacePanel } from "@/components/surface-panel"
 import { auth } from "@/lib/auth"
+import { getServerTranslation } from "@/lib/i18n-server"
 import { getPlan, PLANS } from "@/lib/plans"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { CheckoutButton, ManageBillingButton } from "./actions"
 import s from "./billing.module.scss"
 
-function formatMembers(limit: number) {
-  if (limit === -1) return "Unlimited members"
-  return `${limit} member${limit === 1 ? "" : "s"}`
-}
-
 export default async function BillingPage() {
   const session = await auth()
   if (!session?.user?.orgId) redirect("/login")
+  const t = await getServerTranslation()
 
   const subscription = await prisma.subscription.findFirst({
     where: { orgId: session.user.orgId, status: { in: ["ACTIVE", "TRIALING"] } },
@@ -26,14 +23,17 @@ export default async function BillingPage() {
 
   const currentPlan = subscription ? getPlan(subscription.planKey) : null
 
+  const formatMembers = (limit: number) =>
+    limit === -1 ? t("settingsPages.unlimitedMembers") : t("settingsPages.memberCountPlural", { count: limit })
+
   return (
     <>
       <SurfacePanel
-        title={currentPlan?.name || "Free workspace"}
+        title={currentPlan?.name || t("settingsPages.freeWorkspace")}
         subtitle={
           currentPlan
-            ? `${currentPlan.creditsPerMonth} credits per month, ${formatMembers(currentPlan.maxMembers)}, ${currentPlan.suites.length} suite${currentPlan.suites.length === 1 ? "" : "s"} included.`
-            : "No active subscription yet."
+            ? `${t("settingsPages.creditsPerMonth", { count: currentPlan.creditsPerMonth })}, ${formatMembers(currentPlan.maxMembers)}, ${currentPlan.suites.length > 1 ? t("settingsPages.suitesIncludedPlural", { count: currentPlan.suites.length }) : t("settingsPages.suitesIncluded", { count: currentPlan.suites.length })}.`
+            : t("settingsPages.noSubscription")
         }
         headerAside={
           subscription ? <Badge variant="success">{subscription.status.toLowerCase()}</Badge> : <Badge>Free</Badge>
@@ -41,7 +41,7 @@ export default async function BillingPage() {
       >
         {subscription ? (
           <div className={info.row}>
-            <label>Renews</label>
+            <label>{t("settingsPages.renews")}</label>
             <span>
               {subscription.currentPeriodEnd.toLocaleDateString("en-US", {
                 month: "short",
@@ -53,9 +53,9 @@ export default async function BillingPage() {
         ) : null}
         <div className={s.actions}>
           {subscription ? (
-            <ManageBillingButton label="Open billing portal" />
+            <ManageBillingButton label={t("settingsPages.openBillingPortal")} />
           ) : (
-            <CheckoutButton planKey="starter" label="Start with Starter" />
+            <CheckoutButton planKey="starter" label={t("settingsPages.startWithStarter")} />
           )}
         </div>
       </SurfacePanel>
@@ -63,7 +63,7 @@ export default async function BillingPage() {
       <div className={s.planGrid}>
         {PLANS.map((plan) => {
           const isCurrent = subscription?.planKey === plan.key
-          const tagline = `${plan.suites.length} suite${plan.suites.length === 1 ? "" : "s"} included, ${plan.creditsPerMonth} credits per month, ${formatMembers(plan.maxMembers)}.`
+          const tagline = `${t("settingsPages.creditsPerMonth", { count: plan.creditsPerMonth })}, ${formatMembers(plan.maxMembers)}.`
           const showBadges = plan.popular || isCurrent
 
           return (
@@ -82,12 +82,12 @@ export default async function BillingPage() {
                   <>
                     {plan.popular ? (
                       <Badge className={planStyles.badge} variant="popular">
-                        Most selected
+                        {t("settingsPages.mostSelected")}
                       </Badge>
                     ) : null}
                     {isCurrent ? (
                       <Badge className={planStyles.badge} variant="success">
-                        Current plan
+                        {t("settingsPages.currentPlan")}
                       </Badge>
                     ) : null}
                   </>
@@ -99,7 +99,7 @@ export default async function BillingPage() {
                 ) : (
                   <CheckoutButton
                     planKey={plan.key}
-                    label={subscription ? `Switch to ${plan.name}` : `Choose ${plan.name}`}
+                    label={subscription ? t("settingsPages.switchTo", { plan: plan.name }) : t("settingsPages.choose", { plan: plan.name })}
                   />
                 )
               }

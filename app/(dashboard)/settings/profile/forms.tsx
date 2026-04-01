@@ -5,6 +5,7 @@ import { TextField } from "@/components/text-field"
 import { SurfacePanel } from "@/components/surface-panel"
 import { changePassword } from "@/server/actions/password"
 import { deleteAccount, updateProfile } from "@/server/actions/profile"
+import { useTranslation } from "@/stores/i18n"
 import { signOut, useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -14,6 +15,7 @@ import s from "./profile-forms.module.scss"
 export function EditNameForm({ currentName }: { currentName: string }) {
   const router = useRouter()
   const { update } = useSession()
+  const t = useTranslation()
   const [name, setName] = useState(currentName)
   const [loading, setLoading] = useState(false)
 
@@ -31,25 +33,25 @@ export function EditNameForm({ currentName }: { currentName: string }) {
     }
 
     await update({ name })
-    toast.success("Name updated")
+    toast.success(t("settingsPages.nameUpdated"))
     router.refresh()
   }
 
   return (
-    <SurfacePanel title="Display name" subtitle="This is how your name appears across Kalit.">
+    <SurfacePanel title={t("settingsPages.displayName")} subtitle={t("settingsPages.displayNameDesc")}>
       <form onSubmit={handleSubmit} className={s.row}>
         <div className={s.rowGrow}>
           <TextField
             id="display-name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Your name"
+            placeholder={t("settingsPages.yourName")}
             required
             minLength={2}
           />
         </div>
         <Button type="submit" variant="secondary" disabled={loading || name === currentName}>
-          {loading ? "Saving..." : "Save"}
+          {loading ? t("settingsPages.saving") : t("settingsPages.save")}
         </Button>
       </form>
     </SurfacePanel>
@@ -57,6 +59,7 @@ export function EditNameForm({ currentName }: { currentName: string }) {
 }
 
 export function ChangePasswordForm() {
+  const t = useTranslation()
   const [currentPassword, setCurrentPassword] = useState("")
   const [newPassword, setNewPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -66,7 +69,7 @@ export function ChangePasswordForm() {
     e.preventDefault()
 
     if (newPassword !== confirmPassword) {
-      toast.error("New passwords do not match")
+      toast.error(t("settingsPages.passwordsNoMatch"))
       return
     }
 
@@ -79,21 +82,21 @@ export function ChangePasswordForm() {
       return
     }
 
-    toast.success("Password updated")
+    toast.success(t("settingsPages.passwordUpdated"))
     setCurrentPassword("")
     setNewPassword("")
     setConfirmPassword("")
   }
 
   return (
-    <SurfacePanel title="Change password" subtitle="Update the password you use to sign in.">
+    <SurfacePanel title={t("settingsPages.changePassword")} subtitle={t("settingsPages.changePasswordDesc")}>
       <form onSubmit={handleSubmit} className={s.stack}>
         <TextField
           id="current-password"
           type="password"
           value={currentPassword}
           onChange={(e) => setCurrentPassword(e.target.value)}
-          placeholder="Current password"
+          placeholder={t("settingsPages.currentPassword")}
           required
         />
         <TextField
@@ -101,7 +104,7 @@ export function ChangePasswordForm() {
           type="password"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
-          placeholder="New password (min. 8 characters)"
+          placeholder={t("settingsPages.newPassword")}
           required
           minLength={8}
         />
@@ -110,13 +113,13 @@ export function ChangePasswordForm() {
           type="password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
-          placeholder="Confirm new password"
+          placeholder={t("settingsPages.confirmPassword")}
           required
           minLength={8}
         />
         <div>
           <Button type="submit" variant="secondary" disabled={loading}>
-            {loading ? "Updating..." : "Update"}
+            {loading ? t("settingsPages.updating") : t("settingsPages.update")}
           </Button>
         </div>
       </form>
@@ -125,11 +128,13 @@ export function ChangePasswordForm() {
 }
 
 export function DeleteAccountForm() {
+  const t = useTranslation()
   const [confirmText, setConfirmText] = useState("")
   const [loading, setLoading] = useState(false)
+  const confirmString = t("settingsPages.deleteConfirmText")
 
   const handleDelete = async () => {
-    if (confirmText !== "delete my account") return
+    if (confirmText !== confirmString) return
 
     setLoading(true)
     const result = await deleteAccount()
@@ -146,28 +151,28 @@ export function DeleteAccountForm() {
   return (
     <SurfacePanel
       danger
-      title="Delete account"
-      subtitle="Permanently delete your account and all associated data. This action cannot be undone."
+      title={t("settingsPages.deleteAccount")}
+      subtitle={t("settingsPages.deleteAccountDesc")}
     >
       <div className={s.stack}>
         <p className={s.dangerHint}>
-          Type <strong>delete my account</strong> to confirm.
+          {t("settingsPages.deleteConfirmInstruction", { confirmText: confirmString })}
         </p>
         <TextField
           id="delete-confirm"
           variant="danger"
           value={confirmText}
           onChange={(e) => setConfirmText(e.target.value)}
-          placeholder="delete my account"
+          placeholder={confirmString}
         />
         <div>
           <button
             type="button"
             className={s.dangerButton}
             onClick={handleDelete}
-            disabled={confirmText !== "delete my account" || loading}
+            disabled={confirmText !== confirmString || loading}
           >
-            {loading ? "Deleting..." : "Permanently delete account"}
+            {loading ? t("settingsPages.deleting") : t("settingsPages.deleteButton")}
           </button>
         </div>
       </div>

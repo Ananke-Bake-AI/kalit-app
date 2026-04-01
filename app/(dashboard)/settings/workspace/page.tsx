@@ -1,5 +1,6 @@
 import { Badge } from "@/components/badge"
 import { auth } from "@/lib/auth"
+import { getServerTranslation } from "@/lib/i18n-server"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import info from "@/components/settings-info-rows/settings-info-rows.module.scss"
@@ -8,6 +9,7 @@ import { SurfacePanel } from "@/components/surface-panel"
 export default async function WorkspacePage() {
   const session = await auth()
   if (!session?.user?.orgId) redirect("/login")
+  const t = await getServerTranslation()
 
   const org = await prisma.organization.findUnique({ where: { id: session.user.orgId } })
 
@@ -15,24 +17,24 @@ export default async function WorkspacePage() {
 
   return (
     <SurfacePanel
-      title="Workspace identity"
-      subtitle="The organization record that powers billing, access, and data ownership across the Kalit suite."
+      title={t("settingsPages.workspaceIdentity")}
+      subtitle={t("settingsPages.workspaceIdentityDesc")}
       headerAside={<Badge>{org.slug}</Badge>}
     >
       <div className={info.row}>
-        <label>Name</label>
+        <label>{t("settingsPages.nameLabel")}</label>
         <span>{org.name}</span>
       </div>
       <div className={info.row}>
-        <label>Slug</label>
+        <label>{t("settingsPages.slugLabel")}</label>
         <span>{org.slug}</span>
       </div>
       <div className={info.row}>
-        <label>Website</label>
-        <span>{org.websiteUrl || "No website added yet"}</span>
+        <label>{t("settingsPages.websiteLabel")}</label>
+        <span>{org.websiteUrl || t("settingsPages.noWebsite")}</span>
       </div>
       <div className={info.row}>
-        <label>Created</label>
+        <label>{t("settingsPages.createdLabel")}</label>
         <span>
           {org.createdAt.toLocaleDateString("en-US", {
             year: "numeric",

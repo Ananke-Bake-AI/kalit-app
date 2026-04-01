@@ -2,6 +2,7 @@ import { Badge } from "@/components/badge"
 import { EmptyPlaceholder } from "@/components/empty-placeholder"
 import { auth } from "@/lib/auth"
 import { getRemainingCredits, resolveEntitlements } from "@/lib/entitlements"
+import { getServerTranslation } from "@/lib/i18n-server"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import type { CSSProperties } from "react"
@@ -12,6 +13,7 @@ import s from "./usage.module.scss"
 export default async function UsagePage() {
   const session = await auth()
   if (!session?.user?.orgId) redirect("/login")
+  const t = await getServerTranslation()
 
   const orgId = session.user.orgId
   const entitlements = await resolveEntitlements(orgId)
@@ -32,13 +34,13 @@ export default async function UsagePage() {
   return (
     <>
       <SurfacePanel
-        title="Monthly credit pool"
-        subtitle="Credits used and remaining this month."
-        headerAside={<Badge>{remaining} remaining</Badge>}
+        title={t("settingsPages.monthlyPool")}
+        subtitle={t("settingsPages.monthlyPoolDesc")}
+        headerAside={<Badge>{t("settingsPages.remaining", { count: remaining })}</Badge>}
       >
         <div className={s.meta}>
-          <span>{Math.max(used, 0)} credits used this month</span>
-          <span>{entitlements.creditsPerMonth} credits total allowance</span>
+          <span>{t("settingsPages.creditsUsedMonth", { count: Math.max(used, 0) })}</span>
+          <span>{t("settingsPages.creditsTotalAllowance", { count: entitlements.creditsPerMonth })}</span>
         </div>
         <div className={s.bar}>
           <div
@@ -50,11 +52,11 @@ export default async function UsagePage() {
         </div>
       </SurfacePanel>
 
-      <SurfacePanel title="Recent usage" subtitle="Recent activity for this month.">
+      <SurfacePanel title={t("settingsPages.recentUsage")} subtitle={t("settingsPages.recentUsageDesc")}>
         {recentUsage.length === 0 ? (
           <EmptyPlaceholder
-            title="No usage recorded yet"
-            description="Usage will appear here once this workspace starts running actions."
+            title={t("settingsPages.noUsage")}
+            description={t("settingsPages.noUsageDesc")}
           />
         ) : (
           <div className={s.history}>

@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/button"
 import { createCheckoutSession, createPortalSession } from "@/server/actions/billing"
+import { useTranslation } from "@/stores/i18n"
 import { useState } from "react"
 import { toast } from "sonner"
 
@@ -20,6 +21,7 @@ export function CheckoutButton({
   disabled = false,
   className
 }: CheckoutButtonProps) {
+  const t = useTranslation()
   const [loading, setLoading] = useState(false)
 
   const handleCheckout = async () => {
@@ -39,7 +41,7 @@ export function CheckoutButton({
 
   return (
     <Button className={className} onClick={handleCheckout} disabled={disabled || loading} variant={variant}>
-      {loading ? "Redirecting..." : label}
+      {loading ? t("settingsPages.redirecting") : label}
     </Button>
   )
 }
@@ -51,10 +53,11 @@ interface ManageBillingButtonProps {
 }
 
 export function ManageBillingButton({
-  label = "Manage subscription",
+  label,
   variant = "secondary",
   className
 }: ManageBillingButtonProps) {
+  const t = useTranslation()
   const [loading, setLoading] = useState(false)
 
   const handlePortal = async () => {
@@ -74,7 +77,7 @@ export function ManageBillingButton({
 
   return (
     <Button className={className} onClick={handlePortal} disabled={loading}>
-      {loading ? "Loading..." : label}
+      {loading ? t("settingsPages.loading") : (label || t("settingsPages.manageSubscription"))}
     </Button>
   )
 }

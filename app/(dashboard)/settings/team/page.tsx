@@ -3,20 +3,17 @@ import { Badge } from "@/components/badge"
 import { EmptyPlaceholder } from "@/components/empty-placeholder"
 import { auth } from "@/lib/auth"
 import { resolveEntitlements } from "@/lib/entitlements"
+import { getServerTranslation } from "@/lib/i18n-server"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import rows from "@/components/stacked-rows/stacked-rows.module.scss"
 import { SurfacePanel } from "@/components/surface-panel"
 import s from "./team.module.scss"
 
-function formatSeats(limit: number) {
-  if (limit === -1) return "Unlimited seats"
-  return `${limit} seat${limit === 1 ? "" : "s"}`
-}
-
 export default async function TeamPage() {
   const session = await auth()
   if (!session?.user?.orgId) redirect("/login")
+  const t = await getServerTranslation()
 
   const [members, entitlements] = await Promise.all([
     prisma.membership.findMany({
@@ -27,12 +24,14 @@ export default async function TeamPage() {
     resolveEntitlements(session.user.orgId),
   ])
 
-  const seatsLabel = formatSeats(entitlements.maxMembers)
+  const seatsLabel = entitlements.maxMembers === -1
+    ? t("settingsPages.unlimitedMembers")
+    : `${entitlements.maxMembers} ${t("dashboard.seats")}`
 
   return (
     <SurfacePanel
-      title="Members"
-      subtitle="Members in this workspace and current seat usage."
+      title={t("settingsPages.members")}
+      subtitle={t("settingsPages.membersDesc")}
       headerAside={
         <Badge>
           {members.length} / {seatsLabel}
@@ -41,8 +40,8 @@ export default async function TeamPage() {
     >
       {members.length === 0 ? (
         <EmptyPlaceholder
-          title="No team members yet"
-          description="Add collaborators when you want to work together in this workspace."
+          title={t("settingsPages.noMembers")}
+          description={t("settingsPages.noMembersDesc")}
         />
       ) : (
         members.map((member) => (
