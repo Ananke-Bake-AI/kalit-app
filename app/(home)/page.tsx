@@ -2,7 +2,7 @@
 
 import { Portfolio } from "@/components/portfolio"
 import { Underline } from "@/components/underline"
-import { useTranslation } from "@/stores/i18n"
+import { useI18n } from "@/stores/i18n"
 import { Architecture } from "./(components)/architecture"
 import { Choose } from "./(components)/choose"
 import { Features } from "./(components)/features"
@@ -11,10 +11,10 @@ import { Join } from "./(components)/join"
 import { Stack } from "./(components)/stack"
 
 export default function HomePage() {
-  const t = useTranslation()
+  const { locale, t } = useI18n()
 
   return (
-    <>
+    <div key={locale}>
       <Hero />
       <Stack />
       <Architecture />
@@ -33,6 +33,6 @@ export default function HomePage() {
         link="/flow"
       />
       <Choose />
-    </>
+    </div>
   )
 }
