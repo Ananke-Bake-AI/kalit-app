@@ -122,6 +122,54 @@ export async function sendPasswordResetEmail(email: string, token: string) {
   })
 }
 
+export function buildCampaignEmailHtml(subject: string, body: string) {
+  return emailLayout(`
+    <h1 style="font-size: 22px; font-weight: 700; color: #1a1a2e; margin: 0 0 16px;">${subject}</h1>
+    <div style="color: #374151; font-size: 15px; line-height: 1.7;">
+      ${body}
+    </div>
+  `)
+}
+
+export async function sendBulkEmails(
+  emails: { to: string; subject: string; html: string }[]
+): Promise<{ sent: number; errors: string[] }> {
+  if (!resend) {
+    console.log(`[EMAIL] Bulk send (dev): ${emails.length} emails`)
+    return { sent: emails.length, errors: [] }
+  }
+
+  const BATCH_SIZE = 50
+  let totalSent = 0
+  const errors: string[] = []
+
+  for (let i = 0; i < emails.length; i += BATCH_SIZE) {
+    const batch = emails.slice(i, i + BATCH_SIZE)
+
+    try {
+      await resend.batch.send(
+        batch.map((e) => ({
+          from: FROM_EMAIL,
+          to: e.to,
+          subject: e.subject,
+          html: e.html,
+        }))
+      )
+      totalSent += batch.length
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Unknown error"
+      errors.push(`Batch ${Math.floor(i / BATCH_SIZE) + 1}: ${msg}`)
+    }
+
+    // Rate-limit: wait 1s between batches
+    if (i + BATCH_SIZE < emails.length) {
+      await new Promise((r) => setTimeout(r, 1000))
+    }
+  }
+
+  return { sent: totalSent, errors }
+}
+
 export async function sendVerificationEmail(email: string, token: string) {
   const verifyUrl = `${APP_URL}/verify-email?token=${token}`
 

@@ -4,6 +4,56 @@ import { requireAdmin } from "@/lib/admin"
 import { prisma } from "@/lib/prisma"
 import type { MembershipRole, EntitlementSource } from "@prisma/client"
 
+// ─── Campaigns ─────────────────────────────────────────
+
+export async function getAllUserEmails() {
+  await requireAdmin()
+
+  const users = await prisma.user.findMany({
+    where: { emailVerified: { not: null } },
+    select: { email: true },
+    orderBy: { createdAt: "desc" },
+  })
+
+  return users.map((u) => u.email)
+}
+
+export async function getCampaignStats() {
+  await requireAdmin()
+
+  const totalUsers = await prisma.user.count()
+  const verifiedUsers = await prisma.user.count({ where: { emailVerified: { not: null } } })
+
+  return { totalUsers, verifiedUsers }
+}
+
+export async function sendCampaign(subject: string, body: string) {
+  await requireAdmin()
+
+  if (!subject.trim() || !body.trim()) {
+    return { error: "Subject and body are required" }
+  }
+
+  const { buildCampaignEmailHtml, sendBulkEmails } = await import("@/lib/email")
+
+  const emails = await getAllUserEmails()
+  if (emails.length === 0) {
+    return { error: "No verified users to send to" }
+  }
+
+  const html = buildCampaignEmailHtml(subject, body)
+  const batch = emails.map((to) => ({ to, subject, html }))
+
+  const result = await sendBulkEmails(batch)
+
+  return {
+    success: true,
+    sent: result.sent,
+    total: emails.length,
+    errors: result.errors,
+  }
+}
+
 // ─── Metrics ────────────────────────────────────────────
 
 export async function getAdminMetrics() {

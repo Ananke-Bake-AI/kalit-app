@@ -13,7 +13,8 @@ const TABS = [
   { icon: "hugeicons:user-group", href: "/admin/users", label: "Users" },
   { icon: "hugeicons:building-01", href: "/admin/organizations", label: "Organizations" },
   { icon: "hugeicons:dollar-02", href: "/admin/revenue", label: "Revenue" },
-  { icon: "hugeicons:activity-01", href: "/admin/monitoring", label: "Monitoring" }
+  { icon: "hugeicons:activity-01", href: "/admin/monitoring", label: "Monitoring" },
+  { icon: "hugeicons:mail-send-02", href: "/admin/campaigns", label: "Campaigns" }
 ]
 
 export default function AdminPanelLayout({ children }: { children: React.ReactNode }) {
