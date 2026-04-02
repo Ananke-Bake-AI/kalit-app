@@ -53,22 +53,68 @@
   color: var(--text);
 }
 
-.labelHint {
-  font-weight: 400;
+// ─── Toolbar ────────────────────────────────────────────
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: var(--size-2) var(--size-3);
+  background: oklch(from var(--text) l c h / 0.03);
+  border: 1px solid oklch(from var(--text) l c h / 0.08);
+  border-bottom: none;
+  border-radius: var(--radius-3) var(--radius-3) 0 0;
+}
+
+.toolbarLabel {
+  font-size: 0.72rem;
   color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-right: 0.25rem;
+}
+
+.toolbarSep {
+  width: 1px;
+  height: 1.2rem;
+  background: oklch(from var(--text) l c h / 0.1);
+  margin: 0 0.25rem;
+}
+
+.tagBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  color: var(--text);
+  background: oklch(from var(--text) l c h / 0.05);
+  border: 1px solid oklch(from var(--text) l c h / 0.1);
+  border-radius: var(--radius-2);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-link),
+    border-color var(--transition-link);
+
+  &:hover {
+    background: oklch(from var(--text) l c h / 0.1);
+    border-color: oklch(from var(--text) l c h / 0.2);
+  }
 }
 
 .textarea {
   width: 100%;
   min-height: 200px;
   padding: var(--size-4);
-  font-family: var(--font-mono);
-  font-size: 0.84rem;
+  font-family: var(--font-main);
+  font-size: 0.88rem;
   line-height: 1.6;
   color: var(--text);
   background: oklch(from var(--text) l c h / 0.03);
   border: 1px solid oklch(from var(--text) l c h / 0.08);
-  border-radius: var(--radius-3);
+  border-top: none;
+  border-radius: 0 0 var(--radius-3) var(--radius-3);
   resize: vertical;
   transition:
     border-color var(--transition-link),
@@ -128,20 +174,44 @@
 }
 
 .previewBody {
+  background: #f4f4f5;
   padding: var(--size-6) var(--size-5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.previewAccent {
+  width: 100%;
+  max-width: 560px;
+  height: 4px;
+  background: linear-gradient(to right, #91e500, #12bcff, #8200df, #2f44ff);
+  border-radius: 16px 16px 0 0;
+}
+
+.previewContent {
+  width: 100%;
+  max-width: 560px;
   background: #ffffff;
-  color: #374151;
+  padding: 40px 36px;
+  border-radius: 0 0 16px 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.04);
 
   a {
     color: #8200df;
   }
+}
 
-  code {
-    font-family: var(--font-mono);
-    font-size: 0.85em;
-    background: #f3f4f6;
-    padding: 0.15em 0.4em;
-    border-radius: 4px;
+.previewFooter {
+  width: 100%;
+  max-width: 560px;
+  text-align: center;
+  padding-top: var(--size-5);
+
+  p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: #9ca3af;
   }
 }
 
@@ -180,33 +250,54 @@
   color: var(--color-error, #ef4444);
 }
 
-// ─── Tips ───────────────────────────────────────────────
+// ─── Reference Table ────────────────────────────────────
 
-.tips {
+.refTable {
   display: grid;
-  gap: var(--size-3);
 }
 
-.tip {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.6rem;
-  font-size: 0.84rem;
+.refHeader {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--size-3);
+  padding: var(--size-3) var(--size-5);
+  font-size: 0.72rem;
   color: var(--text-secondary);
-  line-height: 1.5;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid oklch(from var(--text) l c h / 0.06);
 
-  :global(svg) {
-    flex-shrink: 0;
-    margin-top: 0.15em;
-    font-size: 1.1rem;
-    color: var(--text-secondary);
+  @include max($responsive) {
+    display: none;
+  }
+}
+
+.refRow {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--size-3);
+  padding: var(--size-3) var(--size-5);
+  font-size: 0.84rem;
+  color: var(--text);
+  border-bottom: 1px solid oklch(from var(--text) l c h / 0.04);
+  align-items: center;
+
+  @include max($responsive) {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
   }
 
   code {
     font-family: var(--font-mono);
-    font-size: 0.85em;
+    font-size: 0.82em;
     background: oklch(from var(--text) l c h / 0.05);
-    padding: 0.1em 0.35em;
+    padding: 0.2em 0.5em;
     border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  span {
+    color: var(--text-secondary);
+    font-size: 0.82rem;
   }
 }

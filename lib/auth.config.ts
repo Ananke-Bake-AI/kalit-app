@@ -35,6 +35,7 @@ export default {
         token.picture = user.image
         token.onboardingDone = (user as { onboardingDone?: boolean }).onboardingDone ?? false
         token.orgId = (user as { orgId?: string | null }).orgId ?? null
+        token.emailVerified = !!(user as { emailVerified?: Date | null }).emailVerified
       }
 
       if (trigger === "update" && session) {
@@ -63,6 +64,7 @@ export default {
         session.user.id = token.userId as string
         session.user.onboardingDone = token.onboardingDone as boolean
         session.user.orgId = token.orgId as string | null
+        session.user.emailVerified = token.emailVerified as boolean
         if (token.name !== undefined) {
           session.user.name = token.name as string | null
         }

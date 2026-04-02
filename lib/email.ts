@@ -123,11 +123,25 @@ export async function sendPasswordResetEmail(email: string, token: string) {
 }
 
 export function buildCampaignEmailHtml(subject: string, body: string) {
+  // Convert simple line breaks to paragraphs and support [button:Label|URL] syntax
+  const formatted = body
+    .replace(/\[button:(.+?)\|(.+?)\]/g, (_match, label: string, url: string) =>
+      `<table role="presentation" cellpadding="0" cellspacing="0" style="margin: 24px 0;">
+        <tr>
+          <td style="border-radius: 10px; background: linear-gradient(135deg, #8200DF, #2F44FF);">
+            <a href="${url}" style="display: inline-block; padding: 14px 28px; color: #ffffff; font-size: 15px; font-weight: 600; text-decoration: none; border-radius: 10px;">${label}</a>
+          </td>
+        </tr>
+      </table>`)
+    .replace(/\[link:(.+?)\|(.+?)\]/g, (_match, label: string, url: string) =>
+      `<a href="${url}" style="color: #8200DF; text-decoration: underline;">${label}</a>`)
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n\n/g, '</p><p style="color: #374151; font-size: 15px; line-height: 1.7; margin: 0 0 12px;">')
+    .replace(/\n/g, '<br />')
+
   return emailLayout(`
     <h1 style="font-size: 22px; font-weight: 700; color: #1a1a2e; margin: 0 0 16px;">${subject}</h1>
-    <div style="color: #374151; font-size: 15px; line-height: 1.7;">
-      ${body}
-    </div>
+    <p style="color: #374151; font-size: 15px; line-height: 1.7; margin: 0 0 12px;">${formatted}</p>
   `)
 }
 

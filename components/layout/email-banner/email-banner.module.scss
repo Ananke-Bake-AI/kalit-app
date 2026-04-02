@@ -1,0 +1,58 @@
+@use "@/styles/mixins" as *;
+
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-3);
+  padding: 0.6rem var(--size-6);
+  background: linear-gradient(135deg, #8200df, #2f44ff);
+  color: #ffffff;
+  font-size: 0.84rem;
+  position: relative;
+  z-index: 899;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  :global(svg) {
+    flex-shrink: 0;
+    font-size: 1.1rem;
+  }
+}
+
+.text {
+  line-height: 1.4;
+}
+
+.link {
+  color: #ffffff;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  &:hover {
+    opacity: 0.85;
+  }
+}
+
+.close {
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  border-radius: var(--radius-rounded);
+  transition:
+    color 0.15s,
+    background-color 0.15s;
+
+  &:hover {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+}

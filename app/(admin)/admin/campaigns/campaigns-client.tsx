@@ -12,6 +12,17 @@ import s from "./campaigns.module.scss"
 
 type Stats = Awaited<ReturnType<typeof getCampaignStats>>
 
+const TAGS = [
+  { tag: "{{name}}", label: "User name", desc: "Recipient's name (or \"there\" if empty)" },
+  { tag: "{{email}}", label: "User email", desc: "Recipient's email address" },
+]
+
+const FORMAT_HELPERS = [
+  { syntax: "**text**", label: "Bold", desc: "Renders as bold text" },
+  { syntax: "[button:Label|https://...]", label: "CTA Button", desc: "Kalit-styled gradient button" },
+  { syntax: "[link:Label|https://...]", label: "Link", desc: "Inline colored link" },
+]
+
 export function CampaignsClient({ initialStats }: { initialStats: Stats }) {
   const [stats] = useState(initialStats)
   const [subject, setSubject] = useState("")
@@ -21,6 +32,18 @@ export function CampaignsClient({ initialStats }: { initialStats: Stats }) {
   const [result, setResult] = useState<{ sent: number; total: number; errors: string[] } | null>(null)
 
   const canSend = subject.trim().length > 0 && body.trim().length > 0
+
+  const insertTag = (tag: string) => {
+    setBody((prev) => prev + tag)
+  }
+
+  const previewBody = body
+    .replace(/\{\{name\}\}/g, "Frederick")
+    .replace(/\{\{email\}\}/g, "frederick@example.com")
+    .replace(/\[button:(.+?)\|(.+?)\]/g, '<div style="margin: 16px 0;"><span style="display: inline-block; padding: 10px 22px; background: linear-gradient(135deg, #8200DF, #2F44FF); color: white; border-radius: 10px; font-weight: 600; font-size: 14px;">$1</span></div>')
+    .replace(/\[link:(.+?)\|(.+?)\]/g, '<a style="color: #8200DF; text-decoration: underline;">$1</a>')
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\n/g, "<br />")
 
   const handleSend = () => {
     if (!canSend) return
@@ -61,7 +84,7 @@ export function CampaignsClient({ initialStats }: { initialStats: Stats }) {
       </div>
 
       {/* Compose */}
-      <SurfacePanel spaced title="Compose Campaign" subtitle="Send a marketing or informational email to all verified users">
+      <SurfacePanel spaced title="Compose Campaign" subtitle="Emails use the branded Kalit template automatically">
         <div className={s.form}>
           <div className={s.field}>
             <label className={s.label}>Subject</label>
@@ -73,13 +96,25 @@ export function CampaignsClient({ initialStats }: { initialStats: Stats }) {
           </div>
 
           <div className={s.field}>
-            <label className={s.label}>
-              Body <span className={s.labelHint}>(HTML supported)</span>
-            </label>
+            <label className={s.label}>Body</label>
+            <div className={s.toolbar}>
+              <span className={s.toolbarLabel}>Insert:</span>
+              {TAGS.map((t) => (
+                <button key={t.tag} className={s.tagBtn} onClick={() => insertTag(t.tag)} title={t.desc}>
+                  {t.label}
+                </button>
+              ))}
+              <span className={s.toolbarSep} />
+              {FORMAT_HELPERS.map((f) => (
+                <button key={f.syntax} className={s.tagBtn} onClick={() => insertTag(f.syntax)} title={f.desc}>
+                  {f.label}
+                </button>
+              ))}
+            </div>
             <textarea
               className={s.textarea}
               rows={12}
-              placeholder={"<p>Hi there,</p>\n<p>We're excited to announce...</p>\n\n<table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\">\n  <tr>\n    <td style=\"border-radius: 10px; background: linear-gradient(135deg, #8200DF, #2F44FF);\">\n      <a href=\"https://kalit.ai\" style=\"display: inline-block; padding: 14px 28px; color: #ffffff; font-size: 15px; font-weight: 600; text-decoration: none; border-radius: 10px;\">\n        Try it now\n      </a>\n    </td>\n  </tr>\n</table>"}
+              placeholder={"Hi {{name}},\n\nWe're excited to announce a brand new feature on Kalit!\n\n**AI Flow** is now available — automate your workflows with intelligent agents.\n\n[button:Try it now|https://kalit.ai/flow]\n\nLet us know what you think!\nThe Kalit Team"}
               value={body}
               onChange={(e) => setBody(e.target.value)}
             />
@@ -110,7 +145,7 @@ export function CampaignsClient({ initialStats }: { initialStats: Stats }) {
 
       {/* Preview */}
       {showPreview && canSend && (
-        <SurfacePanel spaced title="Email Preview" subtitle="This is how the email will look in inbox">
+        <SurfacePanel spaced title="Email Preview" subtitle="Preview with sample data — actual emails will be personalized per user">
           <div className={s.previewFrame}>
             <div className={s.previewMeta}>
               <div className={s.previewMetaRow}>
@@ -127,11 +162,18 @@ export function CampaignsClient({ initialStats }: { initialStats: Stats }) {
               </div>
             </div>
             <div className={s.previewBody}>
-              <h1 style={{ fontSize: "22px", fontWeight: 700, color: "#1a1a2e", margin: "0 0 16px" }}>{subject}</h1>
-              <div
-                style={{ color: "#374151", fontSize: "15px", lineHeight: 1.7 }}
-                dangerouslySetInnerHTML={{ __html: body }}
-              />
+              <div className={s.previewAccent} />
+              <div className={s.previewContent}>
+                <h1 style={{ fontSize: "22px", fontWeight: 700, color: "#1a1a2e", margin: "0 0 16px" }}>{subject}</h1>
+                <div
+                  style={{ color: "#374151", fontSize: "15px", lineHeight: 1.7 }}
+                  dangerouslySetInnerHTML={{ __html: previewBody }}
+                />
+              </div>
+              <div className={s.previewFooter}>
+                <p>Kalit AI — Build, Launch, Grow, Secure</p>
+                <p>Merkle Tech Labs LTD.</p>
+              </div>
             </div>
           </div>
         </SurfacePanel>
@@ -160,20 +202,36 @@ export function CampaignsClient({ initialStats }: { initialStats: Stats }) {
         </SurfacePanel>
       )}
 
-      {/* Tips */}
-      <SurfacePanel spaced title="Tips">
-        <div className={s.tips}>
-          <div className={s.tip}>
-            <Icon icon="hugeicons:information-circle" />
-            <span>Emails are sent in batches of 50 via Resend&apos;s batch API with a 1s delay between batches to respect rate limits.</span>
+      {/* Reference */}
+      <SurfacePanel spaced title="Formatting Reference">
+        <div className={s.refTable}>
+          <div className={s.refHeader}>
+            <span>Syntax</span>
+            <span>Description</span>
           </div>
-          <div className={s.tip}>
-            <Icon icon="hugeicons:code" />
-            <span>The body supports full HTML. Use <code>&lt;p&gt;</code>, <code>&lt;a&gt;</code>, <code>&lt;strong&gt;</code>, and the CTA button template from the placeholder.</span>
+          <div className={s.refRow}>
+            <code>{"{{name}}"}</code>
+            <span>Replaced with the user&apos;s name (or &quot;there&quot; if empty)</span>
           </div>
-          <div className={s.tip}>
-            <Icon icon="hugeicons:user-check-01" />
-            <span>Only users with a verified email address will receive the campaign.</span>
+          <div className={s.refRow}>
+            <code>{"{{email}}"}</code>
+            <span>Replaced with the user&apos;s email address</span>
+          </div>
+          <div className={s.refRow}>
+            <code>**bold text**</code>
+            <span>Renders as <strong>bold text</strong></span>
+          </div>
+          <div className={s.refRow}>
+            <code>[button:Label|URL]</code>
+            <span>Kalit-branded gradient CTA button</span>
+          </div>
+          <div className={s.refRow}>
+            <code>[link:Label|URL]</code>
+            <span>Inline purple link</span>
+          </div>
+          <div className={s.refRow}>
+            <code>Blank line</code>
+            <span>New paragraph</span>
           </div>
         </div>
       </SurfacePanel>
