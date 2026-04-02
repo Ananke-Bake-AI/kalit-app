@@ -3,6 +3,7 @@
 import { Button } from "@/components/button"
 import { TextField } from "@/components/text-field"
 import { SurfacePanel } from "@/components/surface-panel"
+import { resendVerificationEmail } from "@/server/actions/auth"
 import { changePassword } from "@/server/actions/password"
 import { deleteAccount, updateProfile } from "@/server/actions/profile"
 import { useTranslation } from "@/stores/i18n"
@@ -11,6 +12,39 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { toast } from "sonner"
 import s from "./profile-forms.module.scss"
+
+export function ResendVerificationForm() {
+  const t = useTranslation()
+  const [loading, setLoading] = useState(false)
+
+  const handleResend = async () => {
+    setLoading(true)
+    const result = await resendVerificationEmail()
+    setLoading(false)
+
+    if (result.error) {
+      toast.error(result.error)
+      return
+    }
+
+    toast.success(t("settingsPages.verificationSent") || "Verification email sent! Check your inbox.")
+  }
+
+  return (
+    <SurfacePanel
+      title={t("settingsPages.verifyEmail") || "Verify your email"}
+      subtitle={t("settingsPages.verifyEmailDesc") || "Your email address is not verified yet. Verify it to access all features."}
+    >
+      <div className={s.row}>
+        <Button variant="primary" onClick={handleResend} disabled={loading}>
+          {loading
+            ? (t("settingsPages.sending") || "Sending...")
+            : (t("settingsPages.resendVerification") || "Resend verification email")}
+        </Button>
+      </div>
+    </SurfacePanel>
+  )
+}
 
 export function EditNameForm({ currentName }: { currentName: string }) {
   const router = useRouter()

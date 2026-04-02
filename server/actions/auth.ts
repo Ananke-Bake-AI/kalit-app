@@ -1,10 +1,13 @@
 "use server"
 
+import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { sendVerificationEmail } from "@/lib/email"
 import { registerSchema, type RegisterInput } from "@/schemas/auth"
 import bcrypt from "bcryptjs"
 import crypto from "crypto"
+
+const RESEND_COOLDOWN_MS = 60_000 // 1 minute between resends
 
 export async function register(input: RegisterInput) {
   const parsed = registerSchema.safeParse(input)
@@ -69,6 +72,48 @@ export async function verifyEmail(token: string) {
   await prisma.verificationToken.delete({
     where: { identifier_token: { identifier: verificationToken.identifier, token } },
   })
+
+  return { success: true }
+}
+
+export async function resendVerificationEmail() {
+  const session = await auth()
+  if (!session?.user?.id) return { error: "Not authenticated" }
+
+  const user = await prisma.user.findUnique({ where: { id: session.user.id } })
+  if (!user) return { error: "User not found" }
+  if (user.emailVerified) return { error: "Email is already verified" }
+
+  // Rate limit: check if a token was created recently
+  const recentToken = await prisma.verificationToken.findFirst({
+    where: {
+      identifier: user.email,
+      expires: { gt: new Date(Date.now() + 86400000 - RESEND_COOLDOWN_MS) },
+    },
+  })
+
+  if (recentToken) {
+    const tokenCreatedAt = recentToken.expires.getTime() - 86400000
+    const elapsed = Date.now() - tokenCreatedAt
+    if (elapsed < RESEND_COOLDOWN_MS) {
+      const remaining = Math.ceil((RESEND_COOLDOWN_MS - elapsed) / 1000)
+      return { error: `Please wait ${remaining}s before requesting another email` }
+    }
+  }
+
+  // Delete old tokens for this email
+  await prisma.verificationToken.deleteMany({ where: { identifier: user.email } })
+
+  const token = crypto.randomBytes(32).toString("hex")
+  await prisma.verificationToken.create({
+    data: {
+      identifier: user.email,
+      token,
+      expires: new Date(Date.now() + 86400000),
+    },
+  })
+
+  await sendVerificationEmail(user.email, token)
 
   return { success: true }
 }

@@ -28,14 +28,27 @@
   line-height: 1.4;
 }
 
-.link {
+.resend {
   color: #ffffff;
   font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  font-size: 0.84rem;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-rounded);
+  padding: 0.25rem 0.75rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color 0.15s,
+    opacity 0.15s;
 
-  &:hover {
-    opacity: 0.85;
+  &:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.28);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 }
 

@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth"
 import { getServerTranslation } from "@/lib/i18n-server"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
-import { ChangePasswordForm, DeleteAccountForm, EditNameForm } from "./forms"
+import { ChangePasswordForm, DeleteAccountForm, EditNameForm, ResendVerificationForm } from "./forms"
 import s from "./profile.module.scss"
 
 export default async function ProfilePage() {
@@ -58,6 +58,8 @@ export default async function ProfilePage() {
           </span>
         </div>
       </div>
+
+      {!user.emailVerified && <ResendVerificationForm />}
 
       <EditNameForm currentName={user.name || ""} />
 
