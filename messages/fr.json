@@ -440,5 +440,24 @@
     "startScanning": "Start scanning",
     "startMonitoring": "Start monitoring",
     "seeReports": "See reports"
+  },
+  "contact": {
+    "getInTouch": "Contactez-nous",
+    "getInTouchDesc": "Une question, un partenariat ou juste envie de dire bonjour ? Nous serions ravis de vous entendre.",
+    "sendMessage": "Envoyez-nous un message",
+    "yourName": "Votre nom",
+    "yourEmail": "Votre email",
+    "subjectOptional": "Objet (optionnel)",
+    "yourMessage": "Votre message...",
+    "sendBtn": "Envoyer",
+    "sending": "Envoi en cours...",
+    "messageSent": "Message envoyé",
+    "messageSentDesc": "Merci de nous avoir contactés. Nous répondons généralement sous 24 heures.",
+    "sendAnother": "Envoyer un autre message",
+    "messageSentToast": "Message envoyé ! Nous vous répondrons bientôt.",
+    "fillRequired": "Veuillez remplir tous les champs obligatoires.",
+    "networkError": "Erreur réseau. Veuillez réessayer.",
+    "ourOffice": "Notre bureau",
+    "joinCommunity": "Rejoindre la communauté"
   }
 }

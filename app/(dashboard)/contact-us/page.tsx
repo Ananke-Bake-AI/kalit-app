@@ -1,5 +1,6 @@
 import { Container } from "@/components/container"
 import { Icon } from "@/components/icon"
+import { getServerTranslation } from "@/lib/i18n-server"
 import { Metadata } from "next"
 import { PageHeader } from "@/components/page-header"
 import { PageSection } from "@/components/page-section"
@@ -11,40 +12,22 @@ export const metadata: Metadata = {
   description: "Get in touch with the Kalit AI team. Questions, partnerships, press, or support — we'd love to hear from you.",
 }
 
-const CONTACT_CHANNELS = [
-  {
-    icon: "hugeicons:mail-01",
-    label: "Email",
-    value: "contact@kalit.ai",
-    href: "mailto:contact@kalit.ai"
-  },
-  {
-    icon: "hugeicons:discord",
-    label: "Discord",
-    value: "Join our community",
-    href: "https://discord.gg/kalit-ai"
-  },
-  {
-    icon: "hugeicons:new-twitter",
-    label: "X (Twitter)",
-    value: "@kalit_ai",
-    href: "https://x.com/kalit_ai"
-  },
-  {
-    icon: "hugeicons:linkedin-01",
-    label: "LinkedIn",
-    value: "Kalit AI",
-    href: "https://www.linkedin.com/company/kalit-ai"
-  }
-]
+export default async function ContactPage() {
+  const t = await getServerTranslation()
 
-export default function ContactPage() {
+  const channels = [
+    { icon: "hugeicons:mail-01", label: "Email", value: "contact@kalit.ai", href: "mailto:contact@kalit.ai" },
+    { icon: "hugeicons:discord", label: "Discord", value: t("contact.joinCommunity"), href: "https://discord.gg/kalit-ai" },
+    { icon: "hugeicons:new-twitter", label: "X (Twitter)", value: "@kalit_ai", href: "https://x.com/kalit_ai" },
+    { icon: "hugeicons:linkedin-01", label: "LinkedIn", value: "Kalit AI", href: "https://www.linkedin.com/company/kalit-ai" }
+  ]
+
   return (
     <PageSection>
       <Container>
         <PageHeader
-          title="Get in touch"
-          description="Have a question, partnership inquiry, or just want to say hello? We'd love to hear from you."
+          title={t("contact.getInTouch")}
+          description={t("contact.getInTouchDesc")}
         />
 
         <div className={s.layout}>
@@ -54,7 +37,7 @@ export default function ContactPage() {
 
           <div className={s.infoSide}>
             <div className={s.channels}>
-              {CONTACT_CHANNELS.map((ch) => (
+              {channels.map((ch) => (
                 <a
                   key={ch.label}
                   href={ch.href}
@@ -74,7 +57,7 @@ export default function ContactPage() {
             </div>
 
             <div className={s.address}>
-              <h3 className={s.addressTitle}>Our office</h3>
+              <h3 className={s.addressTitle}>{t("contact.ourOffice")}</h3>
               <p className={s.addressText}>
                 Merkle Tech Labs LTD.<br />
                 Northlink Business Centre, Level 2<br />

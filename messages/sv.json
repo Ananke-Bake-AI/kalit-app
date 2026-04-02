@@ -440,5 +440,24 @@
     "startScanning": "Start scanning",
     "startMonitoring": "Start monitoring",
     "seeReports": "See reports"
+  },
+  "contact": {
+    "getInTouch": "Get in touch",
+    "getInTouchDesc": "Have a question, partnership inquiry, or just want to say hello? We'd love to hear from you.",
+    "sendMessage": "Send us a message",
+    "yourName": "Your name",
+    "yourEmail": "Your email",
+    "subjectOptional": "Subject (optional)",
+    "yourMessage": "Your message...",
+    "sendBtn": "Send message",
+    "sending": "Sending...",
+    "messageSent": "Message sent",
+    "messageSentDesc": "Thank you for reaching out. We typically respond within 24 hours.",
+    "sendAnother": "Send another message",
+    "messageSentToast": "Message sent! We'll get back to you soon.",
+    "fillRequired": "Please fill in all required fields.",
+    "networkError": "Network error. Please try again.",
+    "ourOffice": "Our office",
+    "joinCommunity": "Join our community"
   }
 }

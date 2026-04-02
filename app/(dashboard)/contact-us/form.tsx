@@ -3,11 +3,13 @@
 import { Button } from "@/components/button"
 import { SurfacePanel } from "@/components/surface-panel"
 import { TextField } from "@/components/text-field"
+import { useTranslation } from "@/stores/i18n"
 import { useState } from "react"
 import { toast } from "sonner"
 import s from "./contact.module.scss"
 
 export function ContactForm() {
+  const t = useTranslation()
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [subject, setSubject] = useState("")
@@ -18,7 +20,7 @@ export function ContactForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!name.trim() || !email.trim() || !message.trim()) {
-      toast.error("Please fill in all required fields.")
+      toast.error(t("contact.fillRequired"))
       return
     }
 
@@ -35,7 +37,7 @@ export function ContactForm() {
       if (!res.ok) {
         toast.error(data.error || "Something went wrong.")
       } else {
-        toast.success("Message sent! We'll get back to you soon.")
+        toast.success(t("contact.messageSentToast"))
         setSent(true)
         setName("")
         setEmail("")
@@ -43,7 +45,7 @@ export function ContactForm() {
         setMessage("")
       }
     } catch {
-      toast.error("Network error. Please try again.")
+      toast.error(t("contact.networkError"))
     } finally {
       setLoading(false)
     }
@@ -54,10 +56,10 @@ export function ContactForm() {
       <SurfacePanel spaced>
         <div className={s.success}>
           <div className={s.successIcon}>✓</div>
-          <h3>Message sent</h3>
-          <p>Thank you for reaching out. We typically respond within 24 hours.</p>
+          <h3>{t("contact.messageSent")}</h3>
+          <p>{t("contact.messageSentDesc")}</p>
           <Button variant="secondary" onClick={() => setSent(false)}>
-            Send another message
+            {t("contact.sendAnother")}
           </Button>
         </div>
       </SurfacePanel>
@@ -65,12 +67,12 @@ export function ContactForm() {
   }
 
   return (
-    <SurfacePanel spaced title="Send us a message">
+    <SurfacePanel spaced title={t("contact.sendMessage")}>
       <form onSubmit={handleSubmit} className={s.form}>
         <div className={s.formRow}>
           <TextField
             id="contact-name"
-            placeholder="Your name"
+            placeholder={t("contact.yourName")}
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
@@ -78,7 +80,7 @@ export function ContactForm() {
           <TextField
             id="contact-email"
             type="email"
-            placeholder="Your email"
+            placeholder={t("contact.yourEmail")}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -86,14 +88,14 @@ export function ContactForm() {
         </div>
         <TextField
           id="contact-subject"
-          placeholder="Subject (optional)"
+          placeholder={t("contact.subjectOptional")}
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
         />
         <div className={s.textareaWrap}>
           <textarea
             id="contact-message"
-            placeholder="Your message..."
+            placeholder={t("contact.yourMessage")}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             required
@@ -102,7 +104,7 @@ export function ContactForm() {
           />
         </div>
         <Button type="submit" disabled={loading}>
-          {loading ? "Sending..." : "Send message"}
+          {loading ? t("contact.sending") : t("contact.sendBtn")}
         </Button>
       </form>
     </SurfacePanel>
