@@ -3,7 +3,7 @@
 import { Container } from "@/components/container"
 import { Logotype } from "@/components/logotype"
 import { useTranslation } from "@/stores/i18n"
-import Link from "next/link"
+import { Link } from "@/components/link"
 import { Socials } from "../socials"
 import s from "./footer.module.scss"
 import { Newsletter } from "./newsletter"

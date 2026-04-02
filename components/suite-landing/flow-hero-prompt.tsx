@@ -4,8 +4,9 @@ import { HeroPromptChat } from "@/components/hero-prompt-chat"
 import { Icon } from "@/components/icon"
 import { useAnimatedPlaceholder } from "@/hooks/use-animated-placeholder"
 import { FLOW_MARKETING_PATH } from "@/lib/flow-suite-entry"
+import { localePath } from "@/lib/i18n"
 import { suiteEntryUrl, suiteMarketingLoginHref } from "@/lib/suite-marketing-entry"
-import { useTranslation } from "@/stores/i18n"
+import { useI18n } from "@/stores/i18n"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { useCallback, useRef, useState } from "react"
@@ -27,7 +28,7 @@ export interface FlowHeroPromptProps {
 export function FlowHeroPrompt({ suiteAppUrl, marketingPath = FLOW_MARKETING_PATH }: FlowHeroPromptProps) {
   const router = useRouter()
   const { status } = useSession()
-  const t = useTranslation()
+  const { locale, t } = useI18n()
   const [promptValue, setPromptValue] = useState("")
   const promptRef = useRef<HTMLTextAreaElement | null>(null)
 
@@ -66,7 +67,7 @@ export function FlowHeroPrompt({ suiteAppUrl, marketingPath = FLOW_MARKETING_PAT
       window.open(suiteEntryUrl(suiteAppUrl, { prompt: trimmed }), "_blank")
       return
     }
-    router.push(suiteMarketingLoginHref(marketingPath, { prompt: trimmed }))
+    router.push(localePath(suiteMarketingLoginHref(marketingPath, { prompt: trimmed }), locale))
   }, [marketingPath, promptValue, router, status, suiteAppUrl])
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {

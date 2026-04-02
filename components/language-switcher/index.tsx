@@ -1,31 +1,32 @@
 "use client"
 
-import { LOCALE_CONFIG, LOCALES, type Locale } from "@/lib/i18n"
+import { LOCALE_CONFIG, LOCALES, localePath, stripLocalePrefix, type Locale } from "@/lib/i18n"
+import { COOKIE_NAME } from "@/lib/i18n"
 import { useI18n } from "@/stores/i18n"
 import { useClickOutside } from "@reactuses/core"
 import clsx from "clsx"
-import { useRouter } from "next/navigation"
-import { useRef, useState, useTransition } from "react"
+import { usePathname, useRouter } from "next/navigation"
+import { useRef, useState } from "react"
 import s from "./language-switcher.module.scss"
 
 export function LanguageSwitcher({ className }: { className?: string }) {
-  const { locale, setLocale } = useI18n()
+  const { locale } = useI18n()
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const router = useRouter()
-  const [, startTransition] = useTransition()
+  const pathname = usePathname()
 
   useClickOutside(ref, () => setOpen(false))
 
   const current = LOCALE_CONFIG[locale]
 
-  const handleSwitch = async (loc: Locale) => {
-    await setLocale(loc)
+  const handleSwitch = (loc: Locale) => {
+    // Set cookie for preference memory (used by middleware for root "/" redirect)
+    document.cookie = `${COOKIE_NAME}=${loc};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`
     setOpen(false)
-    // Refresh server components in a transition so React coordinates the update
-    startTransition(() => {
-      router.refresh()
-    })
+    // Navigate to the new locale URL
+    const barePath = stripLocalePrefix(pathname)
+    router.push(localePath(barePath, loc))
   }
 
   return (

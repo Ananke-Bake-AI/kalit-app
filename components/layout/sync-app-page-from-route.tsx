@@ -1,5 +1,6 @@
 "use client"
 
+import { stripLocalePrefix } from "@/lib/i18n"
 import { SUITES, type SuiteId } from "@/lib/suites"
 import { useAppStore } from "@/stores/app"
 import { usePathname } from "next/navigation"
@@ -12,7 +13,8 @@ export function SyncAppPageFromRoute() {
   const setPage = useAppStore((s) => s.setPage)
 
   useEffect(() => {
-    const firstSegment = pathname.split("/").filter(Boolean)[0]
+    const barePath = stripLocalePrefix(pathname)
+    const firstSegment = barePath.split("/").filter(Boolean)[0]
     const next: "default" | SuiteId =
       firstSegment && SUITE_IDS.has(firstSegment) ? (firstSegment as SuiteId) : "default"
     if (useAppStore.getState().page !== next) setPage(next)

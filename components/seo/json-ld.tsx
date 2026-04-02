@@ -1,4 +1,6 @@
-export function JsonLd() {
+import type { Locale } from "@/lib/i18n"
+
+export function JsonLd({ locale = "en" }: { locale?: Locale }) {
   const organization = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -20,6 +22,7 @@ export function JsonLd() {
     "@type": "WebSite",
     name: "Kalit AI",
     url: "https://kalit.ai",
+    inLanguage: locale,
     description:
       "Build, launch, grow, and secure your startup with AI. Four specialized AI suites for apps, websites, acquisition, and security.",
     potentialAction: {
@@ -36,6 +39,7 @@ export function JsonLd() {
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
     url: "https://kalit.ai",
+    inLanguage: locale,
     description:
       "AI-powered platform to build apps, launch websites, run marketing campaigns, and scan for security vulnerabilities.",
     offers: [

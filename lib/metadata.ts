@@ -1,11 +1,13 @@
 import { APP_BASE_URL, APP_NAME } from "@/lib/config"
+import { DEFAULT_LOCALE, LOCALES, localePath, type Locale } from "@/lib/i18n"
 import type { Metadata } from "next"
 
 interface MetadataSeoProps {
   fullTitle?: string
   title?: string
   description: string
-  locale?: string
+  locale?: Locale
+  pathname?: string
   image?: string
   url?: string
   type?: "website" | "article"
@@ -14,11 +16,23 @@ interface MetadataSeoProps {
   favicon?: string
 }
 
+/** Build hreflang alternates for all 16 locales + x-default. */
+function buildAlternates(pathname: string) {
+  const base = APP_BASE_URL.toString().replace(/\/$/, "")
+  const languages: Record<string, string> = {}
+  for (const loc of LOCALES) {
+    languages[loc] = `${base}${localePath(pathname, loc)}`
+  }
+  languages["x-default"] = `${base}${localePath(pathname, DEFAULT_LOCALE)}`
+  return languages
+}
+
 export const MetadataSeo = ({
   fullTitle,
   title,
   description,
-  locale = "en_US",
+  locale = "en",
+  pathname,
   image = "/img/thumbnail.jpg",
   url,
   type = "website",
@@ -46,6 +60,11 @@ export const MetadataSeo = ({
     "no-code AI platform"
   ]
 
+  const alternates: Metadata["alternates"] = {
+    canonical: fullUrl.toString(),
+    ...(pathname ? { languages: buildAlternates(pathname) } : {})
+  }
+
   return {
     metadataBase: APP_BASE_URL,
     title: headTitle,
@@ -57,9 +76,7 @@ export const MetadataSeo = ({
     robots: noIndex
       ? { index: false, follow: false }
       : { index: true, follow: true, "max-image-preview": "large" as const, "max-snippet": -1 },
-    alternates: {
-      canonical: fullUrl.toString()
-    },
+    alternates,
     icons: {
       icon,
       shortcut: icon,
@@ -70,7 +87,7 @@ export const MetadataSeo = ({
       description,
       type,
       siteName: APP_NAME,
-      locale,
+      locale: locale === "en" ? "en_US" : locale,
       url: fullUrl,
       images: [
         {

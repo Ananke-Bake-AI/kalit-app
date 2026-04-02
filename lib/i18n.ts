@@ -64,6 +64,23 @@ export async function loadMessages(locale: Locale): Promise<Messages> {
   }
 }
 
+/** Build a locale-prefixed path. EN (default) stays unprefixed. */
+export function localePath(path: string, locale: Locale): string {
+  const clean = path.startsWith("/") ? path : `/${path}`
+  if (locale === DEFAULT_LOCALE) return clean
+  if (clean === "/") return `/${locale}`
+  return `/${locale}${clean}`
+}
+
+/** Strip a leading locale prefix from a pathname: /fr/flow → /flow */
+export function stripLocalePrefix(pathname: string): string {
+  const segments = pathname.split("/")
+  if (segments.length >= 2 && isValidLocale(segments[1])) {
+    return "/" + segments.slice(2).join("/") || "/"
+  }
+  return pathname
+}
+
 export function t(messages: Messages, key: string, params?: Record<string, string | number>): string {
   const keys = key.split(".")
   let value: unknown = messages

@@ -1,5 +1,7 @@
 "use client"
 
+import { localePath, stripLocalePrefix } from "@/lib/i18n"
+import { useI18n } from "@/stores/i18n"
 import clsx from "clsx"
 import NextLink, { LinkProps as NextLinkProps } from "next/link"
 import { usePathname } from "next/navigation"
@@ -33,10 +35,15 @@ export const Link = forwardRef<HTMLAnchorElement | HTMLDivElement, LinkProps>(
     ref
   ) => {
     const pathname = usePathname()
+    const { locale } = useI18n()
     const isExternal = href.startsWith("http")
     const isAnchor = href.startsWith("#") || href.startsWith(`${pathname}#`)
-    const isCurrentPath = !isExternal && !isAnchor && pathname === href
+    const barePath = stripLocalePrefix(pathname)
+    const isCurrentPath = !isExternal && !isAnchor && barePath === href
     const isCurrentActive = isActive !== undefined ? isActive : isCurrentPath
+
+    // Auto-prepend locale for internal links
+    const resolvedHref = !isExternal && !isAnchor ? localePath(href, locale) : href
 
     const attr = isExternal
       ? { target: "_blank", rel: "noopener noreferrer" }
@@ -78,7 +85,7 @@ export const Link = forwardRef<HTMLAnchorElement | HTMLDivElement, LinkProps>(
       <NextLink
         ref={ref as React.Ref<HTMLAnchorElement>}
         onClick={handleClick}
-        href={href}
+        href={resolvedHref}
         title={title}
         className={clsx(className, isCurrentActive && activeClassName)}
         style={style}

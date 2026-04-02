@@ -1,41 +1,24 @@
-import { Providers } from "@/components/app/providers"
-import { JsonLd } from "@/components/seo/json-ld"
 import { APP_THEME_COLOR } from "@/lib/config"
-import { auth } from "@/lib/auth"
-import { COOKIE_NAME, DEFAULT_LOCALE, detectLocaleFromHeaders, isValidLocale, loadMessages, type Locale } from "@/lib/i18n"
+import { DEFAULT_LOCALE } from "@/lib/i18n"
 import { MetadataSeo } from "@/lib/metadata"
-import { cookies, headers } from "next/headers"
+import { headers } from "next/headers"
 import "@/styles/globals.scss"
 import { fonts } from "./fonts"
 
 export const metadata = MetadataSeo({
   title: "Build, Launch, Grow, and Secure with AI",
   description:
-    "Kalit is the AI suite for startups and digital teams. Build apps, launch landing pages, run marketing campaigns, and secure your product — all from one platform."
+    "Kalit is the AI suite for startups and digital teams. Build apps, launch landing pages, run marketing campaigns, and secure your product — all from one platform.",
+  pathname: "/"
 })
 
 export const viewport = {
   themeColor: APP_THEME_COLOR
 }
 
-export interface LayoutProps {
-  children: React.ReactNode
-}
-
-export default async function RootLayout({ children }: LayoutProps) {
-  const session = await auth()
-
-  // Detect locale: cookie > Accept-Language > default
-  const cookieStore = await cookies()
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const headerStore = await headers()
-  const cookieLocale = cookieStore.get(COOKIE_NAME)?.value
-  let locale: Locale = DEFAULT_LOCALE
-  if (cookieLocale && isValidLocale(cookieLocale)) {
-    locale = cookieLocale
-  } else {
-    locale = detectLocaleFromHeaders(headerStore.get("accept-language"))
-  }
-  const messages = await loadMessages(locale)
+  const locale = headerStore.get("x-locale") || DEFAULT_LOCALE
 
   return (
     <html lang={locale} dir="ltr" suppressHydrationWarning={true}>
@@ -55,10 +38,9 @@ export default async function RootLayout({ children }: LayoutProps) {
             `
           }}
         />
-        <JsonLd />
       </head>
       <body className={fonts}>
-        <Providers session={session} locale={locale} messages={messages}>{children}</Providers>
+        {children}
       </body>
     </html>
   )
