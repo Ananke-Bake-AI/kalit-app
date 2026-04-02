@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 
 import { auth } from "@/lib/auth"
 
-const authPages = ["/login", "/register", "/forgot-password", "/reset-password", "/verify-email"]
+const authPages = ["/login", "/register", "/forgot-password", "/reset-password"]
 const appPages = ["/dashboard", "/jobs", "/settings"]
 
 export const proxy = auth((req) => {
