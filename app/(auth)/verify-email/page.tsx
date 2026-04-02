@@ -4,6 +4,7 @@ import { Button } from "@/components/button"
 import { Container } from "@/components/container"
 import { verifyEmail } from "@/server/actions/auth"
 import clsx from "clsx"
+import { useSession } from "next-auth/react"
 import { useSearchParams } from "next/navigation"
 import { Suspense, useEffect, useState } from "react"
 import { toast } from "sonner"
@@ -20,6 +21,7 @@ export default function VerifyEmailPage() {
 function VerifyEmailContent() {
   const searchParams = useSearchParams()
   const token = searchParams.get("token")
+  const { update } = useSession()
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading")
   const [message, setMessage] = useState("")
 
@@ -31,7 +33,7 @@ function VerifyEmailContent() {
       return
     }
 
-    verifyEmail(token).then((result) => {
+    verifyEmail(token).then(async (result) => {
       if (result.error) {
         setStatus("error")
         setMessage(result.error)
@@ -39,9 +41,11 @@ function VerifyEmailContent() {
       } else {
         setStatus("success")
         toast.success("Email verified")
+        // Refresh the session so the banner disappears
+        await update({})
       }
     })
-  }, [token])
+  }, [token, update])
 
   return (
     <section className={s.page}>
