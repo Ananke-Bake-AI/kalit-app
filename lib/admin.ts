@@ -1,5 +1,4 @@
 import { auth } from "@/lib/auth"
-import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? "frederick.marinho@gmail.com,nico.style931@gmail.com")
@@ -8,12 +7,7 @@ const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? "frederick.marinho@gmail.com,n
 
 export async function isAdmin(email: string | null | undefined): Promise<boolean> {
   if (!email) return false
-  if (ADMIN_EMAILS.includes(email.toLowerCase())) return true
-
-  const membership = await prisma.membership.findFirst({
-    where: { user: { email }, role: "OWNER" }
-  })
-  return !!membership
+  return ADMIN_EMAILS.includes(email.toLowerCase())
 }
 
 export async function requireAdmin() {
