@@ -2,6 +2,7 @@
 
 import { LOCALE_CONFIG, LOCALES, localePath, stripLocalePrefix, type Locale } from "@/lib/i18n"
 import { COOKIE_NAME } from "@/lib/i18n"
+import { updatePreferredLanguage } from "@/server/actions/language"
 import { useI18n } from "@/stores/i18n"
 import { useClickOutside } from "@reactuses/core"
 import clsx from "clsx"
@@ -27,6 +28,8 @@ export function LanguageSwitcher({ className }: { className?: string }) {
     // Navigate to the new locale URL
     const barePath = stripLocalePrefix(pathname)
     router.push(localePath(barePath, loc))
+    // Persist to DB so Flow and other services can read it
+    updatePreferredLanguage(loc).catch(() => {})
   }
 
   return (
