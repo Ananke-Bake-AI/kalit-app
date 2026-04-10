@@ -22,6 +22,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const dbUser = await prisma.user.findUnique({
             where: { email: token.email },
             select: {
+              id: true,
               emailVerified: true,
               isAdmin: true,
               onboardingDone: true,
@@ -30,9 +31,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 take: 1,
                 select: { orgId: true },
               },
+              accounts: {
+                take: 1,
+                select: { provider: true },
+              },
             },
           })
           if (dbUser) {
+            // OAuth providers already verify emails — if the user has an
+            // OAuth account but emailVerified is null, backfill it now.
+            if (!dbUser.emailVerified && dbUser.accounts.length > 0) {
+              await prisma.user.update({
+                where: { id: dbUser.id },
+                data: { emailVerified: new Date() },
+              })
+              dbUser.emailVerified = new Date()
+            }
             token.emailVerified = !!dbUser.emailVerified
             token.isAdmin = dbUser.isAdmin ?? false
             token.onboardingDone = dbUser.onboardingDone ?? false
