@@ -24,7 +24,14 @@ export default async function DashboardPage() {
     include: { org: true }
   })
 
-  if (!membership) redirect(await localeHref("/setup"))
+  if (!membership) {
+    // Reset onboardingDone so the middleware won't bounce /setup back here
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data: { onboardingDone: false },
+    })
+    redirect(await localeHref("/setup"))
+  }
 
   const entitlements = await resolveEntitlements(membership.orgId)
   const credits = await getRemainingCredits(membership.orgId)
