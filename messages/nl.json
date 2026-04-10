@@ -195,6 +195,8 @@
     "unlimitedSeats": "Onbeperkte plaatsen",
     "seats": "plaatsen",
     "currentPlanHint": "Facturering, toegang en limieten hier gesynchroniseerd.",
+    "freeTrial": "Gratis proefperiode",
+    "trialHint": "Uw proefperiode verloopt op {date}.",
     "creditsHint": "Beschikbaar voor deze maand.",
     "jobsHint": "In wachtrij of actief in de suites.",
     "seatsHint": "Eigenaren, editors en medewerkers.",

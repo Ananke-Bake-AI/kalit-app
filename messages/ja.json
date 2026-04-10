@@ -195,6 +195,8 @@
     "unlimitedSeats": "無制限",
     "seats": "席",
     "currentPlanHint": "請求、アクセス、制限がここで同期されます。",
+    "freeTrial": "無料トライアル",
+    "trialHint": "トライアルは {date} に終了します。",
     "creditsHint": "今月利用可能なクレジット。",
     "jobsHint": "待機中または実行中のジョブ。",
     "seatsHint": "オーナー、エディター、コラボレーター。",

@@ -195,6 +195,8 @@
     "unlimitedSeats": "Places illimitées",
     "seats": "places",
     "currentPlanHint": "Facturation, accès et limites synchronisés ici.",
+    "freeTrial": "Essai gratuit",
+    "trialHint": "Votre essai expire le {date}.",
     "creditsHint": "Disponibles pour ce mois.",
     "jobsHint": "En attente ou en cours sur les suites.",
     "seatsHint": "Propriétaires, éditeurs et collaborateurs.",

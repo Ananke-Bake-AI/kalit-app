@@ -195,6 +195,8 @@
     "unlimitedSeats": "Bez limitu",
     "seats": "miejsc",
     "currentPlanHint": "Rozliczenia, dostęp i limity zsynchronizowane tutaj.",
+    "freeTrial": "Bezpłatny okres próbny",
+    "trialHint": "Twój okres próbny wygasa {date}.",
     "creditsHint": "Dostępne w tym miesiącu.",
     "jobsHint": "W kolejce lub w trakcie realizacji.",
     "seatsHint": "Właściciele, edytorzy i współpracownicy.",

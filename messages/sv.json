@@ -195,6 +195,8 @@
     "unlimitedSeats": "Obegränsade platser",
     "seats": "platser",
     "currentPlanHint": "Fakturering, åtkomst och gränser synkade här.",
+    "freeTrial": "Gratis provperiod",
+    "trialHint": "Din provperiod går ut {date}.",
     "creditsHint": "Tillgängligt denna månad.",
     "jobsHint": "I kö eller körs just nu.",
     "seatsHint": "Ägare, redigerare och medarbetare.",

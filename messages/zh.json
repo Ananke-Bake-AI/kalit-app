@@ -195,6 +195,8 @@
     "unlimitedSeats": "无限制",
     "seats": "个席位",
     "currentPlanHint": "账单、访问权限和限制在此同步。",
+    "freeTrial": "免费试用",
+    "trialHint": "您的试用期将于 {date} 到期。",
     "creditsHint": "本月可用。",
     "jobsHint": "排队中或正在运行。",
     "seatsHint": "所有者、编辑者和协作者。",

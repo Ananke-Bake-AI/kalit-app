@@ -7,6 +7,8 @@ export interface ResolvedEntitlements {
   creditsPerMonth: number
   maxMembers: number
   planKey: string | null
+  isTrial: boolean
+  trialExpiresAt: Date | null
 }
 
 export async function resolveEntitlements(orgId: string): Promise<ResolvedEntitlements> {
@@ -15,6 +17,8 @@ export async function resolveEntitlements(orgId: string): Promise<ResolvedEntitl
     creditsPerMonth: 0,
     maxMembers: 1,
     planKey: null,
+    isTrial: false,
+    trialExpiresAt: null,
   }
 
   // Get active subscription
@@ -58,6 +62,10 @@ export async function resolveEntitlements(orgId: string): Promise<ResolvedEntitl
       if (defaults.maxMembers !== -1) {
         defaults.maxMembers += bonus
       }
+    }
+    if (ent.source === "TRIAL" && !defaults.isTrial) {
+      defaults.isTrial = true
+      defaults.trialExpiresAt = ent.expiresAt
     }
   }
 

@@ -195,6 +195,8 @@
     "unlimitedSeats": "Sınırsız",
     "seats": "koltuk",
     "currentPlanHint": "Faturalandırma, erişim ve limitler burada senkronize.",
+    "freeTrial": "Ücretsiz deneme",
+    "trialHint": "Deneme süreniz {date} tarihinde sona eriyor.",
     "creditsHint": "Bu ay için kullanılabilir.",
     "jobsHint": "Sırada veya çalışıyor.",
     "seatsHint": "Sahipler, editörler ve işbirlikçiler.",

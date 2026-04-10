@@ -195,6 +195,8 @@
     "unlimitedSeats": "Unlimited seats",
     "seats": "seats",
     "currentPlanHint": "Billing, access, and execution limits stay synced here.",
+    "freeTrial": "Free Trial",
+    "trialHint": "Your trial expires on {date}.",
     "creditsHint": "Available for this calendar month.",
     "jobsHint": "Queued or currently running across the suite.",
     "seatsHint": "Owners, editors, and collaborators in this workspace.",

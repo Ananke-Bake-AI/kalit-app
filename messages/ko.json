@@ -195,6 +195,8 @@
     "unlimitedSeats": "무제한",
     "seats": "석",
     "currentPlanHint": "결제, 접근, 제한이 여기서 동기화됩니다.",
+    "freeTrial": "무료 체험",
+    "trialHint": "체험 기간이 {date}에 만료됩니다.",
     "creditsHint": "이번 달 사용 가능 크레딧.",
     "jobsHint": "대기 중이거나 실행 중인 작업.",
     "seatsHint": "소유자, 편집자, 협업자.",
