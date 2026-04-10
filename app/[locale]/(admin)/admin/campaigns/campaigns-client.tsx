@@ -5,12 +5,14 @@ import { Button } from "@/components/button"
 import { Icon } from "@/components/icon"
 import { SurfacePanel } from "@/components/surface-panel"
 import { TextField } from "@/components/text-field"
+import { LOCALE_CONFIG, type Locale } from "@/lib/i18n"
 import { getCampaignStats, sendCampaign } from "@/server/actions/admin"
 import { useCallback, useRef, useState, useTransition } from "react"
 import { toast } from "sonner"
 import s from "./campaigns.module.scss"
 
 type Stats = Awaited<ReturnType<typeof getCampaignStats>>
+type Translations = Record<string, { subject: string; body: string }>
 
 const TAGS = [
   { tag: "{{name}}", label: "User name", desc: "Recipient's name (or \"there\" if empty)" },
@@ -31,6 +33,17 @@ const AI_SUGGESTIONS = [
   "Special promotion or discount offer",
 ]
 
+function formatPreview(raw: string) {
+  return raw
+    .replace(/\{\{name\}\}/g, "Frederick")
+    .replace(/\{\{email\}\}/g, "frederick@example.com")
+    .replace(/\[button:(.+?)\|(.+?)\]/g, '<table role="presentation" cellpadding="0" cellspacing="0" style="margin: 16px 0;"><tr><td style="border-radius: 8px; background: linear-gradient(135deg, #8200DF, #2F44FF);"><a href="$2" style="display: inline-block; padding: 10px 22px; color: #ffffff; font-size: 14px; font-weight: 600; text-decoration: none; border-radius: 8px;">$1</a></td></tr></table>')
+    .replace(/\[link:(.+?)\|(.+?)\]/g, '<a href="$2" style="color: #8200DF; text-decoration: underline;">$1</a>')
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\n\n/g, '</p><p style="color: #374151; font-size: 15px; line-height: 1.7; margin: 0 0 12px;">')
+    .replace(/\n/g, "<br />")
+}
+
 export function CampaignsClient({ initialStats }: { initialStats: Stats }) {
   const [stats] = useState(initialStats)
   const [subject, setSubject] = useState("")
@@ -47,7 +60,16 @@ export function CampaignsClient({ initialStats }: { initialStats: Stats }) {
   const [aiError, setAiError] = useState("")
   const aiInputRef = useRef<HTMLTextAreaElement>(null)
 
+  // Translations state
+  const [translations, setTranslations] = useState<Translations>({})
+  const [translating, setTranslating] = useState(false)
+  const [previewLang, setPreviewLang] = useState("en")
+
   const canSend = subject.trim().length > 0 && body.trim().length > 0
+
+  // Languages that have active users (excluding English which is the default)
+  const otherLanguages = stats.languages.filter((l) => l.code !== "en")
+  const hasTranslations = Object.keys(translations).length > 0
 
   const insertTag = (tag: string) => {
     setBody((prev) => prev + tag)
@@ -89,25 +111,66 @@ export function CampaignsClient({ initialStats }: { initialStats: Stats }) {
     setBody(aiResult.body)
     setAiResult(null)
     setAiPrompt("")
+    setTranslations({}) // Clear old translations when content changes
     toast.success("AI content applied")
   }
 
-  const previewBody = body
-    .replace(/\{\{name\}\}/g, "Frederick")
-    .replace(/\{\{email\}\}/g, "frederick@example.com")
-    .replace(/\[button:(.+?)\|(.+?)\]/g, '<table role="presentation" cellpadding="0" cellspacing="0" style="margin: 16px 0;"><tr><td style="border-radius: 10px; background: linear-gradient(135deg, #8200DF, #2F44FF);"><a href="$2" style="display: inline-block; padding: 14px 28px; color: #ffffff; font-size: 15px; font-weight: 600; text-decoration: none; border-radius: 10px;">$1</a></td></tr></table>')
-    .replace(/\[link:(.+?)\|(.+?)\]/g, '<a href="$2" style="color: #8200DF; text-decoration: underline;">$1</a>')
-    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\n\n/g, '</p><p style="color: #374151; font-size: 15px; line-height: 1.7; margin: 0 0 12px;">')
-    .replace(/\n/g, "<br />")
+  const generateTranslations = async () => {
+    if (!canSend || otherLanguages.length === 0) return
+    setTranslating(true)
+
+    try {
+      const targetLanguages = otherLanguages.map((l) => ({
+        code: l.code,
+        name: LOCALE_CONFIG[l.code as Locale]?.name || l.code,
+      }))
+
+      const res = await fetch("/api/admin/ai-assist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          translate: {
+            sourceSubject: subject,
+            sourceBody: body,
+            targetLanguages,
+          },
+        }),
+      })
+
+      const data = await res.json()
+      if (!res.ok || data.error) {
+        toast.error(data.error || "Translation failed")
+        return
+      }
+
+      setTranslations(data.translations || {})
+      const count = Object.keys(data.translations || {}).length
+      const errors = data.errors?.length || 0
+      toast.success(`Generated ${count} translation${count !== 1 ? "s" : ""}${errors ? ` (${errors} failed)` : ""}`)
+    } catch {
+      toast.error("Network error during translation")
+    } finally {
+      setTranslating(false)
+    }
+  }
+
+  // Get content for preview based on selected language
+  const previewSubject = previewLang === "en" ? subject : (translations[previewLang]?.subject || subject)
+  const previewBodyRaw = previewLang === "en" ? body : (translations[previewLang]?.body || body)
+  const previewBody = formatPreview(previewBodyRaw)
 
   const handleSend = () => {
     if (!canSend) return
-    if (!confirm(`You are about to send this email to ${stats.verifiedUsers} verified users. Continue?`)) return
+
+    const langInfo = hasTranslations
+      ? ` (${Object.keys(translations).length + 1} languages)`
+      : ""
+    if (!confirm(`You are about to send this email to ${stats.verifiedUsers} verified users${langInfo}. Continue?`)) return
 
     setResult(null)
     startTransition(async () => {
-      const res = await sendCampaign(subject, body)
+      const allTranslations: Translations = { en: { subject, body }, ...translations }
+      const res = await sendCampaign(subject, body, allTranslations)
       if ("error" in res) {
         toast.error(res.error as string)
       } else {
@@ -130,12 +193,12 @@ export function CampaignsClient({ initialStats }: { initialStats: Stats }) {
           <span className={s.statLabel}>Verified (recipients)</span>
         </div>
         <div className={s.statCard}>
-          <span className={s.statValue}>{Math.ceil(stats.verifiedUsers / 50)}</span>
-          <span className={s.statLabel}>Batches needed</span>
+          <span className={s.statValue}>{stats.unsubscribedUsers}</span>
+          <span className={s.statLabel}>Unsubscribed</span>
         </div>
         <div className={s.statCard}>
-          <span className={s.statValue}>~{Math.ceil(stats.verifiedUsers / 50)}s</span>
-          <span className={s.statLabel}>Estimated time</span>
+          <span className={s.statValue}>{stats.languages.length}</span>
+          <span className={s.statLabel}>Languages</span>
         </div>
       </div>
 
@@ -251,7 +314,7 @@ export function CampaignsClient({ initialStats }: { initialStats: Stats }) {
             <TextField
               placeholder="e.g. New feature: AI Flow is here!"
               value={subject}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSubject(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setSubject(e.target.value); setTranslations({}) }}
             />
           </div>
 
@@ -276,14 +339,59 @@ export function CampaignsClient({ initialStats }: { initialStats: Stats }) {
               rows={12}
               placeholder={"Hi {{name}},\n\nWe're excited to announce a brand new feature on Kalit!\n\n**AI Flow** is now available — automate your workflows with intelligent agents.\n\n[button:Try it now|https://kalit.ai/flow]\n\nLet us know what you think!\nThe Kalit Team"}
               value={body}
-              onChange={(e) => setBody(e.target.value)}
+              onChange={(e) => { setBody(e.target.value); setTranslations({}) }}
             />
           </div>
+
+          {/* Translations */}
+          {otherLanguages.length > 0 && canSend && (
+            <div className={s.translationsSection}>
+              <div className={s.translationsHeader}>
+                <div>
+                  <span className={s.label}>Translations</span>
+                  <span className={s.translationsHint}>
+                    {hasTranslations
+                      ? `${Object.keys(translations).length} language${Object.keys(translations).length !== 1 ? "s" : ""} ready`
+                      : `${otherLanguages.length} other language${otherLanguages.length !== 1 ? "s" : ""} detected`}
+                  </span>
+                </div>
+                <Button
+                  variant="secondary"
+                  onClick={generateTranslations}
+                  disabled={translating}
+                  circle={translating}
+                >
+                  <Icon icon="hugeicons:translate" />
+                  {translating ? "Translating..." : hasTranslations ? "Regenerate" : "Generate translations"}
+                </Button>
+              </div>
+
+              {hasTranslations && (
+                <div className={s.langTabs}>
+                  {stats.languages.map((l) => {
+                    const cfg = LOCALE_CONFIG[l.code as Locale]
+                    const isReady = l.code === "en" || translations[l.code]
+                    return (
+                      <button
+                        key={l.code}
+                        className={`${s.langTab} ${previewLang === l.code ? s.langTabActive : ""} ${!isReady ? s.langTabMissing : ""}`}
+                        onClick={() => setPreviewLang(l.code)}
+                      >
+                        <span className={s.langFlag}>{cfg?.flag}</span>
+                        <span>{cfg?.name || l.code}</span>
+                        <Badge variant={isReady ? "success" : "warning"}>{l.count}</Badge>
+                      </button>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+          )}
 
           <div className={s.actions}>
             <Button
               variant="secondary"
-              onClick={() => setShowPreview(!showPreview)}
+              onClick={() => { setShowPreview(!showPreview); setPreviewLang("en") }}
               disabled={!canSend}
             >
               <Icon icon="hugeicons:eye" />
@@ -306,6 +414,25 @@ export function CampaignsClient({ initialStats }: { initialStats: Stats }) {
       {/* Preview */}
       {showPreview && canSend && (
         <SurfacePanel spaced title="Email Preview" subtitle="Preview with sample data — actual emails will be personalized per user">
+          {/* Language preview tabs */}
+          {hasTranslations && (
+            <div className={s.previewLangBar}>
+              {stats.languages.map((l) => {
+                const cfg = LOCALE_CONFIG[l.code as Locale]
+                const isReady = l.code === "en" || translations[l.code]
+                if (!isReady) return null
+                return (
+                  <button
+                    key={l.code}
+                    className={`${s.previewLangBtn} ${previewLang === l.code ? s.previewLangBtnActive : ""}`}
+                    onClick={() => setPreviewLang(l.code)}
+                  >
+                    {cfg?.flag} {cfg?.name || l.code}
+                  </button>
+                )
+              })}
+            </div>
+          )}
           <div className={s.previewFrame}>
             <div className={s.previewMeta}>
               <div className={s.previewMetaRow}>
@@ -314,17 +441,21 @@ export function CampaignsClient({ initialStats }: { initialStats: Stats }) {
               </div>
               <div className={s.previewMetaRow}>
                 <span className={s.previewMetaLabel}>To</span>
-                <span>{stats.verifiedUsers} verified users</span>
+                <span>
+                  {previewLang === "en"
+                    ? `${stats.languages.find((l) => l.code === "en")?.count || stats.verifiedUsers} users`
+                    : `${stats.languages.find((l) => l.code === previewLang)?.count || 0} ${LOCALE_CONFIG[previewLang as Locale]?.name || previewLang} users`}
+                </span>
               </div>
               <div className={s.previewMetaRow}>
                 <span className={s.previewMetaLabel}>Subject</span>
-                <span className={s.previewSubject}>{subject}</span>
+                <span className={s.previewSubject}>{previewSubject}</span>
               </div>
             </div>
             <div className={s.previewBody}>
               <div className={s.previewAccent} />
               <div className={s.previewContent}>
-                <h1 style={{ fontSize: "22px", fontWeight: 700, color: "#1a1a2e", margin: "0 0 16px" }}>{subject}</h1>
+                <h1 style={{ fontSize: "22px", fontWeight: 700, color: "#1a1a2e", margin: "0 0 16px" }}>{previewSubject}</h1>
                 <div
                   style={{ color: "#374151", fontSize: "15px", lineHeight: 1.7 }}
                   dangerouslySetInnerHTML={{ __html: `<p style="color: #374151; font-size: 15px; line-height: 1.7; margin: 0 0 12px;">${previewBody}</p>` }}
@@ -351,6 +482,12 @@ export function CampaignsClient({ initialStats }: { initialStats: Stats }) {
               <span className={s.resultLabel}>Total recipients</span>
               <span>{result.total}</span>
             </div>
+            {hasTranslations && (
+              <div className={s.resultItem}>
+                <span className={s.resultLabel}>Languages</span>
+                <span>{Object.keys(translations).length + 1}</span>
+              </div>
+            )}
             {result.errors.length > 0 && (
               <div className={s.resultErrors}>
                 <span className={s.resultLabel}>Errors</span>

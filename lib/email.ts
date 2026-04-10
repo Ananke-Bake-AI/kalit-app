@@ -25,16 +25,16 @@ async function sendEmail({ to, subject, html }: SendEmailOptions) {
 /** Outlook-compatible CTA button with gradient background */
 function ctaButton(href: string, label: string) {
   return `<!--[if mso]>
-<v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${href}" style="height:48px;v-text-anchor:middle;width:220px;" arcsize="21%" strokecolor="#8200DF" fillcolor="#8200DF">
+<v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${href}" style="height:40px;v-text-anchor:middle;width:200px;" arcsize="20%" strokecolor="#8200DF" fillcolor="#8200DF">
   <w:anchorlock/>
-  <center style="color:#ffffff;font-family:sans-serif;font-size:15px;font-weight:bold;">${label}</center>
+  <center style="color:#ffffff;font-family:sans-serif;font-size:14px;font-weight:bold;">${label}</center>
 </v:roundrect>
 <![endif]-->
 <!--[if !mso]><!-->
 <table role="presentation" cellpadding="0" cellspacing="0" style="margin: 0;">
   <tr>
-    <td style="border-radius: 10px; background-color: #8200DF; background: linear-gradient(135deg, #8200DF, #2F44FF);">
-      <a href="${href}" style="display: inline-block; padding: 14px 28px; color: #ffffff; font-size: 15px; font-weight: 600; text-decoration: none; border-radius: 10px;">
+    <td style="border-radius: 8px; background-color: #8200DF; background: linear-gradient(135deg, #8200DF, #2F44FF);">
+      <a href="${href}" style="display: inline-block; padding: 10px 22px; color: #ffffff; font-size: 14px; font-weight: 600; text-decoration: none; border-radius: 8px;">
         ${label}
       </a>
     </td>
@@ -45,7 +45,8 @@ function ctaButton(href: string, label: string) {
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || APP_URL
 
-function emailLayout(content: string) {
+function emailLayout(content: string, unsubscribeUrl?: string) {
+  const unsubLink = unsubscribeUrl || `${BASE_URL}/unsubscribe`
   return `
 <!DOCTYPE html>
 <html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -70,13 +71,17 @@ function emailLayout(content: string) {
           <!-- Header -->
           <tr>
             <td align="center" style="padding-bottom: 32px;">
-              <a href="${BASE_URL}" style="text-decoration: none; color: #1a1a2e; font-size: 20px; font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-                <!--[if !mso]><!-->
-                <img src="${BASE_URL}/email-logo.png" width="120" height="40" alt="Kalit AI" style="display: block; border: 0; max-width: 120px; height: auto;" />
-                <!--<![endif]-->
-                <!--[if mso]>
-                <img src="${BASE_URL}/email-logo.png" width="120" height="40" alt="Kalit AI" border="0" />
-                <![endif]-->
+              <a href="${BASE_URL}" style="text-decoration: none; color: #1a1a2e;">
+                <table role="presentation" cellpadding="0" cellspacing="0" style="margin: 0 auto;">
+                  <tr>
+                    <td style="vertical-align: middle; padding-right: 10px;">
+                      <img src="${BASE_URL}/email-icon.png" width="32" height="32" alt="" style="display: block; border: 0; border-radius: 6px;" />
+                    </td>
+                    <td style="vertical-align: middle;">
+                      <span style="font-size: 18px; font-weight: 700; color: #1a1a2e; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; letter-spacing: -0.02em;">Kalit AI</span>
+                    </td>
+                  </tr>
+                </table>
               </a>
             </td>
           </tr>
@@ -128,7 +133,7 @@ function emailLayout(content: string) {
                 &copy; ${new Date().getFullYear()} Kalit AI. All rights reserved.
               </p>
               <p style="margin: 0; font-size: 11px;">
-                <a href="${BASE_URL}/unsubscribe" style="color: #d1d5db; text-decoration: underline;">Unsubscribe</a>
+                <a href="${unsubLink}" style="color: #d1d5db; text-decoration: underline;">Unsubscribe</a>
               </p>
             </td>
           </tr>
@@ -163,7 +168,7 @@ export async function sendPasswordResetEmail(email: string, token: string) {
   })
 }
 
-export function buildCampaignEmailHtml(subject: string, body: string) {
+export function buildCampaignEmailHtml(subject: string, body: string, unsubscribeUrl?: string) {
   // Convert simple line breaks to paragraphs and support [button:Label|URL] syntax
   const formatted = body
     .replace(/\[button:(.+?)\|(.+?)\]/g, (_match, label: string, url: string) => ctaButton(url, label))
@@ -176,11 +181,11 @@ export function buildCampaignEmailHtml(subject: string, body: string) {
   return emailLayout(`
     <h1 style="font-size: 22px; font-weight: 700; color: #1a1a2e; margin: 0 0 16px;">${subject}</h1>
     <p style="color: #374151; font-size: 15px; line-height: 1.7; margin: 0 0 12px;">${formatted}</p>
-  `)
+  `, unsubscribeUrl)
 }
 
 export async function sendBulkEmails(
-  emails: { to: string; subject: string; html: string }[]
+  emails: { to: string; subject: string; html: string; unsubscribeUrl?: string }[]
 ): Promise<{ sent: number; errors: string[] }> {
   if (!resend) {
     console.log(`[EMAIL] Bulk send (dev): ${emails.length} emails`)
@@ -202,7 +207,7 @@ export async function sendBulkEmails(
           subject: e.subject,
           html: e.html,
           headers: {
-            "List-Unsubscribe": `<${BASE_URL}/unsubscribe>`,
+            "List-Unsubscribe": `<${e.unsubscribeUrl || `${BASE_URL}/unsubscribe`}>`,
             "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
           },
         }))

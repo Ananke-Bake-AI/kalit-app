@@ -249,6 +249,113 @@
   border: 1px solid oklch(from var(--text) l c h / 0.06);
 }
 
+// ─── Translations ──────────────────────────────────────
+
+.translationsSection {
+  display: grid;
+  gap: var(--size-3);
+  padding: var(--size-4);
+  background: oklch(from var(--text) l c h / 0.02);
+  border: 1px solid oklch(from var(--text) l c h / 0.06);
+  border-radius: var(--radius-3);
+}
+
+.translationsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--size-3);
+  flex-wrap: wrap;
+}
+
+.translationsHint {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 0.15rem;
+}
+
+.langTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.langTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  background: oklch(from var(--text) l c h / 0.03);
+  border: 1px solid oklch(from var(--text) l c h / 0.08);
+  border-radius: var(--radius-2);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-link),
+    border-color var(--transition-link),
+    color var(--transition-link);
+
+  &:hover {
+    background: oklch(from var(--text) l c h / 0.06);
+    color: var(--text);
+  }
+}
+
+.langTabActive {
+  background: oklch(from #8200df l c h / 0.08);
+  border-color: oklch(from #8200df l c h / 0.2);
+  color: #8200df;
+}
+
+.langTabMissing {
+  opacity: 0.5;
+}
+
+.langFlag {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.previewLangBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding-bottom: var(--size-4);
+  border-bottom: 1px solid oklch(from var(--text) l c h / 0.06);
+  margin-bottom: var(--size-4);
+}
+
+.previewLangBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid oklch(from var(--text) l c h / 0.08);
+  border-radius: 100px;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-link),
+    border-color var(--transition-link),
+    color var(--transition-link);
+
+  &:hover {
+    background: oklch(from var(--text) l c h / 0.05);
+    color: var(--text);
+  }
+}
+
+.previewLangBtnActive {
+  background: oklch(from #8200df l c h / 0.08);
+  border-color: oklch(from #8200df l c h / 0.2);
+  color: #8200df;
+  font-weight: 500;
+}
+
 // ─── Compose Form ───────────────────────────────────────
 
 .form {

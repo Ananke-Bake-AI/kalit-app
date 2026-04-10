@@ -31,6 +31,38 @@ Example output:
 
 IMPORTANT: Return ONLY the JSON object, no markdown fences, no explanation.`
 
+async function callGroq(messages: { role: string; content: string }[], apiKey: string) {
+  const res = await fetch(GROQ_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: GROQ_MODEL,
+      messages,
+      temperature: 0.7,
+      max_tokens: 1024,
+    }),
+  })
+
+  if (!res.ok) {
+    const err = await res.text()
+    console.error("[ai-assist] Groq API error:", err)
+    return null
+  }
+
+  const data = await res.json()
+  const raw = data.choices?.[0]?.message?.content?.trim()
+  if (!raw) return null
+
+  const cleaned = raw.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "")
+  const parsed = JSON.parse(cleaned)
+
+  if (!parsed.subject || !parsed.body) return null
+  return { subject: parsed.subject as string, body: parsed.body as string }
+}
+
 export async function POST(req: NextRequest) {
   try {
     await requireAdmin()
@@ -46,8 +78,60 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  const { prompt, currentSubject, currentBody } = await req.json()
+  const { prompt, currentSubject, currentBody, translate } = await req.json()
 
+  // ─── Translation mode: translate existing content to target languages ───
+  if (translate) {
+    const { sourceSubject, sourceBody, targetLanguages } = translate as {
+      sourceSubject: string
+      sourceBody: string
+      targetLanguages: { code: string; name: string }[]
+    }
+
+    if (!sourceSubject || !sourceBody || !targetLanguages?.length) {
+      return NextResponse.json({ error: "Missing translation parameters" }, { status: 400 })
+    }
+
+    const results: Record<string, { subject: string; body: string }> = {}
+    const errors: string[] = []
+
+    // Translate to each language sequentially (respect rate limits)
+    for (const lang of targetLanguages) {
+      try {
+        const result = await callGroq([
+          {
+            role: "system",
+            content: `You are a professional translator for Kalit AI marketing emails. Translate the following email to ${lang.name} (${lang.code}).
+
+RULES:
+- Translate ALL text naturally — do NOT use literal/word-by-word translation
+- Keep {{name}} and {{email}} template tags EXACTLY as-is (do NOT translate them)
+- Keep [button:...|URL] and [link:...|URL] syntax EXACTLY — only translate the label text, keep the URL unchanged
+- Keep **bold** markers around the translated text
+- Keep the same tone, structure, and line breaks
+- Translate "The Kalit Team" sign-off appropriately for the language
+- Output ONLY valid JSON with "subject" and "body" fields, no explanation`
+          },
+          {
+            role: "user",
+            content: JSON.stringify({ subject: sourceSubject, body: sourceBody }),
+          },
+        ], apiKey)
+
+        if (result) {
+          results[lang.code] = result
+        } else {
+          errors.push(lang.code)
+        }
+      } catch {
+        errors.push(lang.code)
+      }
+    }
+
+    return NextResponse.json({ translations: results, errors })
+  }
+
+  // ─── Generation mode: create new email or refine existing ───
   if (!prompt?.trim()) {
     return NextResponse.json({ error: "Prompt is required" }, { status: 400 })
   }
@@ -56,7 +140,6 @@ export async function POST(req: NextRequest) {
     { role: "system", content: SYSTEM_PROMPT },
   ]
 
-  // If there's existing content, include it for refinement
   if (currentSubject || currentBody) {
     messages.push({
       role: "assistant",
@@ -74,45 +157,13 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const res = await fetch(GROQ_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: GROQ_MODEL,
-        messages,
-        temperature: 0.7,
-        max_tokens: 1024,
-      }),
-    })
+    const result = await callGroq(messages, apiKey)
 
-    if (!res.ok) {
-      const err = await res.text()
-      console.error("[ai-assist] Groq API error:", err)
-      return NextResponse.json(
-        { error: "AI service error. Please try again." },
-        { status: 502 }
-      )
+    if (!result) {
+      return NextResponse.json({ error: "Failed to generate email" }, { status: 502 })
     }
 
-    const data = await res.json()
-    const raw = data.choices?.[0]?.message?.content?.trim()
-
-    if (!raw) {
-      return NextResponse.json({ error: "Empty AI response" }, { status: 502 })
-    }
-
-    // Parse JSON — strip markdown fences if the model wraps them
-    const cleaned = raw.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "")
-    const parsed = JSON.parse(cleaned)
-
-    if (!parsed.subject || !parsed.body) {
-      return NextResponse.json({ error: "Invalid AI response format" }, { status: 502 })
-    }
-
-    return NextResponse.json({ subject: parsed.subject, body: parsed.body })
+    return NextResponse.json(result)
   } catch (e) {
     console.error("[ai-assist] Error:", e)
     return NextResponse.json(

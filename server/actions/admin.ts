@@ -28,7 +28,7 @@ export async function getAllVerifiedUsers() {
   await requireAdmin()
 
   return prisma.user.findMany({
-    where: { emailVerified: { not: null } },
+    where: { emailVerified: { not: null }, emailUnsubscribed: false },
     select: { email: true, name: true },
     orderBy: { createdAt: "desc" },
   })
@@ -37,13 +37,34 @@ export async function getAllVerifiedUsers() {
 export async function getCampaignStats() {
   await requireAdmin()
 
-  const totalUsers = await prisma.user.count()
-  const verifiedUsers = await prisma.user.count({ where: { emailVerified: { not: null } } })
+  const [totalUsers, verifiedUsers, unsubscribedUsers, languageBreakdown] = await Promise.all([
+    prisma.user.count(),
+    prisma.user.count({ where: { emailVerified: { not: null }, emailUnsubscribed: false } }),
+    prisma.user.count({ where: { emailUnsubscribed: true } }),
+    prisma.user.groupBy({
+      by: ["preferredLanguage"],
+      where: { emailVerified: { not: null }, emailUnsubscribed: false },
+      _count: true,
+      orderBy: { _count: { preferredLanguage: "desc" } },
+    }),
+  ])
 
-  return { totalUsers, verifiedUsers }
+  return {
+    totalUsers,
+    verifiedUsers,
+    unsubscribedUsers,
+    languages: languageBreakdown.map((r) => ({
+      code: r.preferredLanguage || "en",
+      count: r._count,
+    })),
+  }
 }
 
-export async function sendCampaign(subject: string, body: string) {
+export async function sendCampaign(
+  subject: string,
+  body: string,
+  translations?: Record<string, { subject: string; body: string }>
+) {
   await requireAdmin()
 
   if (!subject.trim() || !body.trim()) {
@@ -51,19 +72,32 @@ export async function sendCampaign(subject: string, body: string) {
   }
 
   const { buildCampaignEmailHtml, sendBulkEmails } = await import("@/lib/email")
+  const { getUnsubscribeUrl } = await import("@/lib/unsubscribe")
 
-  const users = await getAllVerifiedUsers()
+  // Fetch users with their preferred language
+  const users = await prisma.user.findMany({
+    where: { emailVerified: { not: null }, emailUnsubscribed: false },
+    select: { email: true, name: true, preferredLanguage: true },
+    orderBy: { createdAt: "desc" },
+  })
+
   if (users.length === 0) {
     return { error: "No verified users to send to" }
   }
 
   const batch = users.map((user) => {
+    const lang = user.preferredLanguage || "en"
+    const t = translations?.[lang]
+    const userSubject = t?.subject || subject
+    const userBody = t?.body || body
+
     const name = user.name || "there"
-    const personalizedBody = body
+    const personalizedBody = userBody
       .replace(/\{\{name\}\}/g, name)
       .replace(/\{\{email\}\}/g, user.email)
-    const html = buildCampaignEmailHtml(subject, personalizedBody)
-    return { to: user.email, subject, html }
+    const unsubscribeUrl = getUnsubscribeUrl(user.email)
+    const html = buildCampaignEmailHtml(userSubject, personalizedBody, unsubscribeUrl)
+    return { to: user.email, subject: userSubject, html, unsubscribeUrl }
   })
 
   const result = await sendBulkEmails(batch)
