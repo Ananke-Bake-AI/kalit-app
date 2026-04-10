@@ -1,4 +1,5 @@
 import type { NextAuthConfig } from "next-auth"
+import Discord from "next-auth/providers/discord"
 import GitHub from "next-auth/providers/github"
 import Google from "next-auth/providers/google"
 
@@ -24,6 +25,11 @@ export default {
     GitHub({
       clientId: process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+      allowDangerousEmailAccountLinking: true
+    }),
+    Discord({
+      clientId: process.env.DISCORD_CLIENT_ID!,
+      clientSecret: process.env.DISCORD_CLIENT_SECRET!,
       allowDangerousEmailAccountLinking: true
     })
   ],

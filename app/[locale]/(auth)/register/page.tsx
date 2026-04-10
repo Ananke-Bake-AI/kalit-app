@@ -143,6 +143,9 @@ export default function RegisterPage() {
                 <Button type="button" variant="secondary" onClick={() => handleOAuth("github")}>
                   GitHub
                 </Button>
+                <Button type="button" variant="secondary" onClick={() => handleOAuth("discord")}>
+                  Discord
+                </Button>
               </div>
 
               <p className={s.footer}>
