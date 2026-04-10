@@ -75,7 +75,7 @@ function emailLayout(content: string, unsubscribeUrl?: string) {
                 <table role="presentation" cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                   <tr>
                     <td style="vertical-align: middle; padding-right: 10px;">
-                      <img src="${BASE_URL}/email-icon.png" width="32" height="32" alt="" style="display: block; border: 0; border-radius: 6px;" />
+                      <img src="${BASE_URL}/img/email-icon.png" width="32" height="32" alt="" style="display: block; border: 0; border-radius: 6px;" />
                     </td>
                     <td style="vertical-align: middle;">
                       <span style="font-size: 18px; font-weight: 700; color: #1a1a2e; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; letter-spacing: -0.02em;">Kalit AI</span>
