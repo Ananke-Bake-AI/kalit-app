@@ -31,8 +31,8 @@ function ctaButton(href: string, label: string) {
 </v:roundrect>
 <![endif]-->
 <!--[if !mso]><!-->
-<div style="margin: 0;">
-  <a href="${href}" style="display: inline-block; padding: 10px 22px; color: #ffffff; font-size: 14px; font-weight: 600; text-decoration: none; border-radius: 8px; background-color: #8200DF; background: linear-gradient(135deg, #8200DF, #2F44FF);">
+<div style="margin: 0; text-align: left;">
+  <a href="${href}" style="display: inline-block; padding: 10px 22px; color: #ffffff; font-size: 14px; font-weight: 600; text-decoration: none; border-radius: 8px; background-color: #8200DF; background: linear-gradient(135deg, #8200DF, #2F44FF); white-space: nowrap;">
     ${label}
   </a>
 </div>
