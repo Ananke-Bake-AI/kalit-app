@@ -14,16 +14,30 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // Run the base jwt callback from authConfig
       const token = await authConfig.callbacks!.jwt!(params)
 
-      // Always re-check DB when emailVerified is falsy (user may have just verified)
-      // or when isAdmin is missing, or on explicit session update trigger
-      if (!token.emailVerified || token.isAdmin === undefined || params.trigger === "update") {
+      // On sign-in or when key fields are missing/falsy, re-check DB
+      // This ensures OAuth users get onboardingDone, orgId, etc. that
+      // the Prisma adapter doesn't include in the default user object.
+      if (params.user || !token.emailVerified || token.isAdmin === undefined || params.trigger === "update") {
         if (token.email) {
           const dbUser = await prisma.user.findUnique({
             where: { email: token.email },
-            select: { emailVerified: true, isAdmin: true },
+            select: {
+              emailVerified: true,
+              isAdmin: true,
+              onboardingDone: true,
+              memberships: {
+                where: { isCurrent: true },
+                take: 1,
+                select: { orgId: true },
+              },
+            },
           })
-          token.emailVerified = !!dbUser?.emailVerified
-          token.isAdmin = dbUser?.isAdmin ?? false
+          if (dbUser) {
+            token.emailVerified = !!dbUser.emailVerified
+            token.isAdmin = dbUser.isAdmin ?? false
+            token.onboardingDone = dbUser.onboardingDone ?? false
+            token.orgId = dbUser.memberships[0]?.orgId ?? null
+          }
         }
       }
 
