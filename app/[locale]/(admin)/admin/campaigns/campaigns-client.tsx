@@ -379,7 +379,7 @@ export function CampaignsClient({ initialStats }: { initialStats: Stats }) {
                       >
                         <span className={s.langFlag}>{cfg?.flag}</span>
                         <span>{cfg?.name || l.code}</span>
-                        <Badge variant={isReady ? "success" : "warning"}>{l.count}</Badge>
+                        <Badge variant={isReady ? "success" : "white"}>{l.count}</Badge>
                       </button>
                     )
                   })}
