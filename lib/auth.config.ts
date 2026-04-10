@@ -7,6 +7,7 @@ import Google from "next-auth/providers/google"
  * Le middleware utilise `NextAuth(authConfig).auth` pour lire le JWT comme l’API session.
  */
 export default {
+  debug: true,
   secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
   trustHost: true,
   session: { strategy: "jwt" },
