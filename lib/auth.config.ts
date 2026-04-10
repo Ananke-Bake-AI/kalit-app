@@ -2,6 +2,7 @@ import type { NextAuthConfig } from "next-auth"
 import Discord from "next-auth/providers/discord"
 import GitHub from "next-auth/providers/github"
 import Google from "next-auth/providers/google"
+import LinkedIn from "next-auth/providers/linkedin"
 
 /**
  * Config partagée (Edge / middleware) : pas d’adapter Prisma ni de Credentials ici.
@@ -30,6 +31,11 @@ export default {
     Discord({
       clientId: process.env.DISCORD_CLIENT_ID!,
       clientSecret: process.env.DISCORD_CLIENT_SECRET!,
+      allowDangerousEmailAccountLinking: true
+    }),
+    LinkedIn({
+      clientId: process.env.LINKEDIN_CLIENT_ID!,
+      clientSecret: process.env.LINKEDIN_CLIENT_SECRET!,
       allowDangerousEmailAccountLinking: true
     })
   ],
