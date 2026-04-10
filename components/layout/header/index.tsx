@@ -149,7 +149,7 @@ export const Header = ({ initialSession = null }: HeaderProps) => {
             )}
           </div>
         ) : (
-          <Button className={s.btn} circle href="/register">
+          <Button className={s.btn} circle href="/login">
             {t("nav.getEarlyAccess")}
           </Button>
         )}

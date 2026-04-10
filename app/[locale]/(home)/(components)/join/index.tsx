@@ -54,7 +54,17 @@ export const Join = () => {
         </Heading>
         <div className={s.bottom}>
           <div className={s.screen}>
-            <div className={s.screenInside}></div>
+            <div className={s.screenInside}>
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                className={s.video}
+              >
+                <source src="/video/kalit-presentation.mp4" type="video/mp4" />
+              </video>
+            </div>
           </div>
           <svg className={clsx(s.line, s.line1)} viewBox="0 0 850 215">
             <path
@@ -84,7 +94,7 @@ export const Join = () => {
                   </div>
                 </div>
                 <Button
-                  href={`/register?suite=${suite.id}`}
+                  href={`/login?suite=${suite.id}`}
                   className={s.btn}
                   data-button-id={suite.id}
                   variant="tertiary"

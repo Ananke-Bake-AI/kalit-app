@@ -13,7 +13,7 @@ export const Newsletter = () => {
         <h2>{t("footer.earlyAccess")}</h2>
         <p>{t("footer.earlyAccessDesc")}</p>
       </div>
-      <form className={s.form} action="/register" method="GET">
+      <form className={s.form} action="/login" method="GET">
         <input type="email" name="email" placeholder={t("footer.emailPlaceholder")} />
         <Button type="submit">{t("footer.joinWaitlist")}</Button>
       </form>
