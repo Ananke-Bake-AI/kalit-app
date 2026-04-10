@@ -35,6 +35,220 @@
   letter-spacing: 0.04em;
 }
 
+// ─── AI Assistant ───────────────────────────────────────
+
+.aiToggle {
+  display: flex;
+  align-items: center;
+  gap: var(--size-3);
+  width: 100%;
+  padding: var(--size-4) var(--size-5);
+  background: oklch(from var(--text) l c h / 0.02);
+  border: 1px dashed oklch(from var(--text) l c h / 0.12);
+  border-radius: var(--radius-3);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-link),
+    border-color var(--transition-link);
+  color: var(--text);
+  font-size: 0.88rem;
+  font-weight: 500;
+
+  &:hover {
+    background: oklch(from var(--text) l c h / 0.05);
+    border-color: oklch(from var(--text) l c h / 0.2);
+  }
+
+  svg {
+    font-size: 1.2rem;
+    color: #8200df;
+    flex-shrink: 0;
+  }
+}
+
+.aiToggleHint {
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin-left: auto;
+}
+
+.aiPanel {
+  display: grid;
+  gap: var(--size-4);
+}
+
+.aiInputWrap {
+  display: grid;
+  gap: var(--size-3);
+}
+
+.aiInput {
+  width: 100%;
+  min-height: 80px;
+  padding: var(--size-4);
+  font-family: var(--font-main);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--text);
+  background: oklch(from var(--text) l c h / 0.03);
+  border: 1px solid oklch(from var(--text) l c h / 0.1);
+  border-radius: var(--radius-3);
+  resize: vertical;
+  transition:
+    border-color var(--transition-link),
+    box-shadow var(--transition-link);
+
+  &::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.5;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #8200df;
+    box-shadow: 0 0 0 3px oklch(from #8200df l c h / 0.1);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+  }
+}
+
+.aiActions {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--size-3);
+  flex-wrap: wrap;
+}
+
+.aiSuggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.aiSuggestionBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  background: oklch(from var(--text) l c h / 0.04);
+  border: 1px solid oklch(from var(--text) l c h / 0.08);
+  border-radius: 100px;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-link),
+    color var(--transition-link),
+    border-color var(--transition-link);
+  white-space: nowrap;
+
+  &:hover {
+    background: oklch(from #8200df l c h / 0.08);
+    color: #8200df;
+    border-color: oklch(from #8200df l c h / 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+.aiButtons {
+  display: flex;
+  gap: var(--size-2);
+  flex-shrink: 0;
+}
+
+.aiError {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  padding: var(--size-3) var(--size-4);
+  font-size: 0.82rem;
+  color: var(--color-error, #ef4444);
+  background: oklch(from var(--color-error, #ef4444) l c h / 0.06);
+  border-radius: var(--radius-2);
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+.aiResult {
+  border: 1px solid oklch(from #8200df l c h / 0.15);
+  border-radius: var(--radius-3);
+  overflow: hidden;
+}
+
+.aiResultHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--size-3) var(--size-4);
+  background: oklch(from #8200df l c h / 0.04);
+  border-bottom: 1px solid oklch(from #8200df l c h / 0.1);
+  gap: var(--size-3);
+  flex-wrap: wrap;
+}
+
+.aiResultLabel {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #8200df;
+}
+
+.aiResultActions {
+  display: flex;
+  gap: var(--size-2);
+}
+
+.aiResultPreview {
+  padding: var(--size-4);
+  display: grid;
+  gap: var(--size-4);
+}
+
+.aiResultField {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.aiResultFieldLabel {
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.aiResultFieldValue {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.aiResultBody {
+  font-family: var(--font-main);
+  font-size: 0.84rem;
+  line-height: 1.7;
+  color: var(--text);
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0;
+  padding: var(--size-3) var(--size-4);
+  background: oklch(from var(--text) l c h / 0.02);
+  border-radius: var(--radius-2);
+  border: 1px solid oklch(from var(--text) l c h / 0.06);
+}
+
 // ─── Compose Form ───────────────────────────────────────
 
 .form {

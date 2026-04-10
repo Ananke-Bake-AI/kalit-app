@@ -6,7 +6,7 @@ import { Icon } from "@/components/icon"
 import { SurfacePanel } from "@/components/surface-panel"
 import { TextField } from "@/components/text-field"
 import { getCampaignStats, sendCampaign } from "@/server/actions/admin"
-import { useState, useTransition } from "react"
+import { useCallback, useRef, useState, useTransition } from "react"
 import { toast } from "sonner"
 import s from "./campaigns.module.scss"
 
@@ -23,6 +23,14 @@ const FORMAT_HELPERS = [
   { syntax: "[link:Label|https://...]", label: "Link", desc: "Inline colored link" },
 ]
 
+const AI_SUGGESTIONS = [
+  "Announce a new feature launch",
+  "Monthly product update newsletter",
+  "Welcome new users to the platform",
+  "Re-engagement email for inactive users",
+  "Special promotion or discount offer",
+]
+
 export function CampaignsClient({ initialStats }: { initialStats: Stats }) {
   const [stats] = useState(initialStats)
   const [subject, setSubject] = useState("")
@@ -31,10 +39,57 @@ export function CampaignsClient({ initialStats }: { initialStats: Stats }) {
   const [isPending, startTransition] = useTransition()
   const [result, setResult] = useState<{ sent: number; total: number; errors: string[] } | null>(null)
 
+  // AI assistant state
+  const [aiOpen, setAiOpen] = useState(false)
+  const [aiPrompt, setAiPrompt] = useState("")
+  const [aiLoading, setAiLoading] = useState(false)
+  const [aiResult, setAiResult] = useState<{ subject: string; body: string } | null>(null)
+  const [aiError, setAiError] = useState("")
+  const aiInputRef = useRef<HTMLTextAreaElement>(null)
+
   const canSend = subject.trim().length > 0 && body.trim().length > 0
 
   const insertTag = (tag: string) => {
     setBody((prev) => prev + tag)
+  }
+
+  const generateWithAi = useCallback(async (prompt: string, refine = false) => {
+    if (!prompt.trim()) return
+    setAiLoading(true)
+    setAiError("")
+    setAiResult(null)
+
+    try {
+      const res = await fetch("/api/admin/ai-assist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt,
+          ...(refine ? { currentSubject: subject, currentBody: body } : {}),
+        }),
+      })
+
+      const data = await res.json()
+      if (!res.ok || data.error) {
+        setAiError(data.error || "Failed to generate")
+        return
+      }
+
+      setAiResult({ subject: data.subject, body: data.body })
+    } catch {
+      setAiError("Network error. Please try again.")
+    } finally {
+      setAiLoading(false)
+    }
+  }, [subject, body])
+
+  const applyAiResult = () => {
+    if (!aiResult) return
+    setSubject(aiResult.subject)
+    setBody(aiResult.body)
+    setAiResult(null)
+    setAiPrompt("")
+    toast.success("AI content applied")
   }
 
   const previewBody = body
@@ -82,6 +137,110 @@ export function CampaignsClient({ initialStats }: { initialStats: Stats }) {
           <span className={s.statLabel}>Estimated time</span>
         </div>
       </div>
+
+      {/* AI Assistant */}
+      <SurfacePanel
+        spaced
+        title="AI Assistant"
+        subtitle="Describe what you want and let AI draft your campaign"
+      >
+        {!aiOpen ? (
+          <button className={s.aiToggle} onClick={() => { setAiOpen(true); setTimeout(() => aiInputRef.current?.focus(), 50) }}>
+            <Icon icon="hugeicons:magic-wand-01" />
+            <span>Write with AI</span>
+            <span className={s.aiToggleHint}>Describe your email and generate subject + body instantly</span>
+          </button>
+        ) : (
+          <div className={s.aiPanel}>
+            <div className={s.aiInputWrap}>
+              <textarea
+                ref={aiInputRef}
+                className={s.aiInput}
+                rows={3}
+                placeholder="e.g. Announce our new AI Flow feature that lets users automate workflows with intelligent agents. Include a CTA to try it."
+                value={aiPrompt}
+                onChange={(e) => setAiPrompt(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+                    e.preventDefault()
+                    generateWithAi(aiPrompt)
+                  }
+                }}
+                disabled={aiLoading}
+              />
+              <div className={s.aiActions}>
+                <div className={s.aiSuggestions}>
+                  {AI_SUGGESTIONS.map((s_) => (
+                    <button
+                      key={s_}
+                      className={s.aiSuggestionBtn}
+                      onClick={() => { setAiPrompt(s_); generateWithAi(s_) }}
+                      disabled={aiLoading}
+                    >
+                      {s_}
+                    </button>
+                  ))}
+                </div>
+                <div className={s.aiButtons}>
+                  {(subject || body) && (
+                    <Button
+                      variant="secondary"
+                      onClick={() => generateWithAi(aiPrompt, true)}
+                      disabled={aiLoading || !aiPrompt.trim()}
+                    >
+                      <Icon icon="hugeicons:edit-02" />
+                      Refine current
+                    </Button>
+                  )}
+                  <Button
+                    variant="primary"
+                    onClick={() => generateWithAi(aiPrompt)}
+                    disabled={aiLoading || !aiPrompt.trim()}
+                    circle={aiLoading}
+                  >
+                    <Icon icon="hugeicons:magic-wand-01" />
+                    {aiLoading ? "Generating..." : "Generate"}
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {aiError && (
+              <div className={s.aiError}>
+                <Icon icon="hugeicons:alert-02" />
+                {aiError}
+              </div>
+            )}
+
+            {aiResult && (
+              <div className={s.aiResult}>
+                <div className={s.aiResultHeader}>
+                  <span className={s.aiResultLabel}>AI Draft</span>
+                  <div className={s.aiResultActions}>
+                    <Button variant="secondary" onClick={() => setAiResult(null)}>
+                      Discard
+                    </Button>
+                    <Button variant="primary" onClick={applyAiResult}>
+                      <Icon icon="hugeicons:checkmark-circle-02" />
+                      Apply to campaign
+                    </Button>
+                  </div>
+                </div>
+                <div className={s.aiResultPreview}>
+                  <div className={s.aiResultField}>
+                    <span className={s.aiResultFieldLabel}>Subject</span>
+                    <span className={s.aiResultFieldValue}>{aiResult.subject}</span>
+                  </div>
+                  <div className={s.aiResultField}>
+                    <span className={s.aiResultFieldLabel}>Body</span>
+                    <pre className={s.aiResultBody}>{aiResult.body}</pre>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </SurfacePanel>
 
       {/* Compose */}
       <SurfacePanel spaced title="Compose Campaign" subtitle="Emails use the branded Kalit template automatically">
