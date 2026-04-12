@@ -1,0 +1,198 @@
+@use "@/styles/mixins" as *;
+@use "@/styles/app-glass" as *;
+
+.container {
+  padding: var(--size-3) var(--size-5) var(--size-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-3);
+  position: relative;
+
+  @include max($responsive) {
+    padding: var(--size-2) var(--size-3) calc(var(--size-3) + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+// ── Input row ───────────────────────────────────────────
+
+.inputRow {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--size-3);
+  background: linear-gradient(to bottom, var(--glass-50), var(--glass-75));
+  @include cornerShape(var(--radius-2));
+  @include border-glass(var(--gradient-border-glass-3));
+  @include backdrop(16px);
+  position: relative;
+  padding: var(--size-3) var(--size-3) var(--size-3) var(--size-4);
+}
+
+.textarea {
+  flex: 1;
+  background: transparent;
+  font-family: var(--font-main);
+  font-weight: 300;
+  font-size: 0.9rem;
+  resize: none;
+  max-height: 160px;
+  min-height: 1.4em;
+  line-height: 1.5;
+  color: var(--text);
+  @include no-scrollbar;
+
+  &::placeholder {
+    color: var(--text-secondary);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+
+  // Auto-grow
+  field-sizing: content;
+}
+
+.attachBtn {
+  --s: 2rem;
+  width: var(--s);
+  height: var(--s);
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-rounded);
+  color: var(--text-secondary);
+  font-size: 1.1em;
+  flex-shrink: 0;
+  transition:
+    background-color var(--transition-link),
+    color var(--transition-link),
+    transform var(--transition-scale);
+
+  @include is-hover {
+    background-color: oklch(from var(--text) l c h / 0.08);
+    color: var(--text);
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+}
+
+.sendBtn {
+  --s: 2rem;
+  width: var(--s);
+  height: var(--s);
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-rounded);
+  background: var(--text);
+  color: var(--white);
+  font-size: 1.15em;
+  flex-shrink: 0;
+  transition:
+    opacity var(--transition-link),
+    transform var(--transition-scale);
+
+  &:not(:disabled):active {
+    transform: scale(0.9);
+  }
+
+  &:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+  }
+
+  @include is-hover {
+    &:not(:disabled) {
+      opacity: 0.85;
+    }
+  }
+}
+
+// ── @ Command menu ──────────────────────────────────────
+
+.atMenu {
+  position: absolute;
+  bottom: 100%;
+  left: var(--size-5);
+  right: var(--size-5);
+  margin-bottom: var(--size-2);
+  @include glass($shadow: true, $blur: true);
+  @include cornerShape(var(--radius-3));
+  @include border-glass(var(--gradient-border-glass));
+  overflow: hidden;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+}
+
+.atItem {
+  display: flex;
+  align-items: center;
+  gap: var(--size-3);
+  padding: 0.6rem 0.85rem;
+  text-align: left;
+  transition: background-color 0.1s;
+
+  @include is-hover {
+    background-color: oklch(from var(--text) l c h / 0.05);
+  }
+
+  &Active {
+    background-color: oklch(from var(--text) l c h / 0.07);
+  }
+}
+
+.atName {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.atDesc {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  @include ellipsis;
+}
+
+// ── File chips ──────────────────────────────────────────
+
+.files {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--size-2);
+}
+
+.fileChip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--size-1-5);
+  padding: 0.3em 0.6em;
+  font-size: 0.78rem;
+  @include glass($shadow: false);
+  border-radius: var(--radius-rounded);
+  color: var(--text);
+
+  span {
+    @include ellipsis;
+    max-width: 120px;
+  }
+}
+
+.fileRemove {
+  font-size: 0.9em;
+  color: var(--text-secondary);
+  display: grid;
+  place-items: center;
+  transition: color 0.15s;
+
+  @include is-hover {
+    color: var(--danger);
+  }
+}

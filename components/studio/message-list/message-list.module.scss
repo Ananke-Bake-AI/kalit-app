@@ -1,0 +1,74 @@
+@use "@/styles/mixins" as *;
+
+.scroll {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  @include no-scrollbar;
+}
+
+.list {
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: var(--size-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4);
+
+  @include max($responsive) {
+    padding: var(--size-3);
+    gap: var(--size-3);
+  }
+}
+
+.streamRow {
+  display: flex;
+  justify-content: flex-start;
+}
+
+// ── Dots (initial loading) ─────────────────────────────
+
+.dots {
+  display: flex;
+  gap: 4px;
+  padding: 0.7rem 1rem;
+
+  span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--text-secondary);
+    animation: dotPulse 1.2s infinite ease-in-out;
+
+    &:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+
+    &:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+  }
+}
+
+// ── Error ──────────────────────────────────────────────
+
+.error {
+  padding: 0.6rem 1rem;
+  font-size: 0.82rem;
+  color: var(--danger);
+  background: oklch(from var(--danger) l c h / 0.08);
+  border-radius: var(--radius-4);
+}
+
+@keyframes dotPulse {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.8);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

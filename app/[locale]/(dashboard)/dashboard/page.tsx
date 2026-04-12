@@ -77,6 +77,7 @@ export default async function DashboardPage() {
   ]
 
   const quickLinks = [
+    { href: "/studio", label: t("dashboard.studioLabel"), value: t("dashboard.studioDesc") },
     { href: "/settings/profile", label: t("nav.profile"), value: t("dashboard.profileDesc") },
     { href: "/settings/billing", label: t("nav.billing"), value: t("dashboard.billingDesc") },
     { href: "/settings/team", label: t("dashboard.teamLabel"), value: t("dashboard.teamDesc") },

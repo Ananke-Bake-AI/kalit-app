@@ -1,0 +1,122 @@
+@use "@/styles/mixins" as *;
+@use "@/styles/app-glass" as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: var(--size-8);
+  gap: var(--size-10);
+  max-width: 720px;
+  margin: 0 auto;
+  width: 100%;
+
+  @include max($responsive) {
+    padding: var(--size-5);
+    gap: var(--size-6);
+  }
+}
+
+.hero {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-3);
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  font-weight: 300;
+  max-width: 420px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+// ── Suite groups ────────────────────────────────────────
+
+.suites {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-6);
+  width: 100%;
+}
+
+.suiteGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-3);
+}
+
+.suiteHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+}
+
+.suiteName {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  color: var(--suite-color, var(--text));
+  text-transform: capitalize;
+}
+
+.promptList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--size-2);
+
+  @include max($responsive) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.promptCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--size-3);
+  padding: 0.75rem 1rem;
+  background-color: oklch(from var(--suite-color, var(--text)) l c h / 0.06);
+  @include cornerShape(var(--radius-3));
+  text-align: left;
+  transition:
+    background-color var(--transition-link),
+    transform var(--transition-scale);
+  position: relative;
+
+  span {
+    font-size: 0.83rem;
+    color: var(--text);
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
+  :global(svg) {
+    flex-shrink: 0;
+    font-size: 1.1em;
+    color: oklch(from var(--suite-color, var(--text)) l c h / 0.5);
+    transition: color var(--transition-link);
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  @include is-hover {
+    background-color: oklch(from var(--suite-color, var(--text)) l c h / 0.12);
+
+    :global(svg) {
+      color: var(--suite-color, var(--text));
+    }
+  }
+}

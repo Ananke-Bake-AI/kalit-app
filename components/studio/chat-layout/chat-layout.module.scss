@@ -1,0 +1,93 @@
+@use "@/styles/mixins" as *;
+@use "@/styles/app-glass" as *;
+
+.layout {
+  display: flex;
+  min-height: calc(100vh - 6rem);
+  min-height: calc(100dvh - 6rem);
+  background: var(--body);
+  overflow: hidden;
+  position: relative;
+}
+
+.sidebar {
+  width: 18rem;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid oklch(from var(--text) l c h / 0.06);
+  background: var(--glass-50);
+  transition: transform 0.35s var(--cubic);
+  z-index: 100;
+
+  @include max($responsiveNav) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 80vw;
+    max-width: 20rem;
+    @include glass($shadow: false, $blur: true);
+    box-shadow: 4px 0 24px oklch(0 0 0 / 0.1);
+    // transform must come AFTER glass mixin (which sets translate3d(0,0,0) via performance)
+    transform: translateX(-100%);
+
+    &.sidebarOpen {
+      transform: translateX(0);
+    }
+  }
+}
+
+.backdrop {
+  display: none;
+
+  @include max($responsiveNav) {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 99;
+    background: oklch(0 0 0 / 0.3);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s var(--cubic);
+
+    &[data-visible="true"] {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  position: relative;
+}
+
+.right {
+  width: 18rem;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid oklch(from var(--text) l c h / 0.06);
+  background: var(--glass-50);
+  transition: transform 0.35s var(--cubic);
+
+  @include max(1200px) {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    @include glass($shadow: false, $blur: true);
+    box-shadow: -4px 0 24px oklch(0 0 0 / 0.1);
+    z-index: 100;
+    // transform must come AFTER glass mixin (which sets translate3d(0,0,0) via performance)
+    transform: translateX(100%);
+
+    &.rightOpen {
+      transform: translateX(0);
+    }
+  }
+}

@@ -1,0 +1,480 @@
+@use "@/styles/mixins" as *;
+@use "@/styles/app-glass" as *;
+
+// ── Shared widget card ─────────────────────────────────
+
+.card {
+  max-width: 95%;
+  padding: var(--size-3);
+  @include glass(false, var(--glass-50));
+  @include cornerShape(var(--radius-3));
+  @include border-glass(var(--gradient-border-glass));
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-2);
+}
+
+.cardSuccess {
+  composes: card;
+  border-color: oklch(from var(--success) l c h / 0.2);
+}
+
+.cardDanger {
+  composes: card;
+  border-color: oklch(from var(--danger) l c h / 0.2);
+}
+
+.cardInfo {
+  composes: card;
+  border-color: oklch(from var(--color-2) l c h / 0.2);
+}
+
+.cardWarning {
+  composes: card;
+  border-color: oklch(from var(--color-5) l c h / 0.2);
+}
+
+// ── Header row ─────────────────────────────────────────
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--size-1-5);
+}
+
+.statusDot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.7rem;
+}
+
+.dotSuccess {
+  composes: statusDot;
+  background: oklch(from var(--success) l c h / 0.15);
+  color: var(--success);
+}
+
+.dotDanger {
+  composes: statusDot;
+  background: oklch(from var(--danger) l c h / 0.15);
+  color: var(--danger);
+}
+
+.dotInfo {
+  composes: statusDot;
+  background: oklch(from var(--color-2) l c h / 0.15);
+  color: var(--color-2);
+}
+
+.dotWarning {
+  composes: statusDot;
+  background: oklch(from var(--color-5) l c h / 0.15);
+  color: var(--color-5);
+}
+
+.dotPulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.statusLabel {
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.textSuccess {
+  color: var(--success);
+}
+
+.textDanger {
+  color: var(--danger);
+}
+
+.textInfo {
+  color: var(--color-2);
+}
+
+.textWarning {
+  color: var(--color-5);
+}
+
+// ── Description ────────────────────────────────────────
+
+.desc {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// ── Phase indicator ────────────────────────────────────
+
+.phases {
+  display: flex;
+  align-items: center;
+  gap: var(--size-1);
+}
+
+.phase {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0.15em 0.45em;
+  border-radius: var(--radius-rounded);
+  font-size: 0.65rem;
+  font-weight: 500;
+  border: 1px solid oklch(from var(--text) l c h / 0.08);
+  color: var(--text-secondary);
+  background: oklch(from var(--text) l c h / 0.04);
+}
+
+.phaseActive {
+  composes: phase;
+  border-color: oklch(from var(--color-5) l c h / 0.3);
+  background: oklch(from var(--color-5) l c h / 0.1);
+  color: var(--color-5);
+}
+
+.phaseDone {
+  composes: phase;
+  border-color: oklch(from var(--text) l c h / 0.1);
+  color: var(--text-secondary);
+}
+
+.phaseSep {
+  width: 12px;
+  height: 1px;
+  background: oklch(from var(--text) l c h / 0.1);
+}
+
+// ── Progress bar ───────────────────────────────────────
+
+.progressWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.progressMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.65rem;
+}
+
+.progressTrack {
+  height: 4px;
+  border-radius: var(--radius-rounded);
+  background: oklch(from var(--text) l c h / 0.08);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: var(--radius-rounded);
+  background: var(--gradient-primary);
+  transition: width 0.7s ease;
+}
+
+// ── Footer row ─────────────────────────────────────────
+
+.footer {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+}
+
+.badge {
+  font-size: 0.62rem;
+  font-weight: 500;
+  padding: 0.15em 0.4em;
+  border-radius: var(--radius-rounded);
+  border: 1px solid oklch(from var(--color-5) l c h / 0.25);
+  background: oklch(from var(--color-5) l c h / 0.08);
+  color: var(--color-5);
+}
+
+.badgeBlue {
+  composes: badge;
+  border-color: oklch(from var(--color-2) l c h / 0.25);
+  background: oklch(from var(--color-2) l c h / 0.08);
+  color: var(--color-2);
+}
+
+.cancelBtn {
+  margin-left: auto;
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  transition: color var(--transition-link);
+
+  @include is-hover {
+    color: var(--danger);
+  }
+}
+
+// ── Buttons ────────────────────────────────────────────
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--size-1);
+  padding: 0.35em 0.7em;
+  font-size: 0.72rem;
+  font-weight: 500;
+  border-radius: var(--radius-3);
+  border: 1px solid oklch(from var(--success) l c h / 0.25);
+  background: oklch(from var(--success) l c h / 0.08);
+  color: var(--success);
+  transition: background var(--transition-link);
+
+  @include is-hover {
+    background: oklch(from var(--success) l c h / 0.15);
+  }
+
+  :global(svg) {
+    font-size: 0.85em;
+  }
+}
+
+.actionBtnSecondary {
+  composes: actionBtn;
+  border-color: oklch(from var(--text) l c h / 0.1);
+  background: oklch(from var(--text) l c h / 0.04);
+  color: var(--text-secondary);
+
+  @include is-hover {
+    background: oklch(from var(--text) l c h / 0.08);
+  }
+}
+
+.retryBtn {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--transition-link);
+
+  @include is-hover {
+    color: var(--text);
+  }
+}
+
+// ── Asset grid ─────────────────────────────────────────
+
+.assetGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.assetThumb {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: var(--radius-4);
+  border: 1px solid oklch(from var(--text) l c h / 0.08);
+  background: oklch(from var(--text) l c h / 0.04);
+  cursor: pointer;
+}
+
+.assetFile {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-4);
+  border: 1px solid oklch(from var(--text) l c h / 0.08);
+  background: oklch(from var(--text) l c h / 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-size: 0.55rem;
+  color: var(--text-secondary);
+  transition: border-color var(--transition-link);
+
+  @include is-hover {
+    border-color: oklch(from var(--text) l c h / 0.15);
+  }
+
+  :global(svg) {
+    font-size: 1.1rem;
+  }
+}
+
+.assetLabel {
+  max-width: 56px;
+  @include ellipsis;
+  font-size: 0.5rem;
+  color: var(--text-secondary);
+}
+
+// ── Tool chips ─────────────────────────────────────────
+
+.toolChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding-left: 26px;
+}
+
+.toolChip {
+  padding: 0.1em 0.35em;
+  font-size: 0.6rem;
+  font-family: var(--font-mono);
+  border-radius: var(--radius-4);
+  background: oklch(from var(--text) l c h / 0.04);
+  border: 1px solid oklch(from var(--text) l c h / 0.06);
+  color: var(--text-secondary);
+}
+
+// ── Inline widget (compact) ────────────────────────────
+
+.inlineWidget {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--size-1-5);
+  padding: 0.3em 0.6em;
+  border-radius: var(--radius-3);
+  font-size: 0.72rem;
+}
+
+.inlineSuccess {
+  composes: inlineWidget;
+  background: oklch(from var(--success) l c h / 0.08);
+  border: 1px solid oklch(from var(--success) l c h / 0.2);
+  color: var(--success);
+}
+
+.inlineDanger {
+  composes: inlineWidget;
+  background: oklch(from var(--danger) l c h / 0.08);
+  border: 1px solid oklch(from var(--danger) l c h / 0.2);
+  color: var(--danger);
+}
+
+.inlineWarning {
+  composes: inlineWidget;
+  background: oklch(from var(--color-5) l c h / 0.08);
+  border: 1px solid oklch(from var(--color-5) l c h / 0.2);
+  color: var(--color-5);
+}
+
+.inlineInfo {
+  composes: inlineWidget;
+  background: oklch(from var(--color-2) l c h / 0.08);
+  border: 1px solid oklch(from var(--color-2) l c h / 0.2);
+  color: var(--color-2);
+}
+
+// ── Respawn progress ───────────────────────────────────
+
+.respawnTrack {
+  height: 4px;
+  border-radius: var(--radius-rounded);
+  background: oklch(from var(--text) l c h / 0.06);
+  overflow: hidden;
+}
+
+.respawnFill {
+  height: 100%;
+  border-radius: var(--radius-rounded);
+  background: oklch(from var(--color-2) l c h / 0.5);
+  transition: width 1s linear;
+}
+
+// ── Skeleton ───────────────────────────────────────────
+
+.skeleton {
+  composes: card;
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+}
+
+.skeletonLine {
+  height: 10px;
+  border-radius: 4px;
+  background: oklch(from var(--text) l c h / 0.06);
+}
+
+// ── Generating dots ────────────────────────────────────
+
+.genDots {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--size-1);
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.genDot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-5);
+  animation: dotBounce 1.2s infinite ease-in-out;
+
+  &:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+
+  &:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+}
+
+// ── Spinner ────────────────────────────────────────────
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+// ── Animations ─────────────────────────────────────────
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes skeletonPulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes dotBounce {
+  0%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-3px);
+  }
+}

@@ -10,11 +10,13 @@ import { Subtitle } from "@/components/subtitle"
 import { AnimatedLine } from "@/components/svg/animated-line"
 import { useAnimatedPlaceholder } from "@/hooks/use-animated-placeholder"
 import { localePath } from "@/lib/i18n"
+import { createStudioSession, studioLoginHref } from "@/lib/studio-redirect"
 import { detectSuiteFromPrompt, getHeroPromptSuites, getSuiteDisplayTitle, type SuiteConfig } from "@/lib/suites"
 import { useI18n } from "@/stores/i18n"
 import { useGSAP } from "@gsap/react"
 import clsx from "clsx"
 import gsap from "gsap"
+import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useCallback, useRef, useState } from "react"
 import { HeroCard } from "./card"
@@ -29,6 +31,7 @@ const PLACEHOLDER_KEYS = [
 
 export const Hero = () => {
   const router = useRouter()
+  const { status } = useSession()
   const { locale, t } = useI18n()
   const PLACEHOLDERS = PLACEHOLDER_KEYS.map((k) => t(k))
   const [promptValue, setPromptValue] = useState("")
@@ -74,16 +77,30 @@ export const Hero = () => {
     if (isThinking) setIsThinking(false)
   }
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
     const trimmed = promptValue.trim()
     if (!trimmed) return
+    if (status === "loading") return
+
+    // When authenticated, detect suite and go straight to Studio
+    if (status === "authenticated") {
+      setIsThinking(true)
+      setMatchedSuite(null)
+      const detected = detectSuiteFromPrompt(trimmed)
+      const suiteId = (detected?.id || "flow") as import("@/lib/suites").SuiteId
+      const url = await createStudioSession(trimmed, suiteId)
+      router.push(localePath(url, locale))
+      return
+    }
+
+    // Unauthenticated: show recommendation card
     setIsThinking(true)
     setMatchedSuite(null)
     setTimeout(() => {
       setIsThinking(false)
       setMatchedSuite(detectSuiteFromPrompt(trimmed))
     }, 800)
-  }, [promptValue])
+  }, [promptValue, status, router, locale])
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -92,13 +109,32 @@ export const Hero = () => {
     }
   }
 
-  const handleSuiteClick = (suiteId: string) => {
-    router.push(localePath(`/${suiteId}?prompt=${encodeURIComponent(promptValue.trim())}`, locale))
-  }
+  const handleSuiteClick = useCallback(async (suiteId: string) => {
+    const trimmed = promptValue.trim()
+    if (!trimmed) return
+    if (status === "loading") return
+    const sid = suiteId as import("@/lib/suites").SuiteId
+    if (status === "authenticated") {
+      const url = await createStudioSession(trimmed, sid)
+      router.push(localePath(url, locale))
+      return
+    }
+    router.push(localePath(studioLoginHref(trimmed, sid), locale))
+  }, [promptValue, router, status, locale])
 
-  const handleQuickSelect = (suite: SuiteConfig) => {
+  const handleQuickSelect = async (suite: SuiteConfig) => {
     setPromptValue(suite.quickPrompt)
     promptTimelineRef.current?.pause()
+
+    // When authenticated, go straight to Studio
+    if (status === "authenticated") {
+      setIsThinking(true)
+      const sid = suite.id as import("@/lib/suites").SuiteId
+      const url = await createStudioSession(suite.quickPrompt, sid)
+      router.push(localePath(url, locale))
+      return
+    }
+
     setIsThinking(true)
     setTimeout(() => {
       setIsThinking(false)

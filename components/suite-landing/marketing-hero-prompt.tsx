@@ -4,8 +4,7 @@ import { HeroPromptChat } from "@/components/hero-prompt-chat"
 import { Icon } from "@/components/icon"
 import { useAnimatedPlaceholder } from "@/hooks/use-animated-placeholder"
 import { localePath } from "@/lib/i18n"
-import { suiteEntryUrl, suiteMarketingLoginHref } from "@/lib/suite-marketing-entry"
-import { MARKETING_MARKETING_PATH } from "@/lib/suite-marketing-paths"
+import { createStudioSession, studioLoginHref } from "@/lib/studio-redirect"
 import { useI18n } from "@/stores/i18n"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
@@ -20,14 +19,10 @@ const BUTTONS = [
 ]
 
 export interface MarketingHeroPromptProps {
-  suiteAppUrl: string
-  marketingPath?: string
+  suiteAppUrl?: string
 }
 
-export function MarketingHeroPrompt({
-  suiteAppUrl,
-  marketingPath = MARKETING_MARKETING_PATH
-}: MarketingHeroPromptProps) {
+export function MarketingHeroPrompt(_props: MarketingHeroPromptProps) {
   const router = useRouter()
   const { status } = useSession()
   const { locale, t } = useI18n()
@@ -46,16 +41,17 @@ export function MarketingHeroPrompt({
     focusedPlaceholder: t("suiteLanding.marketingPlaceholder")
   })
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
     const trimmed = promptValue.trim()
     if (!trimmed) return
     if (status === "loading") return
     if (status === "authenticated") {
-      window.location.assign(suiteEntryUrl(suiteAppUrl, { prompt: trimmed }))
+      const url = await createStudioSession(trimmed, "marketing")
+      router.push(localePath(url, locale))
       return
     }
-    router.push(localePath(suiteMarketingLoginHref(marketingPath, { prompt: trimmed }), locale))
-  }, [marketingPath, promptValue, router, status, suiteAppUrl])
+    router.push(localePath(studioLoginHref(trimmed, "marketing"), locale))
+  }, [promptValue, router, status, locale])
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {

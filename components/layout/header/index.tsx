@@ -78,6 +78,10 @@ export const Header = ({ initialSession = null }: HeaderProps) => {
         <LanguageSwitcher className={s.langSwitcher} />
 
         {resolvedSession?.user ? (
+          <>
+          <Button className={s.btn} circle href="/studio">
+            {t("studio.studio")}
+          </Button>
           <div className={s.userMenu} ref={menuRef}>
             <button
               className={s.userBtn}
@@ -112,6 +116,12 @@ export const Header = ({ initialSession = null }: HeaderProps) => {
                   </div>
                 </div>
                 <div className={s.dropdownGroup}>
+                  <Link href="/studio" className={s.dropdownItem} onClick={() => setMenuOpen(false)}>
+                    <span className={s.dropdownIcon}>
+                      <Icon icon="hugeicons:ai-chat-02" />
+                    </span>
+                    <span className={s.dropdownLabel}>{t("studio.studio")}</span>
+                  </Link>
                   <Link href="/dashboard" className={s.dropdownItem} onClick={() => setMenuOpen(false)}>
                     <span className={s.dropdownIcon}>
                       <Icon icon="hugeicons:dashboard-square-01" />
@@ -148,9 +158,10 @@ export const Header = ({ initialSession = null }: HeaderProps) => {
               </div>
             )}
           </div>
+          </>
         ) : (
           <Button className={s.btn} circle href="/login">
-            {t("nav.getEarlyAccess")}
+            {t("nav.getStarted")}
           </Button>
         )}
 

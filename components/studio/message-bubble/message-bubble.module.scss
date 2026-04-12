@@ -1,0 +1,343 @@
+@use "@/styles/mixins" as *;
+@use "@/styles/app-glass" as *;
+
+.row {
+  display: flex;
+  animation: fadeIn 0.25s ease-out;
+
+  &[data-role="user"] {
+    justify-content: flex-end;
+  }
+
+  &[data-role="assistant"] {
+    justify-content: flex-start;
+  }
+}
+
+// ── User bubble ─────────────────────────────────────────
+
+.bubbleUser {
+  max-width: 75%;
+  padding: 0.7rem 1rem;
+  background: var(--gradient-primary-radial, var(--gradient-radial-1));
+  color: var(--white);
+  @include cornerShape(var(--radius-3));
+  border-bottom-right-radius: var(--size-1);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  font-weight: 300;
+  white-space: pre-wrap;
+  word-break: break-word;
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-3);
+
+  @include max($responsive) {
+    max-width: 88%;
+  }
+}
+
+// ── Assistant bubble ────────────────────────────────────
+
+.bubbleAssistant {
+  max-width: 85%;
+  padding: 0.7rem 1rem;
+  @include glass(false, var(--glass-50));
+  @include cornerShape(var(--radius-3));
+  @include border-glass(var(--gradient-border-glass));
+  position: relative;
+  border-bottom-left-radius: var(--size-1);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  font-weight: 300;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-2);
+
+  @include max($responsive) {
+    max-width: 92%;
+  }
+}
+
+// ── Markdown ────────────────────────────────────────────
+
+.markdown {
+  :global(p) {
+    margin: 0.3em 0;
+    line-height: 1.6;
+  }
+
+  :global(p:first-child) {
+    margin-top: 0;
+  }
+
+  :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background: oklch(from var(--text) l c h / 0.06);
+    padding: 0.15em 0.35em;
+    border-radius: 4px;
+  }
+
+  :global(pre) {
+    margin: 0.5em 0;
+    padding: 0.75em 1em;
+    background: oklch(from var(--text) l c h / 0.04);
+    border-radius: var(--radius-4);
+    overflow-x: auto;
+    @include no-scrollbar;
+
+    :global(code) {
+      background: none;
+      padding: 0;
+      font-size: 0.82em;
+      line-height: 1.5;
+    }
+  }
+
+  :global(strong) {
+    font-weight: 600;
+  }
+
+  :global(a) {
+    color: var(--color-2);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  :global(ul),
+  :global(ol) {
+    margin: 0.3em 0;
+    padding-left: 1.5em;
+  }
+
+  :global(li) {
+    margin: 0.15em 0;
+  }
+
+  :global(blockquote) {
+    margin: 0.4em 0;
+    padding-left: 0.8em;
+    border-left: 3px solid oklch(from var(--text) l c h / 0.15);
+    color: var(--text-secondary);
+  }
+
+  :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.5em 0;
+    font-size: 0.85em;
+  }
+
+  :global(th),
+  :global(td) {
+    padding: 0.35em 0.6em;
+    border: 1px solid oklch(from var(--text) l c h / 0.1);
+    text-align: left;
+  }
+
+  :global(th) {
+    background: oklch(from var(--text) l c h / 0.04);
+    font-weight: 600;
+  }
+
+  :global(hr) {
+    border: none;
+    border-top: 1px solid oklch(from var(--text) l c h / 0.1);
+    margin: 0.8em 0;
+  }
+
+  :global(img) {
+    max-width: 100%;
+    border-radius: var(--radius-4);
+  }
+}
+
+// ── Thinking ────────────────────────────────────────────
+
+.thinking {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-2);
+}
+
+.thinkingToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--size-1-5);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  transition: color var(--transition-link);
+
+  @include is-hover {
+    color: var(--text);
+  }
+
+  :global(svg) {
+    font-size: 0.9em;
+  }
+}
+
+.thinkingContent {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  padding: var(--size-2) var(--size-3);
+  background: oklch(from var(--text) l c h / 0.03);
+  border-radius: var(--radius-4);
+  white-space: pre-wrap;
+  max-height: 200px;
+  overflow-y: auto;
+  @include no-scrollbar;
+}
+
+// ── Tools ───────────────────────────────────────────────
+
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--size-1-5);
+}
+
+.toolBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--size-1);
+  padding: 0.2em 0.5em;
+  font-size: 0.7rem;
+  font-family: var(--font-mono);
+  background: oklch(from var(--text) l c h / 0.06);
+  border-radius: var(--radius-rounded);
+  color: var(--text-secondary);
+
+  :global(svg) {
+    font-size: 0.9em;
+  }
+}
+
+// ── Files ───────────────────────────────────────────────
+
+.fileList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--size-2);
+}
+
+.inlineImage {
+  max-width: 200px;
+  max-height: 150px;
+  border-radius: var(--radius-4);
+  object-fit: cover;
+}
+
+.fileChip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--size-1);
+  font-size: 0.78rem;
+  opacity: 0.85;
+
+  :global(svg) {
+    font-size: 0.9em;
+  }
+}
+
+// ── Inline tool steps (from segments) ───────────────────
+
+.toolStep {
+  display: flex;
+  align-items: center;
+  gap: var(--size-1-5);
+  padding: 0.15em var(--size-1);
+  font-size: 0.75rem;
+}
+
+.toolDone {
+  font-size: 0.85em;
+  color: var(--color-success, #22c55e);
+}
+
+.toolLabelDone {
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+
+// ── Progress segments ───────────────────────────────────
+
+.progressSegment {
+  padding: var(--size-2) var(--size-3);
+  background: oklch(from var(--text) l c h / 0.03);
+  border-radius: var(--radius-4);
+  border: 1px solid oklch(from var(--text) l c h / 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-1);
+}
+
+.progressHidden {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  opacity: 0.5;
+}
+
+.progressLine {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--size-1-5);
+  font-size: 0.75rem;
+}
+
+.progressCheck {
+  font-size: 0.85em;
+  color: var(--color-success, #22c55e);
+  margin-top: 0.1em;
+  flex-shrink: 0;
+}
+
+.progressTextDone {
+  color: var(--text-secondary);
+}
+
+// ── File segments ───────────────────────────────────────
+
+.fileSegment {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--size-1);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+
+  :global(svg) {
+    font-size: 0.9em;
+  }
+}
+
+// ── Widget placeholder ──────────────────────────────────
+
+.widgetPlaceholder {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  padding: var(--size-3);
+  background: oklch(from var(--text) l c h / 0.04);
+  border-radius: var(--radius-4);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

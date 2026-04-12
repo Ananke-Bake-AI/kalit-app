@@ -1,0 +1,302 @@
+@use "@/styles/mixins" as *;
+@use "@/styles/app-glass" as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-2);
+  animation: fadeIn 0.2s ease-out;
+}
+
+// ── Text segment (markdown) ────────────────────────────
+
+.textSegment {
+  max-width: 95%;
+  padding: 0.7rem 1rem;
+  @include glass(false, var(--glass-50));
+  @include cornerShape(var(--radius-3));
+  @include border-glass(var(--gradient-border-glass));
+  border-bottom-left-radius: var(--size-1);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  font-weight: 300;
+  color: var(--text);
+
+  :global(p) {
+    margin: 0.3em 0;
+    line-height: 1.6;
+  }
+
+  :global(p:first-child) {
+    margin-top: 0;
+  }
+
+  :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background: oklch(from var(--text) l c h / 0.06);
+    padding: 0.15em 0.35em;
+    border-radius: 4px;
+  }
+
+  :global(pre) {
+    margin: 0.5em 0;
+    padding: 0.75em 1em;
+    background: oklch(from var(--text) l c h / 0.04);
+    border-radius: var(--radius-4);
+    overflow-x: auto;
+    @include no-scrollbar;
+
+    :global(code) {
+      background: none;
+      padding: 0;
+      font-size: 0.82em;
+      line-height: 1.5;
+    }
+  }
+
+  :global(strong) {
+    font-weight: 600;
+  }
+
+  :global(a) {
+    color: var(--color-2);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  :global(ul),
+  :global(ol) {
+    margin: 0.3em 0;
+    padding-left: 1.5em;
+  }
+
+  :global(li) {
+    margin: 0.15em 0;
+  }
+}
+
+// ── Tool step ──────────────────────────────────────────
+
+.toolStep {
+  display: flex;
+  align-items: center;
+  gap: var(--size-1-5);
+  padding: 0.2rem var(--size-1);
+  font-size: 0.78rem;
+  max-width: 90%;
+}
+
+.toolDone {
+  color: var(--success);
+  font-size: 0.85em;
+  flex-shrink: 0;
+}
+
+.toolLabelDone {
+  color: var(--text-secondary);
+  @include ellipsis;
+}
+
+.toolLabelActive {
+  color: var(--text);
+  @include ellipsis;
+}
+
+.toolRunning {
+  margin-left: auto;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  opacity: 0.6;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+// ── Progress segment ───────────────────────────────────
+
+.progressSegment {
+  max-width: 95%;
+  padding: var(--size-2) var(--size-3);
+  @include glass(false, var(--glass-50));
+  @include cornerShape(var(--radius-3));
+  @include border-glass(var(--gradient-border-glass));
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-1-5);
+}
+
+.progressHidden {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  opacity: 0.5;
+}
+
+.progressLine {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--size-1-5);
+  font-size: 0.78rem;
+}
+
+.progressDotActive {
+  margin-top: 0.35em;
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--color-2);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.progressCheck {
+  margin-top: 0.1em;
+  font-size: 0.85em;
+  flex-shrink: 0;
+  color: var(--success);
+}
+
+.progressTextActive {
+  color: var(--text);
+}
+
+.progressTextDone {
+  color: var(--text-secondary);
+}
+
+// ── Widget segment ─────────────────────────────────────
+
+.widgetSegment {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  padding: var(--size-3);
+  background: oklch(from var(--text) l c h / 0.04);
+  border-radius: var(--radius-4);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+
+// ── File segment ───────────────────────────────────────
+
+.fileSegment {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--size-1);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+
+  :global(svg) {
+    font-size: 0.9em;
+  }
+}
+
+// ── Thinking bar ───────────────────────────────────────
+
+.thinkingBar {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--size-1-5);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+// ── Footer (dots + stop) ───────────────────────────────
+
+.footer {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+}
+
+.dots {
+  display: flex;
+  gap: 4px;
+
+  span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--color-2);
+    animation: dotBounce 1.2s infinite ease-in-out;
+
+    &:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+
+    &:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+  }
+}
+
+.stopBtn {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--size-1);
+  padding: 0.25em 0.6em;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  @include glass(false, var(--glass-50));
+  @include cornerShape(var(--radius-3));
+  @include border-glass(var(--gradient-border-glass));
+  transition: color var(--transition-link);
+
+  @include is-hover {
+    color: var(--text);
+  }
+}
+
+// ── Spinner ────────────────────────────────────────────
+
+.spin {
+  animation: spin 1s linear infinite;
+  font-size: 0.85em;
+  flex-shrink: 0;
+}
+
+// ── Animations ─────────────────────────────────────────
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes dotBounce {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.8);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

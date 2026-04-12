@@ -3,9 +3,8 @@
 import { HeroPromptChat } from "@/components/hero-prompt-chat"
 import { Icon } from "@/components/icon"
 import { useAnimatedPlaceholder } from "@/hooks/use-animated-placeholder"
-import { FLOW_MARKETING_PATH } from "@/lib/flow-suite-entry"
 import { localePath } from "@/lib/i18n"
-import { suiteEntryUrl, suiteMarketingLoginHref } from "@/lib/suite-marketing-entry"
+import { createStudioSession, studioLoginHref } from "@/lib/studio-redirect"
 import { useI18n } from "@/stores/i18n"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
@@ -21,11 +20,10 @@ const BUTTONS = [
 ]
 
 export interface FlowHeroPromptProps {
-  suiteAppUrl: string
-  marketingPath?: string
+  suiteAppUrl?: string
 }
 
-export function FlowHeroPrompt({ suiteAppUrl, marketingPath = FLOW_MARKETING_PATH }: FlowHeroPromptProps) {
+export function FlowHeroPrompt(_props: FlowHeroPromptProps) {
   const router = useRouter()
   const { status } = useSession()
   const { locale, t } = useI18n()
@@ -49,26 +47,12 @@ export function FlowHeroPrompt({ suiteAppUrl, marketingPath = FLOW_MARKETING_PAT
     if (!trimmed) return
     if (status === "loading") return
     if (status === "authenticated") {
-      try {
-        const res = await fetch("/api/suite/token", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ suiteId: "flow" })
-        })
-        if (res.ok) {
-          const { token } = await res.json()
-          const callbackUrl = `${suiteAppUrl}/api/auth/sso/callback?token=${encodeURIComponent(token)}&redirect=${encodeURIComponent("/?prompt=" + encodeURIComponent(trimmed))}`
-          window.open(callbackUrl, "_blank")
-          return
-        }
-      } catch {
-        // Fallback
-      }
-      window.open(suiteEntryUrl(suiteAppUrl, { prompt: trimmed }), "_blank")
+      const url = await createStudioSession(trimmed, "flow")
+      router.push(localePath(url, locale))
       return
     }
-    router.push(localePath(suiteMarketingLoginHref(marketingPath, { prompt: trimmed }), locale))
-  }, [marketingPath, promptValue, router, status, suiteAppUrl])
+    router.push(localePath(studioLoginHref(trimmed, "flow"), locale))
+  }, [promptValue, router, status, locale])
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {

@@ -7,7 +7,7 @@ const localeSet = new Set<string>(LOCALES)
 const STATIC_EXT = /\.(?:js|css|svg|png|jpg|jpeg|gif|webp|ico|woff2?|ttf|eot|map|json)$/
 
 const authPages = ["/login", "/register", "/forgot-password", "/reset-password"]
-const appPages = ["/dashboard", "/jobs", "/settings"]
+const appPages = ["/dashboard", "/jobs", "/settings", "/studio"]
 
 export const proxy = auth((req) => {
   const { pathname } = req.nextUrl
@@ -79,6 +79,14 @@ export const proxy = auth((req) => {
     if (suitePages.some((s) => barePath.startsWith(s)) && !session?.user?.orgId) {
       return NextResponse.redirect(new URL(localePath("/setup", locale), req.url))
     }
+  }
+
+  // Authenticated users landing on home → redirect to Studio
+  if (barePath === "/" && isAuthenticated) {
+    if (!session?.user?.onboardingDone) {
+      return NextResponse.redirect(new URL(localePath("/setup", locale), req.url))
+    }
+    return NextResponse.redirect(new URL(localePath("/studio", locale), req.url))
   }
 
   return localeRewrite(req, pathname, locale)

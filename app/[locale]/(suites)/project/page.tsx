@@ -80,7 +80,7 @@ export default async function ProjectPage() {
         }
         listItems={heroList}
         ctaLabel={t("suiteLanding.startBuilding")}
-        rightSlot={<ProjectHeroPrompt suiteAppUrl={suiteAppUrl} marketingPath={projectMarketingPath} />}
+        rightSlot={<ProjectHeroPrompt />}
       />
       <SuiteLandingFeatures
         suiteAppUrl={suiteAppUrl}

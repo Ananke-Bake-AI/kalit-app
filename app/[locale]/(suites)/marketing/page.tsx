@@ -156,7 +156,7 @@ export default async function MarketingPage() {
         }
         listItems={heroList}
         ctaLabel={t("suiteLanding.startCampaign")}
-        rightSlot={<MarketingHeroPrompt suiteAppUrl={suiteAppUrl} marketingPath={marketingMarketingPath} />}
+        rightSlot={<MarketingHeroPrompt />}
       />
       <div className={s.marquee}>
         <Marquee className={s.marqueeScroll}>

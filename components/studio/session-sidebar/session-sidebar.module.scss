@@ -1,0 +1,231 @@
+@use "@/styles/mixins" as *;
+@use "@/styles/app-glass" as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  @include user-select;
+}
+
+// ── Header ──────────────────────────────────────────────
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--size-5) var(--size-5) var(--size-4);
+  border-bottom: 1px solid oklch(from var(--text) l c h / 0.06);
+}
+
+.logo {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.newChat {
+  --s: 2rem;
+  width: var(--s);
+  height: var(--s);
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-rounded);
+  color: var(--text-secondary);
+  font-size: 1.1em;
+  transition:
+    background-color var(--transition-link),
+    color var(--transition-link),
+    transform var(--transition-scale);
+
+  @include is-hover {
+    background-color: oklch(from var(--text) l c h / 0.08);
+    color: var(--text);
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+}
+
+// ── Session list ────────────────────────────────────────
+
+.list {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--size-3) var(--size-3);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  @include no-scrollbar;
+}
+
+.empty {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  text-align: center;
+  padding: var(--size-8) var(--size-4);
+  opacity: 0.6;
+}
+
+.session {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border-radius: var(--radius-4);
+  position: relative;
+  transition: background-color 0.15s;
+
+  @include is-hover {
+    background-color: oklch(from var(--text) l c h / 0.04);
+
+    .deleteBtn {
+      opacity: 1;
+    }
+  }
+
+  &Active {
+    background-color: oklch(from var(--text) l c h / 0.07);
+
+    .deleteBtn {
+      opacity: 0.6;
+    }
+  }
+}
+
+.sessionBtn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  padding: 0.55rem 0.6rem;
+  text-align: left;
+  min-width: 0;
+  border-radius: var(--radius-4);
+}
+
+.sessionTitle {
+  @include ellipsis;
+  font-size: 0.82rem;
+  color: var(--text);
+  font-weight: 400;
+}
+
+.processingDot {
+  --dot: 6px;
+  width: var(--dot);
+  height: var(--dot);
+  border-radius: 50%;
+  background-color: var(--color-2);
+  flex-shrink: 0;
+  animation: pulse 1.5s infinite;
+}
+
+.deleteBtn {
+  flex-shrink: 0;
+  width: 1.75rem;
+  height: 1.75rem;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-4);
+  color: var(--text-secondary);
+  font-size: 0.85em;
+  opacity: 0;
+  transition:
+    opacity 0.15s,
+    color var(--transition-link),
+    background-color var(--transition-link);
+
+  @include is-hover {
+    color: var(--danger);
+    background-color: oklch(from var(--danger) l c h / 0.1);
+  }
+}
+
+// ── Delete confirmation ─────────────────────────────────
+
+.confirmRow {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  padding: 0.4rem 0.6rem;
+  flex: 1;
+}
+
+.confirmText {
+  font-size: 0.8rem;
+  color: var(--danger);
+  font-weight: 500;
+  flex: 1;
+}
+
+.confirmYes,
+.confirmNo {
+  font-size: 0.75rem;
+  padding: 0.2em 0.6em;
+  border-radius: var(--radius-rounded);
+  font-weight: 500;
+  transition:
+    background-color var(--transition-link),
+    transform var(--transition-scale);
+
+  &:active {
+    transform: scale(0.92);
+  }
+}
+
+.confirmYes {
+  background-color: var(--danger);
+  color: var(--white);
+}
+
+.confirmNo {
+  background-color: oklch(from var(--text) l c h / 0.08);
+  color: var(--text);
+}
+
+// ── Quota footer ────────────────────────────────────────
+
+.footer {
+  padding: var(--size-4) var(--size-5);
+  border-top: 1px solid oklch(from var(--text) l c h / 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-2);
+}
+
+.quotaBar {
+  height: 4px;
+  background: oklch(from var(--text) l c h / 0.08);
+  border-radius: var(--radius-rounded);
+  overflow: hidden;
+}
+
+.quotaFill {
+  height: 100%;
+  background: var(--gradient-linear-3);
+  border-radius: var(--radius-rounded);
+  transition: width 0.4s var(--cubic);
+}
+
+.quotaText {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.quotaPlan {
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  opacity: 0.65;
+  text-transform: capitalize;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}

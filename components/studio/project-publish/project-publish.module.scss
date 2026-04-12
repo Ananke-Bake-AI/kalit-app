@@ -1,0 +1,452 @@
+@use "@/styles/variables" as *;
+@use "@/styles/mixins" as *;
+@use "@/styles/app-glass" as *;
+
+// ── Shell ──────────────────────────────────────────────
+
+.shell {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--body);
+  z-index: 1;
+  overflow-y: auto;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 0.75rem;
+  text-align: center;
+  padding: var(--spacing-2);
+}
+
+// ── Header ─────────────────────────────────────────────
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--size-3);
+  padding: var(--size-2) var(--size-5);
+  border-bottom: 1px solid oklch(from var(--text) l c h / 0.06);
+  min-height: 3rem;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  background: var(--body);
+  z-index: 10;
+
+  @include max($responsive) {
+    padding: var(--size-2) var(--size-3);
+  }
+}
+
+.backBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--size-1-5);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  transition: color var(--transition-link);
+  flex-shrink: 0;
+
+  @include is-hover {
+    color: var(--text);
+  }
+
+  :global(svg) {
+    font-size: 0.85rem;
+  }
+}
+
+// ── Content ────────────────────────────────────────────
+
+.content {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: var(--size-5) var(--size-5) var(--spacing-3);
+  width: 100%;
+
+  @include max($responsive) {
+    padding: var(--size-3) var(--size-3) var(--spacing-3);
+  }
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  color: var(--text);
+  margin-bottom: var(--size-1);
+}
+
+.subtitle {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--size-5);
+}
+
+// ── Card grid ──────────────────────────────────────────
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--size-4);
+
+  @include max($responsiveNav) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  @include glass(false, var(--glass-50));
+  @include cornerShape(var(--radius-3));
+  @include border-glass(var(--gradient-border-glass));
+  padding: var(--size-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--size-3);
+}
+
+.cardIcon {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.cardIconSubdomain {
+  composes: cardIcon;
+  background: linear-gradient(135deg, var(--color-2), var(--color-1));
+}
+
+.cardIconDomain {
+  composes: cardIcon;
+  background: linear-gradient(135deg, var(--color-4), var(--color-5));
+}
+
+.cardIconVercel {
+  composes: cardIcon;
+  background: oklch(0.15 0 0);
+}
+
+.cardIconDownload {
+  composes: cardIcon;
+  background: linear-gradient(135deg, var(--success), var(--color-1));
+}
+
+.cardTitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+// ── Form elements ──────────────────────────────────────
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  border: 1px solid oklch(from var(--text) l c h / 0.1);
+  border-radius: var(--radius-4);
+  overflow: hidden;
+  transition: border-color var(--transition-link);
+
+  &:focus-within {
+    border-color: oklch(from var(--text) l c h / 0.2);
+  }
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  padding: var(--size-2) var(--size-3);
+  background: transparent;
+  color: var(--text);
+  font-size: 0.8rem;
+
+  &::placeholder {
+    color: var(--text-secondary);
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.inputSuffix {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  padding-right: var(--size-3);
+  flex-shrink: 0;
+}
+
+.label {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--size-1);
+}
+
+// ── Buttons ────────────────────────────────────────────
+
+.btnPrimary {
+  width: 100%;
+  padding: var(--size-2) var(--size-3);
+  border-radius: var(--radius-4);
+  background: var(--gradient-primary-radial, var(--color-2));
+  color: var(--white);
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-align: center;
+  transition: opacity var(--transition-link);
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.btnSecondary {
+  flex: 1;
+  padding: var(--size-2) var(--size-3);
+  border-radius: var(--radius-4);
+  @include glass(false, var(--glass-50));
+  @include border-glass(var(--gradient-border-glass));
+  color: var(--text);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-align: center;
+  transition: all var(--transition-link);
+
+  &:disabled {
+    opacity: 0.5;
+  }
+
+  @include is-hover {
+    background: oklch(from var(--text) l c h / 0.08);
+  }
+}
+
+.btnDanger {
+  width: 100%;
+  padding: var(--size-2) var(--size-3);
+  border-radius: var(--radius-4);
+  border: 1px solid oklch(from var(--danger) l c h / 0.15);
+  color: oklch(from var(--danger) l c h / 0.7);
+  font-size: 0.7rem;
+  transition: all var(--transition-link);
+
+  &:disabled {
+    opacity: 0.5;
+  }
+
+  @include is-hover {
+    color: var(--danger);
+    border-color: oklch(from var(--danger) l c h / 0.3);
+    background: oklch(from var(--danger) l c h / 0.06);
+  }
+}
+
+.btnRow {
+  display: flex;
+  gap: var(--size-2);
+}
+
+// ── Status badges ──────────────────────────────────────
+
+.liveBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--size-1);
+  padding: 0.2em 0.6em;
+  border-radius: var(--radius-rounded);
+  background: oklch(from var(--success) l c h / 0.1);
+  border: 1px solid oklch(from var(--success) l c h / 0.2);
+  color: var(--success);
+  font-size: 0.6rem;
+  font-weight: 500;
+}
+
+.liveDot {
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
+  background: var(--success);
+}
+
+.pendingBadge {
+  composes: liveBadge;
+  background: oklch(from var(--color-3) l c h / 0.1);
+  border-color: oklch(from var(--color-3) l c h / 0.2);
+  color: var(--color-3);
+}
+
+.failedBadge {
+  composes: liveBadge;
+  background: oklch(from var(--danger) l c h / 0.1);
+  border-color: oklch(from var(--danger) l c h / 0.2);
+  color: var(--danger);
+}
+
+.liveUrl {
+  font-size: 0.8rem;
+  color: var(--color-2);
+  word-break: break-all;
+  transition: color var(--transition-link);
+
+  @include is-hover {
+    color: var(--color-1);
+  }
+}
+
+// ── DNS Records ────────────────────────────────────────
+
+.dnsBox {
+  padding: var(--size-3);
+  border-radius: var(--radius-4);
+  background: oklch(from var(--text) l c h / 0.03);
+  border: 1px solid oklch(from var(--text) l c h / 0.06);
+}
+
+.dnsTitle {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: var(--size-2);
+}
+
+.dnsRow {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  margin-bottom: var(--size-1);
+}
+
+.dnsType {
+  color: var(--text-secondary);
+  width: 3rem;
+}
+
+.dnsName {
+  color: var(--text);
+}
+
+.dnsArrow {
+  color: var(--text-secondary);
+}
+
+.dnsValue {
+  color: var(--text);
+  user-select: all;
+}
+
+// ── Tabs (connect/purchase) ────────────────────────────
+
+.tabRow {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: var(--radius-4);
+  background: oklch(from var(--text) l c h / 0.05);
+}
+
+.tab {
+  flex: 1;
+  padding: var(--size-1) var(--size-2);
+  font-size: 0.65rem;
+  font-weight: 500;
+  border-radius: calc(var(--radius-4) - 2px);
+  color: var(--text-secondary);
+  text-align: center;
+  transition: all var(--transition-link);
+  cursor: pointer;
+
+  @include is-hover {
+    color: var(--text);
+  }
+}
+
+.tabActive {
+  composes: tab;
+  background: var(--glass-100, oklch(from var(--text) l c h / 0.08));
+  color: var(--text);
+  box-shadow: 0 1px 3px oklch(0 0 0 / 0.1);
+}
+
+// ── Error / Success messages ───────────────────────────
+
+.error {
+  font-size: 0.7rem;
+  color: var(--danger);
+}
+
+.success {
+  font-size: 0.7rem;
+  color: var(--success);
+}
+
+// ── Loader ─────────────────────────────────────────────
+
+.loader {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid var(--glass-50);
+  border-top-color: var(--text);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.loaderSmall {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid var(--glass-50);
+  border-top-color: var(--text);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+// ── Checkbox ───────────────────────────────────────────
+
+.checkboxLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--size-2);
+  cursor: pointer;
+  font-size: 0.6rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+// ── Domain check result ────────────────────────────────
+
+.availableRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--size-2) var(--size-3);
+  border-radius: var(--radius-4);
+  background: oklch(from var(--success) l c h / 0.06);
+  border: 1px solid oklch(from var(--success) l c h / 0.12);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

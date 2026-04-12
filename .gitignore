@@ -43,3 +43,7 @@ next-env.d.ts
 dashboard-screenshot.png
 .env
 gpt_context.txt
+
+# local video generation workspace (not shipped)
+/video-gen
+/public/video/kalit-presentation copie.mp4

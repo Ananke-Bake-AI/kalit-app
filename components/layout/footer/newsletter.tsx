@@ -10,13 +10,12 @@ export const Newsletter = () => {
   return (
     <div className={s.newsletter}>
       <div className={s.left}>
-        <h2>{t("footer.earlyAccess")}</h2>
-        <p>{t("footer.earlyAccessDesc")}</p>
+        <h2>{t("footer.getStarted")}</h2>
+        <p>{t("footer.getStartedDesc")}</p>
       </div>
-      <form className={s.form} action="/login" method="GET">
-        <input type="email" name="email" placeholder={t("footer.emailPlaceholder")} />
-        <Button type="submit">{t("footer.joinWaitlist")}</Button>
-      </form>
+      <Button href="/register" className={s.cta}>
+        {t("footer.createAccount")}
+      </Button>
     </div>
   )
 }

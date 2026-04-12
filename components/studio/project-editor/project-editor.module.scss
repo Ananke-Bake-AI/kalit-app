@@ -1,0 +1,662 @@
+@use "@/styles/variables" as *;
+@use "@/styles/mixins" as *;
+@use "@/styles/app-glass" as *;
+
+// ── Shell ──────────────────────────────────────────────
+
+.shell {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--body);
+  z-index: 1;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 0.75rem;
+  text-align: center;
+  padding: var(--spacing-2);
+}
+
+// ── Header ─────────────────────────────────────────────
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--size-3);
+  padding: var(--size-2) var(--size-5);
+  border-bottom: 1px solid oklch(from var(--text) l c h / 0.06);
+  min-height: 3rem;
+  flex-shrink: 0;
+
+  @include max($responsive) {
+    padding: var(--size-2) var(--size-3);
+  }
+}
+
+.backBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--size-1-5);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  transition: color var(--transition-link);
+  flex-shrink: 0;
+
+  @include is-hover {
+    color: var(--text);
+  }
+
+  :global(svg) {
+    font-size: 0.85rem;
+  }
+}
+
+.headerTitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  @include ellipsis;
+  flex: 1;
+}
+
+.typeBadge {
+  font-size: 0.55rem;
+  font-weight: 500;
+  padding: 0.15em 0.4em;
+  border-radius: var(--radius-rounded);
+  background: oklch(from var(--color-4) l c h / 0.1);
+  color: var(--color-4);
+  flex-shrink: 0;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--size-1);
+  flex-shrink: 0;
+}
+
+.headerBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-4);
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  transition: all var(--transition-link);
+
+  @include is-hover {
+    color: var(--text);
+    background: oklch(from var(--text) l c h / 0.06);
+  }
+}
+
+.headerBtnHotfix {
+  composes: headerBtn;
+
+  @include is-hover {
+    color: var(--color-3);
+    background: oklch(from var(--color-3) l c h / 0.08);
+  }
+}
+
+.headerSep {
+  width: 1px;
+  height: 1rem;
+  background: oklch(from var(--text) l c h / 0.1);
+  margin: 0 var(--size-1);
+}
+
+// ── Polling state ──────────────────────────────────────
+
+.pollingBar {
+  padding: var(--size-3) var(--size-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-2);
+  border-bottom: 1px solid oklch(from var(--text) l c h / 0.06);
+  flex-shrink: 0;
+
+  @include max($responsive) {
+    padding: var(--size-2) var(--size-3);
+  }
+}
+
+.pollingTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--size-3);
+}
+
+.pollingLabel {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text);
+  @include ellipsis;
+}
+
+.pollingMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.progressTrack {
+  height: 4px;
+  border-radius: var(--radius-rounded);
+  background: oklch(from var(--text) l c h / 0.08);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: var(--radius-rounded);
+  background: linear-gradient(90deg, var(--color-3), var(--color-2));
+  transition: width 1s ease-linear;
+}
+
+.pauseBtn {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  padding: var(--size-1) var(--size-2);
+  border-radius: var(--radius-4);
+  border: 1px solid oklch(from var(--text) l c h / 0.1);
+  transition: all var(--transition-link);
+  flex-shrink: 0;
+
+  @include is-hover {
+    color: var(--danger);
+    border-color: oklch(from var(--danger) l c h / 0.2);
+    background: oklch(from var(--danger) l c h / 0.06);
+  }
+}
+
+// ── Iframe preview ─────────────────────────────────────
+
+.previewArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 0;
+  overflow: hidden;
+  padding: var(--size-3);
+  position: relative;
+
+  @include max($responsive) {
+    padding: var(--size-2);
+  }
+}
+
+.iframeWrap {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  justify-content: center;
+  @include glass(false, var(--glass-50));
+  @include cornerShape(var(--radius-3));
+  @include border-glass(var(--gradient-border-glass));
+  overflow: hidden;
+}
+
+.iframe {
+  background: white;
+  border: none;
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+.iframeDesktop {
+  composes: iframe;
+  width: 100%;
+  height: 100%;
+}
+
+.iframeTablet {
+  composes: iframe;
+  width: 100%;
+  height: 100%;
+}
+
+.iframeMobile {
+  composes: iframe;
+  width: 375px;
+  height: 100%;
+  border-left: 1px solid oklch(from var(--text) l c h / 0.08);
+  border-right: 1px solid oklch(from var(--text) l c h / 0.08);
+  border-radius: var(--radius-3);
+}
+
+// ── Device toggle (floating) ───────────────────────────
+
+.deviceToggle {
+  position: absolute;
+  right: var(--size-3);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px;
+  border-radius: var(--radius-3);
+  @include glass(false, oklch(0 0 0 / 0.5));
+  border: 1px solid oklch(1 0 0 / 0.08);
+  z-index: 5;
+
+  @include max($responsive) {
+    right: var(--size-2);
+    padding: 3px;
+  }
+}
+
+.deviceBtn {
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: oklch(1 0 0 / 0.4);
+  font-size: 0.85rem;
+  transition: all var(--transition-link);
+  cursor: pointer;
+
+  @include is-hover {
+    color: oklch(1 0 0 / 0.8);
+    background: oklch(1 0 0 / 0.06);
+  }
+}
+
+.deviceBtnActive {
+  composes: deviceBtn;
+  color: oklch(1 0 0 / 0.9);
+  background: oklch(1 0 0 / 0.12);
+}
+
+// ── Refresh controls (floating bottom-right) ──────────
+
+.refreshControls {
+  position: absolute;
+  bottom: var(--size-3);
+  right: var(--size-3);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border-radius: var(--radius-3);
+  @include glass(false, oklch(0 0 0 / 0.5));
+  border: 1px solid oklch(1 0 0 / 0.08);
+  z-index: 5;
+}
+
+.refreshBtn {
+  composes: deviceBtn;
+}
+
+.refreshCountdown {
+  font-size: 0.55rem;
+  color: oklch(1 0 0 / 0.4);
+  font-variant-numeric: tabular-nums;
+  width: 1.2rem;
+  text-align: center;
+}
+
+.refreshActive {
+  composes: deviceBtn;
+  color: var(--color-2);
+  background: oklch(from var(--color-2) l c h / 0.15);
+}
+
+// ── Error state ────────────────────────────────────────
+
+.errorWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: var(--size-3);
+  text-align: center;
+  padding: var(--spacing-2);
+}
+
+.errorIcon {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background: oklch(from var(--danger) l c h / 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--danger);
+}
+
+.errorText {
+  font-size: 0.85rem;
+  color: var(--danger);
+  font-weight: 500;
+}
+
+.errorBtn {
+  @include glass(false, var(--glass-50));
+  @include border-glass(var(--gradient-border-glass));
+  @include cornerShape(var(--radius-3));
+  padding: var(--size-2) var(--size-5);
+  font-size: 0.8rem;
+  color: var(--text);
+  transition: all var(--transition-link);
+
+  @include is-hover {
+    background: oklch(from var(--text) l c h / 0.08);
+  }
+}
+
+// ── Modals ─────────────────────────────────────────────
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: oklch(0 0 0 / 0.6);
+  @include backdrop(16px);
+  padding: var(--size-5);
+
+  @include max($responsive) {
+    align-items: flex-end;
+    padding: 0;
+  }
+}
+
+.modal {
+  width: 100%;
+  max-width: 24rem;
+  @include glass(false, var(--glass-100));
+  @include cornerShape(var(--radius-3));
+  @include border-glass(var(--gradient-border-glass));
+  padding: var(--size-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4);
+
+  @include max($responsive) {
+    max-width: 100%;
+    border-radius: var(--radius-3) var(--radius-3) 0 0;
+  }
+}
+
+.modalTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.modalRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--size-2) var(--size-3);
+  border-radius: var(--radius-4);
+  background: oklch(from var(--text) l c h / 0.03);
+  border: 1px solid oklch(from var(--text) l c h / 0.06);
+}
+
+.modalRowLabel {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.modalRowValue {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.modalQuotaOk {
+  composes: modalRow;
+  background: oklch(from var(--success) l c h / 0.06);
+  border-color: oklch(from var(--success) l c h / 0.12);
+}
+
+.modalError {
+  font-size: 0.75rem;
+  color: var(--danger);
+}
+
+.modalBtnRow {
+  display: flex;
+  gap: var(--size-2);
+}
+
+.modalBtnPrimary {
+  flex: 1;
+  padding: var(--size-2) var(--size-3);
+  border-radius: var(--radius-4);
+  background: var(--gradient-primary-radial, var(--color-2));
+  color: var(--white);
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-align: center;
+  transition: opacity var(--transition-link);
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.modalBtnSecondary {
+  flex: 1;
+  padding: var(--size-2) var(--size-3);
+  border-radius: var(--radius-4);
+  @include glass(false, var(--glass-50));
+  @include border-glass(var(--gradient-border-glass));
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-align: center;
+  transition: all var(--transition-link);
+
+  &:disabled {
+    opacity: 0.5;
+  }
+
+  @include is-hover {
+    background: oklch(from var(--text) l c h / 0.08);
+  }
+}
+
+// ── Hotfix panel ───────────────────────────────────────
+
+.hotfixPanel {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 50;
+  width: 100%;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  @include glass(false, var(--glass-100));
+  @include border-glass(var(--gradient-border-glass));
+  border-radius: var(--radius-3) var(--radius-3) 0 0;
+
+  @include min($responsive) {
+    width: 24rem;
+    bottom: var(--size-3);
+    right: var(--size-3);
+    border-radius: var(--radius-3);
+    max-height: 60vh;
+  }
+}
+
+.hotfixHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  padding: var(--size-3) var(--size-4);
+  border-bottom: 1px solid oklch(from var(--text) l c h / 0.06);
+}
+
+.hotfixIcon {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--radius-4);
+  background: linear-gradient(135deg, var(--color-3), var(--color-5));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.75rem;
+}
+
+.hotfixTitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+}
+
+.hotfixTextarea {
+  width: 100%;
+  min-height: 4rem;
+  padding: var(--size-3);
+  background: transparent;
+  border: 1px solid oklch(from var(--text) l c h / 0.1);
+  border-radius: var(--radius-4);
+  color: var(--text);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  resize: none;
+
+  &::placeholder {
+    color: var(--text-secondary);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: oklch(from var(--text) l c h / 0.2);
+  }
+}
+
+// ── Loader ─────────────────────────────────────────────
+
+.loader {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid var(--glass-50);
+  border-top-color: var(--text);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.loaderSmall {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid var(--glass-50);
+  border-top-color: var(--text);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ── Tags ───────────────────────────────────────────────
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--size-1);
+  padding: 0 var(--size-5);
+  padding-bottom: var(--size-1);
+
+  @include max($responsive) {
+    padding: 0 var(--size-3) var(--size-1);
+  }
+}
+
+.tag {
+  font-size: 0.6rem;
+  padding: 0.15em 0.5em;
+  border-radius: var(--radius-rounded);
+  background: oklch(from var(--text) l c h / 0.05);
+  border: 1px solid oklch(from var(--text) l c h / 0.08);
+  color: var(--text-secondary);
+}
+
+// ── Visual select banner ───────────────────────────────
+
+.visualBanner {
+  position: fixed;
+  top: 3rem;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.visualBannerInner {
+  display: flex;
+  align-items: center;
+  gap: var(--size-3);
+  padding: var(--size-2) var(--size-4);
+  @include glass(false, var(--glass-100));
+  @include border-glass(var(--gradient-border-glass));
+  border-radius: 0 0 var(--radius-3) var(--radius-3);
+}
+
+.visualDot {
+  position: relative;
+  width: 0.6rem;
+  height: 0.6rem;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--color-3);
+    animation: ping 1.5s ease-in-out infinite;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--color-3);
+  }
+}
+
+@keyframes ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.75;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}

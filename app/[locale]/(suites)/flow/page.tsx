@@ -78,7 +78,7 @@ export default async function FlowPage() {
         }
         listItems={heroList}
         ctaLabel={t("suiteLanding.getStarted")}
-        rightSlot={<FlowHeroPrompt suiteAppUrl={suiteAppUrl} marketingPath={flowMarketingPath} />}
+        rightSlot={<FlowHeroPrompt />}
       />
       <SuiteLandingFeatures
         suiteAppUrl={suiteAppUrl}
