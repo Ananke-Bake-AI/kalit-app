@@ -14,7 +14,10 @@ const BROKER_URL = () =>
  * Sign a short-lived JWT for the current user (for server-side broker calls).
  */
 async function signBrokerJwt(userId: string, email: string, orgId?: string | null, name?: string | null) {
-  const secret = process.env.SUITE_JWT_SECRET || process.env.AUTH_SECRET
+  const secret =
+    process.env.BROKER_JWT_SECRET ||
+    process.env.SUITE_JWT_SECRET ||
+    process.env.AUTH_SECRET
   if (!secret) throw new Error("Missing signing secret")
 
   const encoder = new TextEncoder()
