@@ -767,7 +767,20 @@
     "showFiles": "Show files",
     "focusMode": "Enter focus mode",
     "exitFocus": "Exit focus mode",
-    "downloadFailed": "Download failed"
+    "downloadFailed": "Download failed",
+    "rename": "Byt namn",
+    "searchPlaceholder": "Sök konversationer",
+    "clear": "Rensa",
+    "moreActions": "Fler åtgärder",
+    "noSearchResults": "Ingen matchande konversation",
+    "groupToday": "Idag",
+    "groupYesterday": "Igår",
+    "groupLast7": "Senaste 7 dagarna",
+    "groupLast30": "Senaste 30 dagarna",
+    "groupOlder": "Äldre",
+    "pin": "Fäst",
+    "unpin": "Lossa",
+    "groupPinned": "Fästa"
   },
   "seo": {
     "homeTitle": "Bygg, lansera, väx och säkra med AI",

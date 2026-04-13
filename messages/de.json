@@ -767,7 +767,20 @@
     "showFiles": "Show files",
     "focusMode": "Enter focus mode",
     "exitFocus": "Exit focus mode",
-    "downloadFailed": "Download failed"
+    "downloadFailed": "Download failed",
+    "rename": "Umbenennen",
+    "searchPlaceholder": "Unterhaltungen suchen",
+    "clear": "Leeren",
+    "moreActions": "Weitere Aktionen",
+    "noSearchResults": "Keine Unterhaltung gefunden",
+    "groupToday": "Heute",
+    "groupYesterday": "Gestern",
+    "groupLast7": "Letzte 7 Tage",
+    "groupLast30": "Letzte 30 Tage",
+    "groupOlder": "Älter",
+    "pin": "Anheften",
+    "unpin": "Lösen",
+    "groupPinned": "Angeheftet"
   },
   "seo": {
     "homeTitle": "Erstellen, starten, wachsen und absichern mit KI",

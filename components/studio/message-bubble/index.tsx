@@ -5,7 +5,9 @@ import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { Icon } from "@/components/icon"
 import { useI18n } from "@/stores/i18n"
+import { MarkdownLink } from "@/components/studio/markdown-link"
 import { WidgetRenderer } from "@/components/studio/widget-renderer"
+import { formatTime } from "@/lib/format-date"
 import type { ChatMessage } from "@/types/studio"
 import s from "./message-bubble.module.scss"
 
@@ -73,8 +75,10 @@ interface MessageBubbleProps {
 }
 
 export const MessageBubble = memo(function MessageBubble({ message, showToolBadges, onRefreshMessages, onPreviewFile }: MessageBubbleProps) {
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
   const [thinkingOpen, setThinkingOpen] = useState(false)
+  const timeLabel = formatTime(message.createdAt, locale)
+  const fullTimestamp = new Date(message.createdAt).toLocaleString(locale)
 
   // Parse segments from stored JSON (broker stores assistant content as segment arrays)
   const segments = useMemo(() => parseSegments(message.content), [message.content])
@@ -113,6 +117,7 @@ export const MessageBubble = memo(function MessageBubble({ message, showToolBadg
             </div>
           )}
           <span>{message.content}</span>
+          <span className={s.timestamp} title={fullTimestamp}>{timeLabel}</span>
         </div>
       </div>
     )
@@ -169,7 +174,7 @@ export const MessageBubble = memo(function MessageBubble({ message, showToolBadg
             if (seg.type === "text" && seg.content) {
               return (
                 <div key={i} className={s.markdown}>
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]} components={{ a: MarkdownLink }}>
                     {seg.content}
                   </ReactMarkdown>
                 </div>
@@ -230,12 +235,13 @@ export const MessageBubble = memo(function MessageBubble({ message, showToolBadg
         ) : (
           displayText && (
             <div className={s.markdown}>
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              <ReactMarkdown remarkPlugins={[remarkGfm]} components={{ a: MarkdownLink }}>
                 {displayText}
               </ReactMarkdown>
             </div>
           )
         )}
+        <span className={s.timestamp} title={fullTimestamp}>{timeLabel}</span>
       </div>
     </div>
   )

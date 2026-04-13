@@ -767,7 +767,20 @@
     "showFiles": "Show files",
     "focusMode": "Enter focus mode",
     "exitFocus": "Exit focus mode",
-    "downloadFailed": "Download failed"
+    "downloadFailed": "Download failed",
+    "rename": "이름 바꾸기",
+    "searchPlaceholder": "대화 검색",
+    "clear": "지우기",
+    "moreActions": "더 보기",
+    "noSearchResults": "일치하는 대화가 없습니다",
+    "groupToday": "오늘",
+    "groupYesterday": "어제",
+    "groupLast7": "지난 7일",
+    "groupLast30": "지난 30일",
+    "groupOlder": "이전",
+    "pin": "고정",
+    "unpin": "고정 해제",
+    "groupPinned": "고정됨"
   },
   "seo": {
     "homeTitle": "AI로 구축, 출시, 성장, 보안까지",

@@ -26,6 +26,32 @@
   justify-content: flex-start;
 }
 
+// ── Day separator ──────────────────────────────────────
+
+.daySeparator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-3);
+  margin: var(--size-3) 0 var(--size-1);
+
+  span {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    opacity: 0.65;
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-rounded);
+    background: oklch(from var(--text) l c h / 0.05);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
 // ── Dots (initial loading) ─────────────────────────────
 
 .dots {

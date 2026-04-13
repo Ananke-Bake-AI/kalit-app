@@ -767,7 +767,20 @@
     "showFiles": "Show files",
     "focusMode": "Enter focus mode",
     "exitFocus": "Exit focus mode",
-    "downloadFailed": "Download failed"
+    "downloadFailed": "Download failed",
+    "rename": "नाम बदलें",
+    "searchPlaceholder": "बातचीत खोजें",
+    "clear": "साफ़ करें",
+    "moreActions": "अधिक क्रियाएँ",
+    "noSearchResults": "कोई मेल खाती बातचीत नहीं",
+    "groupToday": "आज",
+    "groupYesterday": "कल",
+    "groupLast7": "पिछले 7 दिन",
+    "groupLast30": "पिछले 30 दिन",
+    "groupOlder": "पुराने",
+    "pin": "पिन करें",
+    "unpin": "अनपिन करें",
+    "groupPinned": "पिन की गई"
   },
   "seo": {
     "homeTitle": "AI के साथ बनाएं, लॉन्च करें, बढ़ाएं और सुरक्षित करें",

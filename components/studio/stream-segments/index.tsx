@@ -4,6 +4,7 @@ import { memo } from "react"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { Icon } from "@/components/icon"
+import { MarkdownLink } from "@/components/studio/markdown-link"
 import { WidgetRenderer } from "@/components/studio/widget-renderer"
 import { useI18n } from "@/stores/i18n"
 import type { StreamSegment } from "@/types/studio"
@@ -73,7 +74,7 @@ export const StreamSegments = memo(function StreamSegments({
         if (seg.type === "text") {
           return (
             <div key={i} className={s.textSegment}>
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              <ReactMarkdown remarkPlugins={[remarkGfm]} components={{ a: MarkdownLink }}>
                 {seg.content}
               </ReactMarkdown>
             </div>

@@ -767,7 +767,20 @@
     "showFiles": "Show files",
     "focusMode": "Enter focus mode",
     "exitFocus": "Exit focus mode",
-    "downloadFailed": "Download failed"
+    "downloadFailed": "Download failed",
+    "rename": "Zmień nazwę",
+    "searchPlaceholder": "Szukaj rozmów",
+    "clear": "Wyczyść",
+    "moreActions": "Więcej akcji",
+    "noSearchResults": "Brak pasujących rozmów",
+    "groupToday": "Dziś",
+    "groupYesterday": "Wczoraj",
+    "groupLast7": "Ostatnie 7 dni",
+    "groupLast30": "Ostatnie 30 dni",
+    "groupOlder": "Starsze",
+    "pin": "Przypnij",
+    "unpin": "Odepnij",
+    "groupPinned": "Przypięte"
   },
   "seo": {
     "homeTitle": "Twórz, uruchamiaj, rozwijaj i zabezpieczaj z AI",

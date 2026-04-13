@@ -383,14 +383,24 @@ export function StudioClient() {
                   const wt = event.widget?.widgetType || event.widgetType
                   const wi = event.widget?.widgetId || event.widgetId
                   if (wt && wi) {
-                    segments.push({
-                      type: "widget",
+                    // If the same widgetId was already emitted in this stream,
+                    // update it in place instead of appending a duplicate card.
+                    const existingIdx = segments.findIndex(
+                      (s) => s.type === "widget" && s.widgetId === wi,
+                    )
+                    const widgetSeg = {
+                      type: "widget" as const,
                       widgetType: wt,
                       widgetId: wi,
                       status: event.status,
                       assets: event.assets,
                       count: event.count,
-                    })
+                    }
+                    if (existingIdx >= 0) {
+                      segments[existingIdx] = widgetSeg
+                    } else {
+                      segments.push(widgetSeg)
+                    }
                     setStreamSegments([...segments])
                     addActiveWidget({ type: wt, id: wi })
                   }
@@ -512,6 +522,25 @@ export function StudioClient() {
     }
   }, [addSession, setActiveSessionId, setMessages])
 
+  // ── Global keyboard shortcuts ───────────────────────────
+  //   ⌘K / Ctrl+K        → focus sidebar search
+  //   ⌘⇧O / Ctrl+Shift+O → start a new chat
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const meta = e.metaKey || e.ctrlKey
+      if (!meta) return
+      if (e.key === "k" || e.key === "K") {
+        e.preventDefault()
+        window.dispatchEvent(new CustomEvent("kalit:focus-sidebar-search"))
+      } else if (e.shiftKey && (e.key === "o" || e.key === "O")) {
+        e.preventDefault()
+        void handleNewChat()
+      }
+    }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [handleNewChat])
+
   // ── Toggle right panel (file explorer) ──────────────────
 
   const handleRightPanelToggle = useCallback(() => {
@@ -561,7 +590,7 @@ export function StudioClient() {
 
   return (
     <ChatLayout
-      sidebar={<SessionSidebar onSessionSelect={handleSessionSelect} />}
+      sidebar={<SessionSidebar onSessionSelect={handleSessionSelect} onNewChat={handleNewChat} />}
       rightPanel={
         activeSessionId ? (
           <FileExplorer sessionId={activeSessionId} onPreviewFile={handlePreviewFile} />
@@ -575,9 +604,6 @@ export function StudioClient() {
             <span /><span /><span />
           </button>
           <span className={s.brand}>{t("studio.title")}</span>
-          <button className={s.newChatBtn} onClick={handleNewChat} title={t("studio.newChat")}>
-            <Icon icon="hugeicons:edit-02" />
-          </button>
         </div>
         {activeSessionId && (
           <span className={s.topTitle}>

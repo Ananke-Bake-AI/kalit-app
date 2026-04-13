@@ -767,7 +767,20 @@
     "showFiles": "Afficher les fichiers",
     "focusMode": "Enter focus mode",
     "exitFocus": "Exit focus mode",
-    "downloadFailed": "Échec du téléchargement"
+    "downloadFailed": "Échec du téléchargement",
+    "rename": "Renommer",
+    "searchPlaceholder": "Rechercher une conversation",
+    "clear": "Effacer",
+    "moreActions": "Plus d'actions",
+    "noSearchResults": "Aucune conversation ne correspond",
+    "groupToday": "Aujourd'hui",
+    "groupYesterday": "Hier",
+    "groupLast7": "7 derniers jours",
+    "groupLast30": "30 derniers jours",
+    "groupOlder": "Plus ancien",
+    "pin": "Épingler",
+    "unpin": "Détacher",
+    "groupPinned": "Épinglées"
   },
   "seo": {
     "homeTitle": "Créez, lancez, développez et sécurisez avec l'IA",

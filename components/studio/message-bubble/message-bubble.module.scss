@@ -63,6 +63,32 @@
   }
 }
 
+// ── Timestamp ───────────────────────────────────────────
+
+.timestamp {
+  font-size: 0.65rem;
+  font-weight: 300;
+  opacity: 0.55;
+  align-self: flex-end;
+  margin-top: calc(-1 * var(--size-1));
+  user-select: none;
+  cursor: default;
+  letter-spacing: 0.02em;
+  transition: opacity 0.15s;
+
+  .bubbleUser & {
+    color: var(--white);
+  }
+
+  .bubbleAssistant & {
+    color: var(--text-secondary);
+  }
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
 // ── Markdown ────────────────────────────────────────────
 
 .markdown {

@@ -767,7 +767,20 @@
     "showFiles": "Show files",
     "focusMode": "Enter focus mode",
     "exitFocus": "Exit focus mode",
-    "downloadFailed": "Download failed"
+    "downloadFailed": "Download failed",
+    "rename": "Renomear",
+    "searchPlaceholder": "Buscar conversas",
+    "clear": "Limpar",
+    "moreActions": "Mais ações",
+    "noSearchResults": "Nenhuma conversa corresponde",
+    "groupToday": "Hoje",
+    "groupYesterday": "Ontem",
+    "groupLast7": "Últimos 7 dias",
+    "groupLast30": "Últimos 30 dias",
+    "groupOlder": "Mais antigas",
+    "pin": "Fixar",
+    "unpin": "Desafixar",
+    "groupPinned": "Fixadas"
   },
   "seo": {
     "homeTitle": "Crie, lance, cresça e proteja com IA",

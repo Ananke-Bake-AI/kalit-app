@@ -19,6 +19,7 @@ interface StudioStore {
   setActiveSessionId: (id: string | null) => void
   addSession: (session: ChatSession) => void
   removeSession: (id: string) => void
+  updateSessionTitle: (id: string, title: string) => void
 
   // Messages
   messages: ChatMessage[]
@@ -91,6 +92,10 @@ export const useStudioStore = create<StudioStore>((set) => ({
   setActiveSessionId: (activeSessionId) => set({ activeSessionId }),
   addSession: (session) => set((s) => ({ sessions: [session, ...s.sessions] })),
   removeSession: (id) => set((s) => ({ sessions: s.sessions.filter((sess) => sess.id !== id) })),
+  updateSessionTitle: (id, title) =>
+    set((s) => ({
+      sessions: s.sessions.map((sess) => (sess.id === id ? { ...sess, title } : sess)),
+    })),
 
   // Messages
   messages: [],
@@ -113,7 +118,13 @@ export const useStudioStore = create<StudioStore>((set) => ({
   // Active widgets
   activeWidgets: [],
   setActiveWidgets: (activeWidgets) => set({ activeWidgets }),
-  addActiveWidget: (widget) => set((s) => ({ activeWidgets: [...s.activeWidgets, widget] })),
+  addActiveWidget: (widget) =>
+    set((s) => {
+      if (s.activeWidgets.some((w) => w.id === widget.id && w.type === widget.type)) {
+        return s
+      }
+      return { activeWidgets: [...s.activeWidgets, widget] }
+    }),
 
   // File attachments
   attachedFiles: [],

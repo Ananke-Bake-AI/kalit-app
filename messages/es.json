@@ -767,7 +767,20 @@
     "showFiles": "Show files",
     "focusMode": "Enter focus mode",
     "exitFocus": "Exit focus mode",
-    "downloadFailed": "Download failed"
+    "downloadFailed": "Download failed",
+    "rename": "Renombrar",
+    "searchPlaceholder": "Buscar conversaciones",
+    "clear": "Borrar",
+    "moreActions": "Más acciones",
+    "noSearchResults": "Ninguna conversación coincide",
+    "groupToday": "Hoy",
+    "groupYesterday": "Ayer",
+    "groupLast7": "Últimos 7 días",
+    "groupLast30": "Últimos 30 días",
+    "groupOlder": "Más antiguas",
+    "pin": "Anclar",
+    "unpin": "Desanclar",
+    "groupPinned": "Ancladas"
   },
   "seo": {
     "homeTitle": "Crea, lanza, crece y protege con IA",

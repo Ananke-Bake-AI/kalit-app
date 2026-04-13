@@ -767,7 +767,20 @@
     "showFiles": "Show files",
     "focusMode": "Enter focus mode",
     "exitFocus": "Exit focus mode",
-    "downloadFailed": "Download failed"
+    "downloadFailed": "Download failed",
+    "rename": "Hernoemen",
+    "searchPlaceholder": "Gesprekken zoeken",
+    "clear": "Wissen",
+    "moreActions": "Meer acties",
+    "noSearchResults": "Geen overeenkomend gesprek",
+    "groupToday": "Vandaag",
+    "groupYesterday": "Gisteren",
+    "groupLast7": "Laatste 7 dagen",
+    "groupLast30": "Laatste 30 dagen",
+    "groupOlder": "Ouder",
+    "pin": "Vastmaken",
+    "unpin": "Losmaken",
+    "groupPinned": "Vastgemaakt"
   },
   "seo": {
     "homeTitle": "Bouw, lanceer, groei en beveilig met AI",

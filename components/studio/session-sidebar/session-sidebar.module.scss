@@ -8,16 +8,161 @@
   @include user-select;
 }
 
+// ── Header: new chat + search ───────────────────────────
+
+.header {
+  padding: var(--size-3) var(--size-3) var(--size-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-2);
+  border-bottom: 1px solid oklch(from var(--text) l c h / 0.05);
+}
+
+.newChatBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-2);
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--radius-4);
+  background: linear-gradient(135deg, var(--color-3), var(--color-4));
+  color: var(--white);
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition:
+    transform var(--transition-scale),
+    filter var(--transition-link),
+    box-shadow var(--transition-link);
+  box-shadow: 0 1px 3px oklch(0 0 0 / 0.12);
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .kbd {
+    margin-left: auto;
+    background: oklch(from var(--white) l c h / 0.18);
+    color: var(--white);
+    border-color: oklch(from var(--white) l c h / 0.25);
+  }
+
+  @include is-hover {
+    filter: brightness(1.08);
+    box-shadow: 0 2px 8px oklch(from var(--color-4) l c h / 0.35);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.kbd {
+  flex-shrink: 0;
+  font-family:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.65rem;
+  font-weight: 500;
+  padding: 0.1rem 0.35rem;
+  border-radius: var(--radius-2, 4px);
+  background: oklch(from var(--text) l c h / 0.06);
+  border: 1px solid oklch(from var(--text) l c h / 0.1);
+  color: var(--text-secondary);
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+}
+
+.searchRow {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--radius-4);
+  background: oklch(from var(--text) l c h / 0.05);
+  transition: background-color var(--transition-link);
+
+  &:focus-within {
+    background: oklch(from var(--text) l c h / 0.08);
+  }
+}
+
+.searchIcon {
+  color: var(--text-secondary);
+  opacity: 0.6;
+  font-size: 0.9em;
+  flex-shrink: 0;
+}
+
+.searchInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 0.8rem;
+  color: var(--text);
+  min-width: 0;
+
+  &::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.6;
+  }
+}
+
+.searchClear {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  color: var(--text-secondary);
+  opacity: 0.6;
+  font-size: 0.85em;
+  transition:
+    opacity var(--transition-link),
+    color var(--transition-link);
+
+  @include is-hover {
+    opacity: 1;
+    color: var(--text);
+  }
+}
+
 // ── Session list ────────────────────────────────────────
 
 .list {
   flex: 1;
   overflow-y: auto;
-  padding: var(--size-4) var(--size-3) var(--size-3);
+  padding: var(--size-3) var(--size-3) var(--size-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-3);
+  @include no-scrollbar;
+}
+
+.group {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  @include no-scrollbar;
+}
+
+.groupHeading {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  opacity: 0.6;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: var(--size-1) 0.6rem;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.groupHeadingIcon {
+  font-size: 0.95em;
+  color: var(--color-4);
+  opacity: 0.9;
+  transform: rotate(45deg);
 }
 
 .empty {
@@ -39,7 +184,7 @@
   @include is-hover {
     background-color: oklch(from var(--text) l c h / 0.04);
 
-    .deleteBtn {
+    .kebabBtn {
       opacity: 1;
     }
   }
@@ -47,7 +192,7 @@
   &Active {
     background-color: oklch(from var(--text) l c h / 0.07);
 
-    .deleteBtn {
+    .kebabBtn {
       opacity: 0.6;
     }
   }
@@ -58,10 +203,18 @@
   display: flex;
   align-items: center;
   gap: var(--size-2);
-  padding: 0.55rem 0.6rem;
+  padding: 0.45rem 0.6rem;
   text-align: left;
   min-width: 0;
   border-radius: var(--radius-4);
+}
+
+.sessionInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
 
 .sessionTitle {
@@ -69,6 +222,43 @@
   font-size: 0.82rem;
   color: var(--text);
   font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.pinIcon {
+  flex-shrink: 0;
+  font-size: 0.8em;
+  color: var(--color-4);
+  opacity: 0.85;
+  transform: rotate(45deg);
+}
+
+.sessionTime {
+  @include ellipsis;
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  font-weight: 300;
+}
+
+.renameInput {
+  width: 100%;
+  background: oklch(from var(--text) l c h / 0.06);
+  border: 1px solid oklch(from var(--color-4) l c h / 0.5);
+  border-radius: var(--radius-3);
+  padding: 0.2rem 0.4rem;
+  font-size: 0.82rem;
+  color: var(--text);
+  outline: none;
+  font-family: inherit;
+
+  &:focus {
+    border-color: var(--color-4);
+    background: oklch(from var(--text) l c h / 0.09);
+  }
 }
 
 .processingDot {
@@ -81,7 +271,14 @@
   animation: pulse 1.5s infinite;
 }
 
-.deleteBtn {
+// ── Kebab menu ──────────────────────────────────────────
+
+.menuWrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.kebabBtn {
   flex-shrink: 0;
   width: 1.75rem;
   height: 1.75rem;
@@ -89,7 +286,7 @@
   place-items: center;
   border-radius: var(--radius-4);
   color: var(--text-secondary);
-  font-size: 0.85em;
+  font-size: 0.95em;
   opacity: 0;
   transition:
     opacity 0.15s,
@@ -97,8 +294,67 @@
     background-color var(--transition-link);
 
   @include is-hover {
+    color: var(--text);
+    background-color: oklch(from var(--text) l c h / 0.08);
+  }
+
+  &Open {
+    opacity: 1;
+    color: var(--text);
+    background-color: oklch(from var(--text) l c h / 0.08);
+  }
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 10rem;
+  padding: var(--size-1);
+  border-radius: var(--radius-4);
+  background: var(--white);
+  border: 1px solid oklch(from var(--text) l c h / 0.08);
+  box-shadow:
+    0 8px 24px oklch(0 0 0 / 0.14),
+    0 2px 6px oklch(0 0 0 / 0.08);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  animation: menuIn 0.12s ease-out;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--radius-3);
+  font-size: 0.8rem;
+  color: var(--text);
+  text-align: left;
+  transition:
+    background-color var(--transition-link),
+    color var(--transition-link);
+
+  svg {
+    width: 0.9rem;
+    height: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  @include is-hover {
+    background: oklch(from var(--text) l c h / 0.06);
+  }
+
+  &Danger {
     color: var(--danger);
-    background-color: oklch(from var(--danger) l c h / 0.1);
+
+    @include is-hover {
+      background: oklch(from var(--danger) l c h / 0.1);
+      color: var(--danger);
+    }
   }
 }
 
@@ -263,5 +519,16 @@
   }
   50% {
     opacity: 0.4;
+  }
+}
+
+@keyframes menuIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }

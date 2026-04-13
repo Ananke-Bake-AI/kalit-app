@@ -767,7 +767,20 @@
     "showFiles": "Show files",
     "focusMode": "Enter focus mode",
     "exitFocus": "Exit focus mode",
-    "downloadFailed": "Download failed"
+    "downloadFailed": "Download failed",
+    "rename": "Yeniden adlandır",
+    "searchPlaceholder": "Sohbet ara",
+    "clear": "Temizle",
+    "moreActions": "Daha fazla işlem",
+    "noSearchResults": "Eşleşen sohbet yok",
+    "groupToday": "Bugün",
+    "groupYesterday": "Dün",
+    "groupLast7": "Son 7 gün",
+    "groupLast30": "Son 30 gün",
+    "groupOlder": "Daha eski",
+    "pin": "Sabitle",
+    "unpin": "Sabitlemeyi kaldır",
+    "groupPinned": "Sabitlenmiş"
   },
   "seo": {
     "homeTitle": "Yapay zeka ile oluşturun, yayınlayın, büyüyün ve güvence altına alın",

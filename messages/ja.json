@@ -767,7 +767,20 @@
     "showFiles": "Show files",
     "focusMode": "Enter focus mode",
     "exitFocus": "Exit focus mode",
-    "downloadFailed": "Download failed"
+    "downloadFailed": "Download failed",
+    "rename": "名前を変更",
+    "searchPlaceholder": "会話を検索",
+    "clear": "クリア",
+    "moreActions": "その他の操作",
+    "noSearchResults": "一致する会話はありません",
+    "groupToday": "今日",
+    "groupYesterday": "昨日",
+    "groupLast7": "過去7日間",
+    "groupLast30": "過去30日間",
+    "groupOlder": "それ以前",
+    "pin": "ピン留め",
+    "unpin": "ピン留め解除",
+    "groupPinned": "ピン留め"
   },
   "seo": {
     "homeTitle": "AIで構築、公開、成長、セキュリティ対策を",

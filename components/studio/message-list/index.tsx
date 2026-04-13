@@ -1,9 +1,11 @@
 "use client"
 
-import { useCallback, useEffect, useRef } from "react"
+import { Fragment, useCallback, useEffect, useRef } from "react"
 import { useStudioStore } from "@/stores/studio"
+import { useI18n } from "@/stores/i18n"
 import { MessageBubble } from "@/components/studio/message-bubble"
 import { StreamSegments } from "@/components/studio/stream-segments"
+import { formatDaySeparator, isSameDay } from "@/lib/format-date"
 import s from "./message-list.module.scss"
 
 interface MessageListProps {
@@ -13,6 +15,7 @@ interface MessageListProps {
 }
 
 export function MessageList({ onStop, onPreviewFile, onRefreshMessages }: MessageListProps) {
+  const { locale } = useI18n()
   const messages = useStudioStore((s) => s.messages)
   const isStreaming = useStudioStore((s) => s.isStreaming)
   const streamSegments = useStudioStore((s) => s.streamSegments)
@@ -62,15 +65,25 @@ export function MessageList({ onStop, onPreviewFile, onRefreshMessages }: Messag
   return (
     <div className={s.scroll} ref={scrollRef} onScroll={handleScroll}>
       <div className={s.list}>
-        {visible.map((msg) => (
-          <MessageBubble
-            key={msg.id}
-            message={msg}
-            showToolBadges={showToolBadges}
-            onPreviewFile={onPreviewFile}
-            onRefreshMessages={onRefreshMessages}
-          />
-        ))}
+        {visible.map((msg, i) => {
+          const prev = visible[i - 1]
+          const showSeparator = !prev || !isSameDay(prev.createdAt, msg.createdAt)
+          return (
+            <Fragment key={msg.id}>
+              {showSeparator && (
+                <div className={s.daySeparator}>
+                  <span>{formatDaySeparator(msg.createdAt, locale)}</span>
+                </div>
+              )}
+              <MessageBubble
+                message={msg}
+                showToolBadges={showToolBadges}
+                onPreviewFile={onPreviewFile}
+                onRefreshMessages={onRefreshMessages}
+              />
+            </Fragment>
+          )
+        })}
 
         {/* Live streaming segments */}
         {isStreaming && streamSegments.length > 0 && (

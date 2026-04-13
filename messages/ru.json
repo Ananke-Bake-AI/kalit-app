@@ -767,7 +767,20 @@
     "showFiles": "Show files",
     "focusMode": "Enter focus mode",
     "exitFocus": "Exit focus mode",
-    "downloadFailed": "Download failed"
+    "downloadFailed": "Download failed",
+    "rename": "Переименовать",
+    "searchPlaceholder": "Поиск бесед",
+    "clear": "Очистить",
+    "moreActions": "Ещё действия",
+    "noSearchResults": "Совпадений не найдено",
+    "groupToday": "Сегодня",
+    "groupYesterday": "Вчера",
+    "groupLast7": "За 7 дней",
+    "groupLast30": "За 30 дней",
+    "groupOlder": "Ранее",
+    "pin": "Закрепить",
+    "unpin": "Открепить",
+    "groupPinned": "Закреплённые"
   },
   "seo": {
     "homeTitle": "Создавайте, запускайте, развивайте и защищайте с ИИ",

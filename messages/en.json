@@ -547,7 +547,6 @@
     "studio": "Studio",
     "networkError": "Network error",
     "retry": "Retry",
-
     "chatPlaceholder": "Ask anything...",
     "attachFile": "Attach file",
     "atFindAssets": "Search images, icons, logos",
@@ -557,7 +556,6 @@
     "atShell": "Run command in project",
     "atStatus": "Project generation status",
     "atDeploy": "Deploy to live URL",
-
     "welcomeTitle": "What would you like to build?",
     "welcomeSubtitle": "Describe your project and our AI agents will bring it to life.",
     "promptFlow1": "Create a startup landing page",
@@ -584,13 +582,11 @@
     "promptSearch1Prompt": "Find trending SaaS ideas in the ",
     "promptSearch2": "Analyze market opportunities",
     "promptSearch2Prompt": "Analyze market opportunities for ",
-
     "thinking": "Thinking",
     "thinkingEllipsis": "Thinking...",
     "stop": "Stop",
     "running": "running",
     "previousUpdates": "{count} previous updates",
-
     "toolFindAssets": "Searching assets",
     "toolFindRefs": "Looking up references",
     "toolGrep": "Searching files",
@@ -603,14 +599,12 @@
     "toolEditFile": "Editing file",
     "toolListFiles": "Listing files",
     "toolSearch": "Searching",
-
     "close": "Close",
     "download": "Download",
     "previous": "Previous",
     "next": "Next",
     "cancel": "Cancel",
     "confirm": "Confirm",
-
     "projectNotFound": "Project not found.",
     "couldNotLoad": "Could not load project status.",
     "networkRetrying": "Network error. Retrying…",
@@ -627,18 +621,15 @@
     "phasePlanning": "Planning",
     "phaseWorking": "Working",
     "phaseTesting": "Testing",
-
     "researchNotFound": "Research not found.",
     "foundAssets": "Found {count} asset",
     "foundAssetsPlural": "Found {count} assets",
     "searchStatus": "Search {status}",
     "searchingAssets": "Searching for assets...",
-
     "subAgentCompleted": "Sub-agent completed",
     "subAgentFailed": "Sub-agent failed",
     "deliveringResults": "Delivering results to agent...",
     "subAgentWorking": "Sub-agent working...",
-
     "hotfixApplied": "Hotfix applied",
     "hotfixFailed": "Hotfix failed",
     "applyingHotfix": "Applying hotfix",
@@ -647,9 +638,7 @@
     "hotfixWorking": "Applying changes",
     "hotfixTesting": "Testing",
     "hotfixDone": "Done",
-
     "agentReturns": "Agent returns in {seconds}s",
-
     "phaseIdle": "Idle",
     "phasePreparing": "Preparing",
     "phaseGenerating": "Generating",
@@ -675,7 +664,6 @@
     "total": "total",
     "noProjectLinked": "No project linked",
     "uploadOrStartProject": "Upload a file or start a project",
-
     "downloaded": "Downloaded",
     "downloadTitle": "Download",
     "freeDownload": "Free download",
@@ -688,13 +676,11 @@
     "notEnoughCreditsDownload": "Not enough credits to download.",
     "upgradePlan": "Upgrade Plan",
     "downloading": "Downloading...",
-
     "hotfix": "Hotfix",
     "freeHotfix": "Free hotfix",
     "notEnoughCreditsHotfix": "Not enough credits for a hotfix.",
     "describeBug": "Describe the bug to fix...",
     "sending": "Sending...",
-
     "preview": "Preview",
     "desktop": "Desktop",
     "tablet": "Tablet",
@@ -707,7 +693,6 @@
     "pausedByUser": "Paused by user",
     "failedToLoad": "Failed to load project",
     "publish": "Publish",
-
     "backToPreview": "Back to preview",
     "publishTitle": "Publish your project",
     "publishSubtitle": "Choose how to publish your project",
@@ -782,7 +767,20 @@
     "showFiles": "Show files",
     "focusMode": "Enter focus mode",
     "exitFocus": "Exit focus mode",
-    "downloadFailed": "Download failed"
+    "downloadFailed": "Download failed",
+    "rename": "Rename",
+    "searchPlaceholder": "Search conversations",
+    "clear": "Clear",
+    "moreActions": "More actions",
+    "noSearchResults": "No conversations match your search",
+    "groupToday": "Today",
+    "groupYesterday": "Yesterday",
+    "groupLast7": "Last 7 days",
+    "groupLast30": "Last 30 days",
+    "groupOlder": "Older",
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "groupPinned": "Pinned"
   },
   "seo": {
     "homeTitle": "Build, Launch, Grow, and Secure with AI",

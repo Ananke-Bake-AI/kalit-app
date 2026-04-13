@@ -767,7 +767,20 @@
     "showFiles": "Show files",
     "focusMode": "Enter focus mode",
     "exitFocus": "Exit focus mode",
-    "downloadFailed": "Download failed"
+    "downloadFailed": "Download failed",
+    "rename": "Rinomina",
+    "searchPlaceholder": "Cerca conversazioni",
+    "clear": "Cancella",
+    "moreActions": "Altre azioni",
+    "noSearchResults": "Nessuna conversazione corrisponde",
+    "groupToday": "Oggi",
+    "groupYesterday": "Ieri",
+    "groupLast7": "Ultimi 7 giorni",
+    "groupLast30": "Ultimi 30 giorni",
+    "groupOlder": "Più vecchie",
+    "pin": "Fissa",
+    "unpin": "Sblocca",
+    "groupPinned": "Fissate"
   },
   "seo": {
     "homeTitle": "Crea, lancia, cresci e proteggi con l'IA",
