@@ -13,7 +13,7 @@ const BROKER_URL = () =>
 /**
  * Sign a short-lived JWT for the current user (for server-side broker calls).
  */
-async function signBrokerJwt(userId: string, email: string, orgId?: string | null, name?: string | null) {
+async function signBrokerJwt(userId: string, email: string, orgId?: string | null, name?: string | null, isAdmin?: boolean) {
   const secret =
     process.env.BROKER_JWT_SECRET ||
     process.env.SUITE_JWT_SECRET ||
@@ -21,7 +21,7 @@ async function signBrokerJwt(userId: string, email: string, orgId?: string | nul
   if (!secret) throw new Error("Missing signing secret")
 
   const encoder = new TextEncoder()
-  return new SignJWT({ email, name: name || null, orgId: orgId || null })
+  return new SignJWT({ email, name: name || null, orgId: orgId || null, isAdmin: isAdmin === true })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("5m")
@@ -44,6 +44,7 @@ export async function authAndToken() {
     session.user.email,
     session.user.orgId,
     session.user.name,
+    session.user.isAdmin === true,
   )
   return { token, session }
 }

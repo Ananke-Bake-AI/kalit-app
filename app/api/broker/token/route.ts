@@ -22,6 +22,7 @@ export async function GET() {
       email: session.user.email,
       name: session.user.name || null,
       orgId: session.user.orgId || null,
+      isAdmin: session.user.isAdmin === true,
     })
       .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()

@@ -14,6 +14,7 @@ import { WelcomeScreen } from "@/components/studio/welcome-screen"
 import { MessageList } from "@/components/studio/message-list"
 import { FileExplorer } from "@/components/studio/file-explorer"
 import { FilePreviewModal } from "@/components/studio/file-preview-modal"
+import { RoutingDebugPanel } from "@/components/studio/routing-debug"
 import { useStudioFocus } from "@/app/[locale]/(studio)/studio-focus-context"
 import type { ChatSession, StreamSegment, UploadedFile } from "@/types/studio"
 import type { SuiteId } from "@/lib/suites"
@@ -43,6 +44,7 @@ export function StudioClient() {
     setIsStreaming,
     setStreamSegments,
     setStreamThinking,
+    setLastRouting,
     resetStream,
     addMessage,
     setActiveWidgets,
@@ -432,6 +434,35 @@ export function StudioClient() {
                   setError(event.content || t("studio.streamError"))
                   break
 
+                case "suite_selected": {
+                  // Broker classifier picked a suite — update the studio logo
+                  // and stash routing metadata for the admin debug panel.
+                  const payload = event.input as {
+                    suite?: string
+                    confidence?: string
+                    source?: string
+                    reasoning?: string
+                    latency_ms?: number
+                  } | undefined
+                  const suite = payload?.suite
+                  if (suite && suite !== "helper") {
+                    setPage(suite as SuiteId)
+                  } else if (suite === "helper") {
+                    setPage("default")
+                  }
+                  if (payload) {
+                    setLastRouting({
+                      suite: payload.suite || "",
+                      confidence: payload.confidence || "",
+                      source: payload.source || "",
+                      reasoning: payload.reasoning,
+                      latencyMs: payload.latency_ms,
+                      at: Date.now(),
+                    })
+                  }
+                  break
+                }
+
                 case "done":
                   // Handled after loop
                   break
@@ -667,6 +698,8 @@ export function StudioClient() {
           onClose={() => { setPreviewFile(null); setPreviewImages([]) }}
         />
       )}
+
+      <RoutingDebugPanel />
     </ChatLayout>
   )
 }

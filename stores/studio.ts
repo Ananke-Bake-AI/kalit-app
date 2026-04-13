@@ -82,6 +82,20 @@ interface StudioStore {
   // Delete confirmation
   deleteConfirm: string | null
   setDeleteConfirm: (id: string | null) => void
+
+  // Routing debug (admin-only panel) — latest suite_selected event payload.
+  // Populated by studio-client's SSE handler on every outgoing message.
+  lastRouting: RoutingDebug | null
+  setLastRouting: (routing: RoutingDebug | null) => void
+}
+
+export interface RoutingDebug {
+  suite: string
+  confidence: string
+  source: string
+  reasoning?: string
+  latencyMs?: number
+  at: number
 }
 
 export const useStudioStore = create<StudioStore>((set) => ({
@@ -165,4 +179,8 @@ export const useStudioStore = create<StudioStore>((set) => ({
   // Delete confirmation
   deleteConfirm: null,
   setDeleteConfirm: (deleteConfirm) => set({ deleteConfirm }),
+
+  // Routing debug
+  lastRouting: null,
+  setLastRouting: (lastRouting) => set({ lastRouting }),
 }))
