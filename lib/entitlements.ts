@@ -1,5 +1,5 @@
 import { prisma } from "./prisma"
-import { getPlan } from "./plans"
+import { FREE_PLAN, getPlan } from "./plans"
 import type { SuiteId } from "./suites"
 
 export interface ResolvedEntitlements {
@@ -13,10 +13,10 @@ export interface ResolvedEntitlements {
 
 export async function resolveEntitlements(orgId: string): Promise<ResolvedEntitlements> {
   const defaults: ResolvedEntitlements = {
-    suites: { project: false, flow: false, marketing: false, pentest: false, search: false },
-    creditsPerMonth: 0,
+    suites: { project: false, flow: true, marketing: false, pentest: false, search: false },
+    creditsPerMonth: FREE_PLAN.creditsPerMonth,
     maxMembers: 1,
-    planKey: null,
+    planKey: "free",
     isTrial: false,
     trialExpiresAt: null,
   }
@@ -53,6 +53,10 @@ export async function resolveEntitlements(orgId: string): Promise<ResolvedEntitl
       if (suiteId in defaults.suites) {
         defaults.suites[suiteId] = true
       }
+    }
+    if (ent.key === "monthly.credits" && ent.value) {
+      const amount = (ent.value as { amount: number }).amount || 0
+      defaults.creditsPerMonth = Math.max(defaults.creditsPerMonth, amount)
     }
     if (ent.key === "credits.bonus" && ent.value) {
       defaults.creditsPerMonth += (ent.value as { amount: number }).amount || 0

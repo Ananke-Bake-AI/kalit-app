@@ -12,6 +12,21 @@ export interface PlanConfig {
   popular?: boolean
 }
 
+export const FREE_PLAN: PlanConfig = {
+  key: "free",
+  name: "Free",
+  monthlyPrice: 0,
+  suites: ["flow"],
+  creditsPerMonth: 15,
+  maxMembers: 1,
+  features: [
+    "Kalit Flow access",
+    "15 credits / month",
+    "1 team member",
+  ],
+  stripePriceId: "",
+}
+
 export const PLANS: PlanConfig[] = [
   {
     key: "starter",

@@ -6,7 +6,7 @@ import { SurfacePanel } from "@/components/surface-panel"
 import { auth } from "@/lib/auth"
 import { getServerTranslation, localeHref } from "@/lib/i18n-server"
 import { redirect } from "next/navigation"
-import { getPlan, PLANS } from "@/lib/plans"
+import { FREE_PLAN, getPlan, PLANS } from "@/lib/plans"
 import { prisma } from "@/lib/prisma"
 import { CheckoutButton, ManageBillingButton } from "./actions"
 import s from "./billing.module.scss"
@@ -29,11 +29,11 @@ export default async function BillingPage() {
   return (
     <>
       <SurfacePanel
-        title={currentPlan?.name || t("settingsPages.freeWorkspace")}
+        title={currentPlan?.name || FREE_PLAN.name}
         subtitle={
           currentPlan
             ? `${t("settingsPages.creditsPerMonth", { count: currentPlan.creditsPerMonth })}, ${formatMembers(currentPlan.maxMembers)}, ${currentPlan.suites.length > 1 ? t("settingsPages.suitesIncludedPlural", { count: currentPlan.suites.length }) : t("settingsPages.suitesIncluded", { count: currentPlan.suites.length })}.`
-            : t("settingsPages.noSubscription")
+            : `${t("settingsPages.creditsPerMonth", { count: FREE_PLAN.creditsPerMonth })}, ${formatMembers(FREE_PLAN.maxMembers)}, ${FREE_PLAN.suites.length > 1 ? t("settingsPages.suitesIncludedPlural", { count: FREE_PLAN.suites.length }) : t("settingsPages.suitesIncluded", { count: FREE_PLAN.suites.length })}.`
         }
         headerAside={
           subscription ? <Badge variant="success">{subscription.status.toLowerCase()}</Badge> : <Badge>Free</Badge>
