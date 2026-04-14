@@ -1,6 +1,14 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from "react"
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ClipboardEvent,
+  type DragEvent,
+  type KeyboardEvent,
+} from "react"
 import { useStudioStore } from "@/stores/studio"
 import { useI18n } from "@/stores/i18n"
 import { brokerFetch } from "@/lib/broker-direct"
@@ -128,13 +136,13 @@ export function ChatInput({ onSend, disabled, prefill }: ChatInputProps) {
     setAtMenu(null)
   }, [setAtMenu])
 
-  const handleFileUpload = useCallback(async (files: FileList | null) => {
-    if (!files || !activeSessionId) return
+  const uploadFiles = useCallback(async (files: File[]) => {
+    if (files.length === 0 || !activeSessionId) return
     setIsUploading(true)
 
     try {
       const formData = new FormData()
-      for (const file of Array.from(files)) {
+      for (const file of files) {
         formData.append("files", file)
       }
       formData.append("sessionId", activeSessionId)
@@ -156,6 +164,49 @@ export function ChatInput({ onSend, disabled, prefill }: ChatInputProps) {
     }
   }, [activeSessionId, attachedFiles, setAttachedFiles, setIsUploading])
 
+  const handleFileUpload = useCallback((files: FileList | null) => {
+    if (!files) return
+    void uploadFiles(Array.from(files))
+  }, [uploadFiles])
+
+  const handlePaste = useCallback((e: ClipboardEvent<HTMLTextAreaElement>) => {
+    const items = e.clipboardData?.items
+    if (!items) return
+    const pasted: File[] = []
+    for (const item of Array.from(items)) {
+      if (item.kind === "file") {
+        const f = item.getAsFile()
+        if (f) pasted.push(f)
+      }
+    }
+    if (pasted.length > 0) {
+      e.preventDefault()
+      void uploadFiles(pasted)
+    }
+  }, [uploadFiles])
+
+  const [isDragging, setIsDragging] = useState(false)
+
+  const handleDragOver = useCallback((e: DragEvent<HTMLDivElement>) => {
+    if (!e.dataTransfer?.types?.includes("Files")) return
+    e.preventDefault()
+    e.dataTransfer.dropEffect = "copy"
+    setIsDragging(true)
+  }, [])
+
+  const handleDragLeave = useCallback((e: DragEvent<HTMLDivElement>) => {
+    // Only clear when leaving the container itself, not a child element
+    if (e.currentTarget === e.target) setIsDragging(false)
+  }, [])
+
+  const handleDrop = useCallback((e: DragEvent<HTMLDivElement>) => {
+    const files = e.dataTransfer?.files
+    if (!files || files.length === 0) return
+    e.preventDefault()
+    setIsDragging(false)
+    void uploadFiles(Array.from(files))
+  }, [uploadFiles])
+
   const removeFile = useCallback((fileId: string) => {
     setAttachedFiles(attachedFiles.filter((f) => f.fileId !== fileId))
   }, [attachedFiles, setAttachedFiles])
@@ -163,7 +214,18 @@ export function ChatInput({ onSend, disabled, prefill }: ChatInputProps) {
   const isDisabled = disabled || isStreaming
 
   return (
-    <div className={s.container}>
+    <div
+      className={clsx(s.container, isDragging && s.containerDragging)}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
+      {isDragging && (
+        <div className={s.dropOverlay}>
+          <Icon icon="hugeicons:upload-04" />
+          <span>{t("studio.dropToUpload")}</span>
+        </div>
+      )}
       {/* @ Command menu */}
       {atMenu && filteredCommands.length > 0 && (
         <div className={s.atMenu}>
@@ -218,6 +280,7 @@ export function ChatInput({ onSend, disabled, prefill }: ChatInputProps) {
           value={input}
           onChange={(e) => handleChange(e.target.value)}
           onKeyDown={handleKeyDown}
+          onPaste={handlePaste}
           placeholder={t("studio.chatPlaceholder")}
           rows={1}
           disabled={isDisabled}

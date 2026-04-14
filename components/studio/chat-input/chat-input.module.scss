@@ -13,6 +13,32 @@
   }
 }
 
+.containerDragging {
+  // drop overlay handles the visual; just disable text selection while dragging
+  user-select: none;
+}
+
+.dropOverlay {
+  position: absolute;
+  inset: var(--size-2);
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  grid-auto-flow: row;
+  gap: var(--size-2);
+  border-radius: var(--radius-3);
+  border: 2px dashed oklch(from var(--text) l c h / 0.4);
+  background: oklch(from var(--text) l c h / 0.06);
+  @include backdrop(8px);
+  color: var(--text);
+  font-size: 0.9rem;
+  pointer-events: none;
+
+  svg {
+    font-size: 1.6rem;
+  }
+}
+
 // ── Input row ───────────────────────────────────────────
 
 .inputRow {

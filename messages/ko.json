@@ -771,6 +771,7 @@
     "notifyTitle": "Tab title flashes when ready",
     "notifyTitleSound": "Tab title + sound when ready",
     "notifyToggle": "Toggle notifications",
+    "dropToUpload": "Drop to upload",
     "downloadFailed": "Download failed",
     "rename": "이름 바꾸기",
     "searchPlaceholder": "대화 검색",

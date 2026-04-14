@@ -55,6 +55,18 @@ export function clearBrokerToken(): void {
 }
 
 /**
+ * The broker returns canonical URLs with the `/api/flow/` prefix. The Next.js
+ * rewrite only exposes `/api/broker/*` to the browser, so any broker-served
+ * URL we render (<img src>, download links, …) must be rewritten to the
+ * client-visible prefix.
+ */
+export function toClientFileUrl(url: string | undefined | null): string {
+  if (!url) return ""
+  if (url.startsWith("/api/flow/")) return `/api/broker/${url.slice("/api/flow/".length)}`
+  return url
+}
+
+/**
  * Fetch wrapper that adds broker auth header.
  * Paths are relative to the rewrite prefix: /api/broker/sessions → broker's /api/flow/sessions
  */

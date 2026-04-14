@@ -8,6 +8,7 @@ import { useI18n } from "@/stores/i18n"
 import { MarkdownLink } from "@/components/studio/markdown-link"
 import { WidgetRenderer } from "@/components/studio/widget-renderer"
 import { formatTime } from "@/lib/format-date"
+import { toClientFileUrl } from "@/lib/broker-direct"
 import type { ChatMessage } from "@/types/studio"
 import s from "./message-bubble.module.scss"
 
@@ -96,14 +97,16 @@ export const MessageBubble = memo(function MessageBubble({ message, showToolBadg
             <div className={s.fileList}>
               {message.files.map((f) => {
                 const ext = getExt(f.name)
+                const src = toClientFileUrl(f.url)
                 if (IMAGE_EXTS.includes(ext)) {
                   return (
                     <img
                       key={f.fileId}
-                      src={f.url}
+                      src={src}
                       alt={f.name}
                       className={s.inlineImage}
                       loading="lazy"
+                      onClick={() => onPreviewFile?.({ url: src, name: f.name })}
                     />
                   )
                 }

@@ -771,6 +771,7 @@
     "notifyTitle": "Tab title flashes when ready",
     "notifyTitleSound": "Tab title + sound when ready",
     "notifyToggle": "Toggle notifications",
+    "dropToUpload": "Drop to upload",
     "downloadFailed": "Download failed",
     "rename": "Umbenennen",
     "searchPlaceholder": "Unterhaltungen suchen",
