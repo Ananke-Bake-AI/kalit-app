@@ -71,7 +71,7 @@ interface MessageBubbleProps {
   message: ChatMessage
   showToolBadges?: boolean
   onRefreshMessages?: () => void
-  onPreviewFile?: (file: { url: string; name: string }) => void
+  onPreviewFile?: (file: { url: string; name: string }, images?: { url: string; name: string }[]) => void
 }
 
 export const MessageBubble = memo(function MessageBubble({ message, showToolBadges, onRefreshMessages, onPreviewFile }: MessageBubbleProps) {

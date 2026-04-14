@@ -50,12 +50,14 @@ interface StreamSegmentsProps {
   segments: StreamSegment[]
   thinking?: string
   onStop?: () => void
+  onPreviewFile?: (file: { url: string; name: string }, images?: { url: string; name: string }[]) => void
 }
 
 export const StreamSegments = memo(function StreamSegments({
   segments,
   thinking,
   onStop,
+  onPreviewFile,
 }: StreamSegmentsProps) {
   const { t } = useI18n()
 
@@ -115,6 +117,7 @@ export const StreamSegments = memo(function StreamSegments({
               key={i}
               widgetType={seg.widgetType}
               widgetId={seg.widgetId}
+              onPreviewFile={onPreviewFile}
             />
           )
         }

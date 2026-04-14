@@ -10,7 +10,7 @@ import s from "./message-list.module.scss"
 
 interface MessageListProps {
   onStop?: () => void
-  onPreviewFile?: (file: { url: string; name: string }) => void
+  onPreviewFile?: (file: { url: string; name: string }, images?: { url: string; name: string }[]) => void
   onRefreshMessages?: () => void
 }
 
@@ -92,6 +92,7 @@ export function MessageList({ onStop, onPreviewFile, onRefreshMessages }: Messag
               segments={streamSegments}
               thinking={streamThinking}
               onStop={onStop}
+              onPreviewFile={onPreviewFile}
             />
           </div>
         )}

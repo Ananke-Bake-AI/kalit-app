@@ -48,7 +48,7 @@ interface ResearchData {
 interface ResearchWidgetProps {
   researchId: string
   onCompleted?: () => void
-  onPreviewFile?: (file: { url: string; name: string }) => void
+  onPreviewFile?: (file: { url: string; name: string }, images?: { url: string; name: string }[]) => void
 }
 
 function formatElapsed(startedAt: string | undefined): string {
@@ -192,6 +192,11 @@ export function ResearchWidget({ researchId, onCompleted, onPreviewFile }: Resea
     const audios = data.assets.filter((a) => isAudio(a.path))
     const others = data.assets.filter((a) => !isImage(a.path) && !isAudio(a.path))
 
+    const imageItems = images.map((a) => ({ url: proxyAssetUrl(a.previewUrl), name: a.filename }))
+    const handleImagePreview = (file: { url: string; name: string }) => {
+      onPreviewFile?.(file, imageItems)
+    }
+
     return (
       <div className={s.cardSuccess}>
         <div className={s.header}>
@@ -203,7 +208,7 @@ export function ResearchWidget({ researchId, onCompleted, onPreviewFile }: Resea
 
         {images.length > 0 && (
           <div className={s.assetGrid}>
-            {images.map((a, i) => <AssetPreview key={i} asset={a} onPreview={onPreviewFile} />)}
+            {images.map((a, i) => <AssetPreview key={i} asset={a} onPreview={handleImagePreview} />)}
           </div>
         )}
 

@@ -7,7 +7,7 @@ interface WidgetRendererProps {
   widgetId: string
   messageCreatedAt?: string
   onCompleted?: () => void
-  onPreviewFile?: (file: { url: string; name: string }) => void
+  onPreviewFile?: (file: { url: string; name: string }, images?: { url: string; name: string }[]) => void
 }
 
 export function WidgetRenderer({
