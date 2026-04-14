@@ -518,6 +518,20 @@ export function StudioClient() {
     abortRef.current?.abort()
     if (activeSessionId) {
       brokerFetch(`/api/broker/cancel/${activeSessionId}`, { method: "POST" }).catch(() => {})
+
+      // Cancel active sub-tasks (taskforce steps, research/find-assets)
+      const widgets = useStudioStore.getState().activeWidgets
+      for (const w of widgets) {
+        if (w.type === "task" || w.type === "sub-agent") {
+          brokerFetch(`/api/broker/task/${w.id}/cancel`, { method: "POST" }).catch(() => {})
+        }
+        if (w.type === "research" || w.type === "find-assets") {
+          brokerFetch(`/api/broker/research/${w.id}/cancel`, { method: "POST" }).catch(() => {})
+        }
+        if (w.type === "project") {
+          brokerFetch(`/api/broker/project/${w.id}/cancel`, { method: "POST" }).catch(() => {})
+        }
+      }
     }
   }, [activeSessionId])
 
