@@ -1,12 +1,17 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import { brokerFetch } from "@/lib/broker-direct"
 import { useStudioStore } from "@/stores/studio"
 import { useI18n } from "@/stores/i18n"
 import { useAppStore } from "@/stores/app"
 import { Icon } from "@/components/icon"
+import {
+  readNotificationPrefs,
+  useNotificationSystem,
+  writeNotificationPrefs,
+} from "@/hooks/use-notification-system"
 import { ChatLayout } from "@/components/studio/chat-layout"
 import { SessionSidebar } from "@/components/studio/session-sidebar"
 import { ChatInput } from "@/components/studio/chat-input"
@@ -57,6 +62,10 @@ export function StudioClient() {
     setRightPanelOpen,
     progressMode,
     setProgressMode,
+    notifyTitle,
+    notifySound,
+    setNotifyTitle,
+    setNotifySound,
   } = useStudioStore()
 
   const [ready, setReady] = useState(false)
@@ -80,6 +89,21 @@ export function StudioClient() {
       // silent
     }
   }, [setProgressMode])
+
+  // ── Notification system (title flash + optional chime) ──
+  //
+  // Pref ref is kept in sync on every render so notify() always reads the
+  // latest values without triggering re-renders when the user toggles.
+
+  useEffect(() => {
+    const prefs = readNotificationPrefs()
+    setNotifyTitle(prefs.titleEnabled)
+    setNotifySound(prefs.soundEnabled)
+  }, [setNotifyTitle, setNotifySound])
+
+  const notifyPrefsRef = useRef({ titleEnabled: notifyTitle, soundEnabled: notifySound })
+  notifyPrefsRef.current = { titleEnabled: notifyTitle, soundEnabled: notifySound }
+  const { notify } = useNotificationSystem(notifyPrefsRef)
 
   // ── Sync locale + suite from URL params ─────────────────
 
@@ -390,6 +414,10 @@ export function StudioClient() {
                     const existingIdx = segments.findIndex(
                       (s) => s.type === "widget" && s.widgetId === wi,
                     )
+                    const prevStatus =
+                      existingIdx >= 0
+                        ? (segments[existingIdx] as { status?: string }).status
+                        : undefined
                     const widgetSeg = {
                       type: "widget" as const,
                       widgetType: wt,
@@ -405,6 +433,14 @@ export function StudioClient() {
                     }
                     setStreamSegments([...segments])
                     addActiveWidget({ type: wt, id: wi })
+
+                    // Long builds (Taskforce project, hotfix) often finish
+                    // while the user is on another tab — fire a notification
+                    // on the transition to a terminal state.
+                    const status = String(event.status || "").toLowerCase()
+                    const terminal =
+                      status === "completed" || status === "deployed" || status === "failed"
+                    if (terminal && prevStatus !== event.status) notify()
                   }
                   break
                 }
@@ -503,13 +539,15 @@ export function StudioClient() {
       }
       resetStream()
       abortRef.current = null
+      // Agent turn finished — nudge the user if they've wandered off.
+      notify()
     }
   }, [
     activeSessionId, isStreaming, locale, progressMode, addMessage,
     addSession, setActiveSessionId, setMessages, t,
     setError, setIsStreaming, setStreamSegments, setStreamThinking,
     resetStream, setActiveWidgets, addActiveWidget,
-    fetchMessages, fetchSessions, fetchQuota,
+    fetchMessages, fetchSessions, fetchQuota, notify,
   ])
 
   // ── Stop streaming ──────────────────────────────────────
@@ -592,6 +630,26 @@ export function StudioClient() {
     setRightPanelOpen(!rightPanelOpen)
   }, [rightPanelOpen, setRightPanelOpen])
 
+  // ── Cycle notification mode: off → title → title+sound → off ──
+
+  const notifyMode = useMemo<"off" | "title" | "titleSound">(() => {
+    if (!notifyTitle && !notifySound) return "off"
+    if (notifyTitle && notifySound) return "titleSound"
+    return "title"
+  }, [notifyTitle, notifySound])
+
+  const handleCycleNotify = useCallback(() => {
+    const next =
+      notifyMode === "off"
+        ? { titleEnabled: true, soundEnabled: false }
+        : notifyMode === "title"
+          ? { titleEnabled: true, soundEnabled: true }
+          : { titleEnabled: false, soundEnabled: false }
+    setNotifyTitle(next.titleEnabled)
+    setNotifySound(next.soundEnabled)
+    writeNotificationPrefs(next)
+  }, [notifyMode, setNotifyTitle, setNotifySound])
+
   // ── Preview file handler ────────────────────────────────
 
   const [previewImages, setPreviewImages] = useState<{ url: string; name: string }[]>([])
@@ -656,6 +714,28 @@ export function StudioClient() {
           </span>
         )}
         <div className={s.topRight}>
+          <button
+            className={s.panelToggle}
+            onClick={handleCycleNotify}
+            title={
+              notifyMode === "off"
+                ? t("studio.notifyOff")
+                : notifyMode === "title"
+                  ? t("studio.notifyTitle")
+                  : t("studio.notifyTitleSound")
+            }
+            aria-label={t("studio.notifyToggle")}
+          >
+            <Icon
+              icon={
+                notifyMode === "off"
+                  ? "hugeicons:notification-off-02"
+                  : notifyMode === "title"
+                    ? "hugeicons:notification-02"
+                    : "hugeicons:volume-high-01"
+              }
+            />
+          </button>
           <button
             className={s.panelToggle}
             onClick={toggleFocus}

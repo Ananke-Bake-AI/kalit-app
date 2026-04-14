@@ -74,6 +74,10 @@ interface StudioStore {
   setShowToolBadges: (show: boolean) => void
   preferredLang: string
   setPreferredLang: (lang: string) => void
+  notifyTitle: boolean
+  notifySound: boolean
+  setNotifyTitle: (on: boolean) => void
+  setNotifySound: (on: boolean) => void
 
   // Error
   error: string | null
@@ -171,6 +175,10 @@ export const useStudioStore = create<StudioStore>((set) => ({
   setShowToolBadges: (showToolBadges) => set({ showToolBadges }),
   preferredLang: "en",
   setPreferredLang: (preferredLang) => set({ preferredLang }),
+  notifyTitle: true,
+  notifySound: false,
+  setNotifyTitle: (notifyTitle) => set({ notifyTitle }),
+  setNotifySound: (notifySound) => set({ notifySound }),
 
   // Error
   error: null,
