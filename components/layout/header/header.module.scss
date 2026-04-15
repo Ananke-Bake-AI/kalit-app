@@ -89,7 +89,7 @@
 
   path {
     fill: none;
-    stroke: var(--white);
+    stroke: var(--body);
     stroke-linecap: round;
     stroke-linejoin: round;
     stroke-width: 1.5;
@@ -285,7 +285,7 @@
     transform var(--transition-scale);
 
   &:hover {
-    background: var(--white);
+    background: var(--glass-75);
   }
 
   &:active {
