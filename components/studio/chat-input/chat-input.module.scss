@@ -13,6 +13,32 @@
   }
 }
 
+.containerDragging {
+  // drop overlay handles the visual; just disable text selection while dragging
+  user-select: none;
+}
+
+.dropOverlay {
+  position: absolute;
+  inset: var(--size-2);
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  grid-auto-flow: row;
+  gap: var(--size-2);
+  border-radius: var(--radius-3);
+  border: 2px dashed oklch(from var(--text) l c h / 0.4);
+  background: oklch(from var(--text) l c h / 0.06);
+  @include backdrop(8px);
+  color: var(--text);
+  font-size: 0.9rem;
+  pointer-events: none;
+
+  svg {
+    font-size: 1.6rem;
+  }
+}
+
 // ── Input row ───────────────────────────────────────────
 
 .inputRow {
@@ -83,6 +109,46 @@
     opacity: 0.4;
     pointer-events: none;
   }
+}
+
+.attachBtnActive {
+  background-color: oklch(from var(--text) l c h / 0.1);
+  color: var(--text);
+}
+
+.repoChip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--size-1-5);
+  padding: 0.3em 0.7em;
+  font-size: 0.78rem;
+  @include glass($shadow: false);
+  border-radius: var(--radius-rounded);
+  color: var(--text);
+  transition: background-color var(--transition-link);
+
+  @include is-hover {
+    background-color: oklch(from var(--text) l c h / 0.06);
+  }
+
+  :global(svg) {
+    font-size: 0.95em;
+    color: var(--text-secondary);
+  }
+
+  span {
+    @include ellipsis;
+    max-width: 180px;
+  }
+}
+
+.repoBranch {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  padding: 0.05em 0.4em;
+  background: oklch(from var(--text) l c h / 0.06);
+  border-radius: var(--radius-rounded);
 }
 
 .sendBtn {

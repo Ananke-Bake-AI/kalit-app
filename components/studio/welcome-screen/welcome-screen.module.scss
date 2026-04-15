@@ -47,6 +47,69 @@
   line-height: 1.45;
 }
 
+// ── Import existing project card ────────────────────────
+
+.importCard {
+  display: flex;
+  align-items: center;
+  gap: var(--size-3);
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  text-align: left;
+  background: oklch(from var(--text) l c h / 0.04);
+  @include cornerShape(var(--radius-3));
+  @include border-glass(var(--gradient-border-glass-3));
+  transition:
+    background-color var(--transition-link),
+    transform var(--transition-scale);
+
+  :global(svg) {
+    flex-shrink: 0;
+  }
+
+  &:active {
+    transform: scale(0.99);
+  }
+
+  @include is-hover {
+    background: oklch(from var(--text) l c h / 0.08);
+  }
+}
+
+.importIcon {
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-rounded);
+  background: oklch(from var(--text) l c h / 0.08);
+  color: var(--text);
+  font-size: 1.05em;
+  flex-shrink: 0;
+}
+
+.importBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.importTitle {
+  font-size: 0.82rem;
+  color: var(--text);
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.importDesc {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  line-height: 1.35;
+  @include ellipsis;
+}
+
 // ── Suite groups ────────────────────────────────────────
 
 .suites {

@@ -1,6 +1,14 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from "react"
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ClipboardEvent,
+  type DragEvent,
+  type KeyboardEvent,
+} from "react"
 import { useStudioStore } from "@/stores/studio"
 import { useI18n } from "@/stores/i18n"
 import { brokerFetch } from "@/lib/broker-direct"
@@ -8,6 +16,7 @@ import { Icon } from "@/components/icon"
 import type { AtCommand, UploadedFile } from "@/types/studio"
 import clsx from "clsx"
 import s from "./chat-input.module.scss"
+import { ImportRepoModal } from "@/components/studio/import-repo-modal"
 
 const AT_COMMAND_DEFS: { name: string; descKey: string; hint: string }[] = [
   { name: "find-assets", descKey: "studio.atFindAssets", hint: "chocolate icons 2d" },
@@ -28,11 +37,13 @@ interface ChatInputProps {
    * twice in a row (e.g. clicking the same suggestion card again).
    */
   prefill?: { text: string; nonce: number } | null
+  onEnsureSession?: () => Promise<string | null>
 }
 
-export function ChatInput({ onSend, disabled, prefill }: ChatInputProps) {
+export function ChatInput({ onSend, disabled, prefill, onEnsureSession }: ChatInputProps) {
   const { t } = useI18n()
   const [input, setInput] = useState("")
+  const [repoModalOpen, setRepoModalOpen] = useState(false)
   const {
     atMenu,
     setAtMenu,
@@ -42,6 +53,7 @@ export function ChatInput({ onSend, disabled, prefill }: ChatInputProps) {
     setIsUploading,
     activeSessionId,
     isStreaming,
+    importedRepo,
   } = useStudioStore()
 
   const inputRef = useRef<HTMLTextAreaElement>(null)
@@ -128,13 +140,13 @@ export function ChatInput({ onSend, disabled, prefill }: ChatInputProps) {
     setAtMenu(null)
   }, [setAtMenu])
 
-  const handleFileUpload = useCallback(async (files: FileList | null) => {
-    if (!files || !activeSessionId) return
+  const uploadFiles = useCallback(async (files: File[]) => {
+    if (files.length === 0 || !activeSessionId) return
     setIsUploading(true)
 
     try {
       const formData = new FormData()
-      for (const file of Array.from(files)) {
+      for (const file of files) {
         formData.append("files", file)
       }
       formData.append("sessionId", activeSessionId)
@@ -156,6 +168,49 @@ export function ChatInput({ onSend, disabled, prefill }: ChatInputProps) {
     }
   }, [activeSessionId, attachedFiles, setAttachedFiles, setIsUploading])
 
+  const handleFileUpload = useCallback((files: FileList | null) => {
+    if (!files) return
+    void uploadFiles(Array.from(files))
+  }, [uploadFiles])
+
+  const handlePaste = useCallback((e: ClipboardEvent<HTMLTextAreaElement>) => {
+    const items = e.clipboardData?.items
+    if (!items) return
+    const pasted: File[] = []
+    for (const item of Array.from(items)) {
+      if (item.kind === "file") {
+        const f = item.getAsFile()
+        if (f) pasted.push(f)
+      }
+    }
+    if (pasted.length > 0) {
+      e.preventDefault()
+      void uploadFiles(pasted)
+    }
+  }, [uploadFiles])
+
+  const [isDragging, setIsDragging] = useState(false)
+
+  const handleDragOver = useCallback((e: DragEvent<HTMLDivElement>) => {
+    if (!e.dataTransfer?.types?.includes("Files")) return
+    e.preventDefault()
+    e.dataTransfer.dropEffect = "copy"
+    setIsDragging(true)
+  }, [])
+
+  const handleDragLeave = useCallback((e: DragEvent<HTMLDivElement>) => {
+    // Only clear when leaving the container itself, not a child element
+    if (e.currentTarget === e.target) setIsDragging(false)
+  }, [])
+
+  const handleDrop = useCallback((e: DragEvent<HTMLDivElement>) => {
+    const files = e.dataTransfer?.files
+    if (!files || files.length === 0) return
+    e.preventDefault()
+    setIsDragging(false)
+    void uploadFiles(Array.from(files))
+  }, [uploadFiles])
+
   const removeFile = useCallback((fileId: string) => {
     setAttachedFiles(attachedFiles.filter((f) => f.fileId !== fileId))
   }, [attachedFiles, setAttachedFiles])
@@ -163,7 +218,18 @@ export function ChatInput({ onSend, disabled, prefill }: ChatInputProps) {
   const isDisabled = disabled || isStreaming
 
   return (
-    <div className={s.container}>
+    <div
+      className={clsx(s.container, isDragging && s.containerDragging)}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
+      {isDragging && (
+        <div className={s.dropOverlay}>
+          <Icon icon="hugeicons:upload-04" />
+          <span>{t("studio.dropToUpload")}</span>
+        </div>
+      )}
       {/* @ Command menu */}
       {atMenu && filteredCommands.length > 0 && (
         <div className={s.atMenu}>
@@ -183,6 +249,22 @@ export function ChatInput({ onSend, disabled, prefill }: ChatInputProps) {
               <span className={s.atDesc}>{t(cmd.descKey)}</span>
             </button>
           ))}
+        </div>
+      )}
+
+      {/* Attached repo chip */}
+      {importedRepo && (
+        <div className={s.files}>
+          <button
+            type="button"
+            className={s.repoChip}
+            onClick={() => setRepoModalOpen(true)}
+            title={t("studio.importRepoManage")}
+          >
+            <Icon icon="hugeicons:github-01" />
+            <span>{repoDisplay(importedRepo.url)}</span>
+            {importedRepo.branch && <span className={s.repoBranch}>#{importedRepo.branch}</span>}
+          </button>
         </div>
       )}
 
@@ -212,12 +294,22 @@ export function ChatInput({ onSend, disabled, prefill }: ChatInputProps) {
           <Icon icon={isUploading ? "hugeicons:loading-03" : "hugeicons:attachment-02"} />
         </button>
 
+        <button
+          className={clsx(s.attachBtn, importedRepo && s.attachBtnActive)}
+          onClick={() => setRepoModalOpen(true)}
+          disabled={isDisabled}
+          title={importedRepo ? t("studio.importRepoManage") : t("studio.importRepoAttachTitle")}
+        >
+          <Icon icon="hugeicons:github-01" />
+        </button>
+
         <textarea
           ref={inputRef}
           className={s.textarea}
           value={input}
           onChange={(e) => handleChange(e.target.value)}
           onKeyDown={handleKeyDown}
+          onPaste={handlePaste}
           placeholder={t("studio.chatPlaceholder")}
           rows={1}
           disabled={isDisabled}
@@ -239,6 +331,24 @@ export function ChatInput({ onSend, disabled, prefill }: ChatInputProps) {
         hidden
         onChange={(e) => handleFileUpload(e.target.files)}
       />
+
+      {repoModalOpen && (
+        <ImportRepoModal
+          sessionId={activeSessionId}
+          onClose={() => setRepoModalOpen(false)}
+          onEnsureSession={onEnsureSession}
+        />
+      )}
     </div>
   )
+}
+
+function repoDisplay(url: string): string {
+  try {
+    const u = new URL(url)
+    const path = u.pathname.replace(/^\/+/, "").replace(/\.git$/, "")
+    return path || u.host
+  } catch {
+    return url.replace(/\.git$/, "")
+  }
 }

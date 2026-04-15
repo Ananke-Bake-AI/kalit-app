@@ -21,7 +21,14 @@ async function signBrokerJwt(userId: string, email: string, orgId?: string | nul
   if (!secret) throw new Error("Missing signing secret")
 
   const encoder = new TextEncoder()
-  return new SignJWT({ email, name: name || null, orgId: orgId || null, isAdmin: isAdmin === true })
+  return new SignJWT({
+    email,
+    name: name || null,
+    orgId: orgId || null,
+    isAdmin: isAdmin === true,
+    externalUserId: userId,
+    externalOrgId: orgId || null,
+  })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("5m")

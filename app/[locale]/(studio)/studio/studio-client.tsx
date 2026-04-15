@@ -1,12 +1,17 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import { brokerFetch } from "@/lib/broker-direct"
 import { useStudioStore } from "@/stores/studio"
 import { useI18n } from "@/stores/i18n"
 import { useAppStore } from "@/stores/app"
 import { Icon } from "@/components/icon"
+import {
+  readNotificationPrefs,
+  useNotificationSystem,
+  writeNotificationPrefs,
+} from "@/hooks/use-notification-system"
 import { ChatLayout } from "@/components/studio/chat-layout"
 import { SessionSidebar } from "@/components/studio/session-sidebar"
 import { ChatInput } from "@/components/studio/chat-input"
@@ -57,6 +62,11 @@ export function StudioClient() {
     setRightPanelOpen,
     progressMode,
     setProgressMode,
+    notifyTitle,
+    notifySound,
+    setNotifyTitle,
+    setNotifySound,
+    setImportedRepo,
   } = useStudioStore()
 
   const [ready, setReady] = useState(false)
@@ -80,6 +90,21 @@ export function StudioClient() {
       // silent
     }
   }, [setProgressMode])
+
+  // ── Notification system (title flash + optional chime) ──
+  //
+  // Pref ref is kept in sync on every render so notify() always reads the
+  // latest values without triggering re-renders when the user toggles.
+
+  useEffect(() => {
+    const prefs = readNotificationPrefs()
+    setNotifyTitle(prefs.titleEnabled)
+    setNotifySound(prefs.soundEnabled)
+  }, [setNotifyTitle, setNotifySound])
+
+  const notifyPrefsRef = useRef({ titleEnabled: notifyTitle, soundEnabled: notifySound })
+  notifyPrefsRef.current = { titleEnabled: notifyTitle, soundEnabled: notifySound }
+  const { notify } = useNotificationSystem(notifyPrefsRef)
 
   // ── Sync locale + suite from URL params ─────────────────
 
@@ -185,6 +210,45 @@ export function StudioClient() {
     })
   }, [activeSessionId, setMessages, setMessagesLoading, fetchMessages])
 
+  // ── Hydrate imported repo state for the active session ──
+
+  useEffect(() => {
+    if (!activeSessionId) {
+      setImportedRepo(null)
+      return
+    }
+    let cancelled = false
+    ;(async () => {
+      try {
+        const res = await brokerFetch(`/api/broker/sessions/${activeSessionId}/attach-repo`)
+        if (!res.ok) return
+        const data = (await res.json().catch(() => ({}))) as {
+          attached?: boolean
+          url?: string
+          username?: string
+          branch?: string
+          hasToken?: boolean
+        }
+        if (cancelled) return
+        if (data?.attached && data.url) {
+          setImportedRepo({
+            url: data.url,
+            username: data.username || null,
+            branch: data.branch || null,
+            hasToken: !!data.hasToken,
+          })
+        } else {
+          setImportedRepo(null)
+        }
+      } catch {
+        // silent — surface via modal on user action instead
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [activeSessionId, setImportedRepo])
+
   // ── Auto-send pending prompt ────────────────────────────
 
   useEffect(() => {
@@ -216,6 +280,40 @@ export function StudioClient() {
     setChatPrefill({ text: prompt, nonce: Date.now() })
   }, [setPage])
 
+  // ── Ensure a session exists (lazy creation) ─────────────
+  //
+  // Used by handleSend (on first Send) and by the import-repo flow (so users
+  // can attach a repo from the welcome screen before typing anything).
+
+  const ensureSession = useCallback(async (): Promise<string | null> => {
+    if (activeSessionRef.current) return activeSessionRef.current
+    try {
+      const createRes = await brokerFetch("/api/broker/sessions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model: "minimax-m2.7:cloud" }),
+      })
+      if (!createRes.ok) {
+        setError(t("studio.connectionError"))
+        return null
+      }
+      const createData = await createRes.json()
+      const session: ChatSession = createData.session
+      addSession(session)
+      setActiveSessionId(session.id)
+      setMessages([])
+      activeSessionRef.current = session.id
+      const url = new URL(window.location.href)
+      url.searchParams.set("session", session.id)
+      url.searchParams.delete("prompt")
+      window.history.replaceState(null, "", url.toString())
+      return session.id
+    } catch {
+      setError(t("studio.connectionError"))
+      return null
+    }
+  }, [addSession, setActiveSessionId, setMessages, setError, t])
+
   // ── Send message with full SSE streaming ────────────────
 
   const handleSend = useCallback(async (message: string, files?: UploadedFile[]) => {
@@ -226,31 +324,8 @@ export function StudioClient() {
     // don't pile up in the sidebar.
     let sessionId = activeSessionId
     if (!sessionId) {
-      try {
-        const createRes = await brokerFetch("/api/broker/sessions", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ model: "minimax-m2.7:cloud" }),
-        })
-        if (!createRes.ok) {
-          setError(t("studio.connectionError"))
-          return
-        }
-        const createData = await createRes.json()
-        const session: ChatSession = createData.session
-        addSession(session)
-        setActiveSessionId(session.id)
-        setMessages([])
-        sessionId = session.id
-        activeSessionRef.current = session.id
-        const url = new URL(window.location.href)
-        url.searchParams.set("session", session.id)
-        url.searchParams.delete("prompt")
-        window.history.replaceState(null, "", url.toString())
-      } catch {
-        setError(t("studio.connectionError"))
-        return
-      }
+      sessionId = await ensureSession()
+      if (!sessionId) return
     }
 
     setError(null)
@@ -390,6 +465,10 @@ export function StudioClient() {
                     const existingIdx = segments.findIndex(
                       (s) => s.type === "widget" && s.widgetId === wi,
                     )
+                    const prevStatus =
+                      existingIdx >= 0
+                        ? (segments[existingIdx] as { status?: string }).status
+                        : undefined
                     const widgetSeg = {
                       type: "widget" as const,
                       widgetType: wt,
@@ -405,6 +484,14 @@ export function StudioClient() {
                     }
                     setStreamSegments([...segments])
                     addActiveWidget({ type: wt, id: wi })
+
+                    // Long builds (Taskforce project, hotfix) often finish
+                    // while the user is on another tab — fire a notification
+                    // on the transition to a terminal state.
+                    const status = String(event.status || "").toLowerCase()
+                    const terminal =
+                      status === "completed" || status === "deployed" || status === "failed"
+                    if (terminal && prevStatus !== event.status) notify()
                   }
                   break
                 }
@@ -503,13 +590,15 @@ export function StudioClient() {
       }
       resetStream()
       abortRef.current = null
+      // Agent turn finished — nudge the user if they've wandered off.
+      notify()
     }
   }, [
     activeSessionId, isStreaming, locale, progressMode, addMessage,
     addSession, setActiveSessionId, setMessages, t,
     setError, setIsStreaming, setStreamSegments, setStreamThinking,
     resetStream, setActiveWidgets, addActiveWidget,
-    fetchMessages, fetchSessions, fetchQuota,
+    fetchMessages, fetchSessions, fetchQuota, notify,
   ])
 
   // ── Stop streaming ──────────────────────────────────────
@@ -592,6 +681,26 @@ export function StudioClient() {
     setRightPanelOpen(!rightPanelOpen)
   }, [rightPanelOpen, setRightPanelOpen])
 
+  // ── Cycle notification mode: off → title → title+sound → off ──
+
+  const notifyMode = useMemo<"off" | "title" | "titleSound">(() => {
+    if (!notifyTitle && !notifySound) return "off"
+    if (notifyTitle && notifySound) return "titleSound"
+    return "title"
+  }, [notifyTitle, notifySound])
+
+  const handleCycleNotify = useCallback(() => {
+    const next =
+      notifyMode === "off"
+        ? { titleEnabled: true, soundEnabled: false }
+        : notifyMode === "title"
+          ? { titleEnabled: true, soundEnabled: true }
+          : { titleEnabled: false, soundEnabled: false }
+    setNotifyTitle(next.titleEnabled)
+    setNotifySound(next.soundEnabled)
+    writeNotificationPrefs(next)
+  }, [notifyMode, setNotifyTitle, setNotifySound])
+
   // ── Preview file handler ────────────────────────────────
 
   const [previewImages, setPreviewImages] = useState<{ url: string; name: string }[]>([])
@@ -658,6 +767,28 @@ export function StudioClient() {
         <div className={s.topRight}>
           <button
             className={s.panelToggle}
+            onClick={handleCycleNotify}
+            title={
+              notifyMode === "off"
+                ? t("studio.notifyOff")
+                : notifyMode === "title"
+                  ? t("studio.notifyTitle")
+                  : t("studio.notifyTitleSound")
+            }
+            aria-label={t("studio.notifyToggle")}
+          >
+            <Icon
+              icon={
+                notifyMode === "off"
+                  ? "hugeicons:notification-off-02"
+                  : notifyMode === "title"
+                    ? "hugeicons:notification-02"
+                    : "hugeicons:volume-high-01"
+              }
+            />
+          </button>
+          <button
+            className={s.panelToggle}
             onClick={toggleFocus}
             title={focusMode ? t("studio.exitFocus") : t("studio.focusMode")}
           >
@@ -681,6 +812,7 @@ export function StudioClient() {
           <WelcomeScreen
             onPromptSelect={handleWelcomePrompt}
             activeSuite={searchParams.get("suite") as SuiteId | null}
+            onEnsureSession={ensureSession}
           />
         ) : (
           <div className={s.messageArea}>
@@ -701,7 +833,7 @@ export function StudioClient() {
 
       {/* Chat input — always available so users can type from the welcome
           screen; session is created lazily in handleSend on first send. */}
-      <ChatInput onSend={handleSend} prefill={chatPrefill} />
+      <ChatInput onSend={handleSend} prefill={chatPrefill} onEnsureSession={ensureSession} />
 
       {/* File preview modal */}
       {previewFile && (

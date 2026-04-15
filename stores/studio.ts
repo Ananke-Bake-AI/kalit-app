@@ -49,6 +49,12 @@ interface StudioStore {
   isUploading: boolean
   setIsUploading: (uploading: boolean) => void
 
+  // Imported git repo for the active session (populated from broker).
+  // `url` is always safe to display; the token itself is never surfaced
+  // back to the client — `hasToken` is just a flag.
+  importedRepo: ImportedRepoState | null
+  setImportedRepo: (repo: ImportedRepoState | null) => void
+
   // UI state
   sidebarOpen: boolean
   rightPanelOpen: boolean
@@ -74,6 +80,10 @@ interface StudioStore {
   setShowToolBadges: (show: boolean) => void
   preferredLang: string
   setPreferredLang: (lang: string) => void
+  notifyTitle: boolean
+  notifySound: boolean
+  setNotifyTitle: (on: boolean) => void
+  setNotifySound: (on: boolean) => void
 
   // Error
   error: string | null
@@ -96,6 +106,13 @@ export interface RoutingDebug {
   reasoning?: string
   latencyMs?: number
   at: number
+}
+
+export interface ImportedRepoState {
+  url: string
+  username: string | null
+  branch: string | null
+  hasToken: boolean
 }
 
 export const useStudioStore = create<StudioStore>((set) => ({
@@ -146,6 +163,10 @@ export const useStudioStore = create<StudioStore>((set) => ({
   isUploading: false,
   setIsUploading: (isUploading) => set({ isUploading }),
 
+  // Imported repo
+  importedRepo: null,
+  setImportedRepo: (importedRepo) => set({ importedRepo }),
+
   // UI state
   sidebarOpen: false,
   rightPanelOpen: false,
@@ -171,6 +192,10 @@ export const useStudioStore = create<StudioStore>((set) => ({
   setShowToolBadges: (showToolBadges) => set({ showToolBadges }),
   preferredLang: "en",
   setPreferredLang: (preferredLang) => set({ preferredLang }),
+  notifyTitle: true,
+  notifySound: false,
+  setNotifyTitle: (notifyTitle) => set({ notifyTitle }),
+  setNotifySound: (notifySound) => set({ notifySound }),
 
   // Error
   error: null,

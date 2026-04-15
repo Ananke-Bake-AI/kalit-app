@@ -1,9 +1,12 @@
 "use client"
 
+import { useState } from "react"
 import { SUITES, type SuiteId } from "@/lib/suites"
 import { useI18n } from "@/stores/i18n"
+import { useStudioStore } from "@/stores/studio"
 import { Logo } from "@/components/logo"
 import { Icon } from "@/components/icon"
+import { ImportRepoModal } from "@/components/studio/import-repo-modal"
 import s from "./welcome-screen.module.scss"
 
 // Each entry: short `labelKey` for the card UI + richer `promptKey` that
@@ -57,10 +60,14 @@ const QUICK_PROMPT_KEYS: {
 interface WelcomeScreenProps {
   onPromptSelect: (prompt: string, suiteId?: SuiteId) => void
   activeSuite?: SuiteId | null
+  onEnsureSession?: () => Promise<string | null>
 }
 
-export function WelcomeScreen({ onPromptSelect, activeSuite }: WelcomeScreenProps) {
+export function WelcomeScreen({ onPromptSelect, activeSuite, onEnsureSession }: WelcomeScreenProps) {
   const { t } = useI18n()
+  const [repoModalOpen, setRepoModalOpen] = useState(false)
+  const activeSessionId = useStudioStore((st) => st.activeSessionId)
+  const importedRepo = useStudioStore((st) => st.importedRepo)
   const suitesToShow = activeSuite
     ? QUICK_PROMPT_KEYS.filter((s) => s.suite === activeSuite)
     : QUICK_PROMPT_KEYS
@@ -71,6 +78,37 @@ export function WelcomeScreen({ onPromptSelect, activeSuite }: WelcomeScreenProp
         <h1 className={s.title}>{t("studio.welcomeTitle")}</h1>
         <p className={s.subtitle}>{t("studio.welcomeSubtitle")}</p>
       </div>
+
+      <button
+        type="button"
+        className={s.importCard}
+        onClick={() => setRepoModalOpen(true)}
+      >
+        <div className={s.importIcon}>
+          <Icon icon="hugeicons:github-01" />
+        </div>
+        <div className={s.importBody}>
+          <div className={s.importTitle}>
+            {importedRepo
+              ? t("studio.importRepoAttached")
+              : t("studio.importExistingProject")}
+          </div>
+          <div className={s.importDesc}>
+            {importedRepo
+              ? importedRepo.url
+              : t("studio.importExistingProjectDesc")}
+          </div>
+        </div>
+        <Icon icon="hugeicons:arrow-right-01" />
+      </button>
+
+      {repoModalOpen && (
+        <ImportRepoModal
+          sessionId={activeSessionId}
+          onClose={() => setRepoModalOpen(false)}
+          onEnsureSession={onEnsureSession}
+        />
+      )}
 
       <div className={s.suites}>
         {suitesToShow.map(({ suite, entries }) => {

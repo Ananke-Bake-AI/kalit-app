@@ -1,0 +1,497 @@
+@use "@/styles/mixins" as *;
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: oklch(0 0 0 / 0.72);
+  @include backdrop(14px);
+  padding: var(--size-4);
+}
+
+// Solid, opaque card. We locally rebind --text to a light value because the
+// global light-theme --text would be invisible on our dark modal background.
+// All descendants using `oklch(from var(--text) ...)` inherit this override.
+.modal {
+  --text: oklch(0.97 0 0);
+  --text-secondary: oklch(0.72 0 0);
+
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-3);
+  padding: var(--size-4);
+  background: #121217;
+  color: var(--text);
+  border: 1px solid oklch(from var(--text) l c h / 0.12);
+  box-shadow: 0 20px 60px oklch(0 0 0 / 0.6);
+  @include cornerShape(var(--radius-3));
+  @include no-scrollbar;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--size-3);
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  color: var(--text);
+  line-height: 1.25;
+}
+
+.subtitle {
+  font-size: 0.82rem;
+  color: oklch(from var(--text) l c h / 0.72);
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.closeBtn {
+  --s: 1.9rem;
+  width: var(--s);
+  height: var(--s);
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-rounded);
+  color: oklch(from var(--text) l c h / 0.85);
+  background: oklch(from var(--text) l c h / 0.06);
+  transition:
+    background-color var(--transition-link),
+    color var(--transition-link);
+
+  @include is-hover {
+    background: oklch(from var(--text) l c h / 0.14);
+    color: var(--text);
+  }
+}
+
+// ── Tabs ────────────────────────────────────────────────────────
+
+.tabs {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  background: oklch(from var(--text) l c h / 0.05);
+  border-radius: var(--radius-2);
+  border: 1px solid oklch(from var(--text) l c h / 0.08);
+}
+
+.tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.7rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  font-family: var(--font-main);
+  color: oklch(from var(--text) l c h / 0.7);
+  background: transparent;
+  border-radius: var(--radius-2);
+  transition:
+    background-color var(--transition-link),
+    color var(--transition-link);
+
+  :global(svg) {
+    font-size: 1em;
+    flex-shrink: 0;
+  }
+
+  @include is-hover {
+    color: var(--text);
+    background: oklch(from var(--text) l c h / 0.05);
+  }
+}
+
+.tabActive {
+  color: var(--text);
+  background: oklch(from var(--text) l c h / 0.12);
+}
+
+// ── Shared form bits ───────────────────────────────────────────
+
+.form,
+.ghBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-3);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-1);
+}
+
+.label {
+  font-size: 0.72rem;
+  color: oklch(from var(--text) l c h / 0.75);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.input {
+  width: 100%;
+  background: oklch(from var(--text) l c h / 0.05);
+  border: 1px solid oklch(from var(--text) l c h / 0.16);
+  border-radius: var(--radius-2);
+  padding: 0.55rem 0.75rem;
+  color: var(--text);
+  font-family: var(--font-main);
+  font-size: 0.85rem;
+  line-height: 1.4;
+  transition: border-color var(--transition-link);
+
+  &::placeholder {
+    color: oklch(from var(--text) l c h / 0.35);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: oklch(from var(--text) l c h / 0.4);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--size-2);
+
+  @include max($responsive) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--size-2);
+  padding: 0.7rem 0.85rem;
+  background: oklch(from var(--text) l c h / 0.06);
+  border: 1px solid oklch(from var(--text) l c h / 0.1);
+  border-radius: var(--radius-2);
+  font-size: 0.78rem;
+  color: oklch(from var(--text) l c h / 0.88);
+  line-height: 1.5;
+
+  :global(svg) {
+    flex-shrink: 0;
+    font-size: 1.05em;
+    margin-top: 0.1em;
+    color: oklch(from var(--text) l c h / 0.75);
+  }
+}
+
+.error {
+  font-size: 0.8rem;
+  color: oklch(0.78 0.18 25);
+  padding: 0.55rem 0.8rem;
+  background: oklch(0.5 0.2 25 / 0.18);
+  border: 1px solid oklch(0.5 0.2 25 / 0.4);
+  border-radius: var(--radius-2);
+  line-height: 1.4;
+}
+
+// ── Footer & buttons ───────────────────────────────────────────
+
+.footer,
+.ghFooter,
+.manualFooter {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+}
+
+.ghFooter,
+.manualFooter {
+  justify-content: space-between;
+  margin-top: var(--size-1);
+}
+
+.manualFooter {
+  justify-content: flex-end;
+}
+
+.footer {
+  justify-content: flex-end;
+  margin-top: var(--size-2);
+  padding-top: var(--size-2);
+  border-top: 1px solid oklch(from var(--text) l c h / 0.08);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.btn {
+  padding: 0.55rem 1.1rem;
+  font-size: 0.85rem;
+  border-radius: var(--radius-2);
+  font-family: var(--font-main);
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition:
+    background-color var(--transition-link),
+    opacity var(--transition-link),
+    transform var(--transition-scale);
+
+  :global(svg) {
+    font-size: 1em;
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+.btnSecondary {
+  background: oklch(from var(--text) l c h / 0.08);
+  color: var(--text);
+
+  @include is-hover {
+    background: oklch(from var(--text) l c h / 0.14);
+  }
+}
+
+.btnDanger {
+  background: transparent;
+  color: oklch(0.7 0.18 25);
+  border: 1px solid oklch(0.5 0.2 25 / 0.35);
+
+  @include is-hover {
+    background: oklch(0.5 0.2 25 / 0.18);
+    color: oklch(0.78 0.18 25);
+  }
+}
+
+.btnPrimary {
+  background: oklch(0.97 0 0);
+  color: #111;
+
+  @include is-hover {
+    background: oklch(1 0 0);
+  }
+}
+
+.linkBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  color: oklch(from var(--text) l c h / 0.7);
+  background: transparent;
+  padding: 0.35rem 0.2rem;
+  border-radius: var(--radius-2);
+  transition: color var(--transition-link);
+
+  :global(svg) {
+    font-size: 1em;
+  }
+
+  @include is-hover {
+    color: var(--text);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// ── GitHub tab specifics ───────────────────────────────────────
+
+.emptyState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-2);
+  padding: 1.5rem 1rem;
+  color: oklch(from var(--text) l c h / 0.7);
+  font-size: 0.85rem;
+
+  :global(svg) {
+    font-size: 1.1em;
+  }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.connectPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--size-3);
+  padding: var(--size-5) var(--size-3);
+  background: oklch(from var(--text) l c h / 0.04);
+  border: 1px dashed oklch(from var(--text) l c h / 0.18);
+  border-radius: var(--radius-3);
+  text-align: center;
+}
+
+.connectIcon {
+  width: 3rem;
+  height: 3rem;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-rounded);
+  background: oklch(from var(--text) l c h / 0.1);
+  color: var(--text);
+  font-size: 1.5rem;
+}
+
+.connectDesc {
+  font-size: 0.85rem;
+  color: oklch(from var(--text) l c h / 0.8);
+  line-height: 1.5;
+  max-width: 340px;
+}
+
+.installRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.installChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: var(--radius-rounded);
+  font-size: 0.78rem;
+  background: oklch(from var(--text) l c h / 0.06);
+  border: 1px solid oklch(from var(--text) l c h / 0.1);
+  color: oklch(from var(--text) l c h / 0.85);
+  transition:
+    background-color var(--transition-link),
+    color var(--transition-link),
+    border-color var(--transition-link);
+
+  :global(svg) {
+    font-size: 1em;
+  }
+
+  @include is-hover {
+    background: oklch(from var(--text) l c h / 0.12);
+    color: var(--text);
+  }
+}
+
+.installChipActive {
+  background: oklch(from var(--text) l c h / 0.18);
+  border-color: oklch(from var(--text) l c h / 0.25);
+  color: var(--text);
+}
+
+.repoList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  max-height: 260px;
+  overflow-y: auto;
+  border: 1px solid oklch(from var(--text) l c h / 0.1);
+  border-radius: var(--radius-2);
+  padding: 0.3rem;
+  background: oklch(from var(--text) l c h / 0.03);
+  @include no-scrollbar;
+}
+
+.repoItem {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.65rem;
+  background: transparent;
+  border-radius: var(--radius-2);
+  text-align: left;
+  transition: background-color var(--transition-link);
+
+  :global(svg) {
+    flex-shrink: 0;
+    color: oklch(from var(--text) l c h / 0.7);
+    font-size: 1em;
+  }
+
+  @include is-hover {
+    background: oklch(from var(--text) l c h / 0.08);
+  }
+}
+
+.repoItemActive {
+  background: oklch(from var(--text) l c h / 0.14);
+
+  :global(svg) {
+    color: var(--text);
+  }
+
+  @include is-hover {
+    background: oklch(from var(--text) l c h / 0.16);
+  }
+}
+
+.repoBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.repoName {
+  font-size: 0.82rem;
+  color: var(--text);
+  font-weight: 500;
+  @include ellipsis;
+}
+
+.repoDesc {
+  font-size: 0.72rem;
+  color: oklch(from var(--text) l c h / 0.6);
+  @include ellipsis;
+}
+
+.repoBranchBadge {
+  font-size: 0.7rem;
+  color: oklch(from var(--text) l c h / 0.6);
+  background: oklch(from var(--text) l c h / 0.08);
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-rounded);
+  flex-shrink: 0;
+}

@@ -27,6 +27,7 @@ model User {
   accounts    Account[]
   sessions    Session[]
   memberships Membership[]
+  githubInstallations GitHubInstallation[]
 }
 
 model Account {
@@ -63,6 +64,25 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+// GitHub App installations — one row per installation a user has authorized.
+// We only store the installation_id; actual access tokens are minted on demand
+// (1h TTL) and never persisted.
+model GitHubInstallation {
+  id             String   @id @default(cuid())
+  userId         String
+  installationId String   @unique
+  accountLogin   String
+  accountType    String
+  accountId      String
+  suspended      Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model PasswordResetToken {
