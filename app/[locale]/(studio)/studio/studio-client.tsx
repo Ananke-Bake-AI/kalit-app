@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import { brokerFetch } from "@/lib/broker-direct"
+import { consumeStream } from "@/lib/stream-consumer"
 import { useStudioStore } from "@/stores/studio"
 import { useI18n } from "@/stores/i18n"
 import { useAppStore } from "@/stores/app"
@@ -76,6 +77,9 @@ export function StudioClient() {
   const pendingPromptRef = useRef<string | null>(null)
   const activeSessionRef = useRef<string | null>(activeSessionId)
   const abortRef = useRef<AbortController | null>(null)
+  const followRef = useRef<AbortController | null>(null)
+  const lastEventIdRef = useRef<number>(0)
+  const sendingRef = useRef(false)
   activeSessionRef.current = activeSessionId
 
   // ── Hydrate progressMode from localStorage ──────────────
@@ -259,6 +263,100 @@ export function StudioClient() {
     handleSend(prompt)
   }, [activeSessionId, messagesLoading])
 
+  // ── Resume live stream on reconnect ─────────────────────
+  //
+  // If we land on a session whose agent is still running (tab reopened,
+  // network blip, dev proxy dropped the long POST), attach to the broker's
+  // /stream endpoint. The POST path owns the stream for the originating
+  // client; this path only fires when we DIDN'T originate the current turn.
+  // `sendingRef` is flipped true inside handleSend so the two never overlap.
+
+  useEffect(() => {
+    if (!activeSessionId || messagesLoading || sendingRef.current) return
+    const session = sessions.find((sess) => sess.id === activeSessionId)
+    if (!session?.isProcessing) return
+
+    // Starting a fresh follow for this (session, turn); reset cursor. The
+    // broker replays the full current run when lastEventId=0.
+    lastEventIdRef.current = 0
+    const controller = new AbortController()
+    followRef.current = controller
+
+    let cancelled = false
+    setIsStreaming(true)
+    setStreamSegments([])
+    setStreamThinking("")
+
+    ;(async () => {
+      try {
+        const res = await brokerFetch(
+          `/api/broker/sessions/${activeSessionId}/stream?lastEventId=${lastEventIdRef.current}`,
+          { signal: controller.signal },
+        )
+        if (!res.ok || !res.body) return
+
+        await consumeStream(
+          res,
+          {
+            onEventId: (id) => { lastEventIdRef.current = id },
+            onSegmentsChanged: (segs) => {
+              if (activeSessionRef.current === activeSessionId) setStreamSegments(segs)
+            },
+            onThinkingChanged: (th) => {
+              if (activeSessionRef.current === activeSessionId) setStreamThinking(th)
+            },
+            onWidget: ({ type, id }) => addActiveWidget({ type, id }),
+            onSuiteSelected: (payload) => {
+              const suite = payload?.suite
+              if (suite && suite !== "helper") setPage(suite as SuiteId)
+              else if (suite === "helper") setPage("default")
+              if (payload) {
+                setLastRouting({
+                  suite: payload.suite || "",
+                  confidence: payload.confidence || "",
+                  source: payload.source || "",
+                  reasoning: payload.reasoning,
+                  latencyMs: payload.latency_ms,
+                  at: Date.now(),
+                })
+              }
+            },
+            onError: (msg) => setError(msg),
+            onIdle: () => {},
+            onAttached: () => {},
+            onStreamClosed: () => {},
+          },
+          { signal: controller.signal },
+        )
+      } catch (err) {
+        if ((err as Error)?.name !== "AbortError") {
+          console.warn("[Studio] follow stream dropped:", err)
+        }
+      } finally {
+        if (cancelled) return
+        if (activeSessionRef.current === activeSessionId) {
+          setActiveWidgets([])
+          try { await fetchMessages(activeSessionId) } catch { /* silent */ }
+          fetchSessions()
+          fetchQuota()
+          resetStream()
+          notify()
+        }
+        if (followRef.current === controller) followRef.current = null
+      }
+    })()
+
+    return () => {
+      cancelled = true
+      controller.abort()
+    }
+  }, [
+    activeSessionId, messagesLoading, sessions,
+    setIsStreaming, setStreamSegments, setStreamThinking, setActiveWidgets,
+    addActiveWidget, setLastRouting, setPage, setError, resetStream,
+    fetchMessages, fetchSessions, fetchQuota, notify,
+  ])
+
   // ── Session selection ───────────────────────────────────
 
   const handleSessionSelect = useCallback((id: string) => {
@@ -328,6 +426,14 @@ export function StudioClient() {
       sessionId = await ensureSession()
       if (!sessionId) return
     }
+
+    // Detach the reconnect follower (if any) — this POST becomes the
+    // authoritative stream for the originating client. Flip sendingRef
+    // BEFORE aborting so the follow-effect's cleanup doesn't re-open.
+    sendingRef.current = true
+    followRef.current?.abort()
+    followRef.current = null
+    lastEventIdRef.current = 0
 
     setError(null)
     setIsStreaming(true)
@@ -596,6 +702,7 @@ export function StudioClient() {
       }
       resetStream()
       abortRef.current = null
+      sendingRef.current = false
       // Agent turn finished — nudge the user if they've wandered off.
       notify()
     }
