@@ -186,9 +186,6 @@ export const StreamSegments = memo(function StreamSegments({
         return rendered
       })()}
 
-        return null
-      })}
-
       {/* Typing dots + stop button */}
       <div className={s.footer}>
         <div className={s.dots}>
