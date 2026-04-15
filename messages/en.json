@@ -820,7 +820,8 @@
     "importRepoGhConnected": "Connected — {count} repo(s) granted",
     "importRepoGhUnlink": "Unlink this account",
     "importRepoGhUnlinkConfirm": "Unlink {account} from Kalit? The GitHub App will be uninstalled from that account.",
-    "importRepoGhUnlinkFailed": "Could not unlink this account."
+    "importRepoGhUnlinkFailed": "Could not unlink this account.",
+    "repoLinkedChat": "**Repository linked:** `{repo}`\n\nTell me what you'd like to do with it — for example:\n- fix a bug or regression\n- add a new feature or page\n- refactor or clean up a specific file\n- explain how part of the code works\n- update the README or docs"
   },
   "seo": {
     "homeTitle": "Build, Launch, Grow, and Secure with AI",

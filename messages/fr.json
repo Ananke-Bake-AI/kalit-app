@@ -820,7 +820,8 @@
     "importRepoGhConnected": "Connecté — {count} dépôt(s) autorisé(s)",
     "importRepoGhUnlink": "Dissocier ce compte",
     "importRepoGhUnlinkConfirm": "Dissocier {account} de Kalit ? L'application GitHub sera désinstallée de ce compte.",
-    "importRepoGhUnlinkFailed": "Impossible de dissocier ce compte."
+    "importRepoGhUnlinkFailed": "Impossible de dissocier ce compte.",
+    "repoLinkedChat": "**Dépôt connecté :** `{repo}`\n\nDis-moi ce que tu veux en faire — par exemple :\n- corriger un bug ou une régression\n- ajouter une fonctionnalité ou une page\n- refactoriser ou nettoyer un fichier précis\n- expliquer comment une partie du code fonctionne\n- mettre à jour le README ou la doc"
   },
   "seo": {
     "homeTitle": "Créez, lancez, développez et sécurisez avec l'IA",

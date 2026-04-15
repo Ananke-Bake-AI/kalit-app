@@ -43,11 +43,31 @@ type Tab = "github" | "manual"
 export function ImportRepoModal({ sessionId, onClose, onEnsureSession }: ImportRepoModalProps) {
   const { t } = useI18n()
   const setImportedRepo = useStudioStore((st) => st.setImportedRepo)
+  const addMessage = useStudioStore((st) => st.addMessage)
   const existing = useStudioStore((st) => st.importedRepo)
 
   const [tab, setTab] = useState<Tab>("github")
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+
+  // Pushes a local "repo linked" notice into the chat so the user knows what
+  // to do next. `temp-` prefix makes the store's merge dedup carry it across
+  // server-side refreshes (it has no server counterpart, so it's kept).
+  const pushRepoLinkedNotice = useCallback((repoName: string) => {
+    const content = t("studio.repoLinkedChat").replace("{repo}", repoName)
+    addMessage({
+      id: `temp-repolinked-${Date.now()}`,
+      role: "assistant",
+      content,
+      createdAt: new Date().toISOString(),
+    })
+  }, [addMessage, t])
+
+  const handleAttached = useCallback((r: ImportedRepoState) => {
+    setImportedRepo(r)
+    pushRepoLinkedNotice(repoDisplayName(r.url))
+    onClose()
+  }, [setImportedRepo, pushRepoLinkedNotice, onClose])
 
   // Escape to close
   useEffect(() => {
@@ -97,7 +117,7 @@ export function ImportRepoModal({ sessionId, onClose, onEnsureSession }: ImportR
             setError={setError}
             setBusy={setBusy}
             busy={busy}
-            onAttached={(r) => { setImportedRepo(r); onClose() }}
+            onAttached={handleAttached}
           />
         ) : (
           <ManualTab
@@ -107,7 +127,7 @@ export function ImportRepoModal({ sessionId, onClose, onEnsureSession }: ImportR
             setBusy={setBusy}
             busy={busy}
             existing={existing}
-            onAttached={(r) => { setImportedRepo(r); onClose() }}
+            onAttached={handleAttached}
           />
         )}
 
@@ -671,4 +691,18 @@ function DetachButton({ sessionId, busy, setBusy, setError, onDetached }: Detach
       {t("studio.importRepoDetach")}
     </button>
   )
+}
+
+// ─── Helpers ───────────────────────────────────────────────────
+
+// Renders `owner/repo` when possible, falls back to hostname or the raw URL.
+// Kept matcher-tolerant because the manual tab accepts any git URL.
+function repoDisplayName(url: string): string {
+  try {
+    const u = new URL(url)
+    const path = u.pathname.replace(/^\/+/, "").replace(/\.git$/, "")
+    return path || u.host
+  } catch {
+    return url.replace(/\.git$/, "")
+  }
 }
