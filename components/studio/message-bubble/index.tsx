@@ -170,68 +170,94 @@ export const MessageBubble = memo(function MessageBubble({ message, showToolBadg
 
         {/* Render segments or plain text */}
         {segments ? (
-          segments.map((seg, i) => {
-            if (seg.type === "text" && seg.content) {
-              return (
-                <div key={i} className={s.markdown}>
-                  <ReactMarkdown remarkPlugins={[remarkGfm]} components={{ a: MarkdownLink }}>
-                    {seg.content}
-                  </ReactMarkdown>
-                </div>
-              )
-            }
-            if (seg.type === "tool") {
-              return (
-                <div key={i} className={s.toolStep}>
-                  <Icon icon="hugeicons:tick-02" className={s.toolDone} />
-                  <span className={s.toolLabelDone}>
-                    {seg.name}
-                  </span>
-                </div>
-              )
-            }
-            if (seg.type === "progress") {
-              const msgs = seg.messages || []
-              const visible = msgs.length > 3 ? msgs.slice(-3) : msgs
-              const hidden = msgs.length - visible.length
-              return (
-                <div key={i} className={s.progressSegment}>
-                  {hidden > 0 && (
-                    <span className={s.progressHidden}>
-                      {hidden} previous updates
+          (() => {
+            const rendered: React.ReactNode[] = []
+            let i = 0
+            while (i < segments.length) {
+              const seg = segments[i]
+
+              if (seg.type === "text" && seg.content) {
+                rendered.push(
+                  <div key={i} className={s.markdown}>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]} components={{ a: MarkdownLink }}>
+                      {seg.content}
+                    </ReactMarkdown>
+                  </div>
+                )
+                i++
+                continue
+              }
+              if (seg.type === "tool") {
+                let count = 1
+                while (
+                  i + count < segments.length &&
+                  segments[i + count].type === "tool" &&
+                  (segments[i + count] as { name: string }).name === seg.name
+                ) {
+                  count++
+                }
+                rendered.push(
+                  <div key={i} className={s.toolStep}>
+                    <Icon icon="hugeicons:tick-02" className={s.toolDone} />
+                    <span className={s.toolLabelDone}>
+                      {seg.name}
                     </span>
-                  )}
-                  {visible.map((m, j) => (
-                    <div key={j} className={s.progressLine}>
-                      <Icon icon="hugeicons:tick-02" className={s.progressCheck} />
-                      <span className={s.progressTextDone}>{m}</span>
-                    </div>
-                  ))}
-                </div>
-              )
+                    {count > 1 && <span className={s.toolCount}>x{count}</span>}
+                  </div>
+                )
+                i += count
+                continue
+              }
+              if (seg.type === "progress") {
+                const msgs = seg.messages || []
+                const visible = msgs.length > 3 ? msgs.slice(-3) : msgs
+                const hidden = msgs.length - visible.length
+                rendered.push(
+                  <div key={i} className={s.progressSegment}>
+                    {hidden > 0 && (
+                      <span className={s.progressHidden}>
+                        {hidden} previous updates
+                      </span>
+                    )}
+                    {visible.map((m, j) => (
+                      <div key={j} className={s.progressLine}>
+                        <Icon icon="hugeicons:tick-02" className={s.progressCheck} />
+                        <span className={s.progressTextDone}>{m}</span>
+                      </div>
+                    ))}
+                  </div>
+                )
+                i++
+                continue
+              }
+              if (seg.type === "widget" && seg.widgetType && seg.widgetId) {
+                rendered.push(
+                  <WidgetRenderer
+                    key={i}
+                    widgetType={seg.widgetType}
+                    widgetId={seg.widgetId}
+                    messageCreatedAt={message.createdAt}
+                    onCompleted={onRefreshMessages}
+                    onPreviewFile={onPreviewFile}
+                  />
+                )
+                i++
+                continue
+              }
+              if (seg.type === "file" && seg.name) {
+                rendered.push(
+                  <div key={i} className={s.fileSegment}>
+                    <Icon icon="hugeicons:file-02" />
+                    <span>{seg.name}</span>
+                  </div>
+                )
+                i++
+                continue
+              }
+              i++
             }
-            if (seg.type === "widget" && seg.widgetType && seg.widgetId) {
-              return (
-                <WidgetRenderer
-                  key={i}
-                  widgetType={seg.widgetType}
-                  widgetId={seg.widgetId}
-                  messageCreatedAt={message.createdAt}
-                  onCompleted={onRefreshMessages}
-                  onPreviewFile={onPreviewFile}
-                />
-              )
-            }
-            if (seg.type === "file" && seg.name) {
-              return (
-                <div key={i} className={s.fileSegment}>
-                  <Icon icon="hugeicons:file-02" />
-                  <span>{seg.name}</span>
-                </div>
-              )
-            }
-            return null
-          })
+            return rendered
+          })()
         ) : (
           displayText && (
             <div className={s.markdown}>
