@@ -767,6 +767,8 @@
     "showFiles": "Show files",
     "focusMode": "Enter focus mode",
     "exitFocus": "Exit focus mode",
+    "darkMode": "深色模式",
+    "lightMode": "浅色模式",
     "notifyOff": "Notifications off",
     "notifyTitle": "Tab title flashes when ready",
     "notifyTitleSound": "Tab title + sound when ready",

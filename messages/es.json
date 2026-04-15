@@ -767,6 +767,8 @@
     "showFiles": "Show files",
     "focusMode": "Enter focus mode",
     "exitFocus": "Exit focus mode",
+    "darkMode": "Modo oscuro",
+    "lightMode": "Modo claro",
     "notifyOff": "Notifications off",
     "notifyTitle": "Tab title flashes when ready",
     "notifyTitleSound": "Tab title + sound when ready",

@@ -64,3 +64,22 @@
   --gradient-color-5: linear-gradient(to right, var(--color-5), var(--color-5-secondary));
   --gradient-color-5-radial: radial-gradient(120% 120% at 8% 8%, var(--color-5-secondary), var(--color-5));
 }
+
+// ── Studio dark theme ─────────────────────────────────────
+.studio-dark {
+  --body: oklch(0.13 0.005 260);
+  --text: oklch(0.93 0.005 260);
+  --text-secondary: oklch(0.58 0.01 260);
+  --bg-1: oklch(0.16 0.005 260);
+
+  --glass-15: oklch(1 0 0 / 0.06);
+  --glass-50: oklch(1 0 0 / 0.04);
+  --glass-75: oklch(1 0 0 / 0.03);
+
+  --shadow-1: 0 -4px 8px 4px oklch(0 0 0 / 0.5) inset, 0 24px 100px -8px oklch(0 0 0 / 0.5);
+  --shadow-2: 0 24px 40px -8px oklch(0 0 0 / 0.4);
+
+  --gradient-border-glass: linear-gradient(to top, oklch(1 0 0 / 0.1) 0%, oklch(1 0 0 / 0.03) 75%);
+  --gradient-border-glass-2: linear-gradient(to bottom, oklch(1 0 0 / 0.08) 0%, oklch(1 0 0 / 0.02) 75%);
+  --gradient-border-glass-3: linear-gradient(to bottom, oklch(1 0 0 / 0.1) 0%, oklch(1 0 0 / 0.02) 75%);
+}

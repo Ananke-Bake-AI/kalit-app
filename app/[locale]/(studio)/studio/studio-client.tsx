@@ -22,6 +22,7 @@ import { FileExplorer } from "@/components/studio/file-explorer"
 import { FilePreviewModal } from "@/components/studio/file-preview-modal"
 import { RoutingDebugPanel } from "@/components/studio/routing-debug"
 import { useStudioFocus } from "@/app/[locale]/(studio)/studio-focus-context"
+import { useStudioTheme } from "@/app/[locale]/(studio)/studio-theme-context"
 import type { ChatSession, StreamSegment, UploadedFile } from "@/types/studio"
 import type { SuiteId } from "@/lib/suites"
 import s from "./studio.module.scss"
@@ -33,6 +34,7 @@ export function StudioClient() {
   const { locale, t } = useI18n()
   const setPage = useAppStore((s) => s.setPage)
   const { focusMode, toggleFocus } = useStudioFocus()
+  const { darkMode, toggleTheme } = useStudioTheme()
 
   const {
     sessions,
@@ -899,6 +901,13 @@ export function StudioClient() {
                     : "hugeicons:volume-high-01"
               }
             />
+          </button>
+          <button
+            className={s.panelToggle}
+            onClick={toggleTheme}
+            title={darkMode ? t("studio.lightMode") : t("studio.darkMode")}
+          >
+            <Icon icon={darkMode ? "hugeicons:sun-03" : "hugeicons:moon-02"} />
           </button>
           <button
             className={s.panelToggle}
