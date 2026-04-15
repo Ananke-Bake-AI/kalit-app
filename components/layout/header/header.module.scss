@@ -32,9 +32,9 @@
     }
 
     .bg {
-      background-color: oklch(1 0 0 / 0.5);
+      background-color: var(--glass-75);
       box-shadow:
-        0 -4px 8px 4px oklch(1 0 0 / 0.75) inset,
+        var(--glass-inset-shadow),
         0 24px 100px -8px oklch(0 0 0 / 0.25);
 
       @include max($responsiveNav) {
@@ -125,7 +125,7 @@
   @include glass($bg: var(--glass-75), $blur: true);
   @include border-glass;
   box-shadow:
-    0 -4px 8px 4px oklch(1 0 0 / 0.75) inset,
+    var(--glass-inset-shadow),
     0 16px 40px -24px oklch(0 0 0 / 0.15);
 }
 

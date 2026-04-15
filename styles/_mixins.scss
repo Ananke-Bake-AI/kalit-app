@@ -154,7 +154,7 @@ $responsiveSettings: 950px;
 @mixin glass($shadow: true, $bg: var(--glass-50), $blur: false) {
   background-color: $bg;
   @if $shadow {
-    box-shadow: 0 -4px 8px 4px oklch(1 0 0 / 0.75) inset;
+    box-shadow: var(--glass-inset-shadow);
   }
   @if $blur {
     backdrop-filter: blur(16px) saturate(100%);
