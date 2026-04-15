@@ -64,6 +64,7 @@ export default async function FlowPage() {
   return (
     <>
       <SuiteLandingHero
+        suiteId="flow"
         suiteAppUrl={suiteAppUrl}
         marketingPath={flowMarketingPath}
         gradientColors={flowGradientColors}
@@ -81,6 +82,7 @@ export default async function FlowPage() {
         rightSlot={<FlowHeroPrompt />}
       />
       <SuiteLandingFeatures
+        suiteId="flow"
         suiteAppUrl={suiteAppUrl}
         marketingPath={flowMarketingPath}
         headingSubtitle={t("suiteLanding.flow.featuresSubtitle")}
@@ -104,6 +106,7 @@ export default async function FlowPage() {
         poweredTitle={t("suiteLanding.poweredByAI")}
       />
       <SuiteLandingPlans
+        suiteId="flow"
         suiteAppUrl={suiteAppUrl}
         marketingPath={flowMarketingPath}
         headingSubtitle={t("suiteLanding.ourPricing")}
@@ -116,6 +119,7 @@ export default async function FlowPage() {
         heading={<>{t("suiteLanding.flowPortfolioHeadingPre")} <br /><Underline stroke="url(#color-2)">{t("suiteLanding.flowPortfolioHeadingBold")}</Underline></>}
         paragraph={<>{t("suiteLanding.flowPortfolioParagraphPre")} <Underline stroke="url(#color-2)">{t("suiteLanding.flowPortfolioParagraphBold")}</Underline> {t("suiteLanding.flowPortfolioParagraphPost")}</>}
         buttonText={t("suiteLanding.startBuilding")}
+        suiteId="flow"
         suiteAppUrl={suiteAppUrl}
         marketingPath={flowMarketingPath}
       />

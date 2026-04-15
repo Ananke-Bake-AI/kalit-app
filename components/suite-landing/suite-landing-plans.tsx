@@ -6,11 +6,13 @@ import { FlowSuiteCtaButton } from "@/components/flow-suite-cta-button"
 import { Heading } from "@/components/heading"
 import { Plan, type PlanProps } from "@/components/plan"
 import sPlan from "@/components/plan/plan.module.scss"
+import type { SuiteId } from "@/lib/suites"
 import type { Tag } from "@/types/Tag"
 import { type ReactNode } from "react"
 import s from "./suite-landing-plans.module.scss"
 
 export interface SuiteLandingPlansProps {
+  suiteId: SuiteId
   suiteAppUrl: string
   marketingPath: string
   headingSubtitle: string
@@ -27,6 +29,7 @@ export interface SuiteLandingPlansProps {
 }
 
 export function SuiteLandingPlans({
+  suiteId,
   suiteAppUrl,
   marketingPath,
   headingSubtitle,
@@ -58,6 +61,7 @@ export function SuiteLandingPlans({
                     </Button>
                   ) : (
                     <FlowSuiteCtaButton
+                      suiteId={suiteId}
                       suiteAppUrl={suiteAppUrl}
                       marketingPath={marketingPath}
                       variant="primary"

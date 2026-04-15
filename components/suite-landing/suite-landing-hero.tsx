@@ -6,6 +6,7 @@ import { FlowSuiteCtaButton } from "@/components/flow-suite-cta-button"
 import { Heading } from "@/components/heading"
 import { Icon } from "@/components/icon"
 import { AnimatedLine } from "@/components/svg/animated-line"
+import type { SuiteId } from "@/lib/suites"
 import type { Tag } from "@/types/Tag"
 import clsx from "clsx"
 import { type ReactNode } from "react"
@@ -28,6 +29,7 @@ export interface SuiteLandingHeroLink {
 }
 
 export interface SuiteLandingHeroProps {
+  suiteId: SuiteId
   suiteAppUrl: string
   marketingPath: string
   gradientColors: [string, string]
@@ -42,6 +44,7 @@ export interface SuiteLandingHeroProps {
 }
 
 export function SuiteLandingHero({
+  suiteId,
   suiteAppUrl,
   marketingPath,
   gradientColors,
@@ -73,7 +76,7 @@ export function SuiteLandingHero({
               </ul>
             ) : null}
             <div className={s.ctaBlock}>
-              <FlowSuiteCtaButton suiteAppUrl={suiteAppUrl} marketingPath={marketingPath} circle className={s.button}>
+              <FlowSuiteCtaButton suiteId={suiteId} suiteAppUrl={suiteAppUrl} marketingPath={marketingPath} circle className={s.button}>
                 {ctaLabel}
               </FlowSuiteCtaButton>
             </div>

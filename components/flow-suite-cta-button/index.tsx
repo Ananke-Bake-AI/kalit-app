@@ -3,10 +3,12 @@
 import { Button } from "@/components/button"
 import { FLOW_MARKETING_PATH } from "@/lib/flow-suite-entry"
 import { suiteMarketingLoginHref } from "@/lib/suite-marketing-entry"
+import type { SuiteId } from "@/lib/suites"
 import { useSession } from "next-auth/react"
 import { useState, type ReactNode } from "react"
 
 export interface FlowSuiteCtaButtonProps {
+  suiteId: SuiteId
   suiteAppUrl: string
   /** Page marketing pour le retour après login (ex. `/flow`, `/pentest`). */
   marketingPath?: string
@@ -17,6 +19,7 @@ export interface FlowSuiteCtaButtonProps {
 }
 
 export function FlowSuiteCtaButton({
+  suiteId,
   suiteAppUrl,
   marketingPath = FLOW_MARKETING_PATH,
   className,
@@ -49,7 +52,7 @@ export function FlowSuiteCtaButton({
             const res = await fetch("/api/suite/token", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ suiteId: "flow" }),
+              body: JSON.stringify({ suiteId }),
             })
             const data = await res.json()
             if (!res.ok || !data.redirectUrl) {
@@ -61,7 +64,7 @@ export function FlowSuiteCtaButton({
             if (url.includes("localhost")) {
               const tokenMatch = url.match(/[?&]token=([^&]+)/)
               const token = tokenMatch ? tokenMatch[1] : ""
-              url = `/api/suite/redirect?suiteId=flow&token=${token}`
+              url = `/api/suite/redirect?suiteId=${suiteId}&token=${token}`
             }
             window.location.href = url
           } catch {

@@ -66,6 +66,7 @@ export default async function ProjectPage() {
     <>
       <SuiteLandingHero
         className={s.hero}
+        suiteId="project"
         suiteAppUrl={suiteAppUrl}
         marketingPath={projectMarketingPath}
         gradientColors={projectGradientColors}
@@ -83,6 +84,7 @@ export default async function ProjectPage() {
         rightSlot={<ProjectHeroPrompt />}
       />
       <SuiteLandingFeatures
+        suiteId="project"
         suiteAppUrl={suiteAppUrl}
         marketingPath={projectMarketingPath}
         headingSubtitle={t("suiteLanding.project.featuresSubtitle")}
@@ -106,6 +108,7 @@ export default async function ProjectPage() {
         poweredTitle={t("suiteLanding.poweredByAI")}
       />
       <SuiteLandingPlans
+        suiteId="project"
         suiteAppUrl={suiteAppUrl}
         marketingPath={projectMarketingPath}
         headingSubtitle={t("suiteLanding.ourPricing")}
@@ -119,6 +122,7 @@ export default async function ProjectPage() {
         heading={<>{t("suiteLanding.projectPortfolioHeadingPre")} <Underline stroke="url(#color-4-accent)">{t("suiteLanding.projectPortfolioHeadingBold")}</Underline></>}
         paragraph={<>{t("suiteLanding.projectPortfolioParagraphPre")} <Underline stroke="url(#color-4)">{t("suiteLanding.projectPortfolioParagraphBold")}</Underline> {t("suiteLanding.projectPortfolioParagraphPost")}</>}
         buttonText={t("suiteLanding.tryFree")}
+        suiteId="project"
         suiteAppUrl={suiteAppUrl}
         marketingPath={projectMarketingPath}
       />

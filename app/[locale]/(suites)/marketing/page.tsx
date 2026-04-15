@@ -142,6 +142,7 @@ export default async function MarketingPage() {
   return (
     <>
       <SuiteLandingHero
+        suiteId="marketing"
         suiteAppUrl={suiteAppUrl}
         marketingPath={marketingMarketingPath}
         gradientColors={marketingGradientColors}
@@ -166,6 +167,7 @@ export default async function MarketingPage() {
         </Marquee>
       </div>
       <SuiteLandingFeatures
+        suiteId="marketing"
         suiteAppUrl={suiteAppUrl}
         marketingPath={marketingMarketingPath}
         headingSubtitle={t("suiteLanding.marketing.featuresSubtitle")}
@@ -214,6 +216,7 @@ export default async function MarketingPage() {
         poweredTitle={t("suiteLanding.poweredByAI")}
       />
       <SuiteLandingPlans
+        suiteId="marketing"
         suiteAppUrl={suiteAppUrl}
         marketingPath={marketingMarketingPath}
         headingSubtitle={t("suiteLanding.ourPricing")}

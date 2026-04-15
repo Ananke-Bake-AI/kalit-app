@@ -7,6 +7,7 @@ import { type ReactNode, useRef } from "react"
 
 import { FlowSuiteCtaButton } from "@/components/flow-suite-cta-button"
 import { FLOW_MARKETING_PATH } from "@/lib/flow-suite-entry"
+import type { SuiteId } from "@/lib/suites"
 import { Button } from "@/components/button"
 import { Container } from "@/components/container"
 import { Heading } from "@/components/heading"
@@ -21,6 +22,8 @@ export interface PortfolioProps {
   link?: string
   /** Si défini : connecté → app suite, sinon → login avec retour Flow */
   suiteAppUrl?: string
+  /** Suite ciblée pour le SSO (requis si `suiteAppUrl` est défini). */
+  suiteId?: SuiteId
   /** Page marketing pour le callback login (ex. `/pentest`). */
   marketingPath?: string
   className?: string
@@ -33,6 +36,7 @@ export function Portfolio({
   buttonText,
   link,
   suiteAppUrl,
+  suiteId,
   marketingPath = FLOW_MARKETING_PATH,
   className
 }: PortfolioProps) {
@@ -81,8 +85,8 @@ export function Portfolio({
             </div>
           ))}
         </div>
-        {suiteAppUrl ? (
-          <FlowSuiteCtaButton suiteAppUrl={suiteAppUrl} marketingPath={marketingPath} className={s.btn} circle>
+        {suiteAppUrl && suiteId ? (
+          <FlowSuiteCtaButton suiteId={suiteId} suiteAppUrl={suiteAppUrl} marketingPath={marketingPath} className={s.btn} circle>
             {buttonText}
           </FlowSuiteCtaButton>
         ) : (

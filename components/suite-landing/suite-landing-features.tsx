@@ -3,6 +3,7 @@
 import { Container } from "@/components/container"
 import { FlowSuiteCtaButton } from "@/components/flow-suite-cta-button"
 import { Heading } from "@/components/heading"
+import type { SuiteId } from "@/lib/suites"
 import type { Tag } from "@/types/Tag"
 import { useGSAP } from "@gsap/react"
 import gsap from "gsap"
@@ -17,6 +18,7 @@ export interface SuiteLandingFeatureCard {
 }
 
 export interface SuiteLandingFeaturesProps {
+  suiteId: SuiteId
   suiteAppUrl: string
   marketingPath: string
   headingSubtitle: string
@@ -27,6 +29,7 @@ export interface SuiteLandingFeaturesProps {
 }
 
 export function SuiteLandingFeatures({
+  suiteId,
   suiteAppUrl,
   marketingPath,
   headingSubtitle,
@@ -87,7 +90,7 @@ export function SuiteLandingFeatures({
               <div className={s.left}>
                 <h3>{card.title}</h3>
                 <p>{card.text}</p>
-                <FlowSuiteCtaButton suiteAppUrl={suiteAppUrl} marketingPath={marketingPath} circle>
+                <FlowSuiteCtaButton suiteId={suiteId} suiteAppUrl={suiteAppUrl} marketingPath={marketingPath} circle>
                   {card.ctaLabel}
                 </FlowSuiteCtaButton>
               </div>
