@@ -67,27 +67,35 @@
 }
 
 .right {
-  width: 18rem;
+  width: 0;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   border-left: 1px solid oklch(from var(--text) l c h / 0.06);
   background: var(--glass-50);
-  transition: transform 0.35s var(--cubic);
+  overflow: hidden;
+  transition: width 0.35s var(--cubic);
+
+  &.rightOpen {
+    width: 18rem;
+  }
 
   @include max(1200px) {
     position: absolute;
     right: 0;
     top: 0;
     bottom: 0;
+    width: 18rem;
     @include glass($shadow: false, $blur: true);
     box-shadow: -4px 0 24px oklch(0 0 0 / 0.1);
     z-index: 100;
     // transform must come AFTER glass mixin (which sets translate3d(0,0,0) via performance)
     transform: translateX(100%);
+    overflow: visible;
 
     &.rightOpen {
       transform: translateX(0);
+      width: 18rem;
     }
   }
 }
