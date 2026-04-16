@@ -3,15 +3,12 @@
 $responsive: 1200px;
 
 .hero {
-  padding: var(--spacing-2-5) 0;
+  padding: var(--spacing-1) 0 var(--spacing-2-5);
+  text-align: center;
 
   @include max($responsive) {
     text-align: center;
     width: 100vw;
-
-    [data-paragraph] {
-      margin-inline: auto;
-    }
 
     .ctaBlock,
     .linkRow {
@@ -34,10 +31,6 @@ $responsive: 1200px;
 
     [data-paragraph] {
       max-width: 100%;
-
-      @include min($responsive) {
-        width: calc(400px + 100 * (100vw - 320px) / 1080);
-      }
     }
   }
 
@@ -66,16 +59,18 @@ $responsive: 1200px;
 }
 
 .right {
-  min-width: 0;
-  position: absolute;
-  right: 0;
-  top: 42%;
-  transform: translateY(-50%);
-  width: calc(400px + 150 * (100vw - 320px) / 1080);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: var(--spacing-2);
+  padding-inline: calc(250 * (100vw - 600px) / 1080);
 
-  @include max($responsive) {
-    display: none;
-  }
+  // @include max($responsive) {
+  //   display: none;
+  // }
 }
 
 .list {
@@ -83,9 +78,10 @@ $responsive: 1200px;
   display: flex;
   align-items: center;
   gap: 0.75em 2em;
-  margin-top: var(--spacing-1-5);
+  margin-top: var(--spacing-1);
   white-space: nowrap;
   flex-wrap: wrap;
+  justify-content: center;
 
   @include max($responsive) {
     justify-content: center;
@@ -162,16 +158,8 @@ $responsive: 1200px;
   position: absolute;
   z-index: -1;
   width: 130vw;
-  left: 0%;
-  bottom: -30%;
-  top: -40%;
+  inset: -80% -40% -100%;
   overflow: hidden;
-
-  @include max(600px) {
-    left: -15vw;
-    bottom: 30%;
-    top: -60%;
-  }
 
   &::before {
     content: "";

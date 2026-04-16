@@ -1,4 +1,3 @@
-import { isValidLocale, type Locale } from "@/lib/i18n"
 import { Marquee } from "@/components/marquee"
 import {
   MarketingHeroPrompt,
@@ -7,6 +6,7 @@ import {
   SuiteLandingHow,
   SuiteLandingPlans
 } from "@/components/suite-landing"
+import { isValidLocale, type Locale } from "@/lib/i18n"
 import { getServerTranslation, getTranslationForLocale } from "@/lib/i18n-server"
 import { MetadataSeo } from "@/lib/metadata"
 import { getSuiteById } from "@/lib/suites"
@@ -24,7 +24,7 @@ export const viewport = {
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: raw } = await params
-  const locale = isValidLocale(raw) ? raw as Locale : "en"
+  const locale = isValidLocale(raw) ? (raw as Locale) : "en"
   const t = await getTranslationForLocale(locale)
   return MetadataSeo({
     fullTitle: t("seo.marketingTitle"),
@@ -149,12 +149,7 @@ export default async function MarketingPage() {
         headingTag="h1"
         headingSubtitle={t("suiteLanding.marketing.heroSubtitle")}
         headingParagraph={t("suiteLanding.marketing.heroParagraph")}
-        headingTitle={
-          <>
-            {titleParts[0]}
-            {titleParts[1] && <><br />{titleParts[1]}</>}
-          </>
-        }
+        headingTitle={t("suiteLanding.marketing.heroTitle")}
         listItems={heroList}
         ctaLabel={t("suiteLanding.startCampaign")}
         rightSlot={<MarketingHeroPrompt />}
@@ -162,7 +157,15 @@ export default async function MarketingPage() {
       <div className={s.marquee}>
         <Marquee className={s.marqueeScroll}>
           {ADS.map((ad) => (
-            <img key={ad.title} src={ad.image} alt={ad.title} width={335} height={105} draggable={false} loading="lazy" />
+            <img
+              key={ad.title}
+              src={ad.image}
+              alt={ad.title}
+              width={335}
+              height={105}
+              draggable={false}
+              loading="lazy"
+            />
           ))}
         </Marquee>
       </div>
@@ -175,7 +178,12 @@ export default async function MarketingPage() {
         headingTitle={
           <>
             {featTitleParts[0]}
-            {featTitleParts[1] && <><br />{featTitleParts[1]}</>}
+            {featTitleParts[1] && (
+              <>
+                <br />
+                {featTitleParts[1]}
+              </>
+            )}
           </>
         }
         cards={featureCards}
@@ -190,7 +198,12 @@ export default async function MarketingPage() {
         headingTitle={
           <>
             {howTitleParts[0]}
-            {howTitleParts[1] && <><br />{howTitleParts[1]}</>}
+            {howTitleParts[1] && (
+              <>
+                <br />
+                {howTitleParts[1]}
+              </>
+            )}
           </>
         }
         steps={[
@@ -223,9 +236,14 @@ export default async function MarketingPage() {
         headingParagraph={t("suiteLanding.pricingDesc")}
         headingTitle={
           <>
-            {t("suiteLanding.pricingTitle").split("\n").map((line, i) => (
-              <span key={i}>{i > 0 && <br />}{line}</span>
-            ))}
+            {t("suiteLanding.pricingTitle")
+              .split("\n")
+              .map((line, i) => (
+                <span key={i}>
+                  {i > 0 && <br />}
+                  {line}
+                </span>
+              ))}
           </>
         }
         plans={plans}

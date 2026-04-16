@@ -1,5 +1,6 @@
 "use client"
 
+import { Lines } from "@/app/[locale]/(home)/(components)/hero/lines"
 import { HeroPromptChat } from "@/components/hero-prompt-chat"
 import { Icon } from "@/components/icon"
 import { useAnimatedPlaceholder } from "@/hooks/use-animated-placeholder"
@@ -75,7 +76,9 @@ export function MarketingHeroPrompt(_props: MarketingHeroPromptProps) {
         sendLabel={t("suiteLanding.marketingSendLabel")}
         sendLogoId="marketing"
         showBlurBackground={false}
-      />
+      >
+        <Lines gradient="color-3" />
+      </HeroPromptChat>
       <div className={s.buttons}>
         {BUTTONS.map((button) => (
           <button key={button.label} type="button" className={s.btn}>
@@ -84,9 +87,7 @@ export function MarketingHeroPrompt(_props: MarketingHeroPromptProps) {
           </button>
         ))}
       </div>
-      <p className={s.mention}>
-        {t("suiteLanding.marketingMention")}
-      </p>
+      <p className={s.mention}>{t("suiteLanding.marketingMention")}</p>
     </>
   )
 }

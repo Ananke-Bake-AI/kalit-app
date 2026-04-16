@@ -1,13 +1,14 @@
 "use client"
 
+import { Lines } from "@/app/[locale]/(home)/(components)/hero/lines"
 import { HeroPromptChat } from "@/components/hero-prompt-chat"
 import { Icon } from "@/components/icon"
 import { useAnimatedPlaceholder } from "@/hooks/use-animated-placeholder"
 import { localePath } from "@/lib/i18n"
 import { createStudioSession, studioLoginHref } from "@/lib/studio-redirect"
 import { useI18n } from "@/stores/i18n"
-import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
 import { useCallback, useRef, useState } from "react"
 import s from "./suite-landing-hero.module.scss"
 
@@ -76,7 +77,9 @@ export function FlowHeroPrompt(_props: FlowHeroPromptProps) {
         sendLabel={t("suiteLanding.flowSendLabel")}
         sendLogoId="flow"
         showBlurBackground={false}
-      />
+      >
+        <Lines gradient="color-2" />
+      </HeroPromptChat>
       <div className={s.buttons}>
         {BUTTONS.map((button) => (
           <button key={button.label} type="button" className={s.btn}>
@@ -85,9 +88,7 @@ export function FlowHeroPrompt(_props: FlowHeroPromptProps) {
           </button>
         ))}
       </div>
-      <p className={s.mention}>
-        {t("suiteLanding.flowMention")}
-      </p>
+      <p className={s.mention}>{t("suiteLanding.flowMention")}</p>
     </>
   )
 }

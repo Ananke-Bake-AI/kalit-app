@@ -21,11 +21,13 @@ $responsiveArchitecture: 900px;
 
     [data-paragraph] {
       width: calc(400px + 50 * (100vw - 320px) / 1080);
+      margin-inline: 0;
     }
   }
 }
 
 .line {
+  @include fs(40px, 24, 128px);
   pointer-events: none;
   position: absolute;
   stroke-width: 0.14em;
@@ -33,10 +35,8 @@ $responsiveArchitecture: 900px;
   width: var(--width-line);
   bottom: 0.45em;
   overflow: visible;
-  left: 95.35%;
-  transform: translateY(36%);
 
-  @include max($responsiveArchitecture) {
+  @include max(1084px) {
     display: none;
   }
 
@@ -86,7 +86,6 @@ $responsiveArchitecture: 900px;
 
   .layer {
     transition: transform 0.8s var(--cubic);
-    width: 55%;
     height: calc(90px + 8 * (100vw - 320px) / 1080);
     position: relative;
     @include cornerShape(var(--radius-1));
@@ -96,6 +95,7 @@ $responsiveArchitecture: 900px;
     align-items: center;
     cursor: pointer;
     @include user-select;
+    padding-inline: var(--size-8);
 
     @include max($responsiveArchitecture) {
       width: 100%;

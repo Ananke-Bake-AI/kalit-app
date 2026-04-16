@@ -1,5 +1,6 @@
 "use client"
 
+import { Lines } from "@/app/[locale]/(home)/(components)/hero/lines"
 import { HeroPromptChat } from "@/components/hero-prompt-chat"
 import { Icon } from "@/components/icon"
 import { useAnimatedPlaceholder } from "@/hooks/use-animated-placeholder"
@@ -76,7 +77,9 @@ export function ProjectHeroPrompt(_props: ProjectHeroPromptProps) {
         sendLabel={t("suiteLanding.projectSendLabel")}
         sendLogoId="project"
         showBlurBackground={false}
-      />
+      >
+        <Lines gradient="color-4" />
+      </HeroPromptChat>
       <div className={s.buttons}>
         {BUTTONS.map((button) => (
           <button key={button.label} type="button" className={s.btn}>
@@ -85,9 +88,7 @@ export function ProjectHeroPrompt(_props: ProjectHeroPromptProps) {
           </button>
         ))}
       </div>
-      <p className={s.mention}>
-        {t("suiteLanding.projectMention")}
-      </p>
+      <p className={s.mention}>{t("suiteLanding.projectMention")}</p>
     </>
   )
 }

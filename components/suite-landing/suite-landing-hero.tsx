@@ -2,7 +2,6 @@
 
 import { Color4Bg } from "@/components/color4bg"
 import { Container } from "@/components/container"
-import { FlowSuiteCtaButton } from "@/components/flow-suite-cta-button"
 import { Heading } from "@/components/heading"
 import { Icon } from "@/components/icon"
 import { AnimatedLine } from "@/components/svg/animated-line"
@@ -66,7 +65,7 @@ export function SuiteLandingHero({
               {headingTitle}
             </Heading>
             {listItems.length > 0 ? (
-              <ul className={s.list}>
+              <ul className={s.list} data-reveal>
                 {listItems.map((item) => (
                   <li key={item.label}>
                     <Icon icon={item.icon} />
@@ -75,16 +74,18 @@ export function SuiteLandingHero({
                 ))}
               </ul>
             ) : null}
-            <div className={s.ctaBlock}>
+            {/* <div className={s.ctaBlock}>
               <FlowSuiteCtaButton suiteId={suiteId} suiteAppUrl={suiteAppUrl} marketingPath={marketingPath} circle className={s.button}>
                 {ctaLabel}
               </FlowSuiteCtaButton>
+            </div> */}
+          </div>
+          <div className={s.right}>
+            {rightSlot}
+            <div className={s.bg} data-reveal>
+              <Color4Bg className={s.gradient} style="blur-gradient" colors={gradientColors} />
             </div>
           </div>
-          <div className={s.right}>{rightSlot}</div>
-        </div>
-        <div className={s.bg} data-reveal>
-          <Color4Bg className={s.gradient} style="blur-gradient" colors={gradientColors} />
         </div>
       </Container>
     </section>

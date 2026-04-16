@@ -14,80 +14,141 @@ export const Defs = () => {
           y2={40.1964}
           gradientUnits="userSpaceOnUse"
         />
-        <RadialGradient
-          id="hero_line_1"
-          cx={0}
-          cy={0}
-          r={1}
+        <LinearGradient
+          id="hero-line_1"
           gradientUnits="userSpaceOnUse"
-          gradientTransform="translate(615.873 112.067) rotate(158.849) scale(586.974 679.116)"
+          x1={529.607}
+          y1={350.5}
+          x2={-4.39255}
+          y2={6.49997}
           stops={[
-            { offset: 0, color: "var(--text)" },
-            { offset: 0.15, color: "var(--color-1)" },
-            { offset: 0.3, color: "var(--color-1)" },
+            { offset: 0, color: "var(--color-1)" },
             { offset: 0.5, color: "var(--color-2)" },
             { offset: 0.75, color: "var(--color-3)" },
             { offset: 1, color: "var(--color-4)" }
           ]}
         />
-        <RadialGradient
-          id="hero_line_2"
-          cx={0}
-          cy={0}
-          r={1}
+        <LinearGradient
+          id="hero-line_2"
           gradientUnits="userSpaceOnUse"
-          gradientTransform="matrix(567.49 -108 -212.587 437.783 6.4803 108.88)"
+          x1={0}
+          y1={366.5}
+          x2={485.929}
+          y2={-30.7928}
           stops={[
-            { offset: 0, color: "var(--text)" },
-            { offset: 0.25, color: "var(--color-4)" },
-            { offset: 0.5, color: "var(--color-3)" },
-            { offset: 0.75, color: "var(--color-2)" },
-            { offset: 1, color: "var(--color-1)" }
-          ]}
-        />
-        <RadialGradient
-          id="hero_line_3"
-          cx={0}
-          cy={0}
-          r={1}
-          gradientUnits="userSpaceOnUse"
-          gradientTransform="matrix(-473.27 -152 323.364 -304.629 549.713 180.72)"
-          stops={[
-            { offset: 0, color: "var(--text)" },
-            { offset: 0.25, color: "var(--color-2)" },
-            { offset: 0.5, color: "var(--color-1)" },
+            { offset: 0, color: "var(--color-1)" },
+            { offset: 0.5, color: "var(--color-2)" },
             { offset: 0.75, color: "var(--color-3)" },
             { offset: 1, color: "var(--color-4)" }
           ]}
         />
-        <RadialGradient
-          id="hero_line_4"
-          cx={0}
-          cy={0}
-          r={1}
+        <LinearGradient
+          id="color-1_1"
           gradientUnits="userSpaceOnUse"
-          gradientTransform="matrix(600.49 138 -402.225 314.22 6.48025 72.6799)"
+          x1={529.607}
+          y1={350.5}
+          x2={-4.39255}
+          y2={6.49997}
           stops={[
-            { offset: 0, color: "var(--text)" },
-            { offset: 0.25, color: "var(--color-3)" },
-            { offset: 0.5, color: "var(--color-2)" },
-            { offset: 0.75, color: "var(--color-1)" },
-            { offset: 1, color: "var(--color-4)" }
+            { offset: 0, color: "var(--color-1)" },
+            { offset: 1, color: "var(--color-1-secondary)" }
           ]}
         />
-        <RadialGradient
+        <LinearGradient
+          id="color-1_2"
+          gradientUnits="userSpaceOnUse"
+          x1={0}
+          y1={366.5}
+          x2={485.929}
+          y2={-30.7928}
+          stops={[
+            { offset: 0, color: "var(--color-1)" },
+            { offset: 1, color: "var(--color-1-secondary)" }
+          ]}
+        />
+        <LinearGradient
+          id="color-2_1"
+          gradientUnits="userSpaceOnUse"
+          x1={529.607}
+          y1={350.5}
+          x2={-4.39255}
+          y2={6.49997}
+          stops={[
+            { offset: 0, color: "var(--color-2)" },
+            { offset: 1, color: "var(--color-2-secondary)" }
+          ]}
+        />
+        <LinearGradient
+          id="color-2_2"
+          gradientUnits="userSpaceOnUse"
+          x1={0}
+          y1={366.5}
+          x2={485.929}
+          y2={-30.7928}
+          stops={[
+            { offset: 0, color: "var(--color-2)" },
+            { offset: 1, color: "var(--color-2-secondary)" }
+          ]}
+        />
+        <LinearGradient
+          id="color-3_1"
+          gradientUnits="userSpaceOnUse"
+          x1={529.607}
+          y1={350.5}
+          x2={-4.39255}
+          y2={6.49997}
+          stops={[
+            { offset: 0, color: "var(--color-3)" },
+            { offset: 1, color: "var(--color-3-secondary)" }
+          ]}
+        />
+        <LinearGradient
+          id="color-3_2"
+          gradientUnits="userSpaceOnUse"
+          x1={0}
+          y1={366.5}
+          x2={485.929}
+          y2={-30.7928}
+          stops={[
+            { offset: 0, color: "var(--color-3)" },
+            { offset: 1, color: "var(--color-3-secondary)" }
+          ]}
+        />
+        <LinearGradient
+          id="color-4_1"
+          gradientUnits="userSpaceOnUse"
+          x1={529.607}
+          y1={350.5}
+          x2={-4.39255}
+          y2={6.49997}
+          stops={[
+            { offset: 0, color: "var(--color-4)" },
+            { offset: 1, color: "var(--color-4-secondary)" }
+          ]}
+        />
+        <LinearGradient
+          id="color-4_2"
+          gradientUnits="userSpaceOnUse"
+          x1={0}
+          y1={366.5}
+          x2={485.929}
+          y2={-30.7928}
+          stops={[
+            { offset: 0, color: "var(--color-4)" },
+            { offset: 1, color: "var(--color-4-secondary)" }
+          ]}
+        />
+        <LinearGradient
           id="architecture_line_1"
-          cx={0}
-          cy={0}
-          r={1}
           gradientUnits="userSpaceOnUse"
-          gradientTransform="matrix(816.75 0 0 816.75 6.75 238.75)"
+          x1={6.74999}
+          y1={626.822}
+          x2={750.866}
+          y2={6.75}
           stops={[
-            { offset: 0, color: "var(--text)" },
-            { offset: 0.089783, color: "var(--color-1)" },
-            { offset: 0.163893, color: "var(--color-1)" },
-            { offset: 0.377558, color: "var(--color-2)" },
-            { offset: 0.745238, color: "var(--color-3)" },
+            { offset: 0, color: "var(--color-1)" },
+            { offset: 0.33, color: "var(--color-2)" },
+            { offset: 0.66, color: "var(--color-3)" },
             { offset: 1, color: "var(--color-4)" }
           ]}
         />
@@ -155,18 +216,6 @@ export const Defs = () => {
             { offset: 1, color: "var(--color-4)" }
           ]}
         />
-        <LinearGradient
-          id="flow-hero"
-          direction="to-right"
-          gradientUnits="objectBoundingBox"
-          stops={[
-            { offset: 0, color: "var(--text)" },
-            { offset: 0.0166806, color: "var(--text)" },
-            { offset: 0.0791456, color: "var(--color-2)" },
-            { offset: 0.3, color: "var(--color-2-secondary)" },
-            { offset: 0.8, color: "var(--white)" }
-          ]}
-        />
         {Array.from({ length: 4 }).map((_, i) => (
           <LinearGradient
             key={i}
@@ -189,18 +238,6 @@ export const Defs = () => {
           ]}
         />
         <LinearGradient
-          id="suite-hero-line-1"
-          direction="to-right"
-          gradientUnits="objectBoundingBox"
-          stops={[
-            { offset: 0, color: "var(--text)" },
-            { offset: 0.0166806, color: "var(--text)" },
-            { offset: 0.0791456, color: "var(--color-1)" },
-            { offset: 0.3, color: "var(--color-1-secondary)" },
-            { offset: 0.8, color: "var(--white)" }
-          ]}
-        />
-        <LinearGradient
           id="color-3-accent"
           direction="to-right"
           gradientUnits="objectBoundingBox"
@@ -210,36 +247,12 @@ export const Defs = () => {
           ]}
         />
         <LinearGradient
-          id="suite-hero-line-3"
-          direction="to-right"
-          gradientUnits="objectBoundingBox"
-          stops={[
-            { offset: 0, color: "var(--text)" },
-            { offset: 0.0166806, color: "var(--text)" },
-            { offset: 0.0791456, color: "var(--color-3)" },
-            { offset: 0.3, color: "var(--color-3-secondary)" },
-            { offset: 0.8, color: "var(--white)" }
-          ]}
-        />
-        <LinearGradient
           id="color-4-accent"
           direction="to-right"
           gradientUnits="objectBoundingBox"
           stops={[
             { offset: 0, color: "var(--color-4)" },
             { offset: 1, color: "var(--color-4-secondary)" }
-          ]}
-        />
-        <LinearGradient
-          id="suite-hero-line-4"
-          direction="to-right"
-          gradientUnits="objectBoundingBox"
-          stops={[
-            { offset: 0, color: "var(--text)" },
-            { offset: 0.0166806, color: "var(--text)" },
-            { offset: 0.0791456, color: "var(--color-4)" },
-            { offset: 0.3, color: "var(--color-4-secondary)" },
-            { offset: 0.8, color: "var(--white)" }
           ]}
         />
       </defs>

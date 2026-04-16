@@ -48,6 +48,7 @@ html {
     *::before,
     *::after {
       transition: none !important;
+      animation-play-state: paused !important;
     }
   }
 
@@ -83,26 +84,32 @@ h6 {
   font-family: var(--font-heading);
 }
 
-[data-underline] {
-  position: relative;
-
-  svg {
-    position: absolute;
-    stroke-width: 2;
-    overflow: visible;
-    stroke-linecap: round;
-    right: 0;
-    top: 1.05em;
-    pointer-events: none;
-    width: 100%;
-
-    * {
-      vector-effect: non-scaling-stroke;
-      stroke-dasharray: 2;
-      stroke-dashoffset: var(--dash-offset, 2);
-    }
+[data-paragraph] {
+  [data-underline] {
+    @include text-gradient(var(--gradient-primary));
   }
 }
+
+// [data-underline] {
+//   position: relative;
+
+//   svg {
+//     position: absolute;
+//     stroke-width: 2;
+//     overflow: visible;
+//     stroke-linecap: round;
+//     right: 0;
+//     top: 1.05em;
+//     pointer-events: none;
+//     width: 100%;
+
+//     * {
+//       vector-effect: non-scaling-stroke;
+//       stroke-dasharray: 2;
+//       stroke-dashoffset: var(--dash-offset, 2);
+//     }
+//   }
+// }
 
 [data-stop-animated] {
   animation: defs-stop-color 4s linear infinite;

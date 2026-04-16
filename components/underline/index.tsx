@@ -1,9 +1,5 @@
 "use client"
 
-import { Sprite } from "@/components/sprite"
-import { useGSAP } from "@gsap/react"
-import gsap from "gsap"
-import { ScrollTrigger } from "gsap/all"
 import { useRef } from "react"
 
 interface UnderlineProps {
@@ -21,41 +17,41 @@ export const Underline = ({
 }: UnderlineProps) => {
   const svgRef = useRef<SVGSVGElement | null>(null)
 
-  useGSAP(() => {
-    if (!svgRef.current) return
+  // useGSAP(() => {
+  //   if (!svgRef.current) return
 
-    const target = svgRef.current
+  //   const target = svgRef.current
 
-    const tween = gsap.fromTo(
-      target,
-      { "--dash-offset": 2 },
-      {
-        "--dash-offset": 0,
-        duration: 1.5,
-        ease: "power1.inOut",
-        paused: true
-      }
-    )
+  //   const tween = gsap.fromTo(
+  //     target,
+  //     { "--dash-offset": 2 },
+  //     {
+  //       "--dash-offset": 0,
+  //       duration: 1.5,
+  //       ease: "power1.inOut",
+  //       paused: true
+  //     }
+  //   )
 
-    const trigger = ScrollTrigger.create({
-      trigger: target,
-      start: "top 95%",
-      once: true,
-      onEnter: () => {
-        tween.play(0)
-      }
-    })
+  //   const trigger = ScrollTrigger.create({
+  //     trigger: target,
+  //     start: "top 95%",
+  //     once: true,
+  //     onEnter: () => {
+  //       tween.play(0)
+  //     }
+  //   })
 
-    return () => {
-      tween.kill()
-      trigger.kill()
-    }
-  }, [])
+  //   return () => {
+  //     tween.kill()
+  //     trigger.kill()
+  //   }
+  // }, [])
 
   return (
     <strong data-underline>
       {children}
-      <Sprite ref={svgRef} id={spriteId} viewBox={viewBox} stroke={stroke} />
+      {/* <Sprite ref={svgRef} id={spriteId} viewBox={viewBox} stroke={stroke} /> */}
     </strong>
   )
 }

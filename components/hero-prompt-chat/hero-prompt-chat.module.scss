@@ -7,7 +7,7 @@
 
   &_centered {
     max-width: 680px;
-    margin: var(--size-20) auto 0;
+    margin: var(--size-14) auto 0;
 
     @include max($responsive) {
       margin-top: var(--size-12);
@@ -29,7 +29,7 @@
   background: linear-gradient(to bottom, var(--glass-50), var(--glass-75));
   @include cornerShape(var(--radius-1));
   @include border-glass(var(--gradient-border-glass-3));
-  @include backdrop(24px);
+  // @include backdrop(24px);
   position: relative;
   display: flex;
   flex-direction: column;

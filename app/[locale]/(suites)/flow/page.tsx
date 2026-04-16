@@ -3,7 +3,6 @@ import {
   FlowHeroPrompt,
   SuiteLandingFeatures,
   SuiteLandingHero,
-  SuiteLandingHeroStrongLine,
   SuiteLandingHow,
   SuiteLandingPlans
 } from "@/components/suite-landing"
@@ -12,13 +11,7 @@ import { isValidLocale, type Locale } from "@/lib/i18n"
 import { getServerTranslation, getTranslationForLocale } from "@/lib/i18n-server"
 import { MetadataSeo } from "@/lib/metadata"
 import { getSuiteById } from "@/lib/suites"
-import {
-  flowGradientColors,
-  flowHeroLine,
-  flowHowLine,
-  flowMarketingPath,
-  flowPlans
-} from "./landing-data"
+import { flowGradientColors, flowHowLine, flowMarketingPath, flowPlans } from "./landing-data"
 
 export const viewport = {
   themeColor: "#12BCFF"
@@ -26,7 +19,7 @@ export const viewport = {
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: raw } = await params
-  const locale = isValidLocale(raw) ? raw as Locale : "en"
+  const locale = isValidLocale(raw) ? (raw as Locale) : "en"
   const t = await getTranslationForLocale(locale)
   return MetadataSeo({
     fullTitle: t("seo.flowTitle"),
@@ -43,7 +36,6 @@ export default async function FlowPage() {
   const suiteAppUrl = flowSuite?.appUrl ?? ""
   const { t } = await getServerTranslation()
 
-  const heroTitle = t("suiteLanding.flow.heroTitle").split("\n")
   const featTitle = t("suiteLanding.flow.featuresTitle").split("\n")
   const howTitle = t("suiteLanding.flow.howTitle").split("\n")
   const pricingTitle = t("suiteLanding.pricingTitle").split("\n")
@@ -55,10 +47,30 @@ export default async function FlowPage() {
   ]
 
   const featureCards = [
-    { img: "/img/features/flow1.png", title: t("suiteLanding.flowFeat1Title"), text: t("suiteLanding.flowFeat1Desc"), ctaLabel: t("suiteLanding.startBuilding") },
-    { img: "/img/features/flow2.png", title: t("suiteLanding.flowFeat2Title"), text: t("suiteLanding.flowFeat2Desc"), ctaLabel: t("suiteLanding.startBuilding") },
-    { img: "/img/features/flow3.png", title: t("suiteLanding.flowFeat3Title"), text: t("suiteLanding.flowFeat3Desc"), ctaLabel: t("suiteLanding.startBuilding") },
-    { img: "/img/features/flow4.png", title: t("suiteLanding.flowFeat4Title"), text: t("suiteLanding.flowFeat4Desc"), ctaLabel: t("suiteLanding.startBuilding") }
+    {
+      img: "/img/features/flow1.png",
+      title: t("suiteLanding.flowFeat1Title"),
+      text: t("suiteLanding.flowFeat1Desc"),
+      ctaLabel: t("suiteLanding.startBuilding")
+    },
+    {
+      img: "/img/features/flow2.png",
+      title: t("suiteLanding.flowFeat2Title"),
+      text: t("suiteLanding.flowFeat2Desc"),
+      ctaLabel: t("suiteLanding.startBuilding")
+    },
+    {
+      img: "/img/features/flow3.png",
+      title: t("suiteLanding.flowFeat3Title"),
+      text: t("suiteLanding.flowFeat3Desc"),
+      ctaLabel: t("suiteLanding.startBuilding")
+    },
+    {
+      img: "/img/features/flow4.png",
+      title: t("suiteLanding.flowFeat4Title"),
+      text: t("suiteLanding.flowFeat4Desc"),
+      ctaLabel: t("suiteLanding.startBuilding")
+    }
   ]
 
   return (
@@ -71,12 +83,7 @@ export default async function FlowPage() {
         headingTag="h1"
         headingSubtitle={t("suiteLanding.flow.heroSubtitle")}
         headingParagraph={t("suiteLanding.flow.heroParagraph")}
-        headingTitle={
-          <>
-            {heroTitle[0]} <br />
-            <SuiteLandingHeroStrongLine line={flowHeroLine}>{heroTitle[1] || "Instantly"}</SuiteLandingHeroStrongLine>
-          </>
-        }
+        headingTitle={t("suiteLanding.flow.heroTitle")}
         listItems={heroList}
         ctaLabel={t("suiteLanding.getStarted")}
         rightSlot={<FlowHeroPrompt />}
@@ -87,7 +94,13 @@ export default async function FlowPage() {
         marketingPath={flowMarketingPath}
         headingSubtitle={t("suiteLanding.flow.featuresSubtitle")}
         headingParagraph={t("suiteLanding.flow.featuresParagraph")}
-        headingTitle={<>{featTitle[0]}<br />{featTitle[1]}</>}
+        headingTitle={
+          <>
+            {featTitle[0]}
+            <br />
+            {featTitle[1]}
+          </>
+        }
         cards={featureCards}
       />
       <SuiteLandingHow
@@ -97,11 +110,32 @@ export default async function FlowPage() {
         lineViewBox={flowHowLine.viewBox}
         headingSubtitle={t("suiteLanding.howItWorks")}
         headingParagraph={t("suiteLanding.flow.howParagraph")}
-        headingTitle={<>{howTitle[0]}<br />{howTitle[1]}</>}
+        headingTitle={
+          <>
+            {howTitle[0]}
+            <br />
+            {howTitle[1]}
+          </>
+        }
         steps={[
-          { icon: "hugeicons:pencil-edit-02", number: 1, title: t("suiteLanding.flow.step1Title"), description: t("suiteLanding.flow.step1Desc") },
-          { icon: "hugeicons:ai-generative", number: 2, title: t("suiteLanding.flow.step2Title"), description: t("suiteLanding.flow.step2Desc") },
-          { icon: "hugeicons:cloud-download", number: 3, title: t("suiteLanding.flow.step3Title"), description: t("suiteLanding.flow.step3Desc") }
+          {
+            icon: "hugeicons:pencil-edit-02",
+            number: 1,
+            title: t("suiteLanding.flow.step1Title"),
+            description: t("suiteLanding.flow.step1Desc")
+          },
+          {
+            icon: "hugeicons:ai-generative",
+            number: 2,
+            title: t("suiteLanding.flow.step2Title"),
+            description: t("suiteLanding.flow.step2Desc")
+          },
+          {
+            icon: "hugeicons:cloud-download",
+            number: 3,
+            title: t("suiteLanding.flow.step3Title"),
+            description: t("suiteLanding.flow.step3Desc")
+          }
         ]}
         poweredTitle={t("suiteLanding.poweredByAI")}
       />
@@ -111,13 +145,33 @@ export default async function FlowPage() {
         marketingPath={flowMarketingPath}
         headingSubtitle={t("suiteLanding.ourPricing")}
         headingParagraph={t("suiteLanding.pricingDesc")}
-        headingTitle={<>{pricingTitle.map((l, i) => <span key={i}>{i > 0 && <br />}{l}</span>)}</>}
+        headingTitle={
+          <>
+            {pricingTitle.map((l, i) => (
+              <span key={i}>
+                {i > 0 && <br />}
+                {l}
+              </span>
+            ))}
+          </>
+        }
         plans={flowPlans}
       />
       <Portfolio
         subtitle={t("suiteLanding.flowPortfolioSubtitle")}
-        heading={<>{t("suiteLanding.flowPortfolioHeadingPre")} <br /><Underline stroke="url(#color-2)">{t("suiteLanding.flowPortfolioHeadingBold")}</Underline></>}
-        paragraph={<>{t("suiteLanding.flowPortfolioParagraphPre")} <Underline stroke="url(#color-2)">{t("suiteLanding.flowPortfolioParagraphBold")}</Underline> {t("suiteLanding.flowPortfolioParagraphPost")}</>}
+        heading={
+          <>
+            {t("suiteLanding.flowPortfolioHeadingPre")} <br />
+            <Underline stroke="url(#color-2)">{t("suiteLanding.flowPortfolioHeadingBold")}</Underline>
+          </>
+        }
+        paragraph={
+          <>
+            {t("suiteLanding.flowPortfolioParagraphPre")}{" "}
+            <Underline stroke="url(#color-2)">{t("suiteLanding.flowPortfolioParagraphBold")}</Underline>{" "}
+            {t("suiteLanding.flowPortfolioParagraphPost")}
+          </>
+        }
         buttonText={t("suiteLanding.startBuilding")}
         suiteId="flow"
         suiteAppUrl={suiteAppUrl}

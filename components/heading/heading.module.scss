@@ -5,10 +5,13 @@
   h1 {
     @include fs(40px, 24, 128px);
     line-height: 1.05;
-    margin-top: var(--size-10);
+    margin-top: var(--size-8);
 
     & + .paragraph {
-      margin-top: var(--size-6);
+      max-width: 100%;
+      width: calc(400px + 200 * (100vw - 320px) / 1080);
+      text-wrap: auto;
+      margin: var(--size-6) auto 0;
     }
   }
 }

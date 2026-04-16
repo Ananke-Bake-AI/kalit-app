@@ -14,7 +14,7 @@
 
 .title {
   @include fs(48px, 36, 128px);
-  margin: var(--size-10) 0 var(--size-7);
+  margin: var(--size-8) 0 0;
   visibility: hidden;
   position: relative;
   z-index: 100;
@@ -27,7 +27,6 @@
 
   h1 {
     line-height: 1.05;
-    padding-top: 0.2em;
     font-size: 1em;
 
     @include min($responsive) {
@@ -61,45 +60,11 @@
   }
 }
 
-.line {
-  width: 100%;
-
-  @include max($responsive) {
-    display: none;
-  }
-
-  &1 {
-    inset: 0 95.93% auto auto;
-    transform: translateY(-17%);
-
-    @include max($responsive) {
-      display: block;
-      transform: scaleX(-1);
-      inset: -1em 0 auto 5.26em;
-    }
-  }
-
-  &2 {
-    inset: 0 auto auto 91.05%;
-    transform: translateY(-49%);
-  }
-
-  &3 {
-    inset: 0 96% auto auto;
-    transform: translateY(-48%);
-  }
-
-  &4 {
-    inset: 0 auto auto 90.9%;
-    transform: translateY(-4%);
-  }
-}
-
 .cards {
   @include user-select;
   pointer-events: none;
   position: absolute;
-  inset: -100px -80px;
+  inset: 0;
 
   @include max(1084px) {
     display: none;
@@ -109,29 +74,41 @@
 .c {
   &1 {
     --animation-duration: 2.5s;
-    inset: 6vh auto auto -3vw;
+    left: -45%;
+    top: 25%;
 
-    @include max(1500px) {
-      inset: 13vh auto auto 2vw;
+    @include max(1400px) {
+      display: none;
     }
   }
 
   &2 {
     --animation-duration: 3s;
-    inset: auto auto -5vh -2vw;
+    right: -55%;
+    top: 32%;
+
+    @include max(1400px) {
+      display: none;
+    }
   }
 
   &3 {
     --animation-duration: 2.75s;
-    inset: 10vh 12vw auto auto;
+    left: -75%;
+    top: -80%;
+
+    @include max(1600px) {
+      display: none;
+    }
   }
 
   &4 {
     --animation-duration: 3.25s;
-    inset: auto -5vw -4vh auto;
+    right: -85%;
+    top: -100%;
 
-    @include max(1500px) {
-      inset: auto 10vw 4vh auto;
+    @include max(1600px) {
+      display: none;
     }
   }
 }
@@ -141,12 +118,13 @@
   position: absolute;
   transform: scale(0);
   will-change: transform;
+  @include cornerShape(var(--radius-2));
+  @include border-glass;
+  @include glass($blur: true);
+  background-color: var(--white);
 
   .inside {
     font-size: 1rem;
-    @include cornerShape(var(--radius-2));
-    @include glass($blur: true);
-    @include border-glass;
     text-align: left;
     display: flex;
     align-items: flex-start;
@@ -198,5 +176,46 @@
     svg {
       font-size: 1.25em;
     }
+  }
+}
+
+.lines {
+  @include fs(48px, 36, 128px);
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.line {
+  width: 100%;
+
+  @include max($responsive) {
+    display: none;
+  }
+
+  &1 {
+    position: absolute;
+    right: 100%;
+    bottom: 50%;
+    width: 35vw;
+    max-width: 800px;
+  }
+
+  &2 {
+    position: absolute;
+    left: 100%;
+    bottom: 50%;
+    width: 35vw;
+    max-width: 800px;
+  }
+
+  &3 {
+    inset: 0 96% auto auto;
+    transform: translateY(-48%);
+  }
+
+  &4 {
+    inset: 0 auto auto 90.9%;
+    transform: translateY(-4%);
   }
 }

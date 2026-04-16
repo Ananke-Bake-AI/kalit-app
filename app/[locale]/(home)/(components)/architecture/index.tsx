@@ -4,32 +4,20 @@ import { Container } from "@/components/container"
 import { Heading } from "@/components/heading"
 import { Logo } from "@/components/logo"
 import { Models } from "@/components/models"
-import { AnimatedLine } from "@/components/svg/animated-line"
 import { useTranslation } from "@/stores/i18n"
 import { Icon } from "@iconify/react"
 import clsx from "clsx"
 import s from "./architecture.module.scss"
+import { AnimatedLine } from "@/components/svg/animated-line"
 
 export const Architecture = () => {
   const t = useTranslation()
   return (
     <section className={s.architecture}>
       <Container>
-        <Heading
-          className={s.heading}
-          subtitle={t("architecture.subtitle")}
-          paragraph={t("architecture.description")}
-        >
+        <Heading className={s.heading} subtitle={t("architecture.subtitle")} paragraph={t("architecture.description")}>
           {t("architecture.title")} <br />
-          <strong className={s.strong}>
-            {t("architecture.titleBold")}
-            <AnimatedLine
-              className={s.line}
-              viewBox="0 0 621 429"
-              stroke="url(#architecture_line_1)"
-              d="M6.75 238.75C6.75 219.42 22.42 203.75 41.75 203.75H258.75C285.812 203.75 307.75 225.688 307.75 252.75V277.25C307.75 290.781 296.781 301.75 283.25 301.75H280.25C268.376 301.75 258.75 292.124 258.75 280.25C258.75 268.376 268.376 258.75 280.25 258.75H567.75H815.75C846.126 258.75 870.75 234.126 870.75 203.75V157.75C870.75 127.374 895.374 102.75 925.75 102.75H968.75C982.005 102.75 992.75 113.495 992.75 126.75C992.75 140.005 982.005 150.75 968.75 150.75H964.75C949.286 150.75 936.75 138.214 936.75 122.75V61.75C936.75 31.3743 961.374 6.75 991.75 6.75H1162.74"
-            />
-          </strong>
+          <strong className={s.strong}>{t("architecture.titleBold")}</strong>
         </Heading>
         <div className={s.layers}>
           <div className={clsx(s.layer, s.layer1)}>
@@ -57,6 +45,12 @@ export const Architecture = () => {
             </div>
             <h3>{t("architecture.runningSystems")}</h3>
           </div>
+          <AnimatedLine
+            className={s.line}
+            viewBox="0 0 621 429"
+            stroke="url(#architecture_line_1)"
+            d="M6.75 708.822V313.75C6.75 283.374 31.3743 258.75 61.75 258.75H240.751H488.75C519.126 258.75 543.75 234.126 543.75 203.75V157.75C543.75 127.374 568.375 102.75 598.75 102.75H632.75C646.005 102.75 656.75 113.495 656.75 126.75V127.25C656.75 140.229 646.229 150.75 633.25 150.75C620.272 150.75 609.75 140.229 609.75 127.25V61.75C609.75 31.3743 634.375 6.75 664.75 6.75H1290.87"
+          />
         </div>
       </Container>
     </section>

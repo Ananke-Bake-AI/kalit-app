@@ -55,7 +55,8 @@
   height: var(--size-15);
 
   @include max($responsiveNav) {
-    width: 100%;
+    width: calc(500px + 200 * (100vw - 320px) / 1080);
+    max-width: 100%;
   }
 
   .btn {
