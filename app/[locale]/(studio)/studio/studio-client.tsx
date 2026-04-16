@@ -21,6 +21,7 @@ import { MessageList } from "@/components/studio/message-list"
 import { FileExplorer } from "@/components/studio/file-explorer"
 import { FilePreviewModal } from "@/components/studio/file-preview-modal"
 import { RoutingDebugPanel } from "@/components/studio/routing-debug"
+import { ModelSelector } from "@/components/studio/model-selector"
 import { useStudioFocus } from "@/app/[locale]/(studio)/studio-focus-context"
 import { useStudioTheme } from "@/app/[locale]/(studio)/studio-theme-context"
 import type { ChatSession, StreamSegment, UploadedFile } from "@/types/studio"
@@ -392,7 +393,7 @@ export function StudioClient() {
       const createRes = await brokerFetch("/api/broker/sessions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model: "minimax-m2.7:cloud" }),
+        body: JSON.stringify({ model: useStudioStore.getState().selectedModel }),
       })
       if (!createRes.ok) {
         setError(t("studio.connectionError"))
@@ -752,7 +753,7 @@ export function StudioClient() {
       const res = await brokerFetch("/api/broker/sessions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model: "minimax-m2.7:cloud" }),
+        body: JSON.stringify({ model: useStudioStore.getState().selectedModel }),
       })
       if (res.ok) {
         const data = await res.json()
@@ -880,6 +881,7 @@ export function StudioClient() {
           </span>
         )}
         <div className={s.topRight}>
+          <ModelSelector />
           <button
             className={s.panelToggle}
             onClick={handleCycleNotify}

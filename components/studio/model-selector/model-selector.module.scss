@@ -1,0 +1,121 @@
+@use "@/styles/mixins" as *;
+
+.wrapper {
+  position: relative;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  height: 2rem;
+  padding: 0 0.5rem;
+  border-radius: var(--radius-4);
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+  font-family: var(--font-mono, monospace);
+  transition: all var(--transition-link);
+  white-space: nowrap;
+  flex-shrink: 0;
+  border: 1px solid transparent;
+
+  @include is-hover {
+    color: var(--text);
+    background: oklch(from var(--text) l c h / 0.06);
+    border-color: oklch(from var(--text) l c h / 0.1);
+  }
+}
+
+.label {
+  max-width: 10rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chevron {
+  font-size: 0.6rem;
+  opacity: 0.5;
+  transition: transform 0.15s;
+
+  &[data-open="true"] {
+    transform: rotate(180deg);
+  }
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 100;
+  min-width: 14rem;
+  max-height: 24rem;
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-4);
+  box-shadow: var(--shadow-lg, 0 8px 24px oklch(0 0 0 / 0.15));
+  padding: 0.25rem;
+}
+
+.group {
+  &:not(:first-child) {
+    border-top: 1px solid var(--border);
+    margin-top: 0.25rem;
+    padding-top: 0.25rem;
+  }
+}
+
+.groupLabel {
+  padding: 0.3rem 0.5rem 0.2rem;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+  font-weight: 600;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.4rem 0.5rem;
+  border-radius: var(--radius-2);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  transition: all 0.1s;
+  text-align: left;
+
+  @include is-hover {
+    background: oklch(from var(--text) l c h / 0.06);
+    color: var(--text);
+  }
+
+  &[data-active="true"] {
+    background: oklch(from var(--primary) l c h / 0.1);
+    color: var(--primary);
+    font-weight: 500;
+  }
+}
+
+.modelName {
+  flex: 1;
+  font-family: var(--font-mono, monospace);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+
+  &[data-provider="ollama"] {
+    background: #6ee7b7;
+  }
+  &[data-provider="anthropic"] {
+    background: #d4a574;
+  }
+  &[data-provider="openai"] {
+    background: #74b9ff;
+  }
+}

@@ -86,6 +86,10 @@ interface StudioStore {
   setNotifyTitle: (on: boolean) => void
   setNotifySound: (on: boolean) => void
 
+  // Admin model override
+  selectedModel: string
+  setSelectedModel: (model: string) => void
+
   // Error
   error: string | null
   setError: (error: string | null) => void
@@ -228,6 +232,10 @@ export const useStudioStore = create<StudioStore>((set) => ({
   notifySound: false,
   setNotifyTitle: (notifyTitle) => set({ notifyTitle }),
   setNotifySound: (notifySound) => set({ notifySound }),
+
+  // Admin model override
+  selectedModel: "minimax-m2.7:cloud",
+  setSelectedModel: (selectedModel) => set({ selectedModel }),
 
   // Error
   error: null,
