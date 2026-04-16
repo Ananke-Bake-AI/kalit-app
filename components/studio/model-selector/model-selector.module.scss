@@ -115,6 +115,9 @@
   &[data-provider="anthropic"] {
     background: #d4a574;
   }
+  &[data-provider="mistral"] {
+    background: #ff7849;
+  }
   &[data-provider="openai"] {
     background: #74b9ff;
   }

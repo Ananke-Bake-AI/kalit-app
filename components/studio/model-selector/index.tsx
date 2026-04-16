@@ -8,7 +8,7 @@ import s from "./model-selector.module.scss"
 interface ModelOption {
   id: string
   label: string
-  provider: "ollama" | "anthropic" | "openai"
+  provider: "ollama" | "anthropic" | "mistral" | "openai"
 }
 
 const MODEL_GROUPS: { label: string; models: ModelOption[] }[] = [
@@ -34,6 +34,15 @@ const MODEL_GROUPS: { label: string; models: ModelOption[] }[] = [
       { id: "anthropic:claude-sonnet-4-6", label: "claude-sonnet-4-6", provider: "anthropic" },
       { id: "anthropic:claude-haiku-4-5-20251001", label: "claude-haiku-4.5", provider: "anthropic" },
       { id: "anthropic:claude-opus-4-6", label: "claude-opus-4-6", provider: "anthropic" },
+    ],
+  },
+  {
+    label: "Mistral",
+    models: [
+      { id: "mistral:mistral-large-latest", label: "mistral-large", provider: "mistral" as const },
+      { id: "mistral:mistral-small-latest", label: "mistral-small", provider: "mistral" as const },
+      { id: "mistral:codestral-latest", label: "codestral", provider: "mistral" as const },
+      { id: "mistral:devstral-small-latest", label: "devstral-small", provider: "mistral" as const },
     ],
   },
   {
