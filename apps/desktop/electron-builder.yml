@@ -1,5 +1,6 @@
 appId: ai.kalit.studio
 productName: Kalit Studio
+artifactName: ${productName}-${version}-${arch}.${ext}
 directories:
   output: release
   buildResources: build
@@ -7,6 +8,10 @@ files:
   - out/**/*
   - package.json
 asar: true
+protocols:
+  - name: Kalit
+    schemes:
+      - kalit
 mac:
   category: public.app-category.productivity
   icon: build/icon.icns

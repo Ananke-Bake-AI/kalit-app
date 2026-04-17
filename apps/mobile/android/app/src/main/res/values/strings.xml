@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Kalit Studio</string>
+    <string name="title_activity_main">Kalit Studio</string>
+    <string name="package_name">ai.kalit.studio</string>
+    <string name="custom_url_scheme">ai.kalit.studio</string>
+</resources>

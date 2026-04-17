@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "Kalit Studio desktop app",
+  "homepage": "https://kalit.ai",
   "author": {
     "name": "Merkle Tech Labs LTD.",
     "email": "contact@kalit.ai"
@@ -16,6 +17,7 @@
     "build:win": "electron-vite build && electron-builder --win",
     "build:linux": "electron-vite build && electron-builder --linux",
     "build:all": "electron-vite build && electron-builder -mwl",
+    "build:all:x64": "electron-vite build && electron-builder --x64 -mwl",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

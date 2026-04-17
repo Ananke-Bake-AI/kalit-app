@@ -1,0 +1,44 @@
+{
+  "name": "@kalit/mobile",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Kalit Studio mobile app (iOS + Android via Capacitor)",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "cap:sync": "vite build && cap sync",
+    "cap:add:ios": "cap add ios",
+    "cap:add:android": "cap add android",
+    "ios": "vite build && cap sync ios && cap open ios",
+    "android": "vite build && cap sync android && cap open android",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.4.3",
+    "@capacitor/app": "^7.1.0",
+    "@capacitor/browser": "^7.0.2",
+    "@capacitor/core": "^7.4.3",
+    "@capacitor/ios": "^7.4.3",
+    "@iconify/react": "^6.0.2",
+    "@kalit/broker-client": "workspace:*",
+    "@kalit/i18n": "workspace:*",
+    "@kalit/studio-ui": "workspace:*",
+    "clsx": "^2.1.1",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
+    "zustand": "^5.0.11"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.3",
+    "@types/node": "^20.19.37",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.0.5",
+    "sass": "^1.97.3",
+    "typescript": "^5.9.3",
+    "vite": "^5.4.11"
+  }
+}
