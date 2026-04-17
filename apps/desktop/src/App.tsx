@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { I18nProvider, loadMessages, type Locale, type Messages } from "@kalit/i18n"
 import {
   ChatInput,
@@ -12,23 +12,13 @@ import {
 } from "@kalit/studio-ui"
 
 import styles from "./App.module.scss"
+import { AuthProvider, useAuth } from "./auth/auth-context"
+import { SignInScreen } from "./auth/sign-in-screen"
 
 const DEFAULT_LOCALE: Locale = "en"
 
-const HOST_VALUE = {
-  user: {
-    id: "desktop-dev",
-    email: "desktop@kalit.ai",
-    name: "Desktop User",
-    isAdmin: false,
-  },
-  navigate: (_path: string) => {
-    /* no-op until we wire a router */
-  },
-  getSearchParam: (_key: string) => null,
-}
-
 function StudioDesktop() {
+  const { user, signOut } = useAuth()
   const setActiveSessionId = useStudioStore((s) => s.setActiveSessionId)
 
   const handleSessionSelect = useCallback(
@@ -40,9 +30,6 @@ function StudioDesktop() {
   }, [setActiveSessionId])
 
   const handlePromptSelect = useCallback((prompt: string) => {
-    // Placeholder — real streaming orchestration lives in the landing app's
-    // StudioClient. Desktop will grow its own version (or we lift it into the
-    // shared package) in a follow-up.
     console.log("[desktop] prompt selected:", prompt)
   }, [])
 
@@ -50,18 +37,68 @@ function StudioDesktop() {
     console.log("[desktop] send:", message)
   }, [])
 
-  return (
-    <div className={styles.root}>
-      <ChatLayout sidebar={<SessionSidebar onSessionSelect={handleSessionSelect} onNewChat={handleNewChat} />}>
-        <div className={styles.main}>
-          <WelcomeScreen onPromptSelect={handlePromptSelect} />
-          <div className={styles.inputDock}>
-            <ChatInput onSend={handleSend} />
-          </div>
-        </div>
-      </ChatLayout>
-    </div>
+  const hostValue = useMemo(
+    () => ({
+      user: user
+        ? {
+            id: user.id,
+            email: user.email,
+            name: user.name ?? undefined,
+            image: user.image ?? undefined,
+            isAdmin: user.isAdmin === true,
+          }
+        : null,
+      navigate: (_path: string) => {},
+      getSearchParam: (_key: string) => null,
+    }),
+    [user],
   )
+
+  return (
+    <StudioHostProvider value={hostValue}>
+      <StudioThemeProvider initial={false} storageKey="studio-theme-dark">
+        <StudioFocusProvider initial={false} storageKey="studio-focus-mode">
+          <div className={styles.root}>
+            <ChatLayout
+              sidebar={
+                <div className={styles.sidebarWrap}>
+                  <SessionSidebar
+                    onSessionSelect={handleSessionSelect}
+                    onNewChat={handleNewChat}
+                  />
+                  <button
+                    type="button"
+                    className={styles.signOut}
+                    onClick={signOut}
+                  >
+                    Sign out
+                  </button>
+                </div>
+              }
+            >
+              <div className={styles.main}>
+                <WelcomeScreen onPromptSelect={handlePromptSelect} />
+                <div className={styles.inputDock}>
+                  <ChatInput onSend={handleSend} />
+                </div>
+              </div>
+            </ChatLayout>
+          </div>
+        </StudioFocusProvider>
+      </StudioThemeProvider>
+    </StudioHostProvider>
+  )
+}
+
+function AuthGate() {
+  const { status } = useAuth()
+  if (status === "loading") {
+    return <div className={styles.boot}>Loading Kalit Studio…</div>
+  }
+  if (status === "signed-out") {
+    return <SignInScreen />
+  }
+  return <StudioDesktop />
 }
 
 export function App() {
@@ -77,13 +114,9 @@ export function App() {
 
   return (
     <I18nProvider initialLocale={DEFAULT_LOCALE} initialMessages={messages}>
-      <StudioHostProvider value={HOST_VALUE}>
-        <StudioThemeProvider initial={false} storageKey="studio-theme-dark">
-          <StudioFocusProvider initial={false} storageKey="studio-focus-mode">
-            <StudioDesktop />
-          </StudioFocusProvider>
-        </StudioThemeProvider>
-      </StudioHostProvider>
+      <AuthProvider>
+        <AuthGate />
+      </AuthProvider>
     </I18nProvider>
   )
 }

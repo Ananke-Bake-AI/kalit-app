@@ -15,7 +15,11 @@
     "skipLibCheck": true,
     "noEmit": true,
     "useDefineForClassFields": true,
-    "types": ["vite/client"]
+    "types": ["vite/client", "node"]
   },
-  "include": ["src", "vite.config.ts"]
+  "include": [
+    "src",
+    "shell",
+    "electron.vite.config.ts"
+  ]
 }
