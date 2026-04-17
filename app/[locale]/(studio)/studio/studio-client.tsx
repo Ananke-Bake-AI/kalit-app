@@ -189,28 +189,6 @@ export function StudioClient() {
     }
   }, [setQuota])
 
-  // ── Fetch research prompt from Kalit Search (via local proxy) ────
-
-  useEffect(() => {
-    if (!ready) return
-    const researchId = searchParams.get("researchId")
-    if (!researchId || pendingPromptRef.current) return
-    ;(async () => {
-      try {
-        const res = await fetch(`/api/broker/research/${researchId}/prompt`)
-        if (!res.ok) return
-        const data = await res.json()
-        if (data?.prompt) {
-          pendingPromptRef.current = data.prompt
-          const suite = data.studioSuite as SuiteId | undefined
-          if (suite) setPage(suite)
-        }
-      } catch {
-        // silent — user can still use studio normally
-      }
-    })()
-  }, [ready, searchParams, setPage])
-
   // ── Handle URL session param ────────────────────────────
 
   useEffect(() => {
@@ -287,6 +265,30 @@ export function StudioClient() {
     pendingPromptRef.current = null
     handleSend(prompt)
   }, [activeSessionId, messagesLoading])
+
+  // ── Fetch research prompt from Kalit Search & auto-send ─
+
+  const researchFiredRef = useRef(false)
+  useEffect(() => {
+    if (!ready || researchFiredRef.current) return
+    const researchId = searchParams.get("researchId")
+    if (!researchId) return
+    researchFiredRef.current = true
+    ;(async () => {
+      try {
+        const res = await fetch(`/api/broker/research/${researchId}/prompt`)
+        if (!res.ok) return
+        const data = await res.json()
+        if (data?.prompt) {
+          const suite = data.studioSuite as SuiteId | undefined
+          if (suite) setPage(suite)
+          handleSend(data.prompt)
+        }
+      } catch {
+        // silent — user can still use studio normally
+      }
+    })()
+  }, [ready, searchParams, setPage])
 
   // ── Resume live stream on reconnect ─────────────────────
   //
