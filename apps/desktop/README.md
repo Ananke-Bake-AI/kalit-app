@@ -1,53 +1,43 @@
 # @kalit/desktop
 
-Desktop app shell for Kalit Studio (Mac / Windows / Linux).
+Desktop renderer for Kalit Studio. React 19 + Vite, consumes `@kalit/studio-ui`
+so the UI stays in lockstep with the web version at `apps/landing`.
 
-**Status:** not yet scaffolded. This directory is a placeholder reserved in the
-monorepo. The Studio UI has already been extracted to `@kalit/studio-ui` so
-this app can consume the exact same components the web version uses.
+## Running
 
-## Planned shape
-
-- **Shell:** Tauri 2 (Rust core + system webview). Smaller bundle and lower
-  memory than Electron, and the Rust side gives us a clean place for native
-  concerns like auto-update, deep links, and OS keychain access for broker
-  tokens.
-- **UI:** Next.js or Vite + React 19 rendering `@kalit/studio-ui`. No taskforce
-  bundled locally — every build still routes through the Kalit broker.
-- **Auth:** OAuth/device-code flow → short-lived JWT stored in the OS keychain.
-  Wire `setStudioBrokerClient` with a `getToken` that reads from the keychain
-  and a `baseUrl` pointing at the production broker.
-- **Host context:** provide `StudioHostProvider` with `user` from the
-  authenticated session and a `navigate` that uses the router of whichever
-  framework (Next/Vite) ends up wrapping the UI.
-
-## Integration contract (already in place)
-
-The shared `@kalit/studio-ui` package exposes two wiring points the desktop
-app must satisfy before rendering Studio components:
-
-```ts
-import { setStudioBrokerClient, StudioHostProvider } from "@kalit/studio-ui"
-import { createBrokerClient } from "@kalit/broker-client"
-
-const client = createBrokerClient({
-  baseUrl: "https://kalit.ai",
-  getToken: async () => keychain.read("kalit-broker-token"),
-})
-setStudioBrokerClient(client)
-
-// then render:
-<StudioHostProvider value={{ user, navigate, getSearchParam }}>
-  <Studio />
-</StudioHostProvider>
+```bash
+pnpm --filter @kalit/desktop dev
 ```
 
-## Next steps
+Opens on http://localhost:5173. The Vite dev server proxies `/api/broker/*`
+to `VITE_BROKER_URL` (default `http://localhost:9000`) with a rewrite to
+`/api/flow/*` — matches the path shape that shared components expect.
 
-1. `pnpm create tauri-app` inside this directory (or pick Electron if the team
-   prefers).
-2. Add a thin Next.js/Vite renderer that imports `@kalit/studio-ui` and
-   `@kalit/i18n`, mirroring the wiring in `apps/landing/app/[locale]/(studio)/studio-shell.tsx`.
-3. Implement OAuth + keychain token storage in Rust (or Electron main).
-4. CI: add macOS notarization + Windows code signing once we have distribution
-   certs.
+## Auth (current state)
+
+There is no real auth yet. `src/broker.ts` reads the bearer token from
+`localStorage["kalit-broker-token"]` — drop one in DevTools to exercise
+authenticated broker calls during development. `src/App.tsx` provides a
+stub `StudioHostValue` with a placeholder user. Swap both out when we wire
+OAuth + OS keychain storage.
+
+## What renders
+
+`App.tsx` currently mounts the welcome surface: `SessionSidebar`,
+`WelcomeScreen`, `ChatInput`, all from `@kalit/studio-ui`. The streaming
+orchestration (session loading, message streaming, widget hydration) lives
+in the landing app's `StudioClient` and hasn't been lifted into the package
+yet — that's the next chunk of work before the desktop shell is feature-
+complete.
+
+## Next (shell)
+
+The Vite renderer is framework-agnostic, so wrapping it in a native shell
+is now an independent choice:
+
+- **Tauri 2** — smaller bundle, native OS keychain access, requires Rust
+  toolchain on CI. Run `pnpm create tauri-app` in this directory.
+- **Electron** — no Rust, heavier bundle, mature tooling.
+
+Pick one and the integration contract (`setStudioBrokerClient` +
+`StudioHostProvider`) does not change.

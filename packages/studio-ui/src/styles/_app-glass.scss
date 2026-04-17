@@ -1,0 +1,9 @@
+@use "./mixins" as *;
+
+@mixin glass-panel($radius: 1.4rem) {
+  position: relative;
+  overflow: hidden;
+  @include cornerShape($radius);
+  @include glass(false, var(--glass-50));
+  @include border-glass();
+}

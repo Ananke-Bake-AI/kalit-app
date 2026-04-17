@@ -1,4 +1,4 @@
-@use "@/styles/mixins" as *;
+@use "../../styles/mixins" as *;
 
 // Modal must sit above the sticky Kalit Header (z-index: 900) and
 // NextTopLoader. 9999 keeps it on top of any app chrome.

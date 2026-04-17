@@ -1,5 +1,5 @@
-@use "@/styles/mixins" as *;
-@use "@/styles/app-glass" as *;
+@use "../../styles/mixins" as *;
+@use "../../styles/app-glass" as *;
 
 .container {
   padding: var(--size-3) var(--size-5) var(--size-5);
