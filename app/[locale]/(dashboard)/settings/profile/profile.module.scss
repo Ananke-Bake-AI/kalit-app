@@ -14,7 +14,7 @@
   align-items: center;
   gap: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid oklch(0 0 0 / 0.06);
+  border-bottom: 1px solid oklch(from var(--text) l c h / 0.06);
 
   @include max($responsive) {
     align-items: flex-start;

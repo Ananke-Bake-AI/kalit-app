@@ -110,9 +110,9 @@
     border: 1px solid oklch(from var(--text) l c h / 0.15);
 
     @include is-hover {
-      background-color: var(--text);
-      color: var(--white);
-      border-color: var(--text);
+      background-color: var(--btn-bg);
+      color: var(--btn-color);
+      border-color: var(--btn-bg);
     }
   }
 }

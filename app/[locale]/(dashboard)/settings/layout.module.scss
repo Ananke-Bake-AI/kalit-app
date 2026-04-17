@@ -62,8 +62,8 @@
   }
 
   &.tabActive {
-    background-color: var(--text);
-    color: var(--white);
+    background-color: var(--btn-bg);
+    color: var(--btn-color);
     box-shadow: 0 0 0;
   }
 
@@ -98,7 +98,7 @@
   }
 
   &.tabActive &Description {
-    color: oklch(from var(--white) l c h / 0.72);
+    color: oklch(from var(--btn-color) l c h / 0.72);
   }
 }
 

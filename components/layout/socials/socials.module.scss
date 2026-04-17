@@ -32,7 +32,7 @@
       position: absolute;
       inset: 0;
       border-radius: var(--radius-rounded);
-      background-color: var(--text);
+      background-color: var(--btn-bg);
       transform: scale(0);
       z-index: 0;
     }
@@ -42,7 +42,7 @@
     }
 
     @include is-hover {
-      color: var(--white);
+      color: var(--btn-color);
 
       &::before {
         transform: scale(1);

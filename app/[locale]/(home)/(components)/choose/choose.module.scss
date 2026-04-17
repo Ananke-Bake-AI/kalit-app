@@ -114,10 +114,9 @@
 }
 
 .check {
-  color: var(--text);
   font-size: 1.25em;
-  background-color: var(--text);
-  color: var(--white);
+  background-color: var(--btn-bg);
+  color: var(--btn-color);
   border-radius: var(--radius-rounded);
   padding: 0.1em;
 

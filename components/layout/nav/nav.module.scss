@@ -91,7 +91,7 @@
 
   &:hover {
     .link {
-      background-color: oklch(0 0 0 / 0.05);
+      background-color: oklch(from var(--text) l c h / 0.05);
 
       &::before {
         pointer-events: auto;
@@ -117,7 +117,7 @@
   }
 
   &:hover {
-    background-color: oklch(0 0 0 / 0.05);
+    background-color: oklch(from var(--text) l c h / 0.05);
   }
 }
 

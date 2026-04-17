@@ -27,8 +27,7 @@
   @include border-glass();
   box-shadow:
     0 24px 60px oklch(0 0 0 / 0.08),
-    0 -4px 8px 4px oklch(1 0 0 / 0.75) inset,
-    inset 0 1px 0 oklch(1 0 0 / 0.88);
+    var(--glass-inset-shadow);
 }
 
 .showcase {
@@ -47,7 +46,7 @@
   width: fit-content;
   padding: 0.45rem 0.8rem;
   border-radius: var(--radius-rounded);
-  @include glass(false, oklch(1 0 0 / 0.72));
+  @include glass(false, var(--glass-75));
   @include border-glass(var(--gradient-border-glass-2));
   color: var(--text-secondary);
   font-size: 0.75rem;
@@ -92,7 +91,7 @@
   overflow: hidden;
   padding: 0.95rem 1rem;
   @include cornerShape(1.1rem);
-  @include glass(false, oklch(1 0 0 / 0.68));
+  @include glass(false, var(--glass-75));
   @include border-glass(var(--gradient-border-glass-3));
 }
 
@@ -133,7 +132,7 @@
 
 .proofItem {
   padding-top: 0.8rem;
-  border-top: 1px solid oklch(0 0 0 / 0.08);
+  border-top: 1px solid oklch(from var(--text) l c h / 0.08);
 }
 
 .proofValue {
@@ -199,7 +198,7 @@
     content: "";
     position: absolute;
     inset: 50% 0 auto;
-    border-top: 1px solid oklch(0 0 0 / 0.08);
+    border-top: 1px solid oklch(from var(--text) l c h / 0.08);
   }
 
   span {
@@ -225,14 +224,14 @@
   justify-content: center;
   width: 3.2rem;
   height: 3.2rem;
-  border: 1px solid oklch(0 0 0 / 0.12);
+  border: 1px solid oklch(from var(--text) l c h / 0.12);
   border-radius: var(--radius-rounded);
-  background: oklch(1 0 0 / 0.85);
+  background: var(--glass-75);
   cursor: pointer;
   transition: background 0.15s ease, box-shadow 0.15s ease;
 
   &:hover {
-    background: oklch(1 0 0 / 1);
+    background: var(--surface);
     box-shadow: 0 2px 10px oklch(0 0 0 / 0.12);
   }
 

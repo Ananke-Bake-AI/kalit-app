@@ -121,7 +121,7 @@
   @include cornerShape(var(--radius-2));
   @include border-glass;
   @include glass($blur: true);
-  background-color: var(--white);
+  background-color: var(--surface);
 
   .inside {
     font-size: 1rem;
@@ -154,7 +154,7 @@
   .model {
     position: absolute;
     top: calc(var(--card-padding) * -1);
-    background-color: var(--white);
+    background-color: var(--surface);
     color: var(--text-secondary);
     font-family: var(--font-mono);
     font-weight: 400;

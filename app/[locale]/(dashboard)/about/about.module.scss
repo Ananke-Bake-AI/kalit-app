@@ -28,7 +28,7 @@
     transform: translateY(-4px);
     box-shadow:
       0 32px 60px oklch(0 0 0 / 0.1),
-      0 -4px 8px 4px oklch(1 0 0 / 0.55) inset;
+      var(--glass-inset-shadow);
   }
 }
 
@@ -160,7 +160,7 @@
     transform: translateY(-2px);
     box-shadow:
       0 20px 40px oklch(0 0 0 / 0.06),
-      0 -4px 8px 4px oklch(1 0 0 / 0.55) inset;
+      var(--glass-inset-shadow);
   }
 }
 

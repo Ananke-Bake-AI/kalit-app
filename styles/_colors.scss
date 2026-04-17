@@ -8,6 +8,8 @@
 
   --bg-1: oklch(0.937 0 0);
 
+  --surface: oklch(1 0 0);
+
   --glass-15: oklch(1 0 0 / 0.15);
   --glass-50: oklch(1 0 0 / 0.5);
   --glass-75: oklch(1 0 0 / 0.75);
@@ -91,4 +93,11 @@ html.dark,
 
   // Override hardcoded white inset shadows from glass mixin
   --glass-inset-shadow: 0 -4px 8px 4px oklch(0.18 0.005 260 / 0.6) inset;
+
+  // Buttons: keep dark bg with light text (--btn-bg defaults to var(--text) which flips)
+  --btn-bg: oklch(0.93 0.005 260);
+  --btn-color: oklch(0.13 0.005 260);
+
+  // Surface: replaces var(--white) for card/element backgrounds
+  --surface: oklch(0.18 0.005 260);
 }

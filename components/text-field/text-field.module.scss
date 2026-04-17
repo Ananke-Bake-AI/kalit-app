@@ -20,8 +20,8 @@
   height: 3.35rem;
   padding: 0 1rem;
   @include cornerShape(1rem);
-  border: 1px solid oklch(0 0 0 / 0.09);
-  @include glass(false, oklch(1 0 0 / 0.75));
+  border: 1px solid oklch(from var(--text) l c h / 0.09);
+  @include glass(false, var(--glass-75));
   color: var(--text);
   font-size: 0.94rem;
   outline: none;

@@ -102,8 +102,8 @@ $responsive-stack: 950px;
   position: absolute;
   right: calc(var(--item-padding) * 0.85);
   bottom: calc(var(--item-padding) * 0.85);
-  background-color: var(--text);
-  color: var(--white);
+  background-color: var(--btn-bg);
+  color: var(--btn-color);
 
   svg {
     transition: transform var(--transition-link);
@@ -152,7 +152,7 @@ $responsive-stack: 950px;
       position: absolute;
       inset: -1px;
       border-radius: var(--radius-rounded);
-      background-color: var(--text);
+      background-color: var(--btn-bg);
       transform: scale(0);
       z-index: -1;
     }
