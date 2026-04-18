@@ -23,6 +23,7 @@ import { FilePreviewModal } from "@/components/studio/file-preview-modal"
 import { RoutingDebugPanel } from "@/components/studio/routing-debug"
 import { DebugConsole } from "@/components/studio/debug-console"
 import { ModelSelector } from "@/components/studio/model-selector"
+import { SessionUsageBadge } from "@/components/studio/session-usage-badge"
 import { useStudioFocus } from "@/app/[locale]/(studio)/studio-focus-context"
 import { useTheme } from "@/components/app/theme-context"
 import type { ChatSession, StreamSegment, UploadedFile } from "@/types/studio"
@@ -988,6 +989,7 @@ export function StudioClient() {
           </span>
         )}
         <div className={s.topRight}>
+          <SessionUsageBadge sessionId={activeSessionId} />
           <ModelSelector />
           <button
             className={s.panelToggle}
