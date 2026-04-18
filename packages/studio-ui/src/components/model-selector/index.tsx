@@ -58,7 +58,7 @@ const MODEL_GROUPS: { label: string; models: ModelOption[] }[] = [
 ]
 
 const STORAGE_KEY = "kalit_admin_model"
-const DEFAULT_MODEL = "mistral:mistral-small-latest"
+const DEFAULT_MODEL = "anthropic:claude-haiku-4-5-20251001"
 
 export function ModelSelector() {
   const user = useStudioUser()

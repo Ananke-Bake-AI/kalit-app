@@ -267,7 +267,7 @@ export const useStudioStore = create<StudioStore>((set) => ({
   setNotifySound: (notifySound) => set({ notifySound }),
 
   // Admin model override
-  selectedModel: "mistral:mistral-small-latest",
+  selectedModel: "anthropic:claude-haiku-4-5-20251001",
   setSelectedModel: (selectedModel) => set({ selectedModel }),
 
   // Error
