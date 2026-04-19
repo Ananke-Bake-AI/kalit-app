@@ -25,21 +25,74 @@ type UsageEvent = {
 
 type UsageListResponse = { events: UsageEvent[] }
 
-// Mirrors broker defaultPricing × profitRatio (billing.go). Kept in sync by
-// hand — if broker pricing changes, this changes too. The broker is still
-// authoritative for the quota meter (UsageRecord); this estimate exists so
-// users can see which *service* is eating their credits, which UsageRecord
-// (single lump-sum row per session) can't show.
-const PRICING = {
-  inputPer1M: 0.5 * 2, // USD × profitRatio
-  outputPer1M: 1.5 * 2,
+type ModelPricing = { inPer1M: number; outPer1M: number; cacheWritePer1M: number; cacheReadPer1M: number }
+
+// Mirrors kalit-broker/broker/internal/commands/billing.go modelPricingTable.
+// Raw provider rates pre-profit (USD per 1M tokens); the constant below
+// applies profitRatio=2.0 uniformly, matching the broker default.
+const PROFIT_RATIO = 2.0
+const MODEL_PRICING: Record<string, ModelPricing> = {
+  "claude-opus-4": { inPer1M: 15, outPer1M: 75, cacheWritePer1M: 18.75, cacheReadPer1M: 1.5 },
+  "claude-opus-4-1": { inPer1M: 15, outPer1M: 75, cacheWritePer1M: 18.75, cacheReadPer1M: 1.5 },
+  "claude-opus-4-5": { inPer1M: 15, outPer1M: 75, cacheWritePer1M: 18.75, cacheReadPer1M: 1.5 },
+  "claude-opus-4-6": { inPer1M: 15, outPer1M: 75, cacheWritePer1M: 18.75, cacheReadPer1M: 1.5 },
+  "claude-opus-4-7": { inPer1M: 15, outPer1M: 75, cacheWritePer1M: 18.75, cacheReadPer1M: 1.5 },
+  "claude-sonnet-4": { inPer1M: 3, outPer1M: 15, cacheWritePer1M: 3.75, cacheReadPer1M: 0.3 },
+  "claude-sonnet-4-5": { inPer1M: 3, outPer1M: 15, cacheWritePer1M: 3.75, cacheReadPer1M: 0.3 },
+  "claude-sonnet-4-6": { inPer1M: 3, outPer1M: 15, cacheWritePer1M: 3.75, cacheReadPer1M: 0.3 },
+  "claude-haiku-3-5": { inPer1M: 0.8, outPer1M: 4, cacheWritePer1M: 1, cacheReadPer1M: 0.08 },
+  "claude-haiku-4": { inPer1M: 1, outPer1M: 5, cacheWritePer1M: 1.25, cacheReadPer1M: 0.1 },
+  "claude-haiku-4-5": { inPer1M: 1, outPer1M: 5, cacheWritePer1M: 1.25, cacheReadPer1M: 0.1 },
+  "gpt-4o": { inPer1M: 2.5, outPer1M: 10, cacheWritePer1M: 0, cacheReadPer1M: 1.25 },
+  "gpt-4o-mini": { inPer1M: 0.15, outPer1M: 0.6, cacheWritePer1M: 0, cacheReadPer1M: 0.075 },
+  "gpt-5": { inPer1M: 10, outPer1M: 30, cacheWritePer1M: 0, cacheReadPer1M: 1 },
+  "kimi-k2": { inPer1M: 0.6, outPer1M: 2.5, cacheWritePer1M: 0, cacheReadPer1M: 0 },
+  "kimi-k2.5": { inPer1M: 0.6, outPer1M: 2.5, cacheWritePer1M: 0, cacheReadPer1M: 0 },
+  "minimax-m2": { inPer1M: 0.3, outPer1M: 1.2, cacheWritePer1M: 0, cacheReadPer1M: 0 },
+  "minimax-m2.5": { inPer1M: 0.3, outPer1M: 1.2, cacheWritePer1M: 0, cacheReadPer1M: 0 },
+  "minimax-m2.7": { inPer1M: 0.3, outPer1M: 1.2, cacheWritePer1M: 0, cacheReadPer1M: 0 },
+  "glm-4.6": { inPer1M: 0.6, outPer1M: 2.2, cacheWritePer1M: 0, cacheReadPer1M: 0 },
+  "gpt-oss": { inPer1M: 0.2, outPer1M: 0.8, cacheWritePer1M: 0, cacheReadPer1M: 0 },
+}
+const FALLBACK_PRICING: ModelPricing = { inPer1M: 1, outPer1M: 5, cacheWritePer1M: 1.25, cacheReadPer1M: 0.1 }
+const KNOWN_PROVIDERS = new Set(["anthropic", "openai", "ollama", "google", "bedrock", "vertex", "groq", "together", "deepseek", "mistral"])
+
+function normalizeModel(m: string): string {
+  let n = (m ?? "").trim().toLowerCase()
+  if (!n) return ""
+  const firstColon = n.indexOf(":")
+  if (firstColon >= 0 && KNOWN_PROVIDERS.has(n.slice(0, firstColon))) {
+    n = n.slice(firstColon + 1)
+  }
+  const tagColon = n.indexOf(":")
+  if (tagColon >= 0) n = n.slice(0, tagColon)
+  const parts = n.split("-")
+  const last = parts[parts.length - 1]
+  if (last && last.length === 8 && /^\d{8}$/.test(last)) {
+    n = parts.slice(0, -1).join("-")
+  }
+  return n
 }
 
-function estimateCredits(tokensIn: number, tokensOut: number): number {
-  return (
-    (tokensIn / 1_000_000) * PRICING.inputPer1M +
-    (tokensOut / 1_000_000) * PRICING.outputPer1M
-  )
+function pricingFor(model: string): ModelPricing {
+  const norm = normalizeModel(model)
+  if (MODEL_PRICING[norm]) return MODEL_PRICING[norm]
+  let rest = norm
+  while (rest.includes("-")) {
+    rest = rest.slice(0, rest.lastIndexOf("-"))
+    if (MODEL_PRICING[rest]) return MODEL_PRICING[rest]
+  }
+  return FALLBACK_PRICING
+}
+
+function estimateCredits(model: string, tokensIn: number, tokensOut: number, cacheRead: number, cacheWrite: number): number {
+  const p = pricingFor(model)
+  const raw =
+    (tokensIn / 1_000_000) * p.inPer1M +
+    (tokensOut / 1_000_000) * p.outPer1M +
+    (cacheRead / 1_000_000) * p.cacheReadPer1M +
+    (cacheWrite / 1_000_000) * p.cacheWritePer1M
+  return raw * PROFIT_RATIO
 }
 
 // Human label for the broker `service` tag. Keys match what
@@ -54,10 +107,12 @@ const SERVICE_LABELS: Record<string, string> = {
 type SessionBucket = {
   sessionId: string
   title: string
-  services: Map<string, { tokensIn: number; tokensOut: number; events: number }>
+  services: Map<string, { tokensIn: number; tokensOut: number; cacheRead: number; cacheWrite: number; events: number }>
   events: number
   tokensIn: number
   tokensOut: number
+  cacheRead: number
+  cacheWrite: number
   credits: number
   lastActivity: Date
 }
@@ -75,6 +130,8 @@ function aggregateBySession(events: UsageEvent[]): SessionBucket[] {
         events: 0,
         tokensIn: 0,
         tokensOut: 0,
+        cacheRead: 0,
+        cacheWrite: 0,
         credits: 0,
         lastActivity: at,
       }
@@ -83,12 +140,16 @@ function aggregateBySession(events: UsageEvent[]): SessionBucket[] {
     cur.events += 1
     cur.tokensIn += e.tokensIn
     cur.tokensOut += e.tokensOut
-    cur.credits += estimateCredits(e.tokensIn, e.tokensOut)
+    cur.cacheRead += e.cacheRead
+    cur.cacheWrite += e.cacheWrite
+    cur.credits += estimateCredits(e.model, e.tokensIn, e.tokensOut, e.cacheRead, e.cacheWrite)
     if (at > cur.lastActivity) cur.lastActivity = at
     const svcKey = e.service || "unknown"
-    const svc = cur.services.get(svcKey) ?? { tokensIn: 0, tokensOut: 0, events: 0 }
+    const svc = cur.services.get(svcKey) ?? { tokensIn: 0, tokensOut: 0, cacheRead: 0, cacheWrite: 0, events: 0 }
     svc.tokensIn += e.tokensIn
     svc.tokensOut += e.tokensOut
+    svc.cacheRead += e.cacheRead
+    svc.cacheWrite += e.cacheWrite
     svc.events += 1
     cur.services.set(svcKey, svc)
     if (e.sessionTitle && cur.title.startsWith("Session ")) cur.title = e.sessionTitle.trim()
@@ -96,7 +157,15 @@ function aggregateBySession(events: UsageEvent[]): SessionBucket[] {
   return [...map.values()].sort((a, b) => b.lastActivity.getTime() - a.lastActivity.getTime())
 }
 
-type ServiceTotal = { service: string; label: string; credits: number; tokensIn: number; tokensOut: number }
+type ServiceTotal = {
+  service: string
+  label: string
+  credits: number
+  tokensIn: number
+  tokensOut: number
+  cacheRead: number
+  cacheWrite: number
+}
 
 function aggregateByService(events: UsageEvent[]): ServiceTotal[] {
   const map = new Map<string, ServiceTotal>()
@@ -108,10 +177,14 @@ function aggregateByService(events: UsageEvent[]): ServiceTotal[] {
       credits: 0,
       tokensIn: 0,
       tokensOut: 0,
+      cacheRead: 0,
+      cacheWrite: 0,
     }
-    cur.credits += estimateCredits(e.tokensIn, e.tokensOut)
+    cur.credits += estimateCredits(e.model, e.tokensIn, e.tokensOut, e.cacheRead, e.cacheWrite)
     cur.tokensIn += e.tokensIn
     cur.tokensOut += e.tokensOut
+    cur.cacheRead += e.cacheRead
+    cur.cacheWrite += e.cacheWrite
     map.set(key, cur)
   }
   return [...map.values()].sort((a, b) => b.credits - a.credits)
@@ -190,7 +263,7 @@ export default async function UsagePage() {
                   </div>
                   <div className={s.serviceMeta}>
                     <span>~{fmtCredits.format(svc.credits)} {t("settingsPages.creditsShort")}</span>
-                    <span>{fmtNumber.format(svc.tokensIn + svc.tokensOut)} tokens</span>
+                    <span>{fmtNumber.format(svc.tokensIn + svc.tokensOut + svc.cacheRead + svc.cacheWrite)} tokens</span>
                   </div>
                 </div>
               )
@@ -223,8 +296,8 @@ export default async function UsagePage() {
                 </div>
                 <div className={s.eventMeta}>
                   <span className={s.credits}>~{fmtCredits.format(row.credits)} {t("settingsPages.creditsShort")}</span>
-                  <span className={s.tokensIn}>{fmtNumber.format(row.tokensIn)} in</span>
-                  <span className={s.tokensOut}>{fmtNumber.format(row.tokensOut)} out</span>
+                  <span className={s.tokensIn}>{fmtNumber.format(row.tokensIn + row.cacheRead)} in</span>
+                  <span className={s.tokensOut}>{fmtNumber.format(row.tokensOut + row.cacheWrite)} out</span>
                 </div>
               </div>
             ))}
