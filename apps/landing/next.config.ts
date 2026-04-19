@@ -43,6 +43,18 @@ const nextConfig: NextConfig = {
             value: "max-age=63072000; includeSubDomains; preload"
           }
         ]
+      },
+      // Allow Capacitor mobile builds (iOS: capacitor://localhost, Android:
+      // http://localhost) to reach the broker proxy. Scoped to /api/broker/*
+      // so it doesn't relax CORS for auth/session routes.
+      {
+        source: "/api/broker/:path*",
+        headers: [
+          { key: "Access-Control-Allow-Origin", value: "*" },
+          { key: "Access-Control-Allow-Methods", value: "GET,POST,PUT,DELETE,OPTIONS" },
+          { key: "Access-Control-Allow-Headers", value: "Authorization,Content-Type" },
+          { key: "Access-Control-Max-Age", value: "86400" }
+        ]
       }
     ]
   }
