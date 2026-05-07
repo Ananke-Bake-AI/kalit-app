@@ -506,6 +506,8 @@
     "newChat": "Nouvelle discussion",
     "noConversations": "Aucune conversation",
     "deleteConfirm": "Supprimer ?",
+    "deleteAlsoProject": "Supprimer aussi le projet « {name} »",
+    "deleteProjectLiveWarning": "Le site en ligne sera retiré :",
     "yes": "Oui",
     "no": "Non",
     "newConversation": "Nouvelle conversation",

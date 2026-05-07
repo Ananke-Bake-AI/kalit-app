@@ -148,10 +148,72 @@ export function SessionSidebar({ onSessionSelect, onNewChat }: SessionSidebarPro
   const hasAnyMatch = pinned.length > 0 || BUCKET_ORDER.some((b) => grouped[b].length > 0)
 
   // ── Delete ─────────────────────────────────────────────
-  const handleDelete = useCallback(
-    async (id: string) => {
+  // The session can be linked to a project via /repositories. Deletion
+  // gives the user three outcomes:
+  //   1) project not attached → plain delete
+  //   2) project attached, "delete project" off → session gone, project survives in /repositories
+  //   3) project attached, "delete project" on → broker tears down Vercel + Taskforce + DB row,
+  //      then drops the session.
+  // attachedProjects[id] is null while we still don't know, {} when no project, or
+  // a populated record we drive the modal off.
+  type AttachedProject = {
+    projectId: string
+    displayName: string
+    deployUrl: string
+    isLive: boolean
+    sessionCount: number
+  }
+  const [attachedProjects, setAttachedProjects] = useState<Record<string, AttachedProject | null>>({})
+  const [deleteAlsoProject, setDeleteAlsoProject] = useState(false)
+
+  // Resolve the attached project once when a delete intent fires; cache so
+  // re-opening the same confirm doesn't re-hit the broker.
+  useEffect(() => {
+    if (!deleteConfirm) {
+      setDeleteAlsoProject(false)
+      return
+    }
+    if (deleteConfirm in attachedProjects) return
+    let cancelled = false
+    void (async () => {
       try {
-        const res = await brokerFetch(`/api/broker/sessions/${id}`, { method: "DELETE" })
+        const res = await brokerFetch(`/api/broker/sessions/${deleteConfirm}/attached-project`)
+        if (!res.ok) {
+          if (!cancelled) setAttachedProjects((m) => ({ ...m, [deleteConfirm]: null }))
+          return
+        }
+        const data = (await res.json()) as Partial<AttachedProject>
+        if (cancelled) return
+        if (data && data.projectId) {
+          setAttachedProjects((m) => ({
+            ...m,
+            [deleteConfirm]: {
+              projectId: data.projectId!,
+              displayName: data.displayName || "(untitled)",
+              deployUrl: data.deployUrl || "",
+              isLive: !!data.isLive,
+              sessionCount: data.sessionCount ?? 1,
+            },
+          }))
+        } else {
+          setAttachedProjects((m) => ({ ...m, [deleteConfirm]: null }))
+        }
+      } catch {
+        if (!cancelled) setAttachedProjects((m) => ({ ...m, [deleteConfirm]: null }))
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [deleteConfirm, attachedProjects])
+
+  const handleDelete = useCallback(
+    async (id: string, deleteProject: boolean) => {
+      try {
+        const url = deleteProject
+          ? `/api/broker/sessions/${id}?deleteProject=1`
+          : `/api/broker/sessions/${id}`
+        const res = await brokerFetch(url, { method: "DELETE" })
         if (res.ok) {
           removeSession(id)
           if (activeSessionId === id) {
@@ -163,6 +225,12 @@ export function SessionSidebar({ onSessionSelect, onNewChat }: SessionSidebarPro
         // silent
       }
       setDeleteConfirm(null)
+      setDeleteAlsoProject(false)
+      setAttachedProjects((m) => {
+        const next = { ...m }
+        delete next[id]
+        return next
+      })
     },
     [activeSessionId, removeSession, setActiveSessionId, setMessages, setDeleteConfirm],
   )
@@ -260,15 +328,54 @@ export function SessionSidebar({ onSessionSelect, onNewChat }: SessionSidebarPro
         className={clsx(s.session, activeSessionId === session.id && s.sessionActive)}
       >
         {isConfirmingDelete ? (
-          <div className={s.confirmRow}>
-            <span className={s.confirmText}>{t("studio.deleteConfirm")}</span>
-            <button className={s.confirmYes} onClick={() => handleDelete(session.id)}>
-              {t("studio.yes")}
-            </button>
-            <button className={s.confirmNo} onClick={() => setDeleteConfirm(null)}>
-              {t("studio.no")}
-            </button>
-          </div>
+          (() => {
+            // attachedProjects[id]: undefined while loading, null when no
+            // project, or AttachedProject — the "delete project too?"
+            // checkbox only renders for the third case.
+            const proj = attachedProjects[session.id]
+            const loaded = session.id in attachedProjects
+            return (
+              <div className={s.confirmRow}>
+                <div className={s.confirmStack}>
+                  <span className={s.confirmText}>{t("studio.deleteConfirm")}</span>
+                  {loaded && proj && (
+                    <label className={s.confirmCheckbox}>
+                      <input
+                        type="checkbox"
+                        checked={deleteAlsoProject}
+                        onChange={(e) => setDeleteAlsoProject(e.target.checked)}
+                      />
+                      <span>
+                        {t("studio.deleteAlsoProject", { name: proj.displayName }) ||
+                          `Also delete project "${proj.displayName}"`}
+                      </span>
+                    </label>
+                  )}
+                  {loaded && proj && deleteAlsoProject && proj.isLive && (
+                    <span className={s.confirmWarning}>
+                      ⚠ {t("studio.deleteProjectLiveWarning") ||
+                        "This will take the live site offline:"}{" "}
+                      <a href={proj.deployUrl} target="_blank" rel="noreferrer">
+                        {proj.deployUrl.replace(/^https?:\/\//, "")}
+                      </a>
+                    </span>
+                  )}
+                </div>
+                <div className={s.confirmActions}>
+                  <button
+                    className={s.confirmYes}
+                    onClick={() => handleDelete(session.id, !!(proj && deleteAlsoProject))}
+                    disabled={!loaded}
+                  >
+                    {t("studio.yes")}
+                  </button>
+                  <button className={s.confirmNo} onClick={() => setDeleteConfirm(null)}>
+                    {t("studio.no")}
+                  </button>
+                </div>
+              </div>
+            )
+          })()
         ) : (
           <>
             <button
