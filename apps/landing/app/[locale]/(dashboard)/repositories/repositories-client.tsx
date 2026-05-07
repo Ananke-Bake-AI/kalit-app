@@ -13,7 +13,8 @@ import {
   renameRepository,
   type RepositoryProject,
 } from "@/server/actions/repositories"
-import { useMemo, useState, useTransition } from "react"
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, useTransition } from "react"
+import { createPortal } from "react-dom"
 import { toast } from "sonner"
 import s from "./repositories.module.scss"
 
@@ -323,55 +324,109 @@ function RepoCard({
             <Icon icon="hugeicons:link-square-02" />
           </button>
         )}
-        <div className={s.menuWrap}>
-          <button
-            type="button"
-            className={s.iconBtn}
-            onClick={() => setMenuOpen((v) => !v)}
-            title="More"
-          >
-            <Icon icon="hugeicons:more-horizontal-circle-01" />
-          </button>
-          {menuOpen && (
-            <>
-              <div
-                className={s.menuOverlay}
-                onClick={() => setMenuOpen(false)}
-              />
-              <div className={s.menu} role="menu">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMenuOpen(false)
-                    onRename()
-                  }}
-                >
-                  Rename
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMenuOpen(false)
-                    onArchive()
-                  }}
-                >
-                  {d.archivedAt ? "Restore" : "Archive"}
-                </button>
-                <button
-                  type="button"
-                  className={s.menuDanger}
-                  onClick={() => {
-                    setMenuOpen(false)
-                    onDelete()
-                  }}
-                >
-                  Delete…
-                </button>
-              </div>
-            </>
-          )}
-        </div>
+        <CardMenu
+          archived={!!d.archivedAt}
+          onRename={onRename}
+          onArchive={onArchive}
+          onDelete={onDelete}
+        />
       </div>
     </div>
+  )
+}
+
+// CardMenu portals its dropdown to document.body so the parent card's
+// overflow:hidden (used to round-corner the thumbnail) doesn't clip the
+// menu out of view. Position is computed from the trigger button's
+// bounding rect each time the menu opens.
+function CardMenu({
+  archived,
+  onRename,
+  onArchive,
+  onDelete,
+}: {
+  archived: boolean
+  onRename: () => void
+  onArchive: () => void
+  onDelete: () => void
+}) {
+  const triggerRef = useRef<HTMLButtonElement | null>(null)
+  const [open, setOpen] = useState(false)
+  const [pos, setPos] = useState<{ top: number; left: number } | null>(null)
+
+  useLayoutEffect(() => {
+    if (!open || !triggerRef.current) return
+    const rect = triggerRef.current.getBoundingClientRect()
+    const menuWidth = 160
+    // Right-align the menu under the button. Clamp to the viewport.
+    const left = Math.max(8, Math.min(rect.right - menuWidth, window.innerWidth - menuWidth - 8))
+    setPos({ top: rect.bottom + 4, left })
+  }, [open])
+
+  useEffect(() => {
+    if (!open) return
+    const onScroll = () => setOpen(false)
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false)
+    window.addEventListener("scroll", onScroll, true)
+    window.addEventListener("keydown", onKey)
+    return () => {
+      window.removeEventListener("scroll", onScroll, true)
+      window.removeEventListener("keydown", onKey)
+    }
+  }, [open])
+
+  return (
+    <>
+      <button
+        ref={triggerRef}
+        type="button"
+        className={s.iconBtn}
+        onClick={() => setOpen((v) => !v)}
+        title="More"
+      >
+        <Icon icon="hugeicons:more-horizontal-circle-01" />
+      </button>
+      {open && pos && typeof document !== "undefined" &&
+        createPortal(
+          <>
+            <div className={s.menuOverlay} onClick={() => setOpen(false)} />
+            <div
+              className={s.menu}
+              role="menu"
+              style={{ top: pos.top, left: pos.left, width: 160 }}
+            >
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false)
+                  onRename()
+                }}
+              >
+                Rename
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false)
+                  onArchive()
+                }}
+              >
+                {archived ? "Restore" : "Archive"}
+              </button>
+              <button
+                type="button"
+                className={s.menuDanger}
+                onClick={() => {
+                  setOpen(false)
+                  onDelete()
+                }}
+              >
+                Delete…
+              </button>
+            </div>
+          </>,
+          document.body,
+        )}
+    </>
   )
 }
