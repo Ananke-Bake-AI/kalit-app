@@ -10,6 +10,7 @@ import {
   deleteRepository,
   listRepositories,
   openRepository,
+  remixRepository,
   renameRepository,
   type RepositoryProject,
 } from "@/server/actions/repositories"
@@ -155,6 +156,40 @@ export function RepositoriesClient({
     window.open(url, "_blank", "noopener,noreferrer")
   }
 
+  // ── Remix modal state ──────────────────────────────────
+  // The remix dialog is global (one at a time) rather than per-card —
+  // each card opens it via its repaint button. We keep the source
+  // project ref + the user's optional idea string here.
+  const [remixTarget, setRemixTarget] = useState<RepositoryProject | null>(null)
+  const [remixIdea, setRemixIdea] = useState("")
+
+  const handleRemixSubmit = (mode: "auto" | "withIdea") => {
+    if (!remixTarget) return
+    const target = remixTarget
+    const idea = mode === "withIdea" ? remixIdea.trim() : ""
+    if (mode === "withIdea" && !idea) {
+      toast.error("Add some direction or pick automatic")
+      return
+    }
+    setRemixTarget(null)
+    setRemixIdea("")
+    startTransition(async () => {
+      const t = toast.loading("Forking project on Taskforce…")
+      const result = await remixRepository(target.id, idea || undefined)
+      toast.dismiss(t)
+      if ("error" in result) {
+        toast.error(result.error || "Remix failed")
+        return
+      }
+      // Stay on /repositories briefly for the "Remixing…" toast, then
+      // hard-navigate so the studio JWT/session bootstrap fires fresh.
+      // The `prompt` query param triggers the studio's auto-send path.
+      const url = `/studio?session=${result.sessionId}&prompt=${encodeURIComponent(result.prompt)}`
+      toast.success("Remix launched — opening studio")
+      window.location.href = url
+    })
+  }
+
   // ── Render ──────────────────────────────────────────────
 
   return (
@@ -225,11 +260,29 @@ export function RepositoriesClient({
                 onRename={() => handleRename(d)}
                 onArchive={() => handleArchiveToggle(d)}
                 onDelete={() => handleDelete(d)}
+                onRemix={() => {
+                  setRemixIdea("")
+                  setRemixTarget(d)
+                }}
               />
             ))}
           </div>
         )}
       </SurfacePanel>
+
+      {remixTarget && (
+        <RemixModal
+          target={remixTarget}
+          idea={remixIdea}
+          setIdea={setRemixIdea}
+          onCancel={() => {
+            setRemixTarget(null)
+            setRemixIdea("")
+          }}
+          onSubmit={handleRemixSubmit}
+          pending={pending}
+        />
+      )}
     </div>
   )
 }
@@ -242,6 +295,7 @@ function RepoCard({
   onRename,
   onArchive,
   onDelete,
+  onRemix,
 }: {
   d: RepositoryProject
   pending: boolean
@@ -250,6 +304,7 @@ function RepoCard({
   onRename: () => void
   onArchive: () => void
   onDelete: () => void
+  onRemix: () => void
 }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const url = d.subdomainUrl || d.vercelUrl
@@ -314,6 +369,15 @@ function RepoCard({
         >
           Open
         </Button>
+        <button
+          type="button"
+          className={s.iconBtn}
+          onClick={onRemix}
+          title="Remix this project — fork on Taskforce and run a fresh sprint"
+          disabled={pending || !d.subdomainUrl && !d.vercelUrl && d.status !== "completed"}
+        >
+          <Icon icon="hugeicons:paint-board" />
+        </button>
         {url && (
           <button
             type="button"
@@ -428,5 +492,99 @@ function CardMenu({
           document.body,
         )}
     </>
+  )
+}
+
+// RemixModal renders the two-mode picker (auto / with idea) and gathers
+// the optional direction text. Portal'd so the page's overflow doesn't
+// clip it; basic centered overlay with click-outside-cancel.
+function RemixModal({
+  target,
+  idea,
+  setIdea,
+  onCancel,
+  onSubmit,
+  pending,
+}: {
+  target: RepositoryProject
+  idea: string
+  setIdea: (v: string) => void
+  onCancel: () => void
+  onSubmit: (mode: "auto" | "withIdea") => void
+  pending: boolean
+}) {
+  const label = target.displayName || target.title || "(untitled)"
+  if (typeof document === "undefined") return null
+  return createPortal(
+    <div className={s.remixOverlay} onClick={onCancel}>
+      <div
+        className={s.remixModal}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="remix-title"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className={s.remixHeader}>
+          <Icon icon="hugeicons:paint-board" />
+          <h3 id="remix-title">Remix « {label} »</h3>
+        </div>
+        <p className={s.remixIntro}>
+          Crée un nouveau projet à partir de celui-ci. Une copie indépendante
+          est faite côté Taskforce — l'original reste intact.
+        </p>
+
+        <div className={s.remixOptions}>
+          <button
+            type="button"
+            className={s.remixOptionPrimary}
+            disabled={pending}
+            onClick={() => onSubmit("auto")}
+          >
+            <Icon icon="hugeicons:magic-wand-01" />
+            <span>
+              <strong>Remix automatique</strong>
+              <em>L'agent réinvente librement</em>
+            </span>
+          </button>
+
+          <div className={s.remixDivider}>
+            <span>ou</span>
+          </div>
+
+          <label className={s.remixIdeaLabel} htmlFor="remix-idea">
+            Donne une direction à l'agent
+          </label>
+          <textarea
+            id="remix-idea"
+            className={s.remixTextarea}
+            value={idea}
+            onChange={(e) => setIdea(e.target.value)}
+            placeholder="Ex : passe en thème dark luxury, target une cible Gen Z, change le wording pour viser le B2B…"
+            rows={5}
+            maxLength={2000}
+            autoFocus
+          />
+          <button
+            type="button"
+            className={s.remixOptionSecondary}
+            disabled={pending || !idea.trim()}
+            onClick={() => onSubmit("withIdea")}
+          >
+            <Icon icon="hugeicons:rocket-01" />
+            <span>Lancer le remix avec ma direction</span>
+          </button>
+        </div>
+
+        <button
+          type="button"
+          className={s.remixCancel}
+          onClick={onCancel}
+          disabled={pending}
+        >
+          Annuler
+        </button>
+      </div>
+    </div>,
+    document.body,
   )
 }

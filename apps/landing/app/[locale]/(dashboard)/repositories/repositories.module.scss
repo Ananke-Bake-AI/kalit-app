@@ -251,3 +251,210 @@
     background: oklch(from var(--danger) l c h / 0.08) !important;
   }
 }
+
+// ── Remix modal ─────────────────────────────────────────
+
+.remixOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  background: oklch(0 0 0 / 0.55);
+  backdrop-filter: blur(2px);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  animation: remixFadeIn 0.15s ease;
+}
+
+@keyframes remixFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.remixModal {
+  width: min(520px, 100%);
+  max-height: calc(100vh - 2rem);
+  overflow: auto;
+  background: var(--surface);
+  border: 1px solid oklch(from var(--text) l c h / 0.18);
+  border-radius: var(--radius-4);
+  box-shadow: 0 24px 48px oklch(from var(--text) l c h / 0.25);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.remixHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--text);
+
+  :global(svg) {
+    font-size: 1.4rem;
+    color: var(--color-2);
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.remixIntro {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.remixOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.remixOptionPrimary,
+.remixOptionSecondary {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-4);
+  border: 1px solid oklch(from var(--text) l c h / 0.16);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  text-align: left;
+
+  &:hover:not(:disabled) {
+    background: oklch(from var(--color-2) l c h / 0.08);
+    border-color: oklch(from var(--color-2) l c h / 0.4);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  :global(svg) {
+    font-size: 1.4rem;
+    color: var(--color-2);
+    flex-shrink: 0;
+  }
+
+  span {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  strong {
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  em {
+    font-style: normal;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+  }
+}
+
+.remixOptionPrimary {
+  background: oklch(from var(--color-2) l c h / 0.06);
+  border-color: oklch(from var(--color-2) l c h / 0.3);
+}
+
+.remixOptionSecondary {
+  justify-content: center;
+
+  span {
+    flex: 0;
+    flex-direction: row;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+}
+
+.remixDivider {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+
+  &::before,
+  &::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: oklch(from var(--text) l c h / 0.12);
+  }
+}
+
+.remixIdeaLabel {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: -0.25rem;
+}
+
+.remixTextarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 5.5rem;
+  padding: 0.7rem 0.85rem;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--text);
+  background: oklch(from var(--text) l c h / 0.04);
+  border: 1px solid oklch(from var(--text) l c h / 0.16);
+  border-radius: var(--radius-3);
+  transition: border-color 0.15s ease, background 0.15s ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-2);
+    background: var(--surface);
+  }
+
+  &::placeholder {
+    color: oklch(from var(--text-secondary) l c h / 0.7);
+  }
+}
+
+.remixCancel {
+  align-self: flex-end;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--radius-3);
+
+  &:hover:not(:disabled) {
+    color: var(--text);
+    background: oklch(from var(--text) l c h / 0.06);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

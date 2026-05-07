@@ -136,3 +136,20 @@ export async function openRepository(id: string) {
     { method: "POST" },
   )
 }
+
+// Forks the project on Taskforce, mints a fresh chat session, and
+// returns the canned remix prompt the studio will auto-send. `idea`
+// is optional — when omitted the broker generates a "fully automatic"
+// remix brief.
+export async function remixRepository(id: string, idea?: string) {
+  return brokerCall<{
+    sessionId: string
+    projectId: string
+    externalProjectId: string
+    prompt: string
+    sourceProjectId: string
+  }>(`/api/flow/projects/${id}/remix`, {
+    method: "POST",
+    body: { idea: idea ?? "" },
+  })
+}
