@@ -214,12 +214,15 @@
   // the trigger's bounding rect. position:fixed because we walk past
   // any parent stacking context (the .card has overflow:hidden so an
   // absolute-positioned child would get clipped).
+  // Background is var(--surface) (opaque oklch) — never var(--bg)
+  // which on some pages resolves to a semi-transparent glass layer
+  // that lets the chat / page content bleed through the dropdown.
   position: fixed;
   z-index: 1001;
-  background: var(--bg);
-  border: 1px solid oklch(from var(--text) l c h / 0.16);
+  background: var(--surface);
+  border: 1px solid oklch(from var(--text) l c h / 0.18);
   border-radius: var(--radius-4);
-  box-shadow: 0 8px 24px oklch(from var(--text) l c h / 0.12);
+  box-shadow: 0 12px 28px oklch(from var(--text) l c h / 0.18);
   padding: 0.25rem;
   min-width: 8rem;
 
@@ -230,13 +233,13 @@
     padding: 0.5rem 0.75rem;
     font-size: 0.82rem;
     border: none;
-    background: transparent;
+    background: var(--surface);
     color: var(--text);
     border-radius: var(--radius-3);
     cursor: pointer;
 
     &:hover {
-      background: oklch(from var(--text) l c h / 0.06);
+      background: oklch(from var(--text) l c h / 0.08);
     }
   }
 }
