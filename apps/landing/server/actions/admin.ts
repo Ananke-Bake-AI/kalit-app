@@ -459,6 +459,70 @@ export async function teardownAllOrphans() {
   }
 }
 
+// ─── Featured projects (landing curation) ──────────────
+
+interface AdminFeaturedRow {
+  id: string
+  title: string
+  displayName: string
+  featuredTitle: string
+  featuredSubtitle: string
+  url: string
+  hasThumbnail: boolean
+  featuredAt: string | null
+}
+
+export async function getAdminFeaturedProjects() {
+  await requireAdmin()
+  const brokerUrl = process.env.BROKER_URL?.replace(/\/+$/, "") || "http://localhost:9000"
+  const internalToken = process.env.BROKER_INTERNAL_TOKEN
+  if (!internalToken) {
+    return { error: "BROKER_INTERNAL_TOKEN not configured" }
+  }
+  try {
+    const res = await fetch(`${brokerUrl}/internal/admin/featured-projects`, {
+      headers: { Authorization: `Bearer ${internalToken}` },
+      cache: "no-store",
+    })
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      return { error: (data as { error?: string }).error || `Broker ${res.status}` }
+    }
+    return (await res.json()) as { projects: AdminFeaturedRow[] }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Unknown error" }
+  }
+}
+
+export async function setProjectFeatured(
+  id: string,
+  patch: { featured?: boolean; featuredTitle?: string; featuredSubtitle?: string },
+) {
+  await requireAdmin()
+  const brokerUrl = process.env.BROKER_URL?.replace(/\/+$/, "") || "http://localhost:9000"
+  const internalToken = process.env.BROKER_INTERNAL_TOKEN
+  if (!internalToken) {
+    return { error: "BROKER_INTERNAL_TOKEN not configured" }
+  }
+  try {
+    const res = await fetch(`${brokerUrl}/internal/admin/featured-projects/${id}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${internalToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(patch),
+    })
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      return { error: (data as { error?: string }).error || `Broker ${res.status}` }
+    }
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Unknown error" }
+  }
+}
+
 // ─── Plan Assignment ────────────────────────────────────
 
 export async function assignPlan(orgId: string, planKey: string, expiresAt?: string) {

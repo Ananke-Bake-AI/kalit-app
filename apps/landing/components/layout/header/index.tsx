@@ -138,6 +138,12 @@ export const Header = ({ initialSession = null }: HeaderProps) => {
                     </span>
                     <span className={s.dropdownLabel}>{t("nav.dashboard")}</span>
                   </Link>
+                  <Link href="/repositories" className={s.dropdownItem} onClick={() => setMenuOpen(false)}>
+                    <span className={s.dropdownIcon}>
+                      <Icon icon="hugeicons:folder-cloud" />
+                    </span>
+                    <span className={s.dropdownLabel}>My repositories</span>
+                  </Link>
                   <Link href="/settings/profile" className={s.dropdownItem} onClick={() => setMenuOpen(false)}>
                     <span className={s.dropdownIcon}>
                       <Icon icon="hugeicons:user-circle" />

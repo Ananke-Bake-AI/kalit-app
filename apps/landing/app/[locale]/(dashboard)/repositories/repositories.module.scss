@@ -1,0 +1,252 @@
+.page {
+  padding: 1rem 0 4rem;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.search {
+  width: 320px;
+  max-width: 100%;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0.5rem 0 1rem;
+}
+
+.filterBtn,
+.filterActive {
+  padding: 0.35rem 0.85rem;
+  border: 1px solid oklch(from var(--text) l c h / 0.16);
+  border-radius: var(--radius-rounded);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background: oklch(from var(--text) l c h / 0.06);
+    color: var(--text);
+  }
+}
+
+.filterActive {
+  background: var(--color-2);
+  color: white;
+  border-color: transparent;
+
+  &:hover {
+    background: var(--color-2);
+    color: white;
+  }
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 4rem 1rem;
+  color: var(--text-secondary);
+  text-align: center;
+
+  :global(svg) {
+    font-size: 3rem;
+    opacity: 0.4;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.95rem;
+    max-width: 320px;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid oklch(from var(--text) l c h / 0.1);
+  border-radius: var(--radius-4);
+  overflow: hidden;
+  background: var(--bg);
+  transition: border-color 0.15s ease, transform 0.15s ease;
+
+  &:hover {
+    border-color: oklch(from var(--text) l c h / 0.2);
+    transform: translateY(-1px);
+  }
+}
+
+.cardArchived {
+  opacity: 0.6;
+}
+
+.thumb {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: oklch(from var(--text) l c h / 0.04);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.thumbPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    135deg,
+    oklch(from var(--color-2) l c h / 0.15),
+    oklch(from var(--color-3) l c h / 0.15)
+  );
+
+  :global(svg) {
+    font-size: 3rem;
+    color: oklch(from var(--text) l c h / 0.4);
+  }
+}
+
+.thumbBadge {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
+.body {
+  padding: 0.85rem 1rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-height: 4.5rem;
+}
+
+.title {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.urlLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  color: var(--color-2);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.meta {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem 1rem;
+}
+
+.openBtn {
+  flex: 1;
+  height: 2.25rem;
+  font-size: 0.85rem;
+}
+
+.iconBtn {
+  width: 2.25rem;
+  height: 2.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-4);
+  border: 1px solid oklch(from var(--text) l c h / 0.16);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: oklch(from var(--text) l c h / 0.06);
+    color: var(--text);
+  }
+}
+
+.menuWrap {
+  position: relative;
+}
+
+.menuOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  right: 0;
+  z-index: 11;
+  background: var(--bg);
+  border: 1px solid oklch(from var(--text) l c h / 0.16);
+  border-radius: var(--radius-4);
+  box-shadow: 0 8px 24px oklch(from var(--text) l c h / 0.12);
+  padding: 0.25rem;
+  min-width: 8rem;
+
+  button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.82rem;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    border-radius: var(--radius-3);
+    cursor: pointer;
+
+    &:hover {
+      background: oklch(from var(--text) l c h / 0.06);
+    }
+  }
+}
+
+.menuDanger {
+  color: var(--danger) !important;
+
+  &:hover {
+    background: oklch(from var(--danger) l c h / 0.08) !important;
+  }
+}

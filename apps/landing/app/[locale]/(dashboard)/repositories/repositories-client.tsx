@@ -1,0 +1,377 @@
+"use client"
+
+import { Badge } from "@/components/badge"
+import { Button } from "@/components/button"
+import { Icon } from "@/components/icon"
+import { SurfacePanel } from "@/components/surface-panel"
+import { TextField } from "@/components/text-field"
+import {
+  archiveRepository,
+  deleteRepository,
+  listRepositories,
+  openRepository,
+  renameRepository,
+  type RepositoryProject,
+} from "@/server/actions/repositories"
+import { useMemo, useState, useTransition } from "react"
+import { toast } from "sonner"
+import s from "./repositories.module.scss"
+
+type Filter = "all" | "live" | "draft" | "archived"
+
+export function RepositoriesClient({
+  initial,
+  count,
+  cap,
+}: {
+  initial: RepositoryProject[]
+  count: number
+  cap: number
+}) {
+  const [data, setData] = useState(initial)
+  const [search, setSearch] = useState("")
+  const [filter, setFilter] = useState<Filter>("all")
+  const [includeArchived, setIncludeArchived] = useState(false)
+  const [pending, startTransition] = useTransition()
+
+  const refresh = (archivedFlag = includeArchived) => {
+    startTransition(async () => {
+      const next = await listRepositories(archivedFlag)
+      if ("error" in next) {
+        toast.error(next.error || "Failed to load")
+        return
+      }
+      setData(next.projects)
+    })
+  }
+
+  const visible = useMemo(() => {
+    const q = search.trim().toLowerCase()
+    return data.filter((d) => {
+      if (filter === "live" && !d.subdomainUrl && !d.vercelUrl) return false
+      if (filter === "draft" && (d.subdomainUrl || d.vercelUrl)) return false
+      if (filter === "archived" && !d.archivedAt) return false
+      if (filter === "all" && d.archivedAt && !includeArchived) return false
+      if (!q) return true
+      const hay =
+        (d.displayName || "") +
+        " " +
+        (d.title || "") +
+        " " +
+        (d.subdomain || "") +
+        " " +
+        (d.prompt || "") +
+        " " +
+        (d.subdomainUrl || "") +
+        " " +
+        (d.vercelUrl || "")
+      return hay.toLowerCase().includes(q)
+    })
+  }, [data, search, filter, includeArchived])
+
+  const liveCount = data.filter((d) => d.subdomainUrl || d.vercelUrl).length
+  const archivedCount = data.filter((d) => d.archivedAt).length
+
+  // ── Actions ─────────────────────────────────────────────
+
+  const handleOpen = (d: RepositoryProject) => {
+    startTransition(async () => {
+      const result = await openRepository(d.id)
+      if ("error" in result) {
+        toast.error(result.error || "Could not open")
+        return
+      }
+      // Hard navigate to /studio?session=<id>; the session JWT flow needs a
+      // page reload to refresh.
+      window.location.href = `/studio?session=${result.sessionId}`
+    })
+  }
+
+  const handleRename = (d: RepositoryProject) => {
+    const next = window.prompt(
+      "Rename repository",
+      d.displayName || d.title || "",
+    )
+    if (next == null) return
+    const trimmed = next.trim()
+    if (!trimmed) return
+    startTransition(async () => {
+      const result = await renameRepository(d.id, trimmed)
+      if ("error" in result) {
+        toast.error(result.error || "Rename failed")
+        return
+      }
+      toast.success("Renamed")
+      refresh()
+    })
+  }
+
+  const handleArchiveToggle = (d: RepositoryProject) => {
+    const archive = !d.archivedAt
+    startTransition(async () => {
+      const result = await archiveRepository(d.id, archive)
+      if ("error" in result) {
+        toast.error(result.error || "Failed")
+        return
+      }
+      toast.success(archive ? "Archived" : "Restored")
+      refresh()
+    })
+  }
+
+  const handleDelete = (d: RepositoryProject) => {
+    const label = d.displayName || d.title || d.id.slice(0, 8)
+    if (
+      !confirm(
+        `Delete "${label}" permanently?\n\nThis will:\n• Remove the live site (Vercel)\n• Delete the Taskforce workspace\n• Drop all DB records\n\nIrreversible.`,
+      )
+    ) {
+      return
+    }
+    startTransition(async () => {
+      const result = await deleteRepository(d.id)
+      if ("error" in result) {
+        toast.error(result.error || "Delete failed")
+        return
+      }
+      const bits: string[] = []
+      if (result.vercelDeleted) bits.push("Vercel removed")
+      if (result.vercelError) bits.push(`Vercel error: ${result.vercelError}`)
+      if (result.subdomainCleared) bits.push("subdomain cleared")
+      if (result.taskforceDeleted) bits.push("Taskforce wiped")
+      if (result.rowDropped) bits.push("record dropped")
+      toast.success(bits.join(" · ") || "Deleted")
+      refresh()
+    })
+  }
+
+  const handleVisit = (d: RepositoryProject) => {
+    const url = d.subdomainUrl || d.vercelUrl
+    if (!url) {
+      toast.error("No live URL — deploy first")
+      return
+    }
+    window.open(url, "_blank", "noopener,noreferrer")
+  }
+
+  // ── Render ──────────────────────────────────────────────
+
+  return (
+    <div className={s.page}>
+      <SurfacePanel
+        spaced
+        title="My repositories"
+        subtitle={`${count} of ${cap} projects · ${liveCount} live · ${archivedCount} archived`}
+        headerAside={
+          <div className={s.headerActions}>
+            <TextField
+              placeholder="Search by title, prompt, URL…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className={s.search}
+            />
+          </div>
+        }
+      >
+        <div className={s.filters}>
+          {(["all", "live", "draft", "archived"] as Filter[]).map((f) => (
+            <button
+              key={f}
+              type="button"
+              className={filter === f ? s.filterActive : s.filterBtn}
+              onClick={() => {
+                setFilter(f)
+                if (f === "archived" && !includeArchived) {
+                  setIncludeArchived(true)
+                  refresh(true)
+                }
+              }}
+            >
+              {f === "all"
+                ? `All (${data.length})`
+                : f === "live"
+                  ? `Live (${liveCount})`
+                  : f === "draft"
+                    ? `Draft (${data.length - liveCount})`
+                    : `Archived (${archivedCount})`}
+            </button>
+          ))}
+        </div>
+
+        {visible.length === 0 ? (
+          <div className={s.empty}>
+            <Icon icon="hugeicons:folder-cloud" />
+            <p>
+              {search
+                ? "No project matches your search."
+                : filter === "archived"
+                  ? "No archived projects."
+                  : "You haven't built anything yet — head to the Studio to start."}
+            </p>
+            {!search && filter !== "archived" && (
+              <Button href="/studio">Open studio</Button>
+            )}
+          </div>
+        ) : (
+          <div className={s.grid}>
+            {visible.map((d) => (
+              <RepoCard
+                key={d.id}
+                d={d}
+                pending={pending}
+                onOpen={() => handleOpen(d)}
+                onVisit={() => handleVisit(d)}
+                onRename={() => handleRename(d)}
+                onArchive={() => handleArchiveToggle(d)}
+                onDelete={() => handleDelete(d)}
+              />
+            ))}
+          </div>
+        )}
+      </SurfacePanel>
+    </div>
+  )
+}
+
+function RepoCard({
+  d,
+  pending,
+  onOpen,
+  onVisit,
+  onRename,
+  onArchive,
+  onDelete,
+}: {
+  d: RepositoryProject
+  pending: boolean
+  onOpen: () => void
+  onVisit: () => void
+  onRename: () => void
+  onArchive: () => void
+  onDelete: () => void
+}) {
+  const [menuOpen, setMenuOpen] = useState(false)
+  const url = d.subdomainUrl || d.vercelUrl
+  const label = d.displayName || d.title || "(untitled)"
+  const deployed = d.subdomainDeployedAt || d.vercelDeployedAt
+  const statusBadge =
+    d.archivedAt ? "archived"
+      : url ? "live"
+        : d.status === "failed" ? "failed"
+          : "draft"
+
+  return (
+    <div className={`${s.card} ${d.archivedAt ? s.cardArchived : ""}`}>
+      <div className={s.thumb}>
+        {d.hasThumbnail ? (
+          <img
+            src={`/api/broker/projects/${d.id}/thumbnail.png`}
+            alt={label}
+            loading="lazy"
+          />
+        ) : (
+          <div className={s.thumbPlaceholder}>
+            <Icon icon="hugeicons:folder-cloud" />
+          </div>
+        )}
+        <div className={s.thumbBadge}>
+          <Badge
+            variant={
+              statusBadge === "live" ? "success" : undefined
+            }
+          >
+            {statusBadge}
+          </Badge>
+        </div>
+      </div>
+      <div className={s.body}>
+        <div className={s.title}>{label}</div>
+        {url && (
+          <a
+            href={url}
+            target="_blank"
+            rel="noreferrer"
+            className={s.urlLink}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Icon icon="hugeicons:link-square-02" />
+            {url.replace(/^https?:\/\//, "")}
+          </a>
+        )}
+        {deployed && (
+          <div className={s.meta}>
+            Deployed {new Date(deployed).toLocaleDateString()}
+          </div>
+        )}
+      </div>
+      <div className={s.actions}>
+        <Button
+          variant="primary"
+          onClick={onOpen}
+          disabled={pending}
+          className={s.openBtn}
+        >
+          Open
+        </Button>
+        {url && (
+          <button
+            type="button"
+            className={s.iconBtn}
+            onClick={onVisit}
+            title="Visit live site"
+          >
+            <Icon icon="hugeicons:link-square-02" />
+          </button>
+        )}
+        <div className={s.menuWrap}>
+          <button
+            type="button"
+            className={s.iconBtn}
+            onClick={() => setMenuOpen((v) => !v)}
+            title="More"
+          >
+            <Icon icon="hugeicons:more-horizontal-circle-01" />
+          </button>
+          {menuOpen && (
+            <>
+              <div
+                className={s.menuOverlay}
+                onClick={() => setMenuOpen(false)}
+              />
+              <div className={s.menu} role="menu">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen(false)
+                    onRename()
+                  }}
+                >
+                  Rename
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen(false)
+                    onArchive()
+                  }}
+                >
+                  {d.archivedAt ? "Restore" : "Archive"}
+                </button>
+                <button
+                  type="button"
+                  className={s.menuDanger}
+                  onClick={() => {
+                    setMenuOpen(false)
+                    onDelete()
+                  }}
+                >
+                  Delete…
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
