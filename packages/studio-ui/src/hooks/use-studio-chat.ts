@@ -97,6 +97,7 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
     setActiveSessionId,
     messagesLoading,
     setMessages,
+    clearMessages,
     setMessagesLoading,
     setPreferredLang,
     isStreaming,
@@ -262,22 +263,20 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
 
   useEffect(() => {
     if (!activeSessionId) {
-      setMessages([])
+      clearMessages()
       return
     }
-    // Drop the previous session's messages immediately so the user
-    // doesn't see them flash on top of the new session while we wait
-    // for fetchMessages. This matters when the previous session has a
-    // long thread — the user kept seeing other-session messages bleed
-    // through for the few hundred ms the GET took.
-    setMessages([])
+    // Hard-clear (not setMessages([]), which merges and carries over
+    // optimistic temps — that's how "ca va?" typed in session A leaked
+    // into session B's view). clearMessages bypasses mergeMessages.
+    clearMessages()
     setMessagesLoading(true)
     fetchMessages(activeSessionId).finally(() => {
       if (activeSessionRef.current === activeSessionId) {
         setMessagesLoading(false)
       }
     })
-  }, [activeSessionId, setMessages, setMessagesLoading, fetchMessages])
+  }, [activeSessionId, clearMessages, setMessagesLoading, fetchMessages])
 
   // ── Hydrate imported repo state for the active session ──
 
@@ -474,20 +473,20 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
     // Clear residual stream UI from the previous session before switching.
     // Without this, segments / thinking text / live widgets from the old
     // session's in-flight agent stream remain visible on top of the new
-    // session's chat until its own follow-stream useEffect kicks in. The
-    // broker keeps the previous agent running (background ctx) — only the
-    // SSE subscription is aborted by the activeSessionId change — so this
-    // is safe: the work is preserved, only the UI state is reset.
+    // session's chat until its own follow-stream useEffect kicks in.
     resetStream()
     setActiveWidgets([])
     // Wipe any error banner from the previous session — without this the
     // user sees a stale error pinned over a brand-new conversation.
     setError(null)
-    // Abort any in-flight POST /messages from the previous session. The
-    // broker keeps the agent running on its side; we just stop streaming
-    // its events into the new session's UI.
-    abortRef.current?.abort()
-    abortRef.current = null
+    // Abort the SSE follow-subscription only. We DO NOT abort the
+    // in-flight POST /messages (abortRef): doing so triggers the
+    // broker's defer to UnlockSession, which flips is_processing back
+    // to false locally on completion — and the follow-stream effect
+    // then skips the reconnect when the user comes back to the still-
+    // working session. Better to let the POST run to completion in the
+    // background; isStill() guards inside handleSend prevent its
+    // events from leaking into the new session's UI.
     followRef.current?.abort()
     followRef.current = null
     setActiveSessionId(id)

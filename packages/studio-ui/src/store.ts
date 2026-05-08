@@ -28,6 +28,10 @@ interface StudioStore {
   messages: ChatMessage[]
   messagesLoading: boolean
   setMessages: (messages: ChatMessage[]) => void
+  // Hard-clear: bypasses mergeMessages so optimistic temps from a
+  // previous session don't carry over on session switch. Use whenever
+  // the messages array represents a different session entirely.
+  clearMessages: () => void
   setMessagesLoading: (loading: boolean) => void
   addMessage: (message: ChatMessage) => void
   removeMessage: (id: string) => void
@@ -209,6 +213,11 @@ export const useStudioStore = create<StudioStore>((set) => ({
   messages: [],
   messagesLoading: false,
   setMessages: (messages) => set((s) => ({ messages: mergeMessages(s.messages, messages) })),
+  // Hard-clear is intentional: on session switch, mergeMessages would
+  // carry over the previous session's optimistic temps (e.g. the user
+  // just typed "ca va?" then switched). The temp would then float into
+  // the new session's view because it has no server counterpart yet.
+  clearMessages: () => set({ messages: [] }),
   setMessagesLoading: (messagesLoading) => set({ messagesLoading }),
   addMessage: (message) =>
     set((s) => (shouldSkipAdd(s.messages, message) ? s : { messages: [...s.messages, message] })),
