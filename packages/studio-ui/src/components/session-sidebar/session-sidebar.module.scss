@@ -472,6 +472,197 @@
   color: var(--text);
 }
 
+// ── Delete confirmation modal (portal'd to document.body) ──
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  background: oklch(0 0 0 / 0.55);
+  backdrop-filter: blur(2px);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  animation: deleteModalFadeIn 0.15s ease;
+}
+
+@keyframes deleteModalFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal {
+  width: min(480px, 100%);
+  max-height: calc(100vh - 2rem);
+  overflow: auto;
+  background: var(--surface);
+  border: 1px solid oklch(from var(--text) l c h / 0.18);
+  border-radius: var(--radius-4);
+  box-shadow: 0 24px 48px oklch(from var(--text) l c h / 0.25);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--text);
+
+  :global(svg) {
+    font-size: 1.4rem;
+    color: var(--danger);
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+  }
+}
+
+.modalBody {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+
+  strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+}
+
+.modalProjectBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 0.9rem;
+  background: oklch(from var(--text) l c h / 0.04);
+  border: 1px solid oklch(from var(--text) l c h / 0.1);
+  border-radius: var(--radius-3);
+}
+
+.modalCheckbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  font-size: 0.85rem;
+  color: var(--text);
+  cursor: pointer;
+  user-select: none;
+  line-height: 1.35;
+
+  input[type="checkbox"] {
+    margin-top: 0.2rem;
+    accent-color: var(--danger);
+    flex-shrink: 0;
+  }
+}
+
+.modalDanger {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  padding: 0.7rem 0.85rem;
+  background: oklch(from var(--danger) l c h / 0.08);
+  border: 1px solid oklch(from var(--danger) l c h / 0.25);
+  border-radius: var(--radius-3);
+  color: var(--text);
+
+  > :global(svg) {
+    font-size: 1.1rem;
+    color: var(--danger);
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  ul {
+    margin: 0.25rem 0 0;
+    padding-left: 1rem;
+    font-size: 0.78rem;
+    line-height: 1.4;
+    color: var(--text-secondary);
+
+    li {
+      margin: 0.15rem 0;
+    }
+
+    a {
+      color: var(--danger);
+      text-decoration: underline;
+      word-break: break-all;
+    }
+  }
+}
+
+.modalDangerTitle {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--danger);
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.modalCancel,
+.modalConfirm {
+  padding: 0.55rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: var(--radius-3);
+  border: 1px solid transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.modalCancel {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: oklch(from var(--text) l c h / 0.16);
+
+  &:hover:not(:disabled) {
+    color: var(--text);
+    background: oklch(from var(--text) l c h / 0.06);
+  }
+}
+
+.modalConfirm {
+  background: oklch(from var(--text) l c h / 0.92);
+  color: var(--surface);
+
+  &:hover:not(:disabled) {
+    background: var(--text);
+  }
+}
+
+.modalConfirmDanger {
+  background: var(--danger);
+  color: white;
+
+  &:hover:not(:disabled) {
+    background: oklch(from var(--danger) calc(l - 0.05) c h);
+  }
+}
+
 // ── Mode toggle ─────────────────────────────────────────
 
 .modeToggle {
