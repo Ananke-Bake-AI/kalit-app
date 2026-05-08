@@ -57,4 +57,29 @@
   @include cornerShape(var(--radius-2));
   width: calc(300px + 200 * (100vw - 500px) / 1080);
   transform: translateX(-50%);
+  display: block;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  pointer-events: auto;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  // Anchor variant — screens that link to a real featured project.
+  // Subtle hover lift + border so users notice they're clickable.
+  &[href] {
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+
+    &:hover {
+      transform: translateX(-50%) translateY(-4px);
+      box-shadow: 0 12px 32px oklch(from var(--text) l c h / 0.18);
+    }
+  }
 }

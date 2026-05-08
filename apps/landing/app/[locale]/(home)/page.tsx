@@ -4,7 +4,6 @@ import { Portfolio } from "@/components/portfolio"
 import { Underline } from "@/components/underline"
 import { useI18n } from "@/stores/i18n"
 import { Architecture } from "./(components)/architecture"
-import { FeaturedProjects } from "./(components)/featured-projects"
 import { Features } from "./(components)/features"
 import { Hero } from "./(components)/hero"
 import { Join } from "./(components)/join"
@@ -20,7 +19,6 @@ export default function HomePage() {
       <Architecture />
       <Features />
       <Join />
-      <FeaturedProjects />
       <Portfolio
         key={`portfolio-${locale}`}
         subtitle={t("portfolio.subtitle")}
