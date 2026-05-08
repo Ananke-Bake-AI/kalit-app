@@ -265,6 +265,12 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
       setMessages([])
       return
     }
+    // Drop the previous session's messages immediately so the user
+    // doesn't see them flash on top of the new session while we wait
+    // for fetchMessages. This matters when the previous session has a
+    // long thread — the user kept seeing other-session messages bleed
+    // through for the few hundred ms the GET took.
+    setMessages([])
     setMessagesLoading(true)
     fetchMessages(activeSessionId).finally(() => {
       if (activeSessionRef.current === activeSessionId) {
@@ -474,9 +480,19 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
     // is safe: the work is preserved, only the UI state is reset.
     resetStream()
     setActiveWidgets([])
+    // Wipe any error banner from the previous session — without this the
+    // user sees a stale error pinned over a brand-new conversation.
+    setError(null)
+    // Abort any in-flight POST /messages from the previous session. The
+    // broker keeps the agent running on its side; we just stop streaming
+    // its events into the new session's UI.
+    abortRef.current?.abort()
+    abortRef.current = null
+    followRef.current?.abort()
+    followRef.current = null
     setActiveSessionId(id)
     onSessionActivated?.(id, { clearPrompt: true, clearSuite: true })
-  }, [resetStream, setActiveWidgets, setActiveSessionId, onSessionActivated])
+  }, [resetStream, setActiveWidgets, setError, setActiveSessionId, onSessionActivated])
 
   // ── Welcome prompt click ────────────────────────────────
 
@@ -531,6 +547,16 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
       if (!sessionId) return
     }
 
+    // Capture the originating sessionId so every state mutation below
+    // can be gated against `activeSessionRef.current`. Without these
+    // guards, a long-running stream we kicked off in session A keeps
+    // pushing into setStreamSegments / setError after the user switches
+    // to session B — which is what produced the cross-session message
+    // bleed and the persistent error banner. The send sets the per-call
+    // sessionId once; refs read live state on every event.
+    const startSessionId = sessionId
+    const isStill = () => activeSessionRef.current === startSessionId
+
     sendingRef.current = true
     followRef.current?.abort()
     followRef.current = null
@@ -584,9 +610,11 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
 
       if (!res.ok || !res.body) {
         const data = await res.json().catch(() => ({}))
-        setError((data as { error?: string }).error || `Error ${res.status}`)
-        setIsStreaming(false)
-        removeMessage(tempId)
+        if (isStill()) {
+          setError((data as { error?: string }).error || `Error ${res.status}`)
+          setIsStreaming(false)
+          removeMessage(tempId)
+        }
         return
       }
 
@@ -632,12 +660,12 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
           }
         }
         streamText += chunk
-        setStreamSegments([...segments])
+        if (isStill()) setStreamSegments([...segments])
       }
 
       const pushTool = (name: string, input: unknown) => {
         segments.push({ type: "tool", name, input, done: false })
-        setStreamSegments([...segments])
+        if (isStill()) setStreamSegments([...segments])
       }
 
       while (true) {
@@ -667,7 +695,7 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
 
                 case "thinking":
                   thinking += event.content || ""
-                  setStreamThinking(thinking)
+                  if (isStill()) setStreamThinking(thinking)
                   if (thinking.length <= (event.content?.length || 0)) {
                     clog("think", "THINK", "Thinking block started...")
                   }
@@ -690,7 +718,7 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
                       break
                     }
                   }
-                  setStreamSegments([...segments])
+                  if (isStill()) setStreamSegments([...segments])
                   break
 
                 case "widget": {
@@ -718,8 +746,10 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
                     } else {
                       segments.push(widgetSeg)
                     }
-                    setStreamSegments([...segments])
-                    addActiveWidget({ type: wt, id: wi })
+                    if (isStill()) {
+                      setStreamSegments([...segments])
+                      addActiveWidget({ type: wt, id: wi })
+                    }
 
                     const status = String(event.status || "").toLowerCase()
                     const terminal =
@@ -737,7 +767,7 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
                   } else {
                     segments.push({ type: "progress", messages: [event.content] })
                   }
-                  setStreamSegments([...segments])
+                  if (isStill()) setStreamSegments([...segments])
                   break
                 }
 
@@ -749,12 +779,12 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
                     mimeType: event.mimeType,
                     url: event.url,
                   })
-                  setStreamSegments([...segments])
+                  if (isStill()) setStreamSegments([...segments])
                   break
 
                 case "error":
                   clog("error", "ERROR", event.content || "Unknown error")
-                  setError(event.content || t("studio.streamError"))
+                  if (isStill()) setError(event.content || t("studio.streamError"))
                   break
 
                 case "suite_selected": {
@@ -844,13 +874,18 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
       if ((err as Error)?.name !== "AbortError") {
         if (streamText.length > 0) {
           console.warn("[Studio] SSE connection dropped, reloading from broker")
-        } else {
+        } else if (isStill()) {
           setError(err instanceof Error ? err.message : t("studio.connectionError"))
         }
       }
     } finally {
       if (watchdog) clearInterval(watchdog)
-      if (sessionId && activeSessionRef.current === sessionId) {
+      // Cleanup is gated on isStill — if the user switched away mid-stream,
+      // the new session owns the UI and we must NOT touch its widgets,
+      // streaming flags, or trigger a setIsStreaming(false) that would
+      // disable a still-active stream in the new session.
+      const stillActive = isStill()
+      if (stillActive && sessionId) {
         setActiveWidgets([])
         try { await fetchMessages(sessionId) } catch { /* silent */ }
         // Guarantee the optimistic temp is gone. mergeMessages drops temps that
@@ -863,16 +898,22 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
       }
       // Mirror the broker-side UnlockSession in the local cache so the
       // session no longer reports as processing once the stream is done.
+      // Safe to call regardless of which session is active — it keys on
+      // the originating sessionId, not the current view.
       if (sessionId) markSessionProcessing(sessionId, false)
       // Drop the live flags but leave streamSegments populated; the
       // typewriter drains the buffered text and clears segments via its
       // onCaughtUp callback. Avoids the persisted bubble snapping in with
       // the full text the moment the broker's stream closes.
-      setIsStreaming(false)
-      setStreamThinking("")
+      if (stillActive) {
+        setIsStreaming(false)
+        setStreamThinking("")
+      }
+      // abortRef/sendingRef are non-render flags scoped to the in-flight
+      // send — clear them unconditionally so we don't get stuck.
       abortRef.current = null
       sendingRef.current = false
-      notify()
+      if (stillActive) notify()
     }
   }, [
     activeSessionId, isStreaming, locale, progressMode, addMessage, removeMessage,
