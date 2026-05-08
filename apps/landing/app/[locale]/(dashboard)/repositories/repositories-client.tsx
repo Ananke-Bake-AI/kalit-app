@@ -12,6 +12,8 @@ import {
   openRepository,
   remixRepository,
   renameRepository,
+  setRepositoryVisibility,
+  toggleRepositoryStar,
   type RepositoryProject,
 } from "@/server/actions/repositories"
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, useTransition } from "react"
@@ -156,6 +158,72 @@ export function RepositoriesClient({
     window.open(url, "_blank", "noopener,noreferrer")
   }
 
+  // ── Visibility toggle ──────────────────────────────────
+  const handleVisibilityToggle = (d: RepositoryProject) => {
+    const next = d.visibility === "public" ? "private" : "public"
+    if (next === "public") {
+      const url = d.subdomainUrl || d.vercelUrl
+      if (!url && d.status !== "completed") {
+        toast.error("Deploy first — public projects need a live URL")
+        return
+      }
+    }
+    // Optimistic local flip so the badge updates instantly.
+    setData((prev) =>
+      prev.map((p) => (p.id === d.id ? { ...p, visibility: next } : p)),
+    )
+    startTransition(async () => {
+      const result = await setRepositoryVisibility(d.id, next)
+      if ("error" in result) {
+        toast.error(result.error || "Visibility update failed")
+        // Revert.
+        setData((prev) =>
+          prev.map((p) =>
+            p.id === d.id ? { ...p, visibility: d.visibility } : p,
+          ),
+        )
+        return
+      }
+      toast.success(next === "public" ? "Project is now public" : "Project is now private")
+    })
+  }
+
+  // ── Star toggle ────────────────────────────────────────
+  const handleStarToggle = (d: RepositoryProject) => {
+    // Optimistic update — star icon flip + count tweak before the
+    // round-trip lands. Reverted on failure.
+    const optimisticDelta = d.viewerStarred ? -1 : 1
+    setData((prev) =>
+      prev.map((p) =>
+        p.id === d.id
+          ? { ...p, viewerStarred: !p.viewerStarred, starCount: Math.max(0, p.starCount + optimisticDelta) }
+          : p,
+      ),
+    )
+    startTransition(async () => {
+      const result = await toggleRepositoryStar(d.id)
+      if ("error" in result) {
+        toast.error(result.error || "Star failed")
+        setData((prev) =>
+          prev.map((p) =>
+            p.id === d.id
+              ? { ...p, viewerStarred: d.viewerStarred, starCount: d.starCount }
+              : p,
+          ),
+        )
+        return
+      }
+      // Reconcile with server values in case of drift.
+      setData((prev) =>
+        prev.map((p) =>
+          p.id === d.id
+            ? { ...p, viewerStarred: result.starred, starCount: result.starCount }
+            : p,
+        ),
+      )
+    })
+  }
+
   // ── Remix modal state ──────────────────────────────────
   // The remix dialog is global (one at a time) rather than per-card —
   // each card opens it via its repaint button. We keep the source
@@ -264,6 +332,8 @@ export function RepositoriesClient({
                   setRemixIdea("")
                   setRemixTarget(d)
                 }}
+                onStar={() => handleStarToggle(d)}
+                onVisibilityToggle={() => handleVisibilityToggle(d)}
               />
             ))}
           </div>
@@ -296,6 +366,8 @@ function RepoCard({
   onArchive,
   onDelete,
   onRemix,
+  onStar,
+  onVisibilityToggle,
 }: {
   d: RepositoryProject
   pending: boolean
@@ -305,6 +377,8 @@ function RepoCard({
   onArchive: () => void
   onDelete: () => void
   onRemix: () => void
+  onStar: () => void
+  onVisibilityToggle: () => void
 }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const url = d.subdomainUrl || d.vercelUrl
@@ -339,9 +413,27 @@ function RepoCard({
             {statusBadge}
           </Badge>
         </div>
+        {d.visibility === "public" && (
+          <div className={s.visibilityBadge} title="This project is public on /discover">
+            <Icon icon="hugeicons:globe-02" />
+            <span>public</span>
+          </div>
+        )}
       </div>
       <div className={s.body}>
-        <div className={s.title}>{label}</div>
+        <div className={s.titleRow}>
+          <div className={s.title}>{label}</div>
+          <button
+            type="button"
+            className={`${s.starBtn} ${d.viewerStarred ? s.starBtnActive : ""}`}
+            onClick={onStar}
+            disabled={pending}
+            title={d.viewerStarred ? "Unstar this project" : "Star this project"}
+          >
+            <Icon icon={d.viewerStarred ? "hugeicons:star" : "hugeicons:star"} />
+            <span>{d.starCount}</span>
+          </button>
+        </div>
         {url && (
           <a
             href={url}
@@ -390,9 +482,12 @@ function RepoCard({
         )}
         <CardMenu
           archived={!!d.archivedAt}
+          isPublic={d.visibility === "public"}
+          canPublish={!!url || d.status === "completed"}
           onRename={onRename}
           onArchive={onArchive}
           onDelete={onDelete}
+          onVisibilityToggle={onVisibilityToggle}
         />
       </div>
     </div>
@@ -405,14 +500,20 @@ function RepoCard({
 // bounding rect each time the menu opens.
 function CardMenu({
   archived,
+  isPublic,
+  canPublish,
   onRename,
   onArchive,
   onDelete,
+  onVisibilityToggle,
 }: {
   archived: boolean
+  isPublic: boolean
+  canPublish: boolean
   onRename: () => void
   onArchive: () => void
   onDelete: () => void
+  onVisibilityToggle: () => void
 }) {
   const triggerRef = useRef<HTMLButtonElement | null>(null)
   const [open, setOpen] = useState(false)
@@ -476,6 +577,23 @@ function CardMenu({
                 }}
               >
                 {archived ? "Restore" : "Archive"}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false)
+                  onVisibilityToggle()
+                }}
+                disabled={!isPublic && !canPublish}
+                title={
+                  !isPublic && !canPublish
+                    ? "Deploy first to publish"
+                    : isPublic
+                      ? "Hide from /discover"
+                      : "Publish to /discover"
+                }
+              >
+                {isPublic ? "Make private" : "Publish public"}
               </button>
               <button
                 type="button"

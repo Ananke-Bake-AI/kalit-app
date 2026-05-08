@@ -90,6 +90,10 @@ export interface RepositoryProject {
   createdAt: string
   updatedAt: string
   hasThumbnail: boolean
+  visibility: "private" | "public"
+  publishedAt?: string | null
+  starCount: number
+  viewerStarred: boolean
 }
 
 interface ListResponse {
@@ -152,4 +156,22 @@ export async function remixRepository(id: string, idea?: string) {
     method: "POST",
     body: { idea: idea ?? "" },
   })
+}
+
+// Toggle visibility (private ↔ public). Visibility=public exposes the
+// project on /discover and on the owner's /u/{username} page.
+export async function setRepositoryVisibility(id: string, visibility: "private" | "public") {
+  return brokerCall<{ success: boolean }>(`/api/flow/projects/${id}`, {
+    method: "PATCH",
+    body: { visibility },
+  })
+}
+
+// Toggle the viewer's star on a project. Owner-stars are allowed
+// (mirrors GitHub semantics). Broker returns the post-toggle state.
+export async function toggleRepositoryStar(id: string) {
+  return brokerCall<{ starred: boolean; starCount: number }>(
+    `/api/flow/projects/${id}/star`,
+    { method: "POST" },
+  )
 }
