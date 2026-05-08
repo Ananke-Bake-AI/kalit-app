@@ -115,12 +115,16 @@ function TypewriterMarkdown({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // While the typewriter is still revealing, render as plain text with
-  // preserved whitespace. ReactMarkdown re-parses on every state update,
-  // and an unstable trailing character (mid `**`, `[`, etc.) makes the
-  // last position briefly switch between text/strong/link nodes — visible
-  // as a "rotation" of letters at the cursor. The persisted message bubble
-  // takes over with full markdown rendering once onCaughtUp fires.
+  // Render markdown live, but split the revealed text at the last "stable
+  // cut" so unclosed inline markers (mid `**`, `*`, `` ` ``, `[link`,
+  // unfinished fenced block) don't make the last character flip between
+  // text and strong/code/link nodes on every tick. The stable prefix
+  // goes through ReactMarkdown so users see colors, code highlighting,
+  // links, etc. immediately as the text streams; the unstable tail is
+  // appended as a styled inline span (`pre-wrap` so whitespace survives)
+  // and gets absorbed into the markdown body once the next safe cut is
+  // reached. When the typewriter has caught up, render the whole thing
+  // as markdown without a tail.
   const fullyRevealed = lenRef.current >= targetRef.current.length && !animate
   if (fullyRevealed) {
     return (
@@ -129,7 +133,122 @@ function TypewriterMarkdown({
       </ReactMarkdown>
     )
   }
-  return <span style={{ whiteSpace: "pre-wrap" }}>{revealed}</span>
+  const cut = stableMarkdownCut(revealed)
+  const stable = revealed.slice(0, cut)
+  const tail = revealed.slice(cut)
+  return (
+    <>
+      {stable && (
+        <ReactMarkdown remarkPlugins={[remarkGfm]} components={{ a: MarkdownLink }}>
+          {stable}
+        </ReactMarkdown>
+      )}
+      {tail && <span style={{ whiteSpace: "pre-wrap" }}>{tail}</span>}
+    </>
+  )
+}
+
+/**
+ * Returns the index up to which `text` is safe to feed ReactMarkdown
+ * during streaming. The unstable suffix (anything after the cut) is the
+ * trailing run that contains an inline marker the parser would otherwise
+ * keep flipping between two interpretations on each new char (`**` vs
+ * text, `[` vs link, `` ` `` vs code).
+ *
+ * Heuristic, not a full parser:
+ *   - Walks line by line: lines past the last full line are unstable
+ *     unless they're whitespace-only.
+ *   - Inside the last line, finds the rightmost unclosed inline marker
+ *     and cuts before it.
+ *   - Open code fences (```) make every following line unstable until
+ *     the closing fence arrives.
+ */
+function stableMarkdownCut(text: string): number {
+  if (!text) return 0
+
+  // 1) Open code fence detection: count ``` markers; odd → in a fence.
+  // When inside, we cut at the LAST line break before the unclosed fence.
+  const fenceMatches = text.match(/```/g)
+  if (fenceMatches && fenceMatches.length % 2 === 1) {
+    // Find the last ``` and cut just before it. Markdown can render
+    // everything before it stably (the prior fenced blocks were paired).
+    const lastFence = text.lastIndexOf("```")
+    return lastFence
+  }
+
+  // 2) Lines: stop at the start of the last line. Markdown blocks (heads,
+  // lists, paragraphs) finalize on newline, so prior lines are stable.
+  const lastBreak = text.lastIndexOf("\n")
+  if (lastBreak === -1) {
+    // No newline yet — whole text is "the last line"; fall through to
+    // inline scan from index 0.
+    return scanInline(text, 0)
+  }
+  // The last line starts at lastBreak + 1. Scan inline markers in the
+  // tail; any cut returned is relative to the full text.
+  const lineStart = lastBreak + 1
+  return scanInline(text, lineStart)
+}
+
+function scanInline(text: string, start: number): number {
+  // Scan `text[start..]` for unbalanced inline markers. Anything before
+  // the first unbalanced marker is stable.
+  const tail = text.slice(start)
+  // Inline code: backticks flip a state. Odd count → unstable, cut at
+  // the last `.
+  const tickCount = (tail.match(/`/g) || []).length
+  let unstableAt = -1
+  if (tickCount % 2 === 1) {
+    unstableAt = tail.lastIndexOf("`")
+  }
+
+  // Bold/italic: count un-escaped `*` runs. We approximate: any trailing
+  // run of `*` that hasn't been closed yet (no matching pair after it)
+  // is unstable. Quick check: count standalone `**` and `*`.
+  // Simpler approach: find the last unclosed `*` or `**` by scanning
+  // from left and cutting at the unmatched opener.
+  let openerStarts: number[] = []
+  for (let i = 0; i < tail.length; i++) {
+    if (tail[i] !== "*") continue
+    const run = tail.slice(i).match(/^\*+/)
+    const len = run ? run[0].length : 1
+    // Treat as one marker (length 1 italic, 2 bold, 3 both). For our
+    // stability check, the position matters more than the kind.
+    if (openerStarts.length && tail[openerStarts[openerStarts.length - 1]] === "*") {
+      // Pair off — stack pop.
+      openerStarts.pop()
+    } else {
+      openerStarts.push(i)
+    }
+    i += len - 1
+  }
+  if (openerStarts.length > 0) {
+    const earliest = openerStarts[0]
+    if (unstableAt === -1 || earliest < unstableAt) {
+      unstableAt = earliest
+    }
+  }
+
+  // Link: `[label](url)` — if we have an opening `[` without a matching
+  // closing `)`, cut at the `[`.
+  let linkOpen = -1
+  for (let i = 0; i < tail.length; i++) {
+    if (tail[i] === "[" && tail[i - 1] !== "\\") {
+      linkOpen = i
+    } else if (tail[i] === ")" && linkOpen !== -1) {
+      // Ensure between `[` and `)` there's a `]`. If yes, link is closed.
+      const between = tail.slice(linkOpen, i + 1)
+      if (between.includes("](")) linkOpen = -1
+    }
+  }
+  if (linkOpen !== -1) {
+    if (unstableAt === -1 || linkOpen < unstableAt) {
+      unstableAt = linkOpen
+    }
+  }
+
+  if (unstableAt === -1) return text.length
+  return start + unstableAt
 }
 
 // ---------------------------------------------------------------------------
