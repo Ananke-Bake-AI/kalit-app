@@ -359,18 +359,38 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
   }, [ready, enableResearchAutoSend])
 
   // ── Resume live stream on reconnect ─────────────────────
+  //
+  // Used to gate this on `sessions.find(id).isProcessing`, but a page
+  // reload mid-thinking kills the original POST /messages connection
+  // → broker's defer fires UnlockSession → is_processing flips to
+  // false in DB, even though the agent.Run goroutine keeps going and
+  // the streamHub room is still buffering events. Local cache then
+  // reads is_processing=false and the reconnect was skipped, leaving
+  // the user staring at no-thinking-no-output until the run finally
+  // terminated.
+  //
+  // The broker's /stream endpoint already tells us whether there's a
+  // live room: it returns `{"type":"idle"}` and closes when none
+  // exists, `{"type":"attached"}` then streams when one does. So we
+  // attempt unconditionally and let the broker decide. The onIdle
+  // callback closes the controller cleanly when there's nothing to
+  // follow — the cheap probe replaces a guard that was wrong half
+  // the time.
 
   useEffect(() => {
     if (!activeSessionId || messagesLoading || sendingRef.current) return
-    const session = sessions.find((sess) => sess.id === activeSessionId)
-    if (!session?.isProcessing) return
 
     lastEventIdRef.current = 0
     const controller = new AbortController()
     followRef.current = controller
 
     let cancelled = false
-    setIsStreaming(true)
+    let attached = false
+    // Don't flip setIsStreaming(true) up-front anymore — that paints
+    // the "thinking…" indicator before we know a room actually exists.
+    // We wait for onAttached and only commit then. Without that, on
+    // page reload the user sees a "thinking" spinner for ~50ms even
+    // when there's nothing to thinking about.
     setStreamSegments([])
     setStreamThinking("")
 
@@ -427,8 +447,21 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
               }
             },
             onError: (msg) => setError(msg),
-            onIdle: () => {},
-            onAttached: () => {},
+            onIdle: () => {
+              // Broker has no live room for this session — nothing to
+              // follow. Close the controller cleanly so the finally
+              // block doesn't post-process as if we'd streamed events.
+              controller.abort()
+            },
+            onAttached: () => {
+              // Real room — only NOW commit the streaming UI so we
+              // don't flash a "thinking" indicator on every reload of
+              // a quiet session.
+              attached = true
+              if (activeSessionRef.current === activeSessionId) {
+                setIsStreaming(true)
+              }
+            },
             onStreamClosed: () => {},
           },
           { signal: controller.signal },
@@ -439,6 +472,13 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
         }
       } finally {
         if (cancelled) return
+        // Skip the post-stream cleanup when we never attached — the
+        // broker just said "idle", nothing to reconcile, no need to
+        // refetch messages/quota/sessions.
+        if (!attached) {
+          if (followRef.current === controller) followRef.current = null
+          return
+        }
         if (activeSessionRef.current === activeSessionId) {
           setActiveWidgets([])
           try { await fetchMessages(activeSessionId) } catch { /* silent */ }
@@ -460,7 +500,7 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
       controller.abort()
     }
   }, [
-    activeSessionId, messagesLoading, sessions,
+    activeSessionId, messagesLoading,
     setIsStreaming, setStreamSegments, setStreamThinking, setActiveWidgets,
     addActiveWidget, setLastRouting, onSuiteChange, setError, resetStream,
     fetchMessages, fetchSessions, fetchQuota, notify, removeMessage,
