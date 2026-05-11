@@ -154,15 +154,29 @@ export function ChatInput({ onSend, disabled, prefill, onEnsureSession }: ChatIn
   }, [setAtMenu])
 
   const uploadFiles = useCallback(async (files: File[]) => {
-    if (files.length === 0 || !activeSessionId) return
+    if (files.length === 0) return
     setIsUploading(true)
 
     try {
+      // Lazy-create the session if needed. handleNewChat used to
+      // POST /sessions eagerly; we now defer until the user actually
+      // does something. Upload is one of those "actually does
+      // something" actions — the broker needs a session id to bind
+      // the uploaded blobs to.
+      let sid = activeSessionId
+      if (!sid && onEnsureSession) {
+        sid = await onEnsureSession()
+      }
+      if (!sid) {
+        setIsUploading(false)
+        return
+      }
+
       const formData = new FormData()
       for (const file of files) {
         formData.append("files", file)
       }
-      formData.append("sessionId", activeSessionId)
+      formData.append("sessionId", sid)
 
       const res = await brokerFetch("/api/broker/upload", {
         method: "POST",
@@ -179,7 +193,7 @@ export function ChatInput({ onSend, disabled, prefill, onEnsureSession }: ChatIn
     } finally {
       setIsUploading(false)
     }
-  }, [activeSessionId, attachedFiles, setAttachedFiles, setIsUploading])
+  }, [activeSessionId, attachedFiles, onEnsureSession, setAttachedFiles, setIsUploading])
 
   const handleFileUpload = useCallback((files: FileList | null) => {
     if (!files) return
@@ -402,7 +416,7 @@ export function ChatInput({ onSend, disabled, prefill, onEnsureSession }: ChatIn
         <button
           className={s.attachBtn}
           onClick={() => fileInputRef.current?.click()}
-          disabled={isDisabled || isUploading || !activeSessionId}
+          disabled={isDisabled || isUploading}
           title={t("studio.attachFile")}
         >
           <Icon icon={isUploading ? "hugeicons:loading-03" : "hugeicons:attachment-02"} />

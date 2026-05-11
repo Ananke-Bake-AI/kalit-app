@@ -1062,51 +1062,30 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
   // ── New chat ───────────────────────────────────────────
 
   const handleNewChat = useCallback(async () => {
-    try {
-      // Same isolation cleanup as handleSessionSelect — without these,
-      // clicking "New Chat" while the previous session is mid-stream
-      // leaves its streamSegments/streamThinking/widgets/error visible
-      // in the fresh chat. The broker keeps the old agent running on
-      // its side; we just stop echoing it into the UI we're navigating
-      // away from. setMessages([]) is a merge in the store, which would
-      // carry over the optimistic user temp ("ca va?") — clearMessages
-      // is the hard reset.
-      //
-      // setMessagesLoading(true) is the polite version of "this card
-      // is empty on purpose, not because of a flicker" — without it,
-      // between clearMessages and the broker returning the new session,
-      // the welcome screen flashes briefly.
-      resetStream()
-      setActiveWidgets([])
-      setError(null)
-      followRef.current?.abort()
-      followRef.current = null
-      clearMessages()
-      setMessagesLoading(true)
-
-      const { selectedModel, taskforceStandard } = useStudioStore.getState()
-      const res = await brokerFetch("/api/broker/sessions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model: selectedModel, taskforceModelProvider: taskforceStandard }),
-      })
-      if (res.ok) {
-        const data = await res.json()
-        const session: ChatSession = data.session
-        addSession(session)
-        selectedSuiteRef.current = null
-        setActiveSessionId(session.id)
-        onSessionActivated?.(session.id, { clearPrompt: true, clearSuite: true })
-      } else {
-        // Restore the empty / welcome state instead of leaving the
-        // loader spinning forever when the broker refuses the create.
-        setMessagesLoading(false)
-      }
-    } catch {
-      setMessagesLoading(false)
-    }
+    // Lazy session creation. Previously this fired POST /sessions
+    // unconditionally, creating an empty session in the DB even when
+    // the user had typed nothing — every "New Chat" click left a
+    // ghost session in the sidebar. Now we just reset the UI to the
+    // welcome state. The actual session is created on the first
+    // outgoing action (handleSend → ensureSession, or uploadFiles →
+    // ensureSession).
+    //
+    // Cleanup of the previous session's residual stream UI mirrors
+    // handleSessionSelect — without it, clicking New Chat while a
+    // session is mid-stream leaves segments / thinking / widgets /
+    // error visible on the empty welcome screen.
+    resetStream()
+    setActiveWidgets([])
+    selectedSuiteRef.current = null
+    setError(null)
+    followRef.current?.abort()
+    followRef.current = null
+    clearMessages()
+    setMessagesLoading(false)
+    setActiveSessionId(null)
+    onSessionActivated?.("", { clearPrompt: true, clearSuite: true })
   }, [
-    addSession, setActiveSessionId, onSessionActivated,
+    setActiveSessionId, onSessionActivated,
     resetStream, setActiveWidgets, setError, clearMessages, setMessagesLoading,
   ])
 

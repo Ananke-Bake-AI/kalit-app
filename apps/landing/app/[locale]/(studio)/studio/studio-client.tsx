@@ -56,7 +56,11 @@ export function StudioClient() {
   const handleSessionActivated = useCallback(
     (sessionId: string, opts: { clearPrompt?: boolean; clearSuite?: boolean }) => {
       const url = new URL(window.location.href)
-      url.searchParams.set("session", sessionId)
+      if (sessionId) {
+        url.searchParams.set("session", sessionId)
+      } else {
+        url.searchParams.delete("session")
+      }
       if (opts.clearPrompt) url.searchParams.delete("prompt")
       if (opts.clearSuite) url.searchParams.delete("suite")
       window.history.replaceState(null, "", url.toString())
