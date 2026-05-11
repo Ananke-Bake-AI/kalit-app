@@ -1,5 +1,11 @@
 import type { SuiteId } from "./suites"
+import { getPlanKeyByPriceId, getStripePriceId } from "./settings"
 
+// PlanConfig — STATIC part only. stripePriceId is no longer read from
+// process.env at module load; it lives in the admin-managed AppSetting
+// table and must be resolved at runtime via resolveStripePriceId().
+// This file used to expose `stripePriceId: process.env.STRIPE_PRICE_*`
+// — that evaluated at import time so a price update required a redeploy.
 export interface PlanConfig {
   key: string
   name: string
@@ -8,7 +14,6 @@ export interface PlanConfig {
   creditsPerMonth: number
   maxMembers: number
   features: string[]
-  stripePriceId: string
   popular?: boolean
 }
 
@@ -24,7 +29,6 @@ export const FREE_PLAN: PlanConfig = {
     "15 credits / month",
     "1 team member",
   ],
-  stripePriceId: "",
 }
 
 export const PLANS: PlanConfig[] = [
@@ -42,7 +46,6 @@ export const PLANS: PlanConfig[] = [
       "Custom domain",
       "Email support",
     ],
-    stripePriceId: process.env.STRIPE_PRICE_STARTER || "",
   },
   {
     key: "pro",
@@ -60,7 +63,6 @@ export const PLANS: PlanConfig[] = [
       "Priority support",
       "Custom domains",
     ],
-    stripePriceId: process.env.STRIPE_PRICE_PRO || "",
   },
   {
     key: "enterprise",
@@ -78,7 +80,6 @@ export const PLANS: PlanConfig[] = [
       "Dedicated support",
       "Custom integrations",
     ],
-    stripePriceId: process.env.STRIPE_PRICE_ENTERPRISE || "",
   },
 ]
 
@@ -86,6 +87,16 @@ export function getPlan(key: string): PlanConfig | undefined {
   return PLANS.find((p) => p.key === key)
 }
 
-export function getPlanByPriceId(priceId: string): PlanConfig | undefined {
-  return PLANS.find((p) => p.stripePriceId === priceId)
+// Resolve a plan's Stripe price ID at runtime from the admin-managed
+// AppSetting store. Returns null when the admin hasn't set it yet.
+export async function resolveStripePriceId(planKey: string): Promise<string | null> {
+  return getStripePriceId(planKey)
+}
+
+// Reverse: given a Stripe price id (typically from a webhook), find
+// the matching PlanConfig. Async because price ids live in DB.
+export async function getPlanByPriceId(priceId: string): Promise<PlanConfig | undefined> {
+  const planKey = await getPlanKeyByPriceId(priceId)
+  if (!planKey) return undefined
+  return getPlan(planKey)
 }

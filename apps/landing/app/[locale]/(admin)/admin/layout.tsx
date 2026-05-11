@@ -19,7 +19,8 @@ const TABS = [
   { icon: "hugeicons:cloud-server", href: "/admin/deployments", label: "Deployments" },
   { icon: "hugeicons:star-circle", href: "/admin/featured-projects", label: "Featured" },
   { icon: "hugeicons:bug-01", href: "/admin/bug-reports", label: "Bug reports" },
-  { icon: "hugeicons:mail-send-02", href: "/admin/campaigns", label: "Campaigns" }
+  { icon: "hugeicons:mail-send-02", href: "/admin/campaigns", label: "Campaigns" },
+  { icon: "hugeicons:settings-02", href: "/admin/settings", label: "Settings" }
 ]
 
 export default function AdminPanelLayout({ children }: { children: React.ReactNode }) {

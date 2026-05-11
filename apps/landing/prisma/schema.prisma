@@ -250,6 +250,24 @@ enum CreditDirection {
   DEBIT
 }
 
+// ─── App secrets (admin-managed runtime config) ──────────────
+//
+// Replaces process.env for keys that an admin needs to rotate without
+// a Vercel redeploy: Stripe live key, Stripe webhook secret, Stripe
+// price IDs. Values are AES-256-GCM encrypted at rest with a key
+// derived from AUTH_SECRET + "_strype_keys" (see lib/settings.ts).
+// `value` carries the ciphertext, `iv` the per-write nonce, `tag` the
+// GCM auth tag. We never store the plaintext or display it back to
+// the admin — set-once, never read.
+model AppSetting {
+  key       String   @id
+  value     Bytes
+  iv        Bytes
+  tag       Bytes
+  updatedAt DateTime @updatedAt
+  updatedBy String?
+}
+
 // ─── Jobs / Execution ────────────────────────────────────────
 
 model Job {

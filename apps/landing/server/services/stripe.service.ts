@@ -12,7 +12,7 @@ export async function handleCheckoutCompleted(session: any) {
     : session.subscription.id
 
   const { getStripe } = await import("@/lib/stripe")
-  const stripe = getStripe()
+  const stripe = await getStripe()
   const sub: any = await stripe.subscriptions.retrieve(subscriptionId)
 
   await prisma.subscription.upsert({
@@ -43,7 +43,7 @@ export async function handleSubscriptionUpdated(sub: any) {
   if (!orgId) return
 
   const priceId = sub.items.data[0]?.price.id
-  const plan = getPlanByPriceId(priceId || "")
+  const plan = await getPlanByPriceId(priceId || "")
   const planKey = plan?.key || sub.metadata?.planKey || "unknown"
 
   const statusMap: Record<string, string> = {

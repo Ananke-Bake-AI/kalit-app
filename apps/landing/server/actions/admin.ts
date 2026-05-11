@@ -747,6 +747,50 @@ export async function deleteBugReport(id: string) {
   }
 }
 
+// ─── App Settings (Stripe keys + future runtime secrets) ───
+
+export async function getAppSettings() {
+  await requireAdmin()
+  const { ALL_STRIPE_KEYS, listSettingsMeta } = await import("@/lib/settings")
+  const stripeKeys = await listSettingsMeta(ALL_STRIPE_KEYS as unknown as string[])
+  return { stripeKeys }
+}
+
+export async function setAppSetting(key: string, value: string) {
+  const session = await requireAdmin()
+  const trimmed = value.trim()
+  if (!trimmed) {
+    return { error: "Value cannot be empty — use Clear to remove a setting" }
+  }
+  // Allowlist guard: only let the admin write keys we explicitly expose
+  // here. Without this, a typo on the client would silently create a
+  // dead AppSetting row that no one reads.
+  const { ALL_STRIPE_KEYS, setSetting } = await import("@/lib/settings")
+  if (!(ALL_STRIPE_KEYS as readonly string[]).includes(key)) {
+    return { error: `Unknown setting key: ${key}` }
+  }
+  try {
+    await setSetting(key, trimmed, session.user.id)
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Save failed" }
+  }
+}
+
+export async function clearAppSetting(key: string) {
+  await requireAdmin()
+  const { ALL_STRIPE_KEYS, clearSetting } = await import("@/lib/settings")
+  if (!(ALL_STRIPE_KEYS as readonly string[]).includes(key)) {
+    return { error: `Unknown setting key: ${key}` }
+  }
+  try {
+    await clearSetting(key)
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Clear failed" }
+  }
+}
+
 // ─── Revenue ────────────────────────────────────────────
 
 export async function getAdminRevenue() {
