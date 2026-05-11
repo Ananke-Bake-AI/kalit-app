@@ -3,8 +3,6 @@
 .portfolio {
   margin-top: var(--spacing-4);
   text-align: center;
-  padding-bottom: 300px;
-  margin-bottom: -300px;
   pointer-events: none;
   overflow: hidden;
 
@@ -25,41 +23,57 @@
 
   .btn {
     font-size: 1.15em;
-    margin-top: 0;
+    margin-top: var(--spacing-2);
   }
 }
 
-.carousel {
-  margin-top: var(--spacing-2-5);
-  position: relative;
-  height: calc(280px + 150 * (100vw - 320px) / 1080);
-  overflow: visible;
-  pointer-events: none;
+.marquee {
+  margin: var(--spacing-2-5) 0 var(--spacing-3);
   width: 100vw;
+  position: relative;
   left: 50%;
   transform: translateX(-50%);
+  overflow: hidden;
+  pointer-events: none;
+
+  // Soft fade on both sides so cards dissolve into the page rather than
+  // hard-clipping at the viewport edge.
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
 }
 
-.project {
-  width: 1px;
-  height: calc(1200px + 800 * (100vw - 320px) / 1080);
-  left: 50%;
-  position: relative;
-  transform-origin: bottom center;
-  position: absolute;
-  top: 5%;
+.track {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  width: max-content;
   will-change: transform;
 }
 
+.project {
+  flex: 0 0 auto;
+}
+
 .screen {
+  display: block;
+  position: relative;
+  overflow: hidden;
   background-color: var(--bg-1);
   aspect-ratio: 16/10;
   @include cornerShape(var(--radius-2));
   width: calc(300px + 200 * (100vw - 500px) / 1080);
-  transform: translateX(-50%);
-  display: block;
-  position: relative;
-  overflow: hidden;
   text-decoration: none;
   color: inherit;
   pointer-events: auto;
@@ -72,13 +86,13 @@
   }
 
   // Anchor variant — screens that link to a real featured project.
-  // Subtle hover lift + border so users notice they're clickable.
+  // Subtle hover lift so users notice they're clickable.
   &[href] {
     cursor: pointer;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
 
     &:hover {
-      transform: translateX(-50%) translateY(-4px);
+      transform: translateY(-4px);
       box-shadow: 0 12px 32px oklch(from var(--text) l c h / 0.18);
     }
   }

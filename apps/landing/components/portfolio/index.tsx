@@ -21,12 +21,9 @@ interface FeaturedProject {
   hasThumbnail: boolean
 }
 
-// Curated by /admin/featured-projects, served by the broker at
-// /api/broker/featured-projects. Five slots are tuned to the GSAP
-// rotation timing below — when the admin promotes fewer than five we
-// fill the remaining slots with empty screens so the carousel cadence
-// stays consistent.
-const CAROUSEL_SLOTS = 5
+// Pad the marquee with placeholders below this count so the track stays
+// wide enough to fill the viewport when few projects are featured.
+const MIN_CARDS = 6
 
 export interface PortfolioProps {
   subtitle: string
@@ -55,10 +52,10 @@ export function Portfolio({
   marketingPath = FLOW_MARKETING_PATH,
   className
 }: PortfolioProps) {
-  const carouselRef = useRef<HTMLDivElement | null>(null)
+  const trackRef = useRef<HTMLDivElement | null>(null)
 
-  // Fetch admin-curated featured projects. Failure / empty list falls
-  // back to placeholder screens so the carousel still renders.
+  // Fetch admin-curated featured projects. Failure / empty list still
+  // renders the placeholder marquee.
   const [featured, setFeatured] = useState<FeaturedProject[]>([])
   useEffect(() => {
     let cancelled = false
@@ -67,7 +64,14 @@ export function Portfolio({
       .then((data) => {
         if (cancelled) return
         const list: FeaturedProject[] = Array.isArray(data?.projects) ? data.projects : []
-        setFeatured(list.slice(0, CAROUSEL_SLOTS))
+        setFeatured(list)
+        // Warm the browser cache for every thumbnail up front so no card
+        // ever reveals a gray placeholder as it scrolls into view.
+        list.forEach((p) => {
+          if (!p.hasThumbnail) return
+          const img = new window.Image()
+          img.src = `/api/broker/featured/${p.id}/thumbnail.png`
+        })
       })
       .catch(() => {})
     return () => {
@@ -75,38 +79,33 @@ export function Portfolio({
     }
   }, [])
 
-  // Pad the slot list so we always render CAROUSEL_SLOTS cards. Empty
-  // slots keep the rotation cadence the GSAP timing was tuned around.
-  const slots: (FeaturedProject | null)[] = Array.from({ length: CAROUSEL_SLOTS }, (_, i) => featured[i] ?? null)
+  const padded: (FeaturedProject | null)[] = [...featured]
+  while (padded.length < MIN_CARDS) padded.push(null)
+  // Duplicate the list so the loop's seam is hidden — when the track
+  // translates by -50% of its width, the second copy is already aligned
+  // exactly where the first one started.
+  const loop = [...padded, ...padded]
 
   useGSAP(
     () => {
-      const root = carouselRef.current
-      if (!root) return
-
-      const projects = gsap.utils.toArray<HTMLElement>(root.querySelectorAll("[data-project]"))
-      const totalProjects = projects.length
-      if (!totalProjects) return
-
-      const delayBetweenProjects = 2.5
-      const duration = 12
-
-      projects.forEach((project, index) => {
-        gsap.fromTo(
-          project,
-          { rotation: 40 },
-          {
-            rotation: -40,
-            duration,
-            ease: "none",
-            repeat: -1,
-            delay: index * delayBetweenProjects,
-            repeatDelay: delayBetweenProjects * totalProjects - duration
-          }
-        )
-      })
+      const track = trackRef.current
+      if (!track) return
+      const totalWidth = track.scrollWidth
+      if (!totalWidth) return
+      // ~60px/sec — fast enough to feel alive, slow enough to read each card.
+      const duration = totalWidth / 2 / 60
+      gsap.fromTo(
+        track,
+        { x: 0 },
+        {
+          x: -totalWidth / 2,
+          duration,
+          ease: "none",
+          repeat: -1,
+        }
+      )
     },
-    { scope: carouselRef, dependencies: [featured.length] }
+    { scope: trackRef, dependencies: [featured.length] }
   )
 
   return (
@@ -115,9 +114,11 @@ export function Portfolio({
         <Heading className={s.heading} subtitle={subtitle} paragraph={paragraph} tag="h2">
           {heading}
         </Heading>
-        <div ref={carouselRef} className={s.carousel}>
-          {slots.map((proj, index) => (
-            <div className={s.project} data-project key={proj?.id ?? `placeholder-${index}`}>
+      </Container>
+      <div className={s.marquee}>
+        <div ref={trackRef} className={s.track}>
+          {loop.map((proj, index) => (
+            <div className={s.project} key={`${proj?.id ?? "placeholder"}-${index}`}>
               {proj ? (
                 <a
                   href={proj.url}
@@ -131,7 +132,8 @@ export function Portfolio({
                     <img
                       src={`/api/broker/featured/${proj.id}/thumbnail.png`}
                       alt={proj.title}
-                      loading="lazy"
+                      loading="eager"
+                      decoding="async"
                     />
                   )}
                 </a>
@@ -141,6 +143,8 @@ export function Portfolio({
             </div>
           ))}
         </div>
+      </div>
+      <Container>
         {suiteAppUrl && suiteId ? (
           <FlowSuiteCtaButton suiteId={suiteId} suiteAppUrl={suiteAppUrl} marketingPath={marketingPath} className={s.btn} circle>
             {buttonText}
