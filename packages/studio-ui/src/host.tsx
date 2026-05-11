@@ -42,6 +42,39 @@ export async function brokerFetch(path: string, options?: RequestInit): Promise<
   return requireClient().fetch(path, options)
 }
 
+// ---------------------------------------------------------------------------
+// Landing fetch — for Next.js API routes on the kalit.ai landing (e.g. GitHub
+// App endpoints). Web runs at the landing origin so relative URLs work; native
+// hosts (Capacitor mobile at capacitor://localhost, Electron at file://) must
+// both prefix absolute origin AND attach a Bearer JWT since there's no
+// session cookie across origins.
+// ---------------------------------------------------------------------------
+
+export interface LandingFetchConfig {
+  /** Absolute landing origin, e.g. "https://kalit.ai". Omit on web. */
+  origin?: string
+  /** Returns the current auth token (Bearer). Omit on web (session cookie used). */
+  getToken?: () => Promise<string | null> | string | null
+}
+
+let landingConfig: LandingFetchConfig = {}
+
+export function setLandingFetchConfig(cfg: LandingFetchConfig): void {
+  landingConfig = cfg
+}
+
+export async function landingFetch(path: string, options?: RequestInit): Promise<Response> {
+  const url = landingConfig.origin ? `${landingConfig.origin.replace(/\/+$/, "")}${path}` : path
+  const headers = new Headers(options?.headers)
+  if (landingConfig.getToken) {
+    const token = await landingConfig.getToken()
+    if (token && !headers.has("authorization")) {
+      headers.set("authorization", `Bearer ${token}`)
+    }
+  }
+  return fetch(url, { ...options, headers })
+}
+
 /** Drop-in replacement for the legacy `toClientFileUrl` helper. */
 export function toClientFileUrl(url: string | undefined | null): string {
   return client ? client.mapFileUrl(url) : (url ?? "")

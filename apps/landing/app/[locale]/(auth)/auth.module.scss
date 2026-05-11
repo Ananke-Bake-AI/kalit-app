@@ -10,13 +10,22 @@
   z-index: 1;
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(22rem, 0.9fr);
+  grid-template-areas: "showcase card";
   gap: clamp(1rem, 3vw, 1.5rem);
   align-items: stretch;
 
+  // The card always gets the form, the showcase is marketing. On mobile
+  // we stack with the form first so users don't scroll past it.
   @include max($responsive) {
     grid-template-columns: 1fr;
+    grid-template-areas:
+      "card"
+      "showcase";
   }
 }
+
+.showcase { grid-area: showcase; }
+.card { grid-area: card; }
 
 .showcase,
 .card {

@@ -11,7 +11,7 @@ import { authAndToken, brokerProxy } from "@/lib/broker-server"
 // Mints a short-lived installation token server-side and forwards it to the
 // broker's attach-repo endpoint. The browser never sees the token.
 export async function POST(req: NextRequest) {
-  const ctx = await authAndToken()
+  const ctx = await authAndToken(req)
   if ("error" in ctx) return ctx.error
   const { token: brokerToken, session } = ctx
 

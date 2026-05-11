@@ -1,18 +1,18 @@
 import { NextRequest, NextResponse } from "next/server"
-import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import {
   getGitHubAppConfig,
   listInstallationRepos,
   mintInstallationToken,
 } from "@/lib/github-app"
+import { authUserFromRequest } from "@/lib/jwt-verify"
 
 // GET /api/github/repos?installationId=...
 // Lists the repositories the user authorized on a given installation.
 // Ownership check: the installation must belong to the caller.
 export async function GET(req: NextRequest) {
-  const session = await auth()
-  if (!session?.user?.id) {
+  const user = await authUserFromRequest(req)
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
   const cfg = getGitHubAppConfig()
@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
   const row = await prisma.gitHubInstallation.findUnique({
     where: { installationId },
   })
-  if (!row || row.userId !== session.user.id) {
+  if (!row || row.userId !== user.id) {
     return NextResponse.json({ error: "Installation not found" }, { status: 404 })
   }
 

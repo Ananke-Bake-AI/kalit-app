@@ -126,14 +126,22 @@ export function ResearchWidget({ researchId, onCompleted, onPreviewFile }: Resea
     if (pollingRef.current) { clearInterval(pollingRef.current); pollingRef.current = null }
   }, [])
 
+  const failureCountRef = useRef(0)
   const fetchStatus = useCallback(async () => {
     if (finishedRef.current) return
     try {
       const res = await brokerFetch(`/api/broker/research/${researchId}/status`)
       if (!res.ok) {
-        if (res.status === 404) { setError(t("studio.researchNotFound")); stopPolling() }
+        if (res.status === 404) { setError(t("studio.researchNotFound")); stopPolling(); return }
+        // Any other non-ok (5xx, 401, taskforce rework) — after 3 strikes
+        // surface an error instead of leaving the widget in infinite skeleton.
+        failureCountRef.current += 1
+        if (failureCountRef.current >= 3) {
+          setError(t("studio.networkError"))
+        }
         return
       }
+      failureCountRef.current = 0
       const json = await res.json()
       if (!json.success) { setError(json.error || t("studio.networkError")); return }
       setData(json.data)
@@ -144,9 +152,10 @@ export function ResearchWidget({ researchId, onCompleted, onPreviewFile }: Resea
         if (json.data.status === "finished" && onCompleted) setTimeout(onCompleted, 2000)
       }
     } catch {
-      setError(t("studio.networkError"))
+      failureCountRef.current += 1
+      if (failureCountRef.current >= 3) setError(t("studio.networkError"))
     }
-  }, [researchId, stopPolling, onCompleted])
+  }, [researchId, stopPolling, onCompleted, t])
 
   const fetchStatusRef = useRef(fetchStatus)
   fetchStatusRef.current = fetchStatus

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
-import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { getGitHubAppConfig, revokeInstallation } from "@/lib/github-app"
+import { authUserFromRequest } from "@/lib/jwt-verify"
 
 // DELETE /api/github/installations/[id]
 // Unlinks a GitHub App installation from the authenticated user. `id` is the
@@ -9,11 +9,11 @@ import { getGitHubAppConfig, revokeInstallation } from "@/lib/github-app"
 // is cleanly uninstalled there, then drop the DB row so the chip disappears
 // from the importer.
 export async function DELETE(
-  _req: Request,
+  req: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const session = await auth()
-  if (!session?.user?.id) {
+  const user = await authUserFromRequest(req)
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
   const cfg = getGitHubAppConfig()
@@ -26,7 +26,7 @@ export async function DELETE(
     where: { installationId: id },
     select: { id: true, userId: true, installationId: true },
   })
-  if (!row || row.userId !== session.user.id) {
+  if (!row || row.userId !== user.id) {
     return NextResponse.json({ error: "Not found" }, { status: 404 })
   }
 

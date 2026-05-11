@@ -15,11 +15,25 @@ protocols:
 mac:
   category: public.app-category.productivity
   icon: build/icon.icns
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+  # Notarization is handled via the afterSign hook (build/notarize.js) which
+  # only runs when APPLE_ID + APPLE_APP_SPECIFIC_PASSWORD + APPLE_TEAM_ID are
+  # present in env. Leave builder's own notarize flag off so it doesn't
+  # double-submit.
+  notarize: false
   target:
     - dmg
     - zip
+afterSign: build/notarize.js
+afterAllArtifactBuild: build/notarize-dmg.js
 win:
   icon: build/icon.ico
+  # When WIN_CSC_LINK + WIN_CSC_KEY_PASSWORD are present in env, electron-builder
+  # auto-signs the EXE. Without them, builds succeed unsigned (SmartScreen will
+  # warn end-users).
   target:
     - nsis
 nsis:

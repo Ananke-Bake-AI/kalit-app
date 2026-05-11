@@ -10,11 +10,13 @@ export {
   toClientFileUrl,
   toFindAssetsUrl,
   clearBrokerToken,
+  setLandingFetchConfig,
+  landingFetch,
   StudioHostProvider,
   useStudioHost,
   useStudioUser,
 } from "./host"
-export type { StudioUser, StudioHostValue } from "./host"
+export type { StudioUser, StudioHostValue, LandingFetchConfig } from "./host"
 
 export { useStudioStore } from "./store"
 export type * from "./types"

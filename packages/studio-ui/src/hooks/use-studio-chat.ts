@@ -135,6 +135,7 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
   const followRef = useRef<AbortController | null>(null)
   const lastEventIdRef = useRef<number>(0)
   const sendingRef = useRef(false)
+  const selectedSuiteRef = useRef<SuiteId | null>(null)
   activeSessionRef.current = activeSessionId
 
   // ── Hydrate progressMode from localStorage ──────────────
@@ -171,7 +172,10 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
 
   useEffect(() => {
     const suite = getInitialParam?.("suite") as SuiteId | null
-    if (suite) onSuiteChange?.(suite)
+    if (suite) {
+      selectedSuiteRef.current = suite
+      onSuiteChange?.(suite)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -343,7 +347,10 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
         const data = await res.json()
         if (data?.prompt) {
           const suite = data.studioSuite as SuiteId | undefined
-          if (suite) onSuiteChange?.(suite)
+          if (suite) {
+            selectedSuiteRef.current = suite
+            onSuiteChange?.(suite)
+          }
           handleSendRef.current(data.prompt)
         }
       } catch {
@@ -408,8 +415,13 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
             onWidget: ({ type, id }) => addActiveWidget({ type, id }),
             onSuiteSelected: (payload) => {
               const suite = payload?.suite
-              if (suite && suite !== "helper") onSuiteChange?.(suite as SuiteId)
-              else if (suite === "helper") onSuiteChange?.("default")
+              if (suite && suite !== "helper") {
+                selectedSuiteRef.current = suite as SuiteId
+                onSuiteChange?.(suite as SuiteId)
+              } else if (suite === "helper") {
+                selectedSuiteRef.current = null
+                onSuiteChange?.("default")
+              }
               if (payload) {
                 setLastRouting({
                   suite: payload.suite || "",
@@ -470,6 +482,7 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
     // is safe: the work is preserved, only the UI state is reset.
     resetStream()
     setActiveWidgets([])
+    selectedSuiteRef.current = null
     setActiveSessionId(id)
     onSessionActivated?.(id, { clearPrompt: true, clearSuite: true })
   }, [resetStream, setActiveWidgets, setActiveSessionId, onSessionActivated])
@@ -477,7 +490,10 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
   // ── Welcome prompt click ────────────────────────────────
 
   const handleWelcomePrompt = useCallback((prompt: string, suiteId?: SuiteId) => {
-    if (suiteId) onSuiteChange?.(suiteId)
+    if (suiteId) {
+      selectedSuiteRef.current = suiteId
+      onSuiteChange?.(suiteId)
+    }
     setChatPrefill({ text: prompt, nonce: Date.now() })
   }, [onSuiteChange])
 
@@ -569,6 +585,7 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
         taskforceModelProvider: useStudioStore.getState().taskforceStandard,
         requestId: `req-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       }
+      if (selectedSuiteRef.current) body.suite = selectedSuiteRef.current
       if (files && files.length > 0) body.files = files
 
       const res = await brokerFetch(`/api/broker/sessions/${sessionId}/messages`, {
@@ -763,8 +780,10 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
                   } | undefined
                   const suite = payload?.suite
                   if (suite && suite !== "helper") {
+                    selectedSuiteRef.current = suite as SuiteId
                     onSuiteChange?.(suite as SuiteId)
                   } else if (suite === "helper") {
+                    selectedSuiteRef.current = null
                     onSuiteChange?.("default")
                   }
                   if (payload) {
@@ -931,6 +950,7 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
         const data = await res.json()
         const session: ChatSession = data.session
         addSession(session)
+        selectedSuiteRef.current = null
         setActiveSessionId(session.id)
         setMessages([])
         onSessionActivated?.(session.id, { clearPrompt: true, clearSuite: true })

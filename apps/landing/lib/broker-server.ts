@@ -6,6 +6,7 @@
 import { NextResponse } from "next/server"
 import { SignJWT } from "jose"
 import { auth } from "@/lib/auth"
+import { authUserFromRequest } from "@/lib/jwt-verify"
 
 const BROKER_URL = () =>
   (process.env.BROKER_URL || "http://localhost:9000").replace(/\/+$/, "")
@@ -40,8 +41,29 @@ async function signBrokerJwt(userId: string, email: string, orgId?: string | nul
 /**
  * Authenticate the current user and return a broker-ready token + session.
  * Returns null (and a 401 response) if not authenticated.
+ *
+ * Pass `req` to also accept a Bearer JWT from native apps (Capacitor mobile,
+ * Electron desktop) which have no NextAuth session cookie. Without `req` only
+ * session auth is tried (legacy behavior).
  */
-export async function authAndToken() {
+export async function authAndToken(req?: Request) {
+  if (req) {
+    const user = await authUserFromRequest(req)
+    if (!user) {
+      return { error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) }
+    }
+    const token = await signBrokerJwt(user.id, user.email, user.orgId, null, user.isAdmin)
+    const session = {
+      user: {
+        id: user.id,
+        email: user.email,
+        orgId: user.orgId,
+        isAdmin: user.isAdmin,
+        name: null as string | null,
+      },
+    }
+    return { token, session }
+  }
   const session = await auth()
   if (!session?.user?.id || !session.user.email) {
     return { error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) }

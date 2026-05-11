@@ -28,6 +28,8 @@ const TOOL_I18N_KEYS: Record<string, string> = {
   edit_file: "studio.toolEditFile",
   list_files: "studio.toolListFiles",
   search: "studio.toolSearch",
+  search_project_ideas: "studio.toolSearch",
+  search_project_build_prompt: "studio.toolSearch",
 }
 
 function toolLabel(name: string, input: unknown, t: (key: string, params?: Record<string, string | number>) => string): string {

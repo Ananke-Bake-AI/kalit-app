@@ -1,47 +1,55 @@
+// Self-contained palette so the screen renders correctly whether the CSS
+// variables from @kalit/studio-ui are loaded or not (they aren't during the
+// pre-auth boot).
+$bg: #0b0d10;
+$surface: #15181d;
+$text: #e7e7e9;
+$text-muted: rgba(231, 231, 233, 0.72);
+$text-dim: rgba(231, 231, 233, 0.55);
+
 .root {
   display: grid;
   place-items: center;
   min-height: 100dvh;
   padding: 2rem;
-  background: radial-gradient(at 30% 20%, rgba(124, 92, 255, 0.12), transparent 60%),
-    radial-gradient(at 70% 80%, rgba(58, 160, 255, 0.1), transparent 55%),
-    var(--body, #0b0d10);
-  color: var(--text, #e7e7e9);
+  background:
+    radial-gradient(at 30% 20%, rgba(124, 92, 255, 0.18), transparent 60%),
+    radial-gradient(at 70% 80%, rgba(58, 160, 255, 0.14), transparent 55%),
+    $bg;
+  color: $text;
 }
 
 .card {
   width: min(420px, 100%);
   padding: 2.5rem 2rem;
-  background: var(--surface, #15181d);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: $surface;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 18px;
   display: grid;
   justify-items: center;
   gap: 1rem;
-  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.45);
 }
 
 .logo {
-  width: 64px;
-  height: 64px;
-  border-radius: 16px;
-  display: grid;
-  place-items: center;
-  font-size: 32px;
-  font-weight: 700;
-  color: white;
-  background: linear-gradient(135deg, #7c5cff, #3aa0ff);
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  object-fit: cover;
+  display: block;
 }
 
 .title {
   margin: 0.25rem 0 0;
   font-size: 1.5rem;
   font-weight: 600;
+  color: $text;
+  text-align: center;
 }
 
 .subtitle {
   margin: 0;
-  color: rgba(231, 231, 233, 0.65);
+  color: $text-muted;
   text-align: center;
   font-size: 0.95rem;
 }
@@ -72,6 +80,6 @@
 .hint {
   margin: 0.5rem 0 0;
   font-size: 0.8rem;
-  color: rgba(231, 231, 233, 0.45);
+  color: $text-dim;
   text-align: center;
 }

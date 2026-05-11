@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+# simulator — rebuild & relaunch the iOS app on the booted iPhone simulator.
+#
+# Usage:
+#   ./simulator           # build + install + launch (default: iPhone 16)
+#   ./simulator fast      # skip pnpm build + cap sync, reuse existing dist
+#   ./simulator <device>  # e.g. ./simulator "iPhone 15 Pro"
+#
+# Requires Xcode + simctl. Bundle id: ai.kalit.studio.
+
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+MOBILE="$ROOT/apps/mobile"
+IOS_DIR="$MOBILE/ios/App"
+APP_PATH="$IOS_DIR/build/Build/Products/Debug-iphonesimulator/App.app"
+BUNDLE_ID="ai.kalit.studio"
+
+DEVICE="iPhone 16"
+FAST=0
+for arg in "$@"; do
+  case "$arg" in
+    fast) FAST=1 ;;
+    *) DEVICE="$arg" ;;
+  esac
+done
+
+step() { printf "\n\033[1;36m▶ %s\033[0m\n" "$*"; }
+ok()   { printf "\033[1;32m✓ %s\033[0m\n" "$*"; }
+die()  { printf "\033[1;31m✗ %s\033[0m\n" "$*" >&2; exit 1; }
+
+if [ "$FAST" = "0" ]; then
+  step "pnpm build (mobile)"
+  cd "$MOBILE"
+  pnpm run build
+
+  # cap sync runs `xcodebuild clean` which refuses to delete ios/App/build
+  # unless it's tagged as created by the build system. Tag or wipe it first.
+  if [ -d "$IOS_DIR/build" ]; then
+    xattr -w com.apple.xcode.CreatedByBuildSystem true "$IOS_DIR/build" 2>/dev/null \
+      || rm -rf "$IOS_DIR/build"
+  fi
+
+  step "Capacitor sync (ios)"
+  npx cap sync ios
+fi
+
+step "xcodebuild (iphonesimulator, unsigned)"
+cd "$IOS_DIR"
+xcodebuild \
+  -workspace App.xcworkspace \
+  -scheme App \
+  -configuration Debug \
+  -sdk iphonesimulator \
+  -destination "generic/platform=iOS Simulator" \
+  -derivedDataPath ./build \
+  CODE_SIGNING_ALLOWED=NO \
+  CODE_SIGNING_REQUIRED=NO \
+  CODE_SIGN_IDENTITY="" \
+  build | tail -20
+
+[ -d "$APP_PATH" ] || die "App.app not found at $APP_PATH"
+
+step "Boot simulator: $DEVICE"
+xcrun simctl boot "$DEVICE" 2>/dev/null || true
+open -a Simulator
+
+step "Install + launch ($BUNDLE_ID)"
+xcrun simctl terminate booted "$BUNDLE_ID" 2>/dev/null || true
+xcrun simctl install booted "$APP_PATH"
+xcrun simctl launch booted "$BUNDLE_ID"
+
+ok "running on $DEVICE"

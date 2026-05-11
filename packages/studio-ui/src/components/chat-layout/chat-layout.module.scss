@@ -66,6 +66,26 @@
   position: relative;
 }
 
+.rightBackdrop {
+  display: none;
+
+  @include max(1200px) {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 99;
+    background: oklch(0 0 0 / 0.3);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s var(--cubic);
+
+    &[data-visible="true"] {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+}
+
 .right {
   width: 0;
   flex-shrink: 0;

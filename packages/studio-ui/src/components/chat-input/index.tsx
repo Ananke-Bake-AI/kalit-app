@@ -303,6 +303,15 @@ export function ChatInput({ onSend, disabled, prefill, onEnsureSession }: ChatIn
     >
       {isDragging && (
         <div className={s.dropOverlay}>
+          <button
+            type="button"
+            className={s.dropOverlayClose}
+            onClick={() => setIsDragging(false)}
+            title={t("studio.dismiss") || "Dismiss"}
+            aria-label="Dismiss drop overlay"
+          >
+            <Icon icon="hugeicons:cancel-01" />
+          </button>
           <Icon icon="hugeicons:upload-04" />
           <span>{t("studio.dropToUpload")}</span>
         </div>

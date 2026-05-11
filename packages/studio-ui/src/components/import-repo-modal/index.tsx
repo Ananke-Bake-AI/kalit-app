@@ -11,7 +11,7 @@ import {
 import clsx from "clsx"
 import { Icon } from "../../primitives/icon"
 import { useI18n } from "@kalit/i18n/react"
-import { brokerFetch } from "../../host"
+import { brokerFetch, landingFetch } from "../../host"
 import { useStudioStore, type ImportedRepoState } from "../../store"
 import s from "./import-repo-modal.module.scss"
 
@@ -184,7 +184,16 @@ function GitHubTab({ sessionId, onEnsureSession, setError, setBusy, busy, onAtta
 
   const loadInstallations = useCallback(async () => {
     try {
-      const res = await fetch("/api/github/installations")
+      const res = await landingFetch("/api/github/installations")
+      if (!res.ok) {
+        if (res.status === 401) {
+          setConfigured(null)
+          setInstallations([])
+          return
+        }
+        setError(t("studio.importRepoGhFailed"))
+        return
+      }
       const data = (await res.json()) as {
         configured: boolean
         installations: Installation[]
@@ -208,7 +217,7 @@ function GitHubTab({ sessionId, onEnsureSession, setError, setBusy, busy, onAtta
     setRepos([])
     setSelectedRepo(null)
     try {
-      const res = await fetch(`/api/github/repos?installationId=${encodeURIComponent(installationId)}`)
+      const res = await landingFetch(`/api/github/repos?installationId=${encodeURIComponent(installationId)}`)
       const data = (await res.json()) as { repos?: Repo[]; error?: string }
       if (!res.ok) {
         setError(data.error || t("studio.importRepoGhFailed"))
@@ -235,7 +244,7 @@ function GitHubTab({ sessionId, onEnsureSession, setError, setBusy, busy, onAtta
     setUnlinkingId(inst.installationId)
     setError(null)
     try {
-      const res = await fetch(`/api/github/installations/${encodeURIComponent(inst.installationId)}`, {
+      const res = await landingFetch(`/api/github/installations/${encodeURIComponent(inst.installationId)}`, {
         method: "DELETE",
       })
       if (!res.ok) {
@@ -312,7 +321,7 @@ function GitHubTab({ sessionId, onEnsureSession, setError, setBusy, busy, onAtta
         setError(t("studio.connectionError"))
         return
       }
-      const res = await fetch("/api/github/attach", {
+      const res = await landingFetch("/api/github/attach", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -16,10 +16,52 @@ android {
             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    // Release signing pulled from env vars (CI-friendly) or android/keystore.properties
+    // (local dev). Missing config falls back to debug signing so `assembleDebug`
+    // never breaks when the keystore isn't set up yet.
+    signingConfigs {
+        release {
+            def storeFileEnv = System.getenv("KALIT_KEYSTORE_FILE")
+            def storePasswordEnv = System.getenv("KALIT_KEYSTORE_PASSWORD")
+            def keyAliasEnv = System.getenv("KALIT_KEY_ALIAS")
+            def keyPasswordEnv = System.getenv("KALIT_KEY_PASSWORD")
+
+            def props = new Properties()
+            def propsFile = rootProject.file("keystore.properties")
+            if (propsFile.exists()) {
+                props.load(new FileInputStream(propsFile))
+            }
+
+            def resolvedStoreFile = storeFileEnv ?: props.getProperty("storeFile")
+            def resolvedStorePassword = storePasswordEnv ?: props.getProperty("storePassword")
+            def resolvedKeyAlias = keyAliasEnv ?: props.getProperty("keyAlias")
+            def resolvedKeyPassword = keyPasswordEnv ?: props.getProperty("keyPassword")
+
+            if (resolvedStoreFile && resolvedStorePassword && resolvedKeyAlias && resolvedKeyPassword) {
+                // Resolve relative paths from the android/ project root so
+                // keystore.properties can keep a short `keystore/foo.jks` form.
+                def storeFileResolved = new File(resolvedStoreFile)
+                if (!storeFileResolved.isAbsolute()) {
+                    storeFileResolved = rootProject.file(resolvedStoreFile)
+                }
+                storeFile storeFileResolved
+                storePassword resolvedStorePassword
+                keyAlias resolvedKeyAlias
+                keyPassword resolvedKeyPassword
+            }
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            def rel = signingConfigs.release
+            // Only attach if a real keystore was resolved above — otherwise
+            // fall through to unsigned (CI will reject) but keep Gradle happy.
+            if (rel.storeFile != null) {
+                signingConfig rel
+            }
         }
     }
 }
