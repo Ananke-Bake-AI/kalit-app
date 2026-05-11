@@ -600,6 +600,153 @@ export async function revokePlan(orgId: string) {
   return { success: true }
 }
 
+// ─── Bug Reports (admin CRUD) ───────────────────────────
+
+export interface BugReportRow {
+  id: string
+  userId: string
+  userEmail: string
+  userUsername: string
+  externalOrgId: string
+  sessionId: string | null
+  projectId: string | null
+  description: string
+  status: "open" | "investigating" | "resolved" | "invalid" | "duplicate"
+  adminNote: string | null
+  creditsAwarded: number
+  creditAwardedAt: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface BugReportDetail extends BugReportRow {
+  context: Record<string, unknown>
+}
+
+export async function listBugReports(statusFilter?: string) {
+  await requireAdmin()
+  const brokerUrl = process.env.BROKER_URL?.replace(/\/+$/, "") || "http://localhost:9000"
+  const token = process.env.BROKER_INTERNAL_TOKEN
+  if (!token) return { error: "BROKER_INTERNAL_TOKEN not configured" }
+  const qs = statusFilter ? `?status=${encodeURIComponent(statusFilter)}` : ""
+  try {
+    const res = await fetch(`${brokerUrl}/internal/admin/bug-reports${qs}`, {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
+    })
+    if (!res.ok) {
+      return { error: `Broker ${res.status}` }
+    }
+    return (await res.json()) as { reports: BugReportRow[] }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Unknown error" }
+  }
+}
+
+export async function getBugReport(id: string) {
+  await requireAdmin()
+  const brokerUrl = process.env.BROKER_URL?.replace(/\/+$/, "") || "http://localhost:9000"
+  const token = process.env.BROKER_INTERNAL_TOKEN
+  if (!token) return { error: "BROKER_INTERNAL_TOKEN not configured" }
+  try {
+    const res = await fetch(`${brokerUrl}/internal/admin/bug-reports/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
+    })
+    if (!res.ok) return { error: `Broker ${res.status}` }
+    return (await res.json()) as BugReportDetail
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Unknown error" }
+  }
+}
+
+// updateBugReport patches status/note/credits. When creditsAwarded is
+// passed and non-zero AND the report wasn't already awarded, ALSO
+// insert a CreditRecord on the reporter's org so the bonus credits
+// show up in their balance immediately. This is the "incentive"
+// half of the feature — admin clicks "Award 100 credits" and the
+// reporter sees +100 in their monthly quota.
+export async function updateBugReport(
+  id: string,
+  patch: {
+    status?: BugReportRow["status"]
+    adminNote?: string
+    creditsAwarded?: number
+  },
+) {
+  await requireAdmin()
+  const brokerUrl = process.env.BROKER_URL?.replace(/\/+$/, "") || "http://localhost:9000"
+  const token = process.env.BROKER_INTERNAL_TOKEN
+  if (!token) return { error: "BROKER_INTERNAL_TOKEN not configured" }
+
+  // Read the current row first so we can detect "first-time award" and
+  // capture orgId for the CreditRecord insert.
+  const current = await getBugReport(id)
+  if ("error" in current) return current
+
+  try {
+    const res = await fetch(`${brokerUrl}/internal/admin/bug-reports/${id}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(patch),
+    })
+    if (!res.ok) {
+      const data = (await res.json().catch(() => ({}))) as { error?: string }
+      return { error: data.error || `Broker ${res.status}` }
+    }
+    const updated = (await res.json()) as BugReportDetail
+
+    // Credit award side-effect — only fires on a *new* positive amount.
+    // Patching status alone (without creditsAwarded) skips this branch.
+    const shouldAward =
+      patch.creditsAwarded != null &&
+      patch.creditsAwarded > 0 &&
+      current.creditsAwarded === 0 &&
+      current.externalOrgId
+    if (shouldAward) {
+      try {
+        await prisma.creditRecord.create({
+          data: {
+            orgId: current.externalOrgId,
+            direction: "CREDIT",
+            amount: patch.creditsAwarded!,
+            reason: `bug-report-reward:${id}`,
+          },
+        })
+      } catch (err) {
+        // Log but don't fail the patch — the bug_report row is the
+        // source of truth that the admin acted; the credit can be
+        // retried manually if the insert blew up (rare).
+        console.error("[updateBugReport] CreditRecord insert failed:", err)
+      }
+    }
+
+    return { success: true, report: updated }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Unknown error" }
+  }
+}
+
+export async function deleteBugReport(id: string) {
+  await requireAdmin()
+  const brokerUrl = process.env.BROKER_URL?.replace(/\/+$/, "") || "http://localhost:9000"
+  const token = process.env.BROKER_INTERNAL_TOKEN
+  if (!token) return { error: "BROKER_INTERNAL_TOKEN not configured" }
+  try {
+    const res = await fetch(`${brokerUrl}/internal/admin/bug-reports/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    if (!res.ok) return { error: `Broker ${res.status}` }
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Unknown error" }
+  }
+}
+
 // ─── Revenue ────────────────────────────────────────────
 
 export async function getAdminRevenue() {

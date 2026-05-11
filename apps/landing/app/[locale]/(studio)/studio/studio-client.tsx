@@ -13,6 +13,7 @@ import { WelcomeScreen } from "@/components/studio/welcome-screen"
 import { MessageList } from "@/components/studio/message-list"
 import { FileExplorer } from "@/components/studio/file-explorer"
 import { FilePreviewModal } from "@/components/studio/file-preview-modal"
+import { BugReportModal } from "@/components/studio/bug-report-modal"
 import { RoutingDebugPanel } from "@/components/studio/routing-debug"
 import { DebugConsole } from "@/components/studio/debug-console"
 import { ModelSelector } from "@/components/studio/model-selector"
@@ -41,6 +42,11 @@ export function StudioClient() {
     rightPanelOpen,
     setRightPanelOpen,
   } = useStudioStore()
+
+  // Bug report modal state. Lives in the studio client because the
+  // modal needs to read the active session + recent messages from the
+  // store and submit via a server action.
+  const [bugReportOpen, setBugReportOpen] = useState(false)
 
   const handleSuiteChange = useCallback(
     (suite: SuiteId | "default") => setPage(suite),
@@ -195,6 +201,14 @@ export function StudioClient() {
           >
             <Icon icon={focusMode ? "hugeicons:minimize-02" : "hugeicons:maximize-02"} />
           </button>
+          <button
+            className={s.panelToggle}
+            onClick={() => setBugReportOpen(true)}
+            title={t("studio.bugReportTitle")}
+            aria-label={t("studio.bugReportTitle")}
+          >
+            <Icon icon="hugeicons:bug-01" />
+          </button>
           {activeSessionId && (
             <button
               className={s.panelToggle}
@@ -241,6 +255,11 @@ export function StudioClient() {
           onClose={() => { setPreviewFile(null); setPreviewImages([]) }}
         />
       )}
+
+      <BugReportModal
+        open={bugReportOpen}
+        onClose={() => setBugReportOpen(false)}
+      />
 
       <RoutingDebugPanel />
       <DebugConsole />
