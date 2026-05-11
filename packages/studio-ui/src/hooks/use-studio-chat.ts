@@ -986,6 +986,21 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
 
   const handleNewChat = useCallback(async () => {
     try {
+      // Same isolation cleanup as handleSessionSelect — without these,
+      // clicking "New Chat" while the previous session is mid-stream
+      // leaves its streamSegments/streamThinking/widgets/error visible
+      // in the fresh chat. The broker keeps the old agent running on
+      // its side; we just stop echoing it into the UI we're navigating
+      // away from. setMessages([]) is a merge in the store, which would
+      // carry over the optimistic user temp ("ca va?") — clearMessages
+      // is the hard reset.
+      resetStream()
+      setActiveWidgets([])
+      setError(null)
+      followRef.current?.abort()
+      followRef.current = null
+      clearMessages()
+
       const { selectedModel, taskforceStandard } = useStudioStore.getState()
       const res = await brokerFetch("/api/broker/sessions", {
         method: "POST",
@@ -997,13 +1012,15 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
         const session: ChatSession = data.session
         addSession(session)
         setActiveSessionId(session.id)
-        setMessages([])
         onSessionActivated?.(session.id, { clearPrompt: true, clearSuite: true })
       }
     } catch {
       // silent
     }
-  }, [addSession, setActiveSessionId, setMessages, onSessionActivated])
+  }, [
+    addSession, setActiveSessionId, onSessionActivated,
+    resetStream, setActiveWidgets, setError, clearMessages,
+  ])
 
   // ── Global keyboard shortcuts ───────────────────────────
 
