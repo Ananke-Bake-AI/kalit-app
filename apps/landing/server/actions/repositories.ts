@@ -152,9 +152,27 @@ export async function remixRepository(id: string, idea?: string) {
     externalProjectId: string
     prompt: string
     sourceProjectId: string
+    mode: string
   }>(`/api/flow/projects/${id}/remix`, {
     method: "POST",
-    body: { idea: idea ?? "" },
+    body: { idea: idea ?? "", mode: "remix" },
+  })
+}
+
+// Same fork mechanics as remix, but the auto-sent prompt tells the
+// agent to describe the template and ASK the user what to customize
+// — no autonomous sprint until the user replies.
+export async function useTemplateFromRepository(id: string) {
+  return brokerCall<{
+    sessionId: string
+    projectId: string
+    externalProjectId: string
+    prompt: string
+    sourceProjectId: string
+    mode: string
+  }>(`/api/flow/projects/${id}/remix`, {
+    method: "POST",
+    body: { mode: "template" },
   })
 }
 

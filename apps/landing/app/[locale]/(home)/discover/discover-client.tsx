@@ -5,6 +5,7 @@ import { Icon } from "@/components/icon"
 import {
   remixRepository,
   toggleRepositoryStar,
+  useTemplateFromRepository,
 } from "@/server/actions/repositories"
 import { useEffect, useState, useTransition } from "react"
 import { toast } from "sonner"
@@ -101,6 +102,23 @@ export function DiscoverClient() {
     })
   }
 
+  const handleUseTemplate = (p: PublicProject) => {
+    startTransition(async () => {
+      const t = toast.loading("Copying template…")
+      const result = await useTemplateFromRepository(p.id)
+      toast.dismiss(t)
+      if ("error" in result) {
+        toast.error(result.error.includes("auth") ? "Sign in to use templates" : result.error)
+        return
+      }
+      toast.success("Template ready — opening studio")
+      // Same auto-send hook as remix: the studio reads the prompt query
+      // param and fires it on first paint. Difference is purely in the
+      // canned brief (template asks the user, remix runs a sprint).
+      window.location.href = `/studio?session=${result.sessionId}&prompt=${encodeURIComponent(result.prompt)}`
+    })
+  }
+
   return (
     <section className={s.page}>
       <Container>
@@ -187,16 +205,28 @@ export function DiscoverClient() {
                       )}
                       <span>@{p.owner.username}</span>
                     </a>
-                    <button
-                      type="button"
-                      className={s.remixBtn}
-                      onClick={() => handleRemix(p)}
-                      disabled={pending}
-                      title="Remix this project"
-                    >
-                      <Icon icon="hugeicons:paint-board" />
-                      Remix
-                    </button>
+                    <div className={s.actions}>
+                      <button
+                        type="button"
+                        className={s.templateBtn}
+                        onClick={() => handleUseTemplate(p)}
+                        disabled={pending}
+                        title="Copy this project as a template — the agent will ask you what to customize"
+                      >
+                        <Icon icon="hugeicons:copy-01" />
+                        Use template
+                      </button>
+                      <button
+                        type="button"
+                        className={s.remixBtn}
+                        onClick={() => handleRemix(p)}
+                        disabled={pending}
+                        title="Remix this project — the agent reinvents it on its own"
+                      >
+                        <Icon icon="hugeicons:paint-board" />
+                        Remix
+                      </button>
+                    </div>
                   </div>
                 </div>
               </article>

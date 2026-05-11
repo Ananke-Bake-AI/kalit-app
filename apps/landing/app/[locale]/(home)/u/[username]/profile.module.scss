@@ -260,6 +260,29 @@
   }
 }
 
+.templateBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid oklch(from var(--text) l c h / 0.18);
+  border-radius: var(--radius-rounded);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: oklch(from var(--text) l c h / 0.06);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
 .remixBtn {
   display: inline-flex;
   align-items: center;

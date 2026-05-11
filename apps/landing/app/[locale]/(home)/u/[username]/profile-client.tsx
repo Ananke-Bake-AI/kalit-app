@@ -5,6 +5,7 @@ import { Icon } from "@/components/icon"
 import {
   remixRepository,
   toggleRepositoryStar,
+  useTemplateFromRepository,
 } from "@/server/actions/repositories"
 import { useEffect, useState, useTransition } from "react"
 import { toast } from "sonner"
@@ -92,6 +93,20 @@ export function ProfileClient({ username }: { username: string }) {
         return
       }
       toast.success("Remix launched")
+      window.location.href = `/studio?session=${result.sessionId}&prompt=${encodeURIComponent(result.prompt)}`
+    })
+  }
+
+  const handleUseTemplate = (p: PublicProject) => {
+    startTransition(async () => {
+      const t = toast.loading("Copying template…")
+      const result = await useTemplateFromRepository(p.id)
+      toast.dismiss(t)
+      if ("error" in result) {
+        toast.error(result.error.includes("auth") ? "Sign in to use templates" : result.error)
+        return
+      }
+      toast.success("Template ready — opening studio")
       window.location.href = `/studio?session=${result.sessionId}&prompt=${encodeURIComponent(result.prompt)}`
     })
   }
@@ -192,6 +207,16 @@ export function ProfileClient({ username }: { username: string }) {
                   </div>
                   {p.subtitle && <p className={s.subtitle}>{p.subtitle}</p>}
                   <div className={s.actions}>
+                    <button
+                      type="button"
+                      className={s.templateBtn}
+                      onClick={() => handleUseTemplate(p)}
+                      disabled={pending}
+                      title="Copy as template"
+                    >
+                      <Icon icon="hugeicons:copy-01" />
+                      Use template
+                    </button>
                     <button
                       type="button"
                       className={s.remixBtn}
