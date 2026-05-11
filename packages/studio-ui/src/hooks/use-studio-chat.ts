@@ -608,9 +608,25 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
       })
 
       if (!res.ok || !res.body) {
-        const data = await res.json().catch(() => ({}))
+        const data = (await res.json().catch(() => ({}))) as {
+          error?: string
+          message?: string
+          remainingCredits?: number
+        }
         if (isStill()) {
-          setError((data as { error?: string }).error || `Error ${res.status}`)
+          // 402 = broker credit gate. Snap the local quota to 0 so the
+          // input flips to its disabled-with-banner state immediately,
+          // surface a localized error rather than the raw "Error 402"
+          // we'd otherwise get from the fallback branch.
+          if (res.status === 402) {
+            const current = useStudioStore.getState().quota
+            if (current) {
+              setQuota({ ...current, remainingCredits: 0, percentage: 100 })
+            }
+            setError(t("studio.outOfCreditsError"))
+          } else {
+            setError(data.error || `Error ${res.status}`)
+          }
           setIsStreaming(false)
           removeMessage(tempId)
         }
