@@ -7,6 +7,7 @@ import { SurfacePanel } from "@/components/surface-panel"
 import { TextField } from "@/components/text-field"
 import {
   getAdminFeaturedProjects,
+  refreshProjectThumbnail,
   setProjectFeatured,
 } from "@/server/actions/admin"
 import { useMemo, useState, useTransition } from "react"
@@ -58,6 +59,37 @@ export function FeaturedProjectsClient({ initial }: { initial: Row[] }) {
   }, [data, search, filter])
 
   const featuredCount = data.filter((d) => d.featuredAt).length
+
+  // Per-row cache-bust counter — bumped after a thumbnail refresh so the
+  // <img> reloads the same broker URL with a new query string and we
+  // bypass the browser cache that would otherwise keep serving the
+  // stale screenshot until the user reloads the whole page.
+  const [thumbVersion, setThumbVersion] = useState<Record<string, number>>({})
+
+  const handleRefreshThumb = (d: Row) => {
+    const t = toast.loading(`Capturing thumbnail for ${d.displayName || d.title || d.id.slice(0, 8)}…`)
+    startTransition(async () => {
+      const result = await refreshProjectThumbnail(d.id)
+      if ("error" in result) {
+        toast.dismiss(t)
+        toast.error(result.error || "Refresh failed")
+        return
+      }
+      // Broker captures async (sleeps 5s before screenshot, then DB
+      // write). Wait ~9s before flipping the cache-bust + dismissing
+      // so the new image is actually there when the browser re-fetches.
+      setTimeout(() => {
+        setThumbVersion((m) => ({ ...m, [d.id]: (m[d.id] || 0) + 1 }))
+        // Force hasThumbnail=true in case it was false before (first
+        // capture for a project that previously had none).
+        setData((rows) =>
+          rows.map((r) => (r.id === d.id ? { ...r, hasThumbnail: true } : r)),
+        )
+        toast.dismiss(t)
+        toast.success("Thumbnail refreshed")
+      }, 9000)
+    })
+  }
 
   const handleToggle = async (d: Row) => {
     const willFeature = !d.featuredAt
@@ -134,7 +166,9 @@ export function FeaturedProjectsClient({ initial }: { initial: Row[] }) {
             <div className={s.thumb}>
               {d.hasThumbnail ? (
                 <img
-                  src={`/api/broker/projects/${d.id}/thumbnail.png`}
+                  src={`/api/broker/projects/${d.id}/thumbnail.png${
+                    thumbVersion[d.id] ? `?v=${thumbVersion[d.id]}` : ""
+                  }`}
                   alt={d.displayName || d.title}
                   loading="lazy"
                 />
@@ -143,6 +177,15 @@ export function FeaturedProjectsClient({ initial }: { initial: Row[] }) {
                   <Icon icon="hugeicons:folder-cloud" />
                 </div>
               )}
+              <button
+                type="button"
+                className={s.thumbRefresh}
+                onClick={() => handleRefreshThumb(d)}
+                disabled={pending}
+                title="Re-capture thumbnail from the live URL"
+              >
+                <Icon icon="hugeicons:refresh" />
+              </button>
             </div>
             <div className={s.body}>
               <div className={s.titleLine}>

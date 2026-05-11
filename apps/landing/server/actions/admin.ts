@@ -523,6 +523,35 @@ export async function setProjectFeatured(
   }
 }
 
+// Re-capture the thumbnail for one project. Used by the admin
+// featured-projects page to fix screenshots that landed mid-build
+// or before Vercel propagation. Broker queues the capture
+// asynchronously (~5-10s end-to-end) and we return immediately.
+export async function refreshProjectThumbnail(id: string) {
+  await requireAdmin()
+  const brokerUrl = process.env.BROKER_URL?.replace(/\/+$/, "") || "http://localhost:9000"
+  const internalToken = process.env.BROKER_INTERNAL_TOKEN
+  if (!internalToken) {
+    return { error: "BROKER_INTERNAL_TOKEN not configured" }
+  }
+  try {
+    const res = await fetch(
+      `${brokerUrl}/internal/admin/projects/${id}/refresh-thumbnail`,
+      {
+        method: "POST",
+        headers: { Authorization: `Bearer ${internalToken}` },
+      },
+    )
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      return { error: (data as { error?: string }).error || `Broker ${res.status}` }
+    }
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Unknown error" }
+  }
+}
+
 // ─── Plan Assignment ────────────────────────────────────
 
 export async function assignPlan(orgId: string, planKey: string, expiresAt?: string) {
