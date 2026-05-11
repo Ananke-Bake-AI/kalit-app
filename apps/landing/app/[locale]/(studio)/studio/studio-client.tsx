@@ -139,7 +139,12 @@ export function StudioClient() {
     )
   }
 
-  const showWelcome = !activeSessionId || (messages.length === 0 && !isStreaming)
+  // showWelcome must NOT trigger while messagesLoading is true — otherwise
+  // every session switch flashes the welcome screen during the
+  // clearMessages → fetchMessages roundtrip (messages briefly = [], so
+  // showWelcome=true, so we render the welcome between two real chats).
+  // Loader has priority over welcome whenever we're mid-load.
+  const showWelcome = !activeSessionId || (!messagesLoading && messages.length === 0 && !isStreaming)
 
   return (
     <ChatLayout

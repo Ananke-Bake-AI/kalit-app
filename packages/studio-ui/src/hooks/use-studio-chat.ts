@@ -394,22 +394,25 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
     setStreamSegments([])
     setStreamThinking("")
 
-    // Drop the most-recent in-progress assistant from messages[] before the
-    // live stream rebuilds it. The broker's persistSegments() writes the
-    // partial content to DB on every significant event, so fetchMessages()
-    // returns that partial as a regular assistant entry — and the SSE
-    // replay then re-renders the same content as a streamSegments live
-    // bubble. Without this prune the user sees the message twice on
-    // session switch-back. Identifying the in-progress bubble: the latest
-    // entry whose role is "assistant", since the broker only ever has one
-    // partial assistant per session at a time.
-    const msgs = useStudioStore.getState().messages
-    for (let i = msgs.length - 1; i >= 0; i--) {
-      if (msgs[i].role === "assistant") {
-        removeMessage(msgs[i].id)
-        break
+    // Identify (but do NOT yet remove) the most-recent assistant
+    // message. We used to prune it unconditionally here to avoid
+    // double-rendering when the SSE stream replays the partial — but
+    // that caused a visible "messages minus the last one" flash when
+    // the broker had nothing live to stream (onIdle): the message was
+    // removed and only came back when something else triggered a
+    // refetch seconds later. Now we capture the candidate and commit
+    // the removal in onAttached. If onIdle fires, the persisted copy
+    // stays put — no flicker, no missing-last-message state.
+    let prunedAssistantId: string | null = null
+    {
+      const msgs = useStudioStore.getState().messages
+      for (let i = msgs.length - 1; i >= 0; i--) {
+        if (msgs[i].role === "assistant") {
+          prunedAssistantId = msgs[i].id
+          break
+        }
+        if (msgs[i].role === "user") break
       }
-      if (msgs[i].role === "user") break
     }
 
     ;(async () => {
@@ -456,9 +459,13 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
             onAttached: () => {
               // Real room — only NOW commit the streaming UI so we
               // don't flash a "thinking" indicator on every reload of
-              // a quiet session.
+              // a quiet session. Also commit the partial-assistant
+              // prune here: the stream is about to replay the same
+              // content via streamSegments, so we drop the persisted
+              // partial to avoid double-rendering.
               attached = true
               if (activeSessionRef.current === activeSessionId) {
+                if (prunedAssistantId) removeMessage(prunedAssistantId)
                 setIsStreaming(true)
               }
             },
@@ -519,6 +526,17 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
     // Wipe any error banner from the previous session — without this the
     // user sees a stale error pinned over a brand-new conversation.
     setError(null)
+    // Clear messages synchronously here, before setActiveSessionId. The
+    // activeSessionId effect will also clear+refetch, but it runs
+    // post-render — so without this call there's a one-render-cycle
+    // gap where activeSessionId points to B but messages[] still holds
+    // A's content. Users perceived this as "A's messages flash inside
+    // B" right before the loader takes over. Doing it synchronously
+    // here collapses the flash into a single loader-then-data
+    // transition. Also set messagesLoading=true so the message list
+    // shows the loader immediately instead of an empty list.
+    clearMessages()
+    setMessagesLoading(true)
     // Abort the SSE follow-subscription only. We DO NOT abort the
     // in-flight POST /messages (abortRef): doing so triggers the
     // broker's defer to UnlockSession, which flips is_processing back
@@ -531,7 +549,7 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
     followRef.current = null
     setActiveSessionId(id)
     onSessionActivated?.(id, { clearPrompt: true, clearSuite: true })
-  }, [resetStream, setActiveWidgets, setError, setActiveSessionId, onSessionActivated])
+  }, [resetStream, setActiveWidgets, setError, clearMessages, setMessagesLoading, setActiveSessionId, onSessionActivated])
 
   // ── Welcome prompt click ────────────────────────────────
 
@@ -1034,12 +1052,18 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
       // away from. setMessages([]) is a merge in the store, which would
       // carry over the optimistic user temp ("ca va?") — clearMessages
       // is the hard reset.
+      //
+      // setMessagesLoading(true) is the polite version of "this card
+      // is empty on purpose, not because of a flicker" — without it,
+      // between clearMessages and the broker returning the new session,
+      // the welcome screen flashes briefly.
       resetStream()
       setActiveWidgets([])
       setError(null)
       followRef.current?.abort()
       followRef.current = null
       clearMessages()
+      setMessagesLoading(true)
 
       const { selectedModel, taskforceStandard } = useStudioStore.getState()
       const res = await brokerFetch("/api/broker/sessions", {
@@ -1053,13 +1077,17 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
         addSession(session)
         setActiveSessionId(session.id)
         onSessionActivated?.(session.id, { clearPrompt: true, clearSuite: true })
+      } else {
+        // Restore the empty / welcome state instead of leaving the
+        // loader spinning forever when the broker refuses the create.
+        setMessagesLoading(false)
       }
     } catch {
-      // silent
+      setMessagesLoading(false)
     }
   }, [
     addSession, setActiveSessionId, onSessionActivated,
-    resetStream, setActiveWidgets, setError, clearMessages,
+    resetStream, setActiveWidgets, setError, clearMessages, setMessagesLoading,
   ])
 
   // ── Global keyboard shortcuts ───────────────────────────
