@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { createPortal } from "react-dom"
 import { useStudioUser } from "../../host"
 import { useStudioStore } from "../../store"
 import { useI18n } from "@kalit/i18n/react"
@@ -148,10 +149,72 @@ export function SessionSidebar({ onSessionSelect, onNewChat }: SessionSidebarPro
   const hasAnyMatch = pinned.length > 0 || BUCKET_ORDER.some((b) => grouped[b].length > 0)
 
   // ── Delete ─────────────────────────────────────────────
-  const handleDelete = useCallback(
-    async (id: string) => {
+  // The session can be linked to a project via /repositories. Deletion
+  // gives the user three outcomes:
+  //   1) project not attached → plain delete
+  //   2) project attached, "delete project" off → session gone, project survives in /repositories
+  //   3) project attached, "delete project" on → broker tears down Vercel + Taskforce + DB row,
+  //      then drops the session.
+  // attachedProjects[id] is null while we still don't know, {} when no project, or
+  // a populated record we drive the modal off.
+  type AttachedProject = {
+    projectId: string
+    displayName: string
+    deployUrl: string
+    isLive: boolean
+    sessionCount: number
+  }
+  const [attachedProjects, setAttachedProjects] = useState<Record<string, AttachedProject | null>>({})
+  const [deleteAlsoProject, setDeleteAlsoProject] = useState(false)
+
+  // Resolve the attached project once when a delete intent fires; cache so
+  // re-opening the same confirm doesn't re-hit the broker.
+  useEffect(() => {
+    if (!deleteConfirm) {
+      setDeleteAlsoProject(false)
+      return
+    }
+    if (deleteConfirm in attachedProjects) return
+    let cancelled = false
+    void (async () => {
       try {
-        const res = await brokerFetch(`/api/broker/sessions/${id}`, { method: "DELETE" })
+        const res = await brokerFetch(`/api/broker/sessions/${deleteConfirm}/attached-project`)
+        if (!res.ok) {
+          if (!cancelled) setAttachedProjects((m) => ({ ...m, [deleteConfirm]: null }))
+          return
+        }
+        const data = (await res.json()) as Partial<AttachedProject>
+        if (cancelled) return
+        if (data && data.projectId) {
+          setAttachedProjects((m) => ({
+            ...m,
+            [deleteConfirm]: {
+              projectId: data.projectId!,
+              displayName: data.displayName || "(untitled)",
+              deployUrl: data.deployUrl || "",
+              isLive: !!data.isLive,
+              sessionCount: data.sessionCount ?? 1,
+            },
+          }))
+        } else {
+          setAttachedProjects((m) => ({ ...m, [deleteConfirm]: null }))
+        }
+      } catch {
+        if (!cancelled) setAttachedProjects((m) => ({ ...m, [deleteConfirm]: null }))
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [deleteConfirm, attachedProjects])
+
+  const handleDelete = useCallback(
+    async (id: string, deleteProject: boolean) => {
+      try {
+        const url = deleteProject
+          ? `/api/broker/sessions/${id}?deleteProject=1`
+          : `/api/broker/sessions/${id}`
+        const res = await brokerFetch(url, { method: "DELETE" })
         if (res.ok) {
           removeSession(id)
           if (activeSessionId === id) {
@@ -163,6 +226,12 @@ export function SessionSidebar({ onSessionSelect, onNewChat }: SessionSidebarPro
         // silent
       }
       setDeleteConfirm(null)
+      setDeleteAlsoProject(false)
+      setAttachedProjects((m) => {
+        const next = { ...m }
+        delete next[id]
+        return next
+      })
     },
     [activeSessionId, removeSession, setActiveSessionId, setMessages, setDeleteConfirm],
   )
@@ -227,6 +296,7 @@ export function SessionSidebar({ onSessionSelect, onNewChat }: SessionSidebarPro
     })
   }, [])
 
+
   // ── Mode toggle ────────────────────────────────────────
   const handleToggleProgressMode = useCallback(() => {
     const next = progressMode === "expert" ? "default" : "expert"
@@ -249,7 +319,6 @@ export function SessionSidebar({ onSessionSelect, onNewChat }: SessionSidebarPro
 
   const renderSession = (session: ChatSession) => {
     const displayTitle = session.title || t("studio.newConversation")
-    const isConfirmingDelete = deleteConfirm === session.id
     const isRenaming = renamingId === session.id
     const isMenuOpen = menuOpenId === session.id
 
@@ -258,17 +327,7 @@ export function SessionSidebar({ onSessionSelect, onNewChat }: SessionSidebarPro
         key={session.id}
         className={clsx(s.session, activeSessionId === session.id && s.sessionActive)}
       >
-        {isConfirmingDelete ? (
-          <div className={s.confirmRow}>
-            <span className={s.confirmText}>{t("studio.deleteConfirm")}</span>
-            <button className={s.confirmYes} onClick={() => handleDelete(session.id)}>
-              {t("studio.yes")}
-            </button>
-            <button className={s.confirmNo} onClick={() => setDeleteConfirm(null)}>
-              {t("studio.no")}
-            </button>
-          </div>
-        ) : (
+        {(
           <>
             <button
               className={s.sessionBtn}
@@ -484,6 +543,174 @@ export function SessionSidebar({ onSessionSelect, onNewChat }: SessionSidebarPro
           </>
         )}
       </div>
+
+      {deleteConfirm && (
+        <DeleteSessionModal
+          sessionId={deleteConfirm}
+          sessionTitle={
+            sessions.find((s) => s.id === deleteConfirm)?.title ||
+            t("studio.newConversation")
+          }
+          attachedProject={attachedProjects[deleteConfirm] ?? null}
+          attachedLoaded={deleteConfirm in attachedProjects}
+          deleteAlsoProject={deleteAlsoProject}
+          setDeleteAlsoProject={setDeleteAlsoProject}
+          onCancel={() => {
+            setDeleteConfirm(null)
+            setDeleteAlsoProject(false)
+          }}
+          onConfirm={(also) => handleDelete(deleteConfirm, also)}
+          t={t}
+        />
+      )}
     </div>
+  )
+}
+
+// Portal'd modal for the destructive session-delete confirmation.
+// Replaces the previous inline yes/no row inside the sidebar — that
+// version was getting visually cramped once we added the
+// "Also delete project" checkbox + live-URL warning.
+type AttachedProject = {
+  projectId: string
+  displayName: string
+  deployUrl: string
+  isLive: boolean
+  sessionCount: number
+}
+
+function DeleteSessionModal({
+  sessionId,
+  sessionTitle,
+  attachedProject,
+  attachedLoaded,
+  deleteAlsoProject,
+  setDeleteAlsoProject,
+  onCancel,
+  onConfirm,
+  t,
+}: {
+  sessionId: string
+  sessionTitle: string
+  attachedProject: AttachedProject | null
+  attachedLoaded: boolean
+  deleteAlsoProject: boolean
+  setDeleteAlsoProject: (v: boolean) => void
+  onCancel: () => void
+  onConfirm: (also: boolean) => void
+  t: (key: string, vars?: Record<string, string | number>) => string
+}) {
+  void sessionId
+  // Close on Escape.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onCancel()
+    }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [onCancel])
+
+  if (typeof document === "undefined") return null
+  const proj = attachedProject
+
+  return createPortal(
+    <div className={s.modalOverlay} onClick={onCancel}>
+      <div
+        className={s.modal}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="delete-session-title"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className={s.modalHeader}>
+          <Icon icon="hugeicons:delete-02" />
+          <h3 id="delete-session-title">
+            {t("studio.deleteSessionTitle") || "Delete this conversation?"}
+          </h3>
+        </div>
+        <p className={s.modalBody}>
+          <strong>{sessionTitle}</strong>
+          {" — "}
+          {t("studio.deleteSessionWarning") ||
+            "This conversation will be removed for good. Messages cannot be recovered."}
+        </p>
+
+        {attachedLoaded && proj && (
+          <div className={s.modalProjectBlock}>
+            <label className={s.modalCheckbox}>
+              <input
+                type="checkbox"
+                checked={deleteAlsoProject}
+                onChange={(e) => setDeleteAlsoProject(e.target.checked)}
+              />
+              <span>
+                {t("studio.deleteAlsoProject", { name: proj.displayName }) ||
+                  `Also delete project "${proj.displayName}"`}
+              </span>
+            </label>
+            {deleteAlsoProject && (
+              <div className={s.modalDanger}>
+                <Icon icon="hugeicons:alert-02" />
+                <div>
+                  <div className={s.modalDangerTitle}>
+                    {t("studio.deleteProjectIrreversible") ||
+                      "This action is irreversible:"}
+                  </div>
+                  <ul>
+                    {proj.isLive && (
+                      <li>
+                        {t("studio.deleteProjectLiveBullet") ||
+                          "The live site will be taken offline:"}{" "}
+                        <a href={proj.deployUrl} target="_blank" rel="noreferrer">
+                          {proj.deployUrl.replace(/^https?:\/\//, "")}
+                        </a>
+                      </li>
+                    )}
+                    <li>
+                      {t("studio.deleteProjectVercelBullet") ||
+                        "Its Vercel deployment will be removed."}
+                    </li>
+                    <li>
+                      {t("studio.deleteProjectTaskforceBullet") ||
+                        "Its Taskforce workspace will be wiped."}
+                    </li>
+                    {proj.sessionCount > 1 && (
+                      <li>
+                        {t("studio.deleteProjectOtherSessions", {
+                          count: proj.sessionCount - 1,
+                        }) ||
+                          `${proj.sessionCount - 1} other session(s) attached to this project will lose their link.`}
+                      </li>
+                    )}
+                  </ul>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        <div className={s.modalActions}>
+          <button className={s.modalCancel} onClick={onCancel}>
+            {t("studio.cancel") || "Cancel"}
+          </button>
+          <button
+            className={clsx(
+              s.modalConfirm,
+              deleteAlsoProject && s.modalConfirmDanger,
+            )}
+            onClick={() => onConfirm(deleteAlsoProject && !!proj)}
+            disabled={!attachedLoaded}
+          >
+            <Icon icon="hugeicons:delete-02" />
+            <span>
+              {deleteAlsoProject && proj
+                ? t("studio.deleteSessionAndProject") || "Delete session + project"
+                : t("studio.deleteSessionOnly") || "Delete conversation"}
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>,
+    document.body,
   )
 }

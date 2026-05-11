@@ -73,6 +73,16 @@ export async function resolveEntitlements(orgId: string): Promise<ResolvedEntitl
     }
   }
 
+  // If no Stripe subscription set planKey, derive it from manual entitlements
+  // by matching monthly.credits (each plan has a unique amount: 100/500/2000).
+  // Without this, an admin-assigned Enterprise org reports planKey="free"
+  // because planKey was only ever written from a Subscription row.
+  if (defaults.planKey === "free") {
+    if (defaults.creditsPerMonth >= 2000) defaults.planKey = "enterprise"
+    else if (defaults.creditsPerMonth >= 500) defaults.planKey = "pro"
+    else if (defaults.creditsPerMonth >= 100) defaults.planKey = "starter"
+  }
+
   return defaults
 }
 

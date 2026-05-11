@@ -16,7 +16,11 @@ const TABS = [
   { icon: "hugeicons:dollar-02", href: "/admin/revenue", label: "Revenue" },
   { icon: "hugeicons:activity-01", href: "/admin/monitoring", label: "Monitoring" },
   { icon: "hugeicons:chart-line-data-02", href: "/admin/console", label: "Console" },
-  { icon: "hugeicons:mail-send-02", href: "/admin/campaigns", label: "Campaigns" }
+  { icon: "hugeicons:cloud-server", href: "/admin/deployments", label: "Deployments" },
+  { icon: "hugeicons:star-circle", href: "/admin/featured-projects", label: "Featured" },
+  { icon: "hugeicons:bug-01", href: "/admin/bug-reports", label: "Bug reports" },
+  { icon: "hugeicons:mail-send-02", href: "/admin/campaigns", label: "Campaigns" },
+  { icon: "hugeicons:settings-02", href: "/admin/settings", label: "Settings" }
 ]
 
 export default function AdminPanelLayout({ children }: { children: React.ReactNode }) {

@@ -1,0 +1,168 @@
+.search {
+  width: 320px;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0.25rem 0 0.75rem;
+}
+
+.filterBtn,
+.filterActive {
+  padding: 0.35rem 0.75rem;
+  border: 1px solid oklch(from var(--text) l c h / 0.16);
+  border-radius: var(--radius-rounded);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background: oklch(from var(--text) l c h / 0.06);
+    color: var(--text);
+  }
+}
+
+.filterActive {
+  background: var(--color-2);
+  color: white;
+  border-color: transparent;
+
+  &:hover {
+    background: var(--color-2);
+    color: white;
+  }
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0.85rem 0.25rem;
+  border-bottom: 1px solid oklch(from var(--text) l c h / 0.06);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.rowLead {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.rowTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  font-size: 0.92rem;
+  color: var(--text);
+}
+
+.rowMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  align-items: center;
+}
+
+.metaLabel,
+.metaEmail,
+.metaDate {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+
+  a {
+    color: var(--color-2);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.rowSub {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  align-items: center;
+}
+
+.code {
+  padding: 0.1rem 0.4rem;
+  background: oklch(from var(--text) l c h / 0.05);
+  border-radius: var(--radius-3);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+}
+
+.statusTag {
+  padding: 0.1rem 0.5rem;
+  background: oklch(from var(--text) l c h / 0.05);
+  border-radius: var(--radius-rounded);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.orphanTag {
+  padding: 0.15rem 0.55rem;
+  background: oklch(from var(--danger) l c h / 0.12);
+  border: 1px solid oklch(from var(--danger) l c h / 0.3);
+  color: var(--danger);
+  border-radius: var(--radius-rounded);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.rowActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.deleteBtn {
+  // Tint the secondary Button red to mark it as destructive without
+  // adding a new variant to the global Button component.
+  color: var(--danger) !important;
+  border-color: oklch(from var(--danger) l c h / 0.35) !important;
+
+  &:hover:not(:disabled) {
+    background: oklch(from var(--danger) l c h / 0.08) !important;
+  }
+}
+
+.empty {
+  padding: 3rem 1rem;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}

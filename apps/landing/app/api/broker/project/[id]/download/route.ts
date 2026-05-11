@@ -37,9 +37,12 @@ export async function POST(
   const res = await brokerProxy(`project/${id}/download`, result.token, { method: "POST" })
   if (!res.ok) {
     const data = await res.json().catch(() => ({}))
+    const headers: Record<string, string> = {}
+    const retryAfter = res.headers.get("Retry-After")
+    if (retryAfter) headers["Retry-After"] = retryAfter
     return NextResponse.json(
       { success: false, error: (data as { error?: string }).error || "Download failed" },
-      { status: res.status },
+      { status: res.status, headers },
     )
   }
 

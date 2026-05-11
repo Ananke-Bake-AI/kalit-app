@@ -19,6 +19,12 @@ interface StatusData {
   startedAt: string | null
   tokensSpent: number
   projectType?: ProjectType
+  // The flow_projects row backing this widget was deleted (user removed
+  // the project from /repositories or it was collapsed by the upsert).
+  // Broker returns status='cancelled' + superseded=true so the widget
+  // stops polling and renders a "build no longer available" body
+  // instead of the generic cancelled card.
+  superseded?: boolean
 }
 
 interface ProjectWidgetProps {
@@ -197,6 +203,28 @@ export function ProjectWidget({ projectId, onCompleted }: ProjectWidgetProps) {
           pollingRef.current = setInterval(fetchStatus, 5000)
           void fetchStatus()
         }}>{t("studio.retry")}</button>
+      </div>
+    )
+  }
+
+  // ── Superseded (project deleted from /repositories or collapsed) ──
+  if (data.superseded) {
+    return (
+      <div className={s.card}>
+        <div className={s.header}>
+          <span className={s.statusDot}><Icon icon="hugeicons:archive-02" /></span>
+          <span className={s.statusLabel} style={{ color: "var(--text-secondary)" }}>
+            {t("studio.projectSuperseded") || "Build no longer available"}
+          </span>
+        </div>
+        <p className={s.desc} style={{ color: "var(--text-secondary)" }}>
+          {t("studio.projectSupersededHint") ||
+            "This build was deleted or replaced. Open My repositories to find the current project."}
+        </p>
+        <a href="/repositories" className={s.actionBtn}>
+          {t("studio.openRepositories") || "Open repositories"}
+          <Icon icon="hugeicons:link-square-02" />
+        </a>
       </div>
     )
   }

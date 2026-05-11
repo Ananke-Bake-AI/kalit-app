@@ -223,6 +223,33 @@ export async function sendBulkEmails(
   return { sent: totalSent, errors }
 }
 
+export async function sendInvitationEmail(args: {
+  to: string
+  orgName: string
+  inviterName: string
+  inviteUrl: string
+  role: string
+}) {
+  const { to, orgName, inviterName, inviteUrl, role } = args
+  await sendEmail({
+    to,
+    subject: `${inviterName} invited you to join ${orgName} on Kalit`,
+    html: emailLayout(`
+      <h1 style="font-size: 22px; font-weight: 700; color: #1a1a2e; margin: 0 0 8px;">You're invited to ${orgName}</h1>
+      <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin: 0 0 24px;">
+        ${inviterName} invited you to join the <strong>${orgName}</strong> team on Kalit AI as a <strong>${role.toLowerCase()}</strong>. Click below to accept and start collaborating.
+      </p>
+      ${ctaButton(inviteUrl, "Accept invitation")}
+      <p style="color: #9ca3af; font-size: 13px; margin-top: 28px; line-height: 1.5;">
+        This invitation expires in 7 days. If you weren't expecting this, you can safely ignore this email.
+      </p>
+      <p style="color: #d1d5db; font-size: 12px; margin-top: 16px; word-break: break-all;">
+        <a href="${inviteUrl}" style="color: #8200DF;">${inviteUrl}</a>
+      </p>
+    `),
+  })
+}
+
 export async function sendVerificationEmail(email: string, token: string) {
   const verifyUrl = `${APP_URL}/verify-email?token=${token}`
 

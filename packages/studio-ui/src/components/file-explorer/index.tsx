@@ -300,6 +300,36 @@ export function FileExplorer({ sessionId, onPreviewFile }: FileExplorerProps) {
     setExpanded((prev) => { const n = new Set(prev); n.has(p) ? n.delete(p) : n.add(p); return n })
   }, [])
 
+  const [downloading, setDownloading] = useState(false)
+  const [downloadError, setDownloadError] = useState<string | null>(null)
+  const handleDownloadZip = useCallback(async () => {
+    if (!flowProjectId || downloading) return
+    setDownloading(true)
+    setDownloadError(null)
+    try {
+      const res = await brokerFetch(`/api/broker/project/${flowProjectId}/download`, { method: "POST" })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        setDownloadError((data as { error?: string }).error || `Download failed (${res.status})`)
+        setDownloading(false)
+        return
+      }
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = `project-${flowProjectId}.zip`
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      setTimeout(() => URL.revokeObjectURL(url), 1000)
+    } catch (err) {
+      setDownloadError(err instanceof Error ? err.message : "Download failed")
+    } finally {
+      setDownloading(false)
+    }
+  }, [flowProjectId, downloading])
+
   const deleteFile = useCallback(async (path: string) => {
     if (!sessionId) return
     try {
@@ -346,7 +376,24 @@ export function FileExplorer({ sessionId, onPreviewFile }: FileExplorerProps) {
       {/* Content */}
       <div className={s.content}>
         {tab === "files" && (
-          <div style={{ padding: "4px 0" }}>
+          <div>
+            {flowProjectId && tree.length > 0 && (
+              <button
+                type="button"
+                className={s.downloadZipBtn}
+                onClick={handleDownloadZip}
+                disabled={downloading}
+                title={t("studio.downloadZipTitle") || "Download the whole project as a .zip"}
+              >
+                <Icon icon={downloading ? "hugeicons:loading-03" : "hugeicons:download-04"} />
+                <span>{downloading
+                  ? (t("studio.downloadingZip") || "Preparing zip…")
+                  : (t("studio.downloadZip") || "Download .zip")}</span>
+              </button>
+            )}
+            {downloadError && (
+              <div className={s.downloadError}>{downloadError}</div>
+            )}
             {loading && tree.length === 0 ? (
               <div className={s.empty}>
                 <span className={s.emptyTitle}>{t("studio.loading")}</span>

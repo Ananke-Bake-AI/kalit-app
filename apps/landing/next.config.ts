@@ -7,12 +7,30 @@ const nextConfig: NextConfig = {
     qualities: [25, 50, 75, 80, 100]
   },
   async redirects() {
-    // Project was folded into Flow — preserve any inbound links/SEO.
+    // Project (the suite landing page) was folded into Flow — preserve any
+    // inbound links/SEO. The `:locale` segment HAS to be constrained: an
+    // unrestricted /:locale/project/:path* greedy-matches /studio/project/<id>
+    // (treats `studio` as a locale), redirects it to /studio/flow/<id>, which
+    // then bounces back via the studio/flow→studio/project compatibility
+    // redirect → infinite loop / ERR_TOO_MANY_REDIRECTS.
+    //
+    // Whitelist the known LOCALES so the redirect only fires on real
+    // localized URLs like /en/project, /fr/project, etc.
+    const localeRegex =
+      "(en|fr|es|de|pt|ja|it|nl|ko|zh|ru|tr|pl|ar|hi|sv)"
     return [
       { source: "/project", destination: "/flow", permanent: true },
       { source: "/project/:path*", destination: "/flow/:path*", permanent: true },
-      { source: "/:locale/project", destination: "/:locale/flow", permanent: true },
-      { source: "/:locale/project/:path*", destination: "/:locale/flow/:path*", permanent: true }
+      {
+        source: `/:locale${localeRegex}/project`,
+        destination: "/:locale/flow",
+        permanent: true,
+      },
+      {
+        source: `/:locale${localeRegex}/project/:path*`,
+        destination: "/:locale/flow/:path*",
+        permanent: true,
+      },
     ]
   },
   async rewrites() {

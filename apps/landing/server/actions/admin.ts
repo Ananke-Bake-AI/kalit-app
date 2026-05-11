@@ -320,6 +320,238 @@ export async function addCredits(orgId: string, amount: number, reason: string) 
   return { success: true }
 }
 
+// ─── Deployments ────────────────────────────────────────
+
+interface DeploymentRow {
+  id: string
+  title: string | null
+  status: string
+  vercel_project_name: string | null
+  vercel_url: string | null
+  vercel_deployed_at: Date | null
+  subdomain: string | null
+  subdomain_deployed_at: Date | null
+  broker_session_id: string | null
+  session_exists: boolean
+  user_email: string | null
+  created_at: Date
+}
+
+export async function getDeployments() {
+  await requireAdmin()
+
+  // Raw query — flow_projects is broker-managed and not modeled in Prisma.
+  // LEFT JOIN flow_chat_sessions to figure out whether each deployment is
+  // still "linked" to an existing session. Orphan = broker_session_id is
+  // NULL OR the referenced session row no longer exists.
+  //
+  // We COALESCE vercel_project_name with `'flow-' || subdomain` because the
+  // older deploySubdomain path historically deployed to Vercel under that
+  // exact name pattern (see broker deploy_service.go: vercelProjectName =
+  // "flow-" + slug) but never persisted the field. So every row with a
+  // subdomain IS effectively a Vercel project — derive the name so the
+  // admin can hit Vercel's DELETE endpoint for it.
+  const rows = await prisma.$queryRaw<DeploymentRow[]>`
+    SELECT
+      p.id,
+      p.title,
+      p.status,
+      COALESCE(p.vercel_project_name, 'flow-' || p.subdomain) AS vercel_project_name,
+      p.vercel_url,
+      p.vercel_deployed_at,
+      p.subdomain,
+      p.subdomain_deployed_at,
+      p.broker_session_id,
+      (s.id IS NOT NULL) AS session_exists,
+      u.email AS user_email,
+      p.created_at
+    FROM flow_projects p
+    LEFT JOIN flow_chat_sessions s ON s.id::text = p.broker_session_id
+    LEFT JOIN "User" u ON u.id = p.user_id
+    WHERE p.vercel_project_name IS NOT NULL
+       OR p.subdomain IS NOT NULL
+    ORDER BY COALESCE(p.vercel_deployed_at, p.subdomain_deployed_at, p.created_at) DESC
+    LIMIT 500
+  `
+
+  return rows.map((r) => ({
+    id: r.id,
+    title: r.title,
+    status: r.status,
+    vercelProjectName: r.vercel_project_name,
+    vercelUrl: r.vercel_url,
+    vercelDeployedAt: r.vercel_deployed_at?.toISOString() ?? null,
+    subdomain: r.subdomain,
+    subdomainDeployedAt: r.subdomain_deployed_at?.toISOString() ?? null,
+    brokerSessionId: r.broker_session_id,
+    sessionExists: r.session_exists,
+    userEmail: r.user_email,
+    createdAt: r.created_at.toISOString(),
+    isOrphaned: !r.broker_session_id || !r.session_exists,
+  }))
+}
+
+export async function teardownDeployment(flowProjectId: string, opts?: { dropRow?: boolean }) {
+  await requireAdmin()
+
+  const brokerUrl = process.env.BROKER_URL?.replace(/\/+$/, "") || "http://localhost:9000"
+  const internalToken = process.env.BROKER_INTERNAL_TOKEN
+  if (!internalToken) {
+    return { error: "BROKER_INTERNAL_TOKEN not configured on landing — cannot reach broker admin endpoint" }
+  }
+
+  try {
+    const res = await fetch(`${brokerUrl}/internal/admin/project/teardown`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${internalToken}`,
+      },
+      body: JSON.stringify({ flowProjectId, dropRow: opts?.dropRow ?? false }),
+    })
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      return { error: (data as { error?: string }).error || `Broker returned ${res.status}` }
+    }
+    return (await res.json()) as {
+      success: boolean
+      vercelDeleted?: boolean
+      subdomainCleared?: boolean
+      rowDropped?: boolean
+      vercelError?: string
+    }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Unknown error" }
+  }
+}
+
+export async function teardownAllOrphans() {
+  await requireAdmin()
+
+  const brokerUrl = process.env.BROKER_URL?.replace(/\/+$/, "") || "http://localhost:9000"
+  const internalToken = process.env.BROKER_INTERNAL_TOKEN
+  if (!internalToken) {
+    return { error: "BROKER_INTERNAL_TOKEN not configured on landing — cannot reach broker admin endpoint" }
+  }
+
+  try {
+    const res = await fetch(`${brokerUrl}/internal/admin/project/teardown-orphans`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${internalToken}`,
+      },
+    })
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      return { error: (data as { error?: string }).error || `Broker returned ${res.status}` }
+    }
+    return (await res.json()) as {
+      success: boolean
+      orphans: number
+      vercelOK: number
+      vercelFail: number
+      rowsDropped: number
+      lastError?: string
+    }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Unknown error" }
+  }
+}
+
+// ─── Featured projects (landing curation) ──────────────
+
+interface AdminFeaturedRow {
+  id: string
+  title: string
+  displayName: string
+  featuredTitle: string
+  featuredSubtitle: string
+  url: string
+  hasThumbnail: boolean
+  featuredAt: string | null
+}
+
+export async function getAdminFeaturedProjects() {
+  await requireAdmin()
+  const brokerUrl = process.env.BROKER_URL?.replace(/\/+$/, "") || "http://localhost:9000"
+  const internalToken = process.env.BROKER_INTERNAL_TOKEN
+  if (!internalToken) {
+    return { error: "BROKER_INTERNAL_TOKEN not configured" }
+  }
+  try {
+    const res = await fetch(`${brokerUrl}/internal/admin/featured-projects`, {
+      headers: { Authorization: `Bearer ${internalToken}` },
+      cache: "no-store",
+    })
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      return { error: (data as { error?: string }).error || `Broker ${res.status}` }
+    }
+    return (await res.json()) as { projects: AdminFeaturedRow[] }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Unknown error" }
+  }
+}
+
+export async function setProjectFeatured(
+  id: string,
+  patch: { featured?: boolean; featuredTitle?: string; featuredSubtitle?: string },
+) {
+  await requireAdmin()
+  const brokerUrl = process.env.BROKER_URL?.replace(/\/+$/, "") || "http://localhost:9000"
+  const internalToken = process.env.BROKER_INTERNAL_TOKEN
+  if (!internalToken) {
+    return { error: "BROKER_INTERNAL_TOKEN not configured" }
+  }
+  try {
+    const res = await fetch(`${brokerUrl}/internal/admin/featured-projects/${id}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${internalToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(patch),
+    })
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      return { error: (data as { error?: string }).error || `Broker ${res.status}` }
+    }
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Unknown error" }
+  }
+}
+
+// Re-capture the thumbnail for one project. Used by the admin
+// featured-projects page to fix screenshots that landed mid-build
+// or before Vercel propagation. Broker queues the capture
+// asynchronously (~5-10s end-to-end) and we return immediately.
+export async function refreshProjectThumbnail(id: string) {
+  await requireAdmin()
+  const brokerUrl = process.env.BROKER_URL?.replace(/\/+$/, "") || "http://localhost:9000"
+  const internalToken = process.env.BROKER_INTERNAL_TOKEN
+  if (!internalToken) {
+    return { error: "BROKER_INTERNAL_TOKEN not configured" }
+  }
+  try {
+    const res = await fetch(
+      `${brokerUrl}/internal/admin/projects/${id}/refresh-thumbnail`,
+      {
+        method: "POST",
+        headers: { Authorization: `Bearer ${internalToken}` },
+      },
+    )
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      return { error: (data as { error?: string }).error || `Broker ${res.status}` }
+    }
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Unknown error" }
+  }
+}
+
 // ─── Plan Assignment ────────────────────────────────────
 
 export async function assignPlan(orgId: string, planKey: string, expiresAt?: string) {
@@ -366,6 +598,197 @@ export async function revokePlan(orgId: string) {
   })
 
   return { success: true }
+}
+
+// ─── Bug Reports (admin CRUD) ───────────────────────────
+
+export interface BugReportRow {
+  id: string
+  userId: string
+  userEmail: string
+  userUsername: string
+  externalOrgId: string
+  sessionId: string | null
+  projectId: string | null
+  description: string
+  status: "open" | "investigating" | "resolved" | "invalid" | "duplicate"
+  adminNote: string | null
+  creditsAwarded: number
+  creditAwardedAt: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface BugReportDetail extends BugReportRow {
+  context: Record<string, unknown>
+}
+
+export async function listBugReports(statusFilter?: string) {
+  await requireAdmin()
+  const brokerUrl = process.env.BROKER_URL?.replace(/\/+$/, "") || "http://localhost:9000"
+  const token = process.env.BROKER_INTERNAL_TOKEN
+  if (!token) return { error: "BROKER_INTERNAL_TOKEN not configured" }
+  const qs = statusFilter ? `?status=${encodeURIComponent(statusFilter)}` : ""
+  try {
+    const res = await fetch(`${brokerUrl}/internal/admin/bug-reports${qs}`, {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
+    })
+    if (!res.ok) {
+      return { error: `Broker ${res.status}` }
+    }
+    return (await res.json()) as { reports: BugReportRow[] }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Unknown error" }
+  }
+}
+
+export async function getBugReport(id: string) {
+  await requireAdmin()
+  const brokerUrl = process.env.BROKER_URL?.replace(/\/+$/, "") || "http://localhost:9000"
+  const token = process.env.BROKER_INTERNAL_TOKEN
+  if (!token) return { error: "BROKER_INTERNAL_TOKEN not configured" }
+  try {
+    const res = await fetch(`${brokerUrl}/internal/admin/bug-reports/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
+    })
+    if (!res.ok) return { error: `Broker ${res.status}` }
+    return (await res.json()) as BugReportDetail
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Unknown error" }
+  }
+}
+
+// updateBugReport patches status/note/credits. When creditsAwarded is
+// passed and non-zero AND the report wasn't already awarded, ALSO
+// insert a CreditRecord on the reporter's org so the bonus credits
+// show up in their balance immediately. This is the "incentive"
+// half of the feature — admin clicks "Award 100 credits" and the
+// reporter sees +100 in their monthly quota.
+export async function updateBugReport(
+  id: string,
+  patch: {
+    status?: BugReportRow["status"]
+    adminNote?: string
+    creditsAwarded?: number
+  },
+) {
+  await requireAdmin()
+  const brokerUrl = process.env.BROKER_URL?.replace(/\/+$/, "") || "http://localhost:9000"
+  const token = process.env.BROKER_INTERNAL_TOKEN
+  if (!token) return { error: "BROKER_INTERNAL_TOKEN not configured" }
+
+  // Read the current row first so we can detect "first-time award" and
+  // capture orgId for the CreditRecord insert.
+  const current = await getBugReport(id)
+  if ("error" in current) return current
+
+  try {
+    const res = await fetch(`${brokerUrl}/internal/admin/bug-reports/${id}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(patch),
+    })
+    if (!res.ok) {
+      const data = (await res.json().catch(() => ({}))) as { error?: string }
+      return { error: data.error || `Broker ${res.status}` }
+    }
+    const updated = (await res.json()) as BugReportDetail
+
+    // Credit award side-effect — only fires on a *new* positive amount.
+    // Patching status alone (without creditsAwarded) skips this branch.
+    const shouldAward =
+      patch.creditsAwarded != null &&
+      patch.creditsAwarded > 0 &&
+      current.creditsAwarded === 0 &&
+      current.externalOrgId
+    if (shouldAward) {
+      try {
+        await prisma.creditRecord.create({
+          data: {
+            orgId: current.externalOrgId,
+            direction: "CREDIT",
+            amount: patch.creditsAwarded!,
+            reason: `bug-report-reward:${id}`,
+          },
+        })
+      } catch (err) {
+        // Log but don't fail the patch — the bug_report row is the
+        // source of truth that the admin acted; the credit can be
+        // retried manually if the insert blew up (rare).
+        console.error("[updateBugReport] CreditRecord insert failed:", err)
+      }
+    }
+
+    return { success: true, report: updated }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Unknown error" }
+  }
+}
+
+export async function deleteBugReport(id: string) {
+  await requireAdmin()
+  const brokerUrl = process.env.BROKER_URL?.replace(/\/+$/, "") || "http://localhost:9000"
+  const token = process.env.BROKER_INTERNAL_TOKEN
+  if (!token) return { error: "BROKER_INTERNAL_TOKEN not configured" }
+  try {
+    const res = await fetch(`${brokerUrl}/internal/admin/bug-reports/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    if (!res.ok) return { error: `Broker ${res.status}` }
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Unknown error" }
+  }
+}
+
+// ─── App Settings (Stripe keys + future runtime secrets) ───
+
+export async function getAppSettings() {
+  await requireAdmin()
+  const { ALL_STRIPE_KEYS, listSettingsMeta } = await import("@/lib/settings")
+  const stripeKeys = await listSettingsMeta(ALL_STRIPE_KEYS as unknown as string[])
+  return { stripeKeys }
+}
+
+export async function setAppSetting(key: string, value: string) {
+  const session = await requireAdmin()
+  const trimmed = value.trim()
+  if (!trimmed) {
+    return { error: "Value cannot be empty — use Clear to remove a setting" }
+  }
+  // Allowlist guard: only let the admin write keys we explicitly expose
+  // here. Without this, a typo on the client would silently create a
+  // dead AppSetting row that no one reads.
+  const { ALL_STRIPE_KEYS, setSetting } = await import("@/lib/settings")
+  if (!(ALL_STRIPE_KEYS as readonly string[]).includes(key)) {
+    return { error: `Unknown setting key: ${key}` }
+  }
+  try {
+    await setSetting(key, trimmed, session.user.id)
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Save failed" }
+  }
+}
+
+export async function clearAppSetting(key: string) {
+  await requireAdmin()
+  const { ALL_STRIPE_KEYS, clearSetting } = await import("@/lib/settings")
+  if (!(ALL_STRIPE_KEYS as readonly string[]).includes(key)) {
+    return { error: `Unknown setting key: ${key}` }
+  }
+  try {
+    await clearSetting(key)
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Clear failed" }
+  }
 }
 
 // ─── Revenue ────────────────────────────────────────────

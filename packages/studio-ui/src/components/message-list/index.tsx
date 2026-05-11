@@ -49,6 +49,25 @@ export function MessageList({ onStop, onPreviewFile, onRefreshMessages }: Messag
     })
   }, [messages, streamSegments, isStreaming])
 
+  // ── Auto-scroll while the typewriter reveals — the inner content height
+  //    grows char-by-char without re-rendering MessageList, so the effect
+  //    above misses it. ResizeObserver watches the list's actual size and
+  //    keeps the bottom in view as text appears.
+  const listRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const list = listRef.current
+    const scroller = scrollRef.current
+    if (!list || !scroller) return
+    const ro = new ResizeObserver(() => {
+      if (userScrolledUp.current) return
+      // No smooth here — the typewriter grows in tiny increments and a
+      // smooth animation per tick would lag behind the reveal.
+      scroller.scrollTop = scroller.scrollHeight
+    })
+    ro.observe(list)
+    return () => ro.disconnect()
+  }, [])
+
   // ── Reset scroll lock when session changes ───────────
   const activeSessionId = useStudioStore((s) => s.activeSessionId)
   useEffect(() => {
@@ -60,11 +79,44 @@ export function MessageList({ onStop, onPreviewFile, onRefreshMessages }: Messag
     })
   }, [activeSessionId])
 
-  const visible = messages.filter((m) => m.role !== "system" && m.role !== "widget")
+  // ── Force-scroll on outgoing user message ────────────
+  //    Sending a message should always make it visible, regardless of
+  //    whether the user happened to be scrolled up. Reset the lock too so
+  //    subsequent typewriter ticks can keep the conversation pinned.
+  const lastMessageId = messages.length > 0 ? messages[messages.length - 1].id : null
+  const lastMessageRole = messages.length > 0 ? messages[messages.length - 1].role : null
+  const lastSeenIdRef = useRef<string | null>(null)
+  useEffect(() => {
+    if (!lastMessageId || lastMessageId === lastSeenIdRef.current) return
+    lastSeenIdRef.current = lastMessageId
+    if (lastMessageRole !== "user") return
+    userScrolledUp.current = false
+    const el = scrollRef.current
+    if (!el) return
+    // Two rAFs let the textarea collapse + new bubble lay out before we jump.
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        el.scrollTop = el.scrollHeight
+      })
+    })
+  }, [lastMessageId, lastMessageRole])
+
+  const setStreamSegments = useStudioStore((s) => s.setStreamSegments)
+  const visibleAll = messages.filter((m) => m.role !== "system" && m.role !== "widget")
+  // While the typewriter is still revealing the live response (streamSegments
+  // populated, even after the broker stream ended), hide the persisted last
+  // assistant bubble so the user doesn't see the same content twice. The
+  // typewriter fires `onCaughtUp` when it has drained the buffer, which clears
+  // streamSegments and brings the persisted bubble back instantly.
+  const hideLastAssistant =
+    streamSegments.length > 0 &&
+    visibleAll.length > 0 &&
+    visibleAll[visibleAll.length - 1].role === "assistant"
+  const visible = hideLastAssistant ? visibleAll.slice(0, -1) : visibleAll
 
   return (
     <div className={s.scroll} ref={scrollRef} onScroll={handleScroll}>
-      <div className={s.list}>
+      <div className={s.list} ref={listRef}>
         {visible.map((msg, i) => {
           const prev = visible[i - 1]
           const showSeparator = !prev || !isSameDay(prev.createdAt, msg.createdAt)
@@ -85,14 +137,16 @@ export function MessageList({ onStop, onPreviewFile, onRefreshMessages }: Messag
           )
         })}
 
-        {/* Live streaming segments */}
-        {isStreaming && streamSegments.length > 0 && (
+        {/* Live + draining streaming segments */}
+        {streamSegments.length > 0 && (
           <div className={s.streamRow}>
             <StreamSegments
               segments={streamSegments}
               thinking={streamThinking}
-              onStop={onStop}
+              onStop={isStreaming ? onStop : undefined}
               onPreviewFile={onPreviewFile}
+              live={isStreaming}
+              onCaughtUp={() => setStreamSegments([])}
             />
           </div>
         )}

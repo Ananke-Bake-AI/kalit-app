@@ -6,12 +6,25 @@
   flex-direction: column;
   gap: var(--size-2);
   animation: fadeIn 0.2s ease-out;
+  // Lock to the available row width so the inner textSegment stays at a
+  // stable size during the typewriter reveal. Without this, the bubble
+  // shrinks to content and grows char-by-char with the typewriter.
+  width: 100%;
+  max-width: 75%;
 }
 
 // ── Text segment (markdown) ────────────────────────────
 
 .textSegment {
-  max-width: 95%;
+  // Lock to full available width during the live stream so the typewriter
+  // reveal doesn't reflow the bubble width on every character. Without
+  // `width: 100%`, max-width lets the bubble shrink to content; as the
+  // typewriter adds chars the bubble widens char by char and the cursor
+  // appears to "rotate" at the trailing edge. Full width keeps the layout
+  // stable while text flows in naturally from left to right.
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   padding: 0.7rem 1rem;
   @include glass(false, var(--glass-50));
   @include cornerShape(var(--radius-3));

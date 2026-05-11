@@ -29,8 +29,8 @@ const SUITE_ENTITLEMENTS = [
 
 const PLANS = [
   { key: "starter", label: "Starter", desc: "Flow — 100 credits — 2 members" },
-  { key: "pro", label: "Pro", desc: "Flow + Project + Marketing — 500 credits — 10 members" },
-  { key: "enterprise", label: "Enterprise", desc: "All suites — 2,000 credits — Unlimited members" }
+  { key: "pro", label: "Pro", desc: "Flow — 500 credits — 10 members" },
+  { key: "enterprise", label: "Enterprise", desc: "Flow + Pentest + Search — 2,000 credits — Unlimited members" }
 ]
 
 export function OrgsClient({ initialData }: { initialData: OrgData }) {
@@ -120,21 +120,35 @@ export function OrgsClient({ initialData }: { initialData: OrgData }) {
             const activeEntitlements = org.entitlements.filter((e) => !e.expiresAt || new Date(e.expiresAt) > new Date())
             const suiteCount = activeEntitlements.filter((e) => e.key.startsWith("suite.") && e.key.endsWith(".access")).length
 
-            // Detect plan: Stripe sub > manual entitlements > free
+            // Detect plan: Stripe sub > manual entitlements > free.
+            // For manual entitlements we read monthly.credits (unique per plan:
+            // 100/500/2000) rather than counting suites — counting suites was
+            // wrong because Enterprise (3 suites) collided with the >=3 bucket
+            // for Pro and got mislabeled.
             let planLabel = "Free"
             let planVariant: "success" | undefined = undefined
             if (org.subscriptions[0]) {
               planLabel = org.subscriptions[0].planKey
               planVariant = "success"
-            } else if (suiteCount >= 5) {
-              planLabel = "Enterprise (manual)"
-              planVariant = "success"
-            } else if (suiteCount >= 3) {
-              planLabel = "Pro (manual)"
-              planVariant = "success"
-            } else if (suiteCount >= 1) {
-              planLabel = "Starter (manual)"
-              planVariant = "success"
+            } else {
+              const creditsEnt = activeEntitlements.find((e) => e.key === "monthly.credits")
+              const credits =
+                creditsEnt && typeof creditsEnt.value === "object" && creditsEnt.value !== null
+                  ? Number((creditsEnt.value as { amount?: unknown }).amount) || 0
+                  : 0
+              if (credits >= 2000) {
+                planLabel = "Enterprise (manual)"
+                planVariant = "success"
+              } else if (credits >= 500) {
+                planLabel = "Pro (manual)"
+                planVariant = "success"
+              } else if (credits >= 100) {
+                planLabel = "Starter (manual)"
+                planVariant = "success"
+              } else if (suiteCount >= 1) {
+                planLabel = "Manual"
+                planVariant = "success"
+              }
             }
 
             return (

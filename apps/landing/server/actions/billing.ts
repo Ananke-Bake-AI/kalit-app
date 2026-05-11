@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth"
 import { APP_URL } from "@/lib/config"
 import { prisma } from "@/lib/prisma"
 import { getStripe } from "@/lib/stripe"
-import { getPlan } from "@/lib/plans"
+import { getPlan, resolveStripePriceId } from "@/lib/plans"
 
 export async function createCheckoutSession(planKey: string) {
   const session = await auth()
@@ -13,8 +13,12 @@ export async function createCheckoutSession(planKey: string) {
   }
 
   const plan = getPlan(planKey)
-  if (!plan || !plan.stripePriceId) {
+  if (!plan) {
     return { error: "Invalid plan" }
+  }
+  const priceId = await resolveStripePriceId(planKey)
+  if (!priceId) {
+    return { error: "Stripe price not configured for this plan — set it in /admin/settings" }
   }
 
   const org = await prisma.organization.findUnique({
@@ -24,7 +28,7 @@ export async function createCheckoutSession(planKey: string) {
     return { error: "Organization not found" }
   }
 
-  const stripe = getStripe()
+  const stripe = await getStripe()
 
   // Get or create Stripe customer
   let customerId = org.stripeCustomerId
@@ -44,7 +48,7 @@ export async function createCheckoutSession(planKey: string) {
   const checkoutSession = await stripe.checkout.sessions.create({
     customer: customerId,
     mode: "subscription",
-    line_items: [{ price: plan.stripePriceId, quantity: 1 }],
+    line_items: [{ price: priceId, quantity: 1 }],
     success_url: new URL("/dashboard?checkout=success", APP_URL).toString(),
     cancel_url: new URL("/settings/billing?checkout=canceled", APP_URL).toString(),
     metadata: {
@@ -76,7 +80,7 @@ export async function createPortalSession() {
     return { error: "No billing account found" }
   }
 
-  const stripe = getStripe()
+  const stripe = await getStripe()
   const portalSession = await stripe.billingPortal.sessions.create({
     customer: org.stripeCustomerId,
     return_url: new URL("/settings/billing", APP_URL).toString(),

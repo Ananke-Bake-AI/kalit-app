@@ -30,7 +30,7 @@ export default function HomePage() {
         }
         paragraph={t("portfolio.exploreMore")}
         buttonText={t("portfolio.exploreMore")}
-        link="/flow"
+        link="/discover"
       />
     </>
   )

@@ -97,6 +97,7 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
     setActiveSessionId,
     messagesLoading,
     setMessages,
+    clearMessages,
     setMessagesLoading,
     setPreferredLang,
     isStreaming,
@@ -266,16 +267,20 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
 
   useEffect(() => {
     if (!activeSessionId) {
-      setMessages([])
+      clearMessages()
       return
     }
+    // Hard-clear (not setMessages([]), which merges and carries over
+    // optimistic temps — that's how "ca va?" typed in session A leaked
+    // into session B's view). clearMessages bypasses mergeMessages.
+    clearMessages()
     setMessagesLoading(true)
     fetchMessages(activeSessionId).finally(() => {
       if (activeSessionRef.current === activeSessionId) {
         setMessagesLoading(false)
       }
     })
-  }, [activeSessionId, setMessages, setMessagesLoading, fetchMessages])
+  }, [activeSessionId, clearMessages, setMessagesLoading, fetchMessages])
 
   // ── Hydrate imported repo state for the active session ──
 
@@ -361,37 +366,60 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
   }, [ready, enableResearchAutoSend])
 
   // ── Resume live stream on reconnect ─────────────────────
+  //
+  // Used to gate this on `sessions.find(id).isProcessing`, but a page
+  // reload mid-thinking kills the original POST /messages connection
+  // → broker's defer fires UnlockSession → is_processing flips to
+  // false in DB, even though the agent.Run goroutine keeps going and
+  // the streamHub room is still buffering events. Local cache then
+  // reads is_processing=false and the reconnect was skipped, leaving
+  // the user staring at no-thinking-no-output until the run finally
+  // terminated.
+  //
+  // The broker's /stream endpoint already tells us whether there's a
+  // live room: it returns `{"type":"idle"}` and closes when none
+  // exists, `{"type":"attached"}` then streams when one does. So we
+  // attempt unconditionally and let the broker decide. The onIdle
+  // callback closes the controller cleanly when there's nothing to
+  // follow — the cheap probe replaces a guard that was wrong half
+  // the time.
 
   useEffect(() => {
     if (!activeSessionId || messagesLoading || sendingRef.current) return
-    const session = sessions.find((sess) => sess.id === activeSessionId)
-    if (!session?.isProcessing) return
 
     lastEventIdRef.current = 0
     const controller = new AbortController()
     followRef.current = controller
 
     let cancelled = false
-    setIsStreaming(true)
+    let attached = false
+    // Don't flip setIsStreaming(true) up-front anymore — that paints
+    // the "thinking…" indicator before we know a room actually exists.
+    // We wait for onAttached and only commit then. Without that, on
+    // page reload the user sees a "thinking" spinner for ~50ms even
+    // when there's nothing to thinking about.
     setStreamSegments([])
     setStreamThinking("")
 
-    // Drop the most-recent in-progress assistant from messages[] before the
-    // live stream rebuilds it. The broker's persistSegments() writes the
-    // partial content to DB on every significant event, so fetchMessages()
-    // returns that partial as a regular assistant entry — and the SSE
-    // replay then re-renders the same content as a streamSegments live
-    // bubble. Without this prune the user sees the message twice on
-    // session switch-back. Identifying the in-progress bubble: the latest
-    // entry whose role is "assistant", since the broker only ever has one
-    // partial assistant per session at a time.
-    const msgs = useStudioStore.getState().messages
-    for (let i = msgs.length - 1; i >= 0; i--) {
-      if (msgs[i].role === "assistant") {
-        removeMessage(msgs[i].id)
-        break
+    // Identify (but do NOT yet remove) the most-recent assistant
+    // message. We used to prune it unconditionally here to avoid
+    // double-rendering when the SSE stream replays the partial — but
+    // that caused a visible "messages minus the last one" flash when
+    // the broker had nothing live to stream (onIdle): the message was
+    // removed and only came back when something else triggered a
+    // refetch seconds later. Now we capture the candidate and commit
+    // the removal in onAttached. If onIdle fires, the persisted copy
+    // stays put — no flicker, no missing-last-message state.
+    let prunedAssistantId: string | null = null
+    {
+      const msgs = useStudioStore.getState().messages
+      for (let i = msgs.length - 1; i >= 0; i--) {
+        if (msgs[i].role === "assistant") {
+          prunedAssistantId = msgs[i].id
+          break
+        }
+        if (msgs[i].role === "user") break
       }
-      if (msgs[i].role === "user") break
     }
 
     ;(async () => {
@@ -434,8 +462,25 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
               }
             },
             onError: (msg) => setError(msg),
-            onIdle: () => {},
-            onAttached: () => {},
+            onIdle: () => {
+              // Broker has no live room for this session — nothing to
+              // follow. Close the controller cleanly so the finally
+              // block doesn't post-process as if we'd streamed events.
+              controller.abort()
+            },
+            onAttached: () => {
+              // Real room — only NOW commit the streaming UI so we
+              // don't flash a "thinking" indicator on every reload of
+              // a quiet session. Also commit the partial-assistant
+              // prune here: the stream is about to replay the same
+              // content via streamSegments, so we drop the persisted
+              // partial to avoid double-rendering.
+              attached = true
+              if (activeSessionRef.current === activeSessionId) {
+                if (prunedAssistantId) removeMessage(prunedAssistantId)
+                setIsStreaming(true)
+              }
+            },
             onStreamClosed: () => {},
           },
           { signal: controller.signal },
@@ -446,12 +491,23 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
         }
       } finally {
         if (cancelled) return
+        // Skip the post-stream cleanup when we never attached — the
+        // broker just said "idle", nothing to reconcile, no need to
+        // refetch messages/quota/sessions.
+        if (!attached) {
+          if (followRef.current === controller) followRef.current = null
+          return
+        }
         if (activeSessionRef.current === activeSessionId) {
           setActiveWidgets([])
           try { await fetchMessages(activeSessionId) } catch { /* silent */ }
           fetchSessions()
           fetchQuota()
-          resetStream()
+          // Drop the live flags but leave streamSegments populated; the
+          // typewriter drains the buffered text at human pace and clears
+          // segments via its onCaughtUp callback once revealed.
+          setIsStreaming(false)
+          setStreamThinking("")
           notify()
         }
         if (followRef.current === controller) followRef.current = null
@@ -463,7 +519,7 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
       controller.abort()
     }
   }, [
-    activeSessionId, messagesLoading, sessions,
+    activeSessionId, messagesLoading,
     setIsStreaming, setStreamSegments, setStreamThinking, setActiveWidgets,
     addActiveWidget, setLastRouting, onSuiteChange, setError, resetStream,
     fetchMessages, fetchSessions, fetchQuota, notify, removeMessage,
@@ -476,16 +532,37 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
     // Clear residual stream UI from the previous session before switching.
     // Without this, segments / thinking text / live widgets from the old
     // session's in-flight agent stream remain visible on top of the new
-    // session's chat until its own follow-stream useEffect kicks in. The
-    // broker keeps the previous agent running (background ctx) — only the
-    // SSE subscription is aborted by the activeSessionId change — so this
-    // is safe: the work is preserved, only the UI state is reset.
+    // session's chat until its own follow-stream useEffect kicks in.
     resetStream()
     setActiveWidgets([])
     selectedSuiteRef.current = null
+    // Wipe any error banner from the previous session — without this the
+    // user sees a stale error pinned over a brand-new conversation.
+    setError(null)
+    // Clear messages synchronously here, before setActiveSessionId. The
+    // activeSessionId effect will also clear+refetch, but it runs
+    // post-render — so without this call there's a one-render-cycle
+    // gap where activeSessionId points to B but messages[] still holds
+    // A's content. Users perceived this as "A's messages flash inside
+    // B" right before the loader takes over. Doing it synchronously
+    // here collapses the flash into a single loader-then-data
+    // transition. Also set messagesLoading=true so the message list
+    // shows the loader immediately instead of an empty list.
+    clearMessages()
+    setMessagesLoading(true)
+    // Abort the SSE follow-subscription only. We DO NOT abort the
+    // in-flight POST /messages (abortRef): doing so triggers the
+    // broker's defer to UnlockSession, which flips is_processing back
+    // to false locally on completion — and the follow-stream effect
+    // then skips the reconnect when the user comes back to the still-
+    // working session. Better to let the POST run to completion in the
+    // background; isStill() guards inside handleSend prevent its
+    // events from leaking into the new session's UI.
+    followRef.current?.abort()
+    followRef.current = null
     setActiveSessionId(id)
     onSessionActivated?.(id, { clearPrompt: true, clearSuite: true })
-  }, [resetStream, setActiveWidgets, setActiveSessionId, onSessionActivated])
+  }, [resetStream, setActiveWidgets, setError, clearMessages, setMessagesLoading, setActiveSessionId, onSessionActivated])
 
   // ── Welcome prompt click ────────────────────────────────
 
@@ -543,6 +620,16 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
       if (!sessionId) return
     }
 
+    // Capture the originating sessionId so every state mutation below
+    // can be gated against `activeSessionRef.current`. Without these
+    // guards, a long-running stream we kicked off in session A keeps
+    // pushing into setStreamSegments / setError after the user switches
+    // to session B — which is what produced the cross-session message
+    // bleed and the persistent error banner. The send sets the per-call
+    // sessionId once; refs read live state on every event.
+    const startSessionId = sessionId
+    const isStill = () => activeSessionRef.current === startSessionId
+
     sendingRef.current = true
     followRef.current?.abort()
     followRef.current = null
@@ -596,10 +683,28 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
       })
 
       if (!res.ok || !res.body) {
-        const data = await res.json().catch(() => ({}))
-        setError((data as { error?: string }).error || `Error ${res.status}`)
-        setIsStreaming(false)
-        removeMessage(tempId)
+        const data = (await res.json().catch(() => ({}))) as {
+          error?: string
+          message?: string
+          remainingCredits?: number
+        }
+        if (isStill()) {
+          // 402 = broker credit gate. Snap the local quota to 0 so the
+          // input flips to its disabled-with-banner state immediately,
+          // surface a localized error rather than the raw "Error 402"
+          // we'd otherwise get from the fallback branch.
+          if (res.status === 402) {
+            const current = useStudioStore.getState().quota
+            if (current) {
+              setQuota({ ...current, remainingCredits: 0, percentage: 100 })
+            }
+            setError(t("studio.outOfCreditsError"))
+          } else {
+            setError(data.error || `Error ${res.status}`)
+          }
+          setIsStreaming(false)
+          removeMessage(tempId)
+        }
         return
       }
 
@@ -645,12 +750,12 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
           }
         }
         streamText += chunk
-        setStreamSegments([...segments])
+        if (isStill()) setStreamSegments([...segments])
       }
 
       const pushTool = (name: string, input: unknown) => {
         segments.push({ type: "tool", name, input, done: false })
-        setStreamSegments([...segments])
+        if (isStill()) setStreamSegments([...segments])
       }
 
       while (true) {
@@ -680,7 +785,7 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
 
                 case "thinking":
                   thinking += event.content || ""
-                  setStreamThinking(thinking)
+                  if (isStill()) setStreamThinking(thinking)
                   if (thinking.length <= (event.content?.length || 0)) {
                     clog("think", "THINK", "Thinking block started...")
                   }
@@ -703,7 +808,7 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
                       break
                     }
                   }
-                  setStreamSegments([...segments])
+                  if (isStill()) setStreamSegments([...segments])
                   break
 
                 case "widget": {
@@ -731,8 +836,10 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
                     } else {
                       segments.push(widgetSeg)
                     }
-                    setStreamSegments([...segments])
-                    addActiveWidget({ type: wt, id: wi })
+                    if (isStill()) {
+                      setStreamSegments([...segments])
+                      addActiveWidget({ type: wt, id: wi })
+                    }
 
                     const status = String(event.status || "").toLowerCase()
                     const terminal =
@@ -750,7 +857,7 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
                   } else {
                     segments.push({ type: "progress", messages: [event.content] })
                   }
-                  setStreamSegments([...segments])
+                  if (isStill()) setStreamSegments([...segments])
                   break
                 }
 
@@ -762,12 +869,12 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
                     mimeType: event.mimeType,
                     url: event.url,
                   })
-                  setStreamSegments([...segments])
+                  if (isStill()) setStreamSegments([...segments])
                   break
 
                 case "error":
                   clog("error", "ERROR", event.content || "Unknown error")
-                  setError(event.content || t("studio.streamError"))
+                  if (isStill()) setError(event.content || t("studio.streamError"))
                   break
 
                 case "suite_selected": {
@@ -859,13 +966,18 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
       if ((err as Error)?.name !== "AbortError") {
         if (streamText.length > 0) {
           console.warn("[Studio] SSE connection dropped, reloading from broker")
-        } else {
+        } else if (isStill()) {
           setError(err instanceof Error ? err.message : t("studio.connectionError"))
         }
       }
     } finally {
       if (watchdog) clearInterval(watchdog)
-      if (sessionId && activeSessionRef.current === sessionId) {
+      // Cleanup is gated on isStill — if the user switched away mid-stream,
+      // the new session owns the UI and we must NOT touch its widgets,
+      // streaming flags, or trigger a setIsStreaming(false) that would
+      // disable a still-active stream in the new session.
+      const stillActive = isStill()
+      if (stillActive && sessionId) {
         setActiveWidgets([])
         try { await fetchMessages(sessionId) } catch { /* silent */ }
         // Guarantee the optimistic temp is gone. mergeMessages drops temps that
@@ -878,11 +990,22 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
       }
       // Mirror the broker-side UnlockSession in the local cache so the
       // session no longer reports as processing once the stream is done.
+      // Safe to call regardless of which session is active — it keys on
+      // the originating sessionId, not the current view.
       if (sessionId) markSessionProcessing(sessionId, false)
-      resetStream()
+      // Drop the live flags but leave streamSegments populated; the
+      // typewriter drains the buffered text and clears segments via its
+      // onCaughtUp callback. Avoids the persisted bubble snapping in with
+      // the full text the moment the broker's stream closes.
+      if (stillActive) {
+        setIsStreaming(false)
+        setStreamThinking("")
+      }
+      // abortRef/sendingRef are non-render flags scoped to the in-flight
+      // send — clear them unconditionally so we don't get stuck.
       abortRef.current = null
       sendingRef.current = false
-      notify()
+      if (stillActive) notify()
     }
   }, [
     activeSessionId, isStreaming, locale, progressMode, addMessage, removeMessage,
@@ -940,6 +1063,27 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
 
   const handleNewChat = useCallback(async () => {
     try {
+      // Same isolation cleanup as handleSessionSelect — without these,
+      // clicking "New Chat" while the previous session is mid-stream
+      // leaves its streamSegments/streamThinking/widgets/error visible
+      // in the fresh chat. The broker keeps the old agent running on
+      // its side; we just stop echoing it into the UI we're navigating
+      // away from. setMessages([]) is a merge in the store, which would
+      // carry over the optimistic user temp ("ca va?") — clearMessages
+      // is the hard reset.
+      //
+      // setMessagesLoading(true) is the polite version of "this card
+      // is empty on purpose, not because of a flicker" — without it,
+      // between clearMessages and the broker returning the new session,
+      // the welcome screen flashes briefly.
+      resetStream()
+      setActiveWidgets([])
+      setError(null)
+      followRef.current?.abort()
+      followRef.current = null
+      clearMessages()
+      setMessagesLoading(true)
+
       const { selectedModel, taskforceStandard } = useStudioStore.getState()
       const res = await brokerFetch("/api/broker/sessions", {
         method: "POST",
@@ -952,13 +1096,19 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
         addSession(session)
         selectedSuiteRef.current = null
         setActiveSessionId(session.id)
-        setMessages([])
         onSessionActivated?.(session.id, { clearPrompt: true, clearSuite: true })
+      } else {
+        // Restore the empty / welcome state instead of leaving the
+        // loader spinning forever when the broker refuses the create.
+        setMessagesLoading(false)
       }
     } catch {
-      // silent
+      setMessagesLoading(false)
     }
-  }, [addSession, setActiveSessionId, setMessages, onSessionActivated])
+  }, [
+    addSession, setActiveSessionId, onSessionActivated,
+    resetStream, setActiveWidgets, setError, clearMessages, setMessagesLoading,
+  ])
 
   // ── Global keyboard shortcuts ───────────────────────────
 

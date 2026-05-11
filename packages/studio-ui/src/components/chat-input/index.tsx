@@ -54,7 +54,20 @@ export function ChatInput({ onSend, disabled, prefill, onEnsureSession }: ChatIn
     activeSessionId,
     isStreaming,
     importedRepo,
+    quota,
   } = useStudioStore()
+
+  // Org has run out of credits → block the input entirely and surface
+  // the upgrade CTA inline. The broker also enforces this server-side
+  // (HTTP 402) so circumventing the disabled state still gets refused;
+  // this just spares a doomed round-trip and makes the dead-state
+  // legible to the user instead of silently typing into a void.
+  const outOfCredits =
+    !!quota && typeof quota.remainingCredits === "number" && quota.remainingCredits <= 0
+  // billingHref points at the landing's billing/upgrade page. Kept as a
+  // constant so the i18n strings can use it without leaking it through
+  // every callsite.
+  const BILLING_HREF = "/settings/billing"
 
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -293,7 +306,7 @@ export function ChatInput({ onSend, disabled, prefill, onEnsureSession }: ChatIn
     setAttachedFiles(attachedFiles.filter((f) => f.fileId !== fileId))
   }, [attachedFiles, setAttachedFiles])
 
-  const isDisabled = disabled || isStreaming
+  const isDisabled = disabled || isStreaming || outOfCredits
 
   return (
     <div
@@ -369,6 +382,21 @@ export function ChatInput({ onSend, disabled, prefill, onEnsureSession }: ChatIn
         </div>
       )}
 
+      {/* Out-of-credits banner */}
+      {outOfCredits && (
+        <div className={s.outOfCreditsBanner} role="alert">
+          <Icon icon="hugeicons:credit-card" />
+          <div className={s.outOfCreditsCopy}>
+            <strong>{t("studio.outOfCreditsTitle")}</strong>
+            <span>{t("studio.outOfCreditsDesc")}</span>
+          </div>
+          <a href={BILLING_HREF} className={s.outOfCreditsCta}>
+            {t("studio.upgradePlan")}
+            <Icon icon="hugeicons:arrow-right-02" />
+          </a>
+        </div>
+      )}
+
       {/* Input row */}
       <div className={s.inputRow}>
         <button
@@ -396,7 +424,9 @@ export function ChatInput({ onSend, disabled, prefill, onEnsureSession }: ChatIn
           onChange={(e) => handleChange(e.target.value)}
           onKeyDown={handleKeyDown}
           onPaste={handlePaste}
-          placeholder={t("studio.chatPlaceholder")}
+          placeholder={
+            outOfCredits ? t("studio.outOfCreditsPlaceholder") : t("studio.chatPlaceholder")
+          }
           rows={1}
           disabled={isDisabled}
         />
