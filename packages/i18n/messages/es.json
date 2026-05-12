@@ -203,7 +203,12 @@
     "usageDesc": "Consulta créditos y actividad reciente.",
     "studioLabel": "Studio",
     "studioDesc": "Open the AI chat studio to build, deploy, and manage projects.",
-    "suiteSuffix": "suite"
+    "suiteSuffix": "suite",
+    "checkoutSuccessTitle": "Suscripción activada",
+    "checkoutSuccessBody": "Tu plan se está aprovisionando — puede tardar unos segundos.",
+    "checkoutCanceled": "Pago cancelado. No se cobró nada.",
+    "creditsAddedTitle": "+{amount} créditos añadidos",
+    "creditsAddedBody": "Tu saldo se está actualizando — recarga si aún no lo ves."
   },
   "common": {
     "previous": "Anterior",
@@ -295,7 +300,21 @@
     "loading": "Cargando...",
     "unlimitedMembers": "Miembros ilimitados",
     "memberCount": "{count} miembro",
-    "memberCountPlural": "{count} miembros"
+    "memberCountPlural": "{count} miembros",
+    "cancelConfirm": "¿Cancelar la suscripción al final del período actual? Mantienes acceso hasta entonces.",
+    "cancelScheduled": "La suscripción terminará al final del período",
+    "cancelSubscription": "Cancelar suscripción",
+    "subscriptionResumed": "Suscripción reanudada",
+    "resumeSubscription": "Reanudar suscripción",
+    "cancelsOn": "Termina el {date}",
+    "endsOn": "Termina el",
+    "startedOn": "Iniciada el",
+    "creditsUsedSuffix": "créditos usados este período",
+    "buyExtraCredits": "Comprar créditos extra",
+    "credits": "créditos",
+    "oneTime": "pago único",
+    "buy": "Comprar {credits} créditos",
+    "allPlans": "Todos los planes"
   },
   "suiteLanding": {
     "getStarted": "Empezar",

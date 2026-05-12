@@ -2,6 +2,9 @@
 
 .actions {
   margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .planGrid {
@@ -11,5 +14,89 @@
 
   @include max($responsive) {
     grid-template-columns: 1fr;
+  }
+}
+
+.creditsStrip {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem 1rem;
+  align-items: end;
+  margin: 0.75rem 0 1rem;
+
+  @include max($responsive) {
+    grid-template-columns: 1fr;
+  }
+
+  .bar {
+    grid-column: 1 / -1;
+    height: 6px;
+    background: oklch(from var(--text) l c h / 0.08);
+    border-radius: 999px;
+    overflow: hidden;
+
+    > span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--color-2), var(--color-5));
+      border-radius: inherit;
+    }
+  }
+
+  .used,
+  .label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+
+  .used strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+}
+
+.sectionHeading {
+  margin: 2rem 0 0.5rem;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.packGrid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: 2rem;
+
+  @include max($responsive) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.packCard {
+  padding: 1.1rem 1.2rem;
+  border-radius: var(--radius-2);
+  background: oklch(from var(--text) l c h / 0.03);
+  border: 1px solid oklch(from var(--text) l c h / 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+
+  &.popular {
+    border-color: var(--color-2);
+    box-shadow: 0 0 0 1px var(--color-2);
+  }
+
+  .packCredits {
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
+
+  .packPrice {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+  }
+
+  .packCta {
+    margin-top: auto;
   }
 }

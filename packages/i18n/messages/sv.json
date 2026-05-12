@@ -203,7 +203,12 @@
     "usageDesc": "Spåra krediter och senaste aktivitet.",
     "studioLabel": "Studio",
     "studioDesc": "Open the AI chat studio to build, deploy, and manage projects.",
-    "suiteSuffix": "svit"
+    "suiteSuffix": "svit",
+    "checkoutSuccessTitle": "Prenumeration aktiverad",
+    "checkoutSuccessBody": "Din plan tillhandahålls — det kan ta några sekunder.",
+    "checkoutCanceled": "Utcheckning avbruten. Inget debiterades.",
+    "creditsAddedTitle": "+{amount} krediter tillagda",
+    "creditsAddedBody": "Ditt saldo uppdateras — ladda om om du inte ser det än."
   },
   "common": {
     "previous": "Föregående",
@@ -295,7 +300,21 @@
     "loading": "Laddar...",
     "unlimitedMembers": "Obegränsat antal medlemmar",
     "memberCount": "{count} medlem",
-    "memberCountPlural": "{count} medlemmar"
+    "memberCountPlural": "{count} medlemmar",
+    "cancelConfirm": "Säg upp prenumerationen vid slutet av nuvarande period? Du behåller åtkomsten tills dess.",
+    "cancelScheduled": "Prenumerationen avslutas vid periodens slut",
+    "cancelSubscription": "Säg upp prenumeration",
+    "subscriptionResumed": "Prenumeration återupptagen",
+    "resumeSubscription": "Återuppta prenumeration",
+    "cancelsOn": "Avslutas {date}",
+    "endsOn": "Avslutas",
+    "startedOn": "Startade",
+    "creditsUsedSuffix": "krediter använda denna period",
+    "buyExtraCredits": "Köp extra krediter",
+    "credits": "krediter",
+    "oneTime": "engångsbetalning",
+    "buy": "Köp {credits} krediter",
+    "allPlans": "Alla planer"
   },
   "suiteLanding": {
     "getStarted": "Kom igång",

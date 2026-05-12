@@ -35,3 +35,8 @@
   color: var(--white);
   @include border-glass(var(--gradient-border-glass-3));
 }
+
+.warning {
+  background: oklch(from var(--danger) l c h / 0.12);
+  color: var(--danger);
+}

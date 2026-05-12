@@ -1,11 +1,42 @@
 import { prisma } from "@/lib/prisma"
-import { getPlanByPriceId } from "@/lib/plans"
+import { getCreditPack, getPlanByPriceId } from "@/lib/plans"
 
 export async function handleCheckoutCompleted(session: any) {
   const orgId = session.metadata?.orgId
-  const planKey = session.metadata?.planKey
+  if (!orgId) return
 
-  if (!orgId || !planKey || !session.subscription) return
+  // One-off credit pack purchase — flagged via `kind: "credit_pack"` in
+  // the Checkout metadata (vs the subscription mode below). We credit the
+  // ledger and return early; no subscription bookkeeping to do.
+  if (session.mode === "payment" && session.metadata?.kind === "credit_pack") {
+    const packKey = session.metadata?.packKey as string | undefined
+    const pack = packKey ? getCreditPack(packKey) : undefined
+    const credits = pack?.credits ?? Number(session.metadata?.credits || 0)
+    if (!credits || credits <= 0) return
+
+    // Idempotency: Stripe re-delivers this event on its own retry schedule.
+    // Keying CreditRecord.invoiceId on the Checkout session id prevents
+    // double-crediting if the webhook handler runs twice for the same buy.
+    const existing = await prisma.creditRecord.findFirst({
+      where: { orgId, invoiceId: session.id, direction: "CREDIT" },
+    })
+    if (existing) return
+
+    await prisma.creditRecord.create({
+      data: {
+        orgId,
+        direction: "CREDIT",
+        amount: credits,
+        reason: `Credit pack purchase (${credits} credits)`,
+        invoiceId: session.id,
+      },
+    })
+    return
+  }
+
+  // Subscription mode — original behavior.
+  const planKey = session.metadata?.planKey
+  if (!planKey || !session.subscription) return
 
   const subscriptionId = typeof session.subscription === "string"
     ? session.subscription

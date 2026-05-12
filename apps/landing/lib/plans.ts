@@ -1,5 +1,5 @@
 import type { SuiteId } from "./suites"
-import { getPlanKeyByPriceId, getStripePriceId } from "./settings"
+import { getCreditPackPriceId, getPlanKeyByPriceId, getStripePriceId } from "./settings"
 
 // PlanConfig — STATIC part only. stripePriceId is no longer read from
 // process.env at module load; it lives in the admin-managed AppSetting
@@ -85,6 +85,30 @@ export const PLANS: PlanConfig[] = [
 
 export function getPlan(key: string): PlanConfig | undefined {
   return PLANS.find((p) => p.key === key)
+}
+
+// One-off credit packs — purchased on top of the monthly subscription. Same
+// admin-managed-price-id pattern as PLANS: the price IDs live in AppSetting
+// under STRIPE_PRICE_CREDITS_<KEY> and resolve at runtime.
+export interface CreditPackConfig {
+  key: string
+  credits: number
+  priceCents: number
+  popular?: boolean
+}
+
+export const CREDIT_PACKS: CreditPackConfig[] = [
+  { key: "credits_50", credits: 50, priceCents: 900 },
+  { key: "credits_150", credits: 150, priceCents: 1900, popular: true },
+  { key: "credits_500", credits: 500, priceCents: 4900 },
+]
+
+export function getCreditPack(key: string): CreditPackConfig | undefined {
+  return CREDIT_PACKS.find((p) => p.key === key)
+}
+
+export async function resolveCreditPackPriceId(packKey: string): Promise<string | null> {
+  return getCreditPackPriceId(packKey)
 }
 
 // Resolve a plan's Stripe price ID at runtime from the admin-managed

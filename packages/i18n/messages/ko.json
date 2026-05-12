@@ -203,7 +203,12 @@
     "usageDesc": "크레딧과 최근 활동을 추적합니다.",
     "studioLabel": "Studio",
     "studioDesc": "Open the AI chat studio to build, deploy, and manage projects.",
-    "suiteSuffix": "스위트"
+    "suiteSuffix": "스위트",
+    "checkoutSuccessTitle": "구독이 활성화되었습니다",
+    "checkoutSuccessBody": "플랜을 프로비저닝 중입니다 — 몇 초 정도 걸릴 수 있습니다.",
+    "checkoutCanceled": "결제가 취소되었습니다. 청구되지 않았습니다.",
+    "creditsAddedTitle": "+{amount} 크레딧 추가됨",
+    "creditsAddedBody": "잔액이 업데이트 중입니다 — 보이지 않으면 새로고침하세요."
   },
   "common": {
     "previous": "이전",
@@ -295,7 +300,21 @@
     "loading": "로딩 중...",
     "unlimitedMembers": "무제한 멤버",
     "memberCount": "{count}명",
-    "memberCountPlural": "{count}명"
+    "memberCountPlural": "{count}명",
+    "cancelConfirm": "현재 기간이 끝날 때 구독을 취소하시겠습니까? 그때까지는 액세스가 유지됩니다.",
+    "cancelScheduled": "구독은 기간 종료 시 끝납니다",
+    "cancelSubscription": "구독 취소",
+    "subscriptionResumed": "구독이 재개되었습니다",
+    "resumeSubscription": "구독 재개",
+    "cancelsOn": "{date}에 종료",
+    "endsOn": "종료일",
+    "startedOn": "시작일",
+    "creditsUsedSuffix": "이번 기간 사용한 크레딧",
+    "buyExtraCredits": "추가 크레딧 구매",
+    "credits": "크레딧",
+    "oneTime": "일회성 결제",
+    "buy": "{credits} 크레딧 구매",
+    "allPlans": "모든 요금제"
   },
   "suiteLanding": {
     "getStarted": "시작하기",

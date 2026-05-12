@@ -203,7 +203,12 @@
     "usageDesc": "क्रेडिट और हालिया गतिविधि ट्रैक करें।",
     "studioLabel": "Studio",
     "studioDesc": "Open the AI chat studio to build, deploy, and manage projects.",
-    "suiteSuffix": "सुइट"
+    "suiteSuffix": "सुइट",
+    "checkoutSuccessTitle": "सब्सक्रिप्शन सक्रिय हो गया",
+    "checkoutSuccessBody": "आपकी योजना तैयार की जा रही है — इसमें कुछ सेकंड लग सकते हैं।",
+    "checkoutCanceled": "चेकआउट रद्द कर दिया गया। कोई शुल्क नहीं लिया गया।",
+    "creditsAddedTitle": "+{amount} क्रेडिट जोड़े गए",
+    "creditsAddedBody": "आपका बैलेंस अपडेट हो रहा है — अगर अभी नहीं दिख रहा तो रिफ्रेश करें।"
   },
   "common": {
     "previous": "पिछला",
@@ -295,7 +300,21 @@
     "loading": "लोड हो रहा है...",
     "unlimitedMembers": "असीमित सदस्य",
     "memberCount": "{count} सदस्य",
-    "memberCountPlural": "{count} सदस्य"
+    "memberCountPlural": "{count} सदस्य",
+    "cancelConfirm": "मौजूदा अवधि के अंत में सदस्यता रद्द करें? तब तक आपकी पहुँच बनी रहेगी।",
+    "cancelScheduled": "सदस्यता अवधि के अंत में समाप्त होगी",
+    "cancelSubscription": "सदस्यता रद्द करें",
+    "subscriptionResumed": "सदस्यता पुनः शुरू की गई",
+    "resumeSubscription": "सदस्यता पुनः शुरू करें",
+    "cancelsOn": "{date} को समाप्त",
+    "endsOn": "समाप्त",
+    "startedOn": "शुरू",
+    "creditsUsedSuffix": "इस अवधि में उपयोग किए गए क्रेडिट",
+    "buyExtraCredits": "अतिरिक्त क्रेडिट खरीदें",
+    "credits": "क्रेडिट",
+    "oneTime": "एक बार का भुगतान",
+    "buy": "{credits} क्रेडिट खरीदें",
+    "allPlans": "सभी योजनाएँ"
   },
   "suiteLanding": {
     "getStarted": "शुरू करें",

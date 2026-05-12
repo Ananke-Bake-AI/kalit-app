@@ -203,7 +203,12 @@
     "usageDesc": "クレジットと最近のアクティビティを追跡。",
     "studioLabel": "Studio",
     "studioDesc": "Open the AI chat studio to build, deploy, and manage projects.",
-    "suiteSuffix": "スイート"
+    "suiteSuffix": "スイート",
+    "checkoutSuccessTitle": "サブスクリプションが有効になりました",
+    "checkoutSuccessBody": "プランをプロビジョニング中です — 数秒かかる場合があります。",
+    "checkoutCanceled": "チェックアウトはキャンセルされました。請求はありません。",
+    "creditsAddedTitle": "+{amount} クレジットを追加しました",
+    "creditsAddedBody": "クレジット残高を更新中です — まだ反映されない場合は再読み込みしてください。"
   },
   "common": {
     "previous": "前へ",
@@ -295,7 +300,21 @@
     "loading": "読み込み中...",
     "unlimitedMembers": "メンバー数無制限",
     "memberCount": "{count}人のメンバー",
-    "memberCountPlural": "{count}人のメンバー"
+    "memberCountPlural": "{count}人のメンバー",
+    "cancelConfirm": "現在の期間終了でサブスクリプションを解約しますか？それまではアクセスできます。",
+    "cancelScheduled": "サブスクリプションは期間終了時に解約されます",
+    "cancelSubscription": "サブスクリプションを解約",
+    "subscriptionResumed": "サブスクリプションを再開しました",
+    "resumeSubscription": "サブスクリプションを再開",
+    "cancelsOn": "{date} に終了",
+    "endsOn": "終了日",
+    "startedOn": "開始日",
+    "creditsUsedSuffix": "この期間に使用したクレジット",
+    "buyExtraCredits": "追加クレジットを購入",
+    "credits": "クレジット",
+    "oneTime": "一回払い",
+    "buy": "{credits} クレジット購入",
+    "allPlans": "すべてのプラン"
   },
   "suiteLanding": {
     "getStarted": "今すぐ始める",

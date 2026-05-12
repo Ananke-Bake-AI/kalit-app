@@ -203,7 +203,12 @@
     "usageDesc": "追踪信用额度和近期活动。",
     "studioLabel": "Studio",
     "studioDesc": "Open the AI chat studio to build, deploy, and manage projects.",
-    "suiteSuffix": "套件"
+    "suiteSuffix": "套件",
+    "checkoutSuccessTitle": "订阅已激活",
+    "checkoutSuccessBody": "正在配置您的套餐 — 这可能需要几秒钟。",
+    "checkoutCanceled": "结账已取消。未产生任何费用。",
+    "creditsAddedTitle": "+{amount} 积分已添加",
+    "creditsAddedBody": "您的余额正在更新 — 如果还没看到请刷新。"
   },
   "common": {
     "previous": "上一页",
@@ -295,7 +300,21 @@
     "loading": "加载中...",
     "unlimitedMembers": "不限成员数",
     "memberCount": "{count} 位成员",
-    "memberCountPlural": "{count} 位成员"
+    "memberCountPlural": "{count} 位成员",
+    "cancelConfirm": "在当前周期结束时取消订阅吗？您将保留访问权限直到那时。",
+    "cancelScheduled": "订阅将在周期结束时终止",
+    "cancelSubscription": "取消订阅",
+    "subscriptionResumed": "订阅已恢复",
+    "resumeSubscription": "恢复订阅",
+    "cancelsOn": "{date} 结束",
+    "endsOn": "结束于",
+    "startedOn": "开始于",
+    "creditsUsedSuffix": "本期已用积分",
+    "buyExtraCredits": "购买额外积分",
+    "credits": "积分",
+    "oneTime": "一次性",
+    "buy": "购买 {credits} 积分",
+    "allPlans": "所有套餐"
   },
   "suiteLanding": {
     "getStarted": "立即开始",

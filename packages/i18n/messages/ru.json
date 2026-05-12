@@ -203,7 +203,12 @@
     "usageDesc": "Отслеживание кредитов и активности.",
     "studioLabel": "Studio",
     "studioDesc": "Open the AI chat studio to build, deploy, and manage projects.",
-    "suiteSuffix": "сьют"
+    "suiteSuffix": "сьют",
+    "checkoutSuccessTitle": "Подписка активирована",
+    "checkoutSuccessBody": "Ваш план настраивается — это может занять несколько секунд.",
+    "checkoutCanceled": "Оплата отменена. Списания не было.",
+    "creditsAddedTitle": "+{amount} кредитов добавлено",
+    "creditsAddedBody": "Ваш баланс обновляется — обновите страницу, если ещё не видите."
   },
   "common": {
     "previous": "Назад",
@@ -295,7 +300,21 @@
     "loading": "Загрузка...",
     "unlimitedMembers": "Неограниченное число участников",
     "memberCount": "{count} участник",
-    "memberCountPlural": "{count} участников"
+    "memberCountPlural": "{count} участников",
+    "cancelConfirm": "Отменить подписку в конце текущего периода? Доступ сохранится до конца периода.",
+    "cancelScheduled": "Подписка завершится в конце периода",
+    "cancelSubscription": "Отменить подписку",
+    "subscriptionResumed": "Подписка возобновлена",
+    "resumeSubscription": "Возобновить подписку",
+    "cancelsOn": "Заканчивается {date}",
+    "endsOn": "Заканчивается",
+    "startedOn": "Началась",
+    "creditsUsedSuffix": "кредитов использовано в этом периоде",
+    "buyExtraCredits": "Купить дополнительные кредиты",
+    "credits": "кредитов",
+    "oneTime": "разовый платёж",
+    "buy": "Купить {credits} кредитов",
+    "allPlans": "Все тарифы"
   },
   "suiteLanding": {
     "getStarted": "Начать",

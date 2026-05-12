@@ -12,6 +12,7 @@ import type { CSSProperties } from "react"
 import { PageHeader } from "@/components/page-header"
 import { PageSection } from "@/components/page-section"
 import { SurfacePanel } from "@/components/surface-panel"
+import { CheckoutFeedback } from "./checkout-feedback"
 import s from "./dashboard.module.scss"
 
 export default async function DashboardPage() {
@@ -86,6 +87,7 @@ export default async function DashboardPage() {
 
   return (
     <PageSection>
+      <CheckoutFeedback />
       <Container>
         <PageHeader
           title={t("dashboard.title")}

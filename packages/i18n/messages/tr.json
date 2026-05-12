@@ -203,7 +203,12 @@
     "usageDesc": "Kredileri ve son aktiviteyi takip edin.",
     "studioLabel": "Studio",
     "studioDesc": "Open the AI chat studio to build, deploy, and manage projects.",
-    "suiteSuffix": "suite"
+    "suiteSuffix": "suite",
+    "checkoutSuccessTitle": "Abonelik etkinleştirildi",
+    "checkoutSuccessBody": "Planınız hazırlanıyor — birkaç saniye sürebilir.",
+    "checkoutCanceled": "Ödeme iptal edildi. Ücret alınmadı.",
+    "creditsAddedTitle": "+{amount} kredi eklendi",
+    "creditsAddedBody": "Bakiyeniz güncelleniyor — henüz görmüyorsanız sayfayı yenileyin."
   },
   "common": {
     "previous": "Önceki",
@@ -295,7 +300,21 @@
     "loading": "Yükleniyor...",
     "unlimitedMembers": "Sınırsız üye",
     "memberCount": "{count} üye",
-    "memberCountPlural": "{count} üye"
+    "memberCountPlural": "{count} üye",
+    "cancelConfirm": "Mevcut dönem sonunda aboneliği iptal et? O zamana kadar erişiminiz devam eder.",
+    "cancelScheduled": "Abonelik dönem sonunda bitecek",
+    "cancelSubscription": "Aboneliği iptal et",
+    "subscriptionResumed": "Abonelik yeniden başlatıldı",
+    "resumeSubscription": "Aboneliği yeniden başlat",
+    "cancelsOn": "{date} tarihinde bitiyor",
+    "endsOn": "Bitiş",
+    "startedOn": "Başlangıç",
+    "creditsUsedSuffix": "bu dönem kullanılan kredi",
+    "buyExtraCredits": "Ek kredi satın al",
+    "credits": "kredi",
+    "oneTime": "tek seferlik",
+    "buy": "{credits} kredi satın al",
+    "allPlans": "Tüm planlar"
   },
   "suiteLanding": {
     "getStarted": "Başlayın",

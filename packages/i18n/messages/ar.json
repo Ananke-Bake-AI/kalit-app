@@ -203,7 +203,12 @@
     "usageDesc": "تتبع الرصيد والنشاط الأخير.",
     "studioLabel": "Studio",
     "studioDesc": "Open the AI chat studio to build, deploy, and manage projects.",
-    "suiteSuffix": "سويت"
+    "suiteSuffix": "سويت",
+    "checkoutSuccessTitle": "تم تفعيل الاشتراك",
+    "checkoutSuccessBody": "يتم تجهيز خطتك — قد يستغرق ذلك بضع ثوانٍ.",
+    "checkoutCanceled": "تم إلغاء الدفع. لم يتم خصم أي مبلغ.",
+    "creditsAddedTitle": "تم إضافة {amount}+ رصيد",
+    "creditsAddedBody": "يتم تحديث رصيدك — أعد التحميل إذا لم تره بعد."
   },
   "common": {
     "previous": "السابق",
@@ -295,7 +300,21 @@
     "loading": "جارٍ التحميل...",
     "unlimitedMembers": "أعضاء غير محدودين",
     "memberCount": "{count} عضو",
-    "memberCountPlural": "{count} أعضاء"
+    "memberCountPlural": "{count} أعضاء",
+    "cancelConfirm": "إلغاء الاشتراك في نهاية الفترة الحالية؟ ستحتفظ بالوصول حتى ذلك الحين.",
+    "cancelScheduled": "سينتهي الاشتراك في نهاية الفترة",
+    "cancelSubscription": "إلغاء الاشتراك",
+    "subscriptionResumed": "تم استئناف الاشتراك",
+    "resumeSubscription": "استئناف الاشتراك",
+    "cancelsOn": "ينتهي في {date}",
+    "endsOn": "ينتهي في",
+    "startedOn": "بدأ في",
+    "creditsUsedSuffix": "رصيد مستخدم في هذه الفترة",
+    "buyExtraCredits": "شراء رصيد إضافي",
+    "credits": "رصيد",
+    "oneTime": "دفعة واحدة",
+    "buy": "شراء {credits} رصيد",
+    "allPlans": "جميع الخطط"
   },
   "suiteLanding": {
     "getStarted": "ابدأ الآن",

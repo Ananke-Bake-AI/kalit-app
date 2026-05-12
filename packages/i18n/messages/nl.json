@@ -203,7 +203,12 @@
     "usageDesc": "Credits en recente activiteit volgen.",
     "studioLabel": "Studio",
     "studioDesc": "Open the AI chat studio to build, deploy, and manage projects.",
-    "suiteSuffix": "suite"
+    "suiteSuffix": "suite",
+    "checkoutSuccessTitle": "Abonnement geactiveerd",
+    "checkoutSuccessBody": "Je plan wordt klaargemaakt — dit kan een paar seconden duren.",
+    "checkoutCanceled": "Afrekenen geannuleerd. Er is niets afgeschreven.",
+    "creditsAddedTitle": "+{amount} credits toegevoegd",
+    "creditsAddedBody": "Je saldo wordt bijgewerkt — vernieuw als je het nog niet ziet."
   },
   "common": {
     "previous": "Vorige",
@@ -295,7 +300,21 @@
     "loading": "Laden...",
     "unlimitedMembers": "Onbeperkt aantal leden",
     "memberCount": "{count} lid",
-    "memberCountPlural": "{count} leden"
+    "memberCountPlural": "{count} leden",
+    "cancelConfirm": "Abonnement opzeggen aan het einde van de huidige periode? Je behoudt toegang tot dan.",
+    "cancelScheduled": "Het abonnement eindigt aan het einde van de periode",
+    "cancelSubscription": "Abonnement opzeggen",
+    "subscriptionResumed": "Abonnement hervat",
+    "resumeSubscription": "Abonnement hervatten",
+    "cancelsOn": "Eindigt op {date}",
+    "endsOn": "Eindigt op",
+    "startedOn": "Gestart op",
+    "creditsUsedSuffix": "credits gebruikt in deze periode",
+    "buyExtraCredits": "Extra credits kopen",
+    "credits": "credits",
+    "oneTime": "eenmalige betaling",
+    "buy": "Koop {credits} credits",
+    "allPlans": "Alle abonnementen"
   },
   "suiteLanding": {
     "getStarted": "Aan de slag",

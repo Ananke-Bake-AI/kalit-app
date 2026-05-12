@@ -203,7 +203,12 @@
     "usageDesc": "Monitora crediti e attività recente.",
     "studioLabel": "Studio",
     "studioDesc": "Open the AI chat studio to build, deploy, and manage projects.",
-    "suiteSuffix": "suite"
+    "suiteSuffix": "suite",
+    "checkoutSuccessTitle": "Abbonamento attivato",
+    "checkoutSuccessBody": "Il tuo piano è in fase di attivazione — potrebbe richiedere qualche secondo.",
+    "checkoutCanceled": "Checkout annullato. Nessun addebito.",
+    "creditsAddedTitle": "+{amount} crediti aggiunti",
+    "creditsAddedBody": "Il tuo saldo si sta aggiornando — ricarica se non lo vedi ancora."
   },
   "common": {
     "previous": "Precedente",
@@ -295,7 +300,21 @@
     "loading": "Caricamento...",
     "unlimitedMembers": "Membri illimitati",
     "memberCount": "{count} membro",
-    "memberCountPlural": "{count} membri"
+    "memberCountPlural": "{count} membri",
+    "cancelConfirm": "Annullare l abbonamento alla fine del periodo corrente? Mantieni l accesso fino ad allora.",
+    "cancelScheduled": "L abbonamento terminerà alla fine del periodo",
+    "cancelSubscription": "Annulla abbonamento",
+    "subscriptionResumed": "Abbonamento riattivato",
+    "resumeSubscription": "Riattiva abbonamento",
+    "cancelsOn": "Termina il {date}",
+    "endsOn": "Termina il",
+    "startedOn": "Iniziato il",
+    "creditsUsedSuffix": "crediti usati in questo periodo",
+    "buyExtraCredits": "Acquista crediti extra",
+    "credits": "crediti",
+    "oneTime": "pagamento unico",
+    "buy": "Acquista {credits} crediti",
+    "allPlans": "Tutti i piani"
   },
   "suiteLanding": {
     "getStarted": "Inizia ora",

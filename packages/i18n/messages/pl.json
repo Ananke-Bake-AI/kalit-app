@@ -203,7 +203,12 @@
     "usageDesc": "Śledź kredyty i ostatnią aktywność.",
     "studioLabel": "Studio",
     "studioDesc": "Open the AI chat studio to build, deploy, and manage projects.",
-    "suiteSuffix": "suite"
+    "suiteSuffix": "suite",
+    "checkoutSuccessTitle": "Subskrypcja aktywowana",
+    "checkoutSuccessBody": "Twój plan jest przygotowywany — może to potrwać kilka sekund.",
+    "checkoutCanceled": "Płatność anulowana. Nic nie zostało pobrane.",
+    "creditsAddedTitle": "+{amount} kredytów dodano",
+    "creditsAddedBody": "Twoje saldo się aktualizuje — odśwież, jeśli jeszcze nie widzisz."
   },
   "common": {
     "previous": "Poprzedni",
@@ -295,7 +300,21 @@
     "loading": "Ładowanie...",
     "unlimitedMembers": "Nieograniczona liczba członków",
     "memberCount": "{count} członek",
-    "memberCountPlural": "{count} członków"
+    "memberCountPlural": "{count} członków",
+    "cancelConfirm": "Anulować subskrypcję na koniec bieżącego okresu? Zachowasz dostęp do tego czasu.",
+    "cancelScheduled": "Subskrypcja zakończy się na końcu okresu",
+    "cancelSubscription": "Anuluj subskrypcję",
+    "subscriptionResumed": "Subskrypcja wznowiona",
+    "resumeSubscription": "Wznów subskrypcję",
+    "cancelsOn": "Kończy się {date}",
+    "endsOn": "Kończy się",
+    "startedOn": "Rozpoczęto",
+    "creditsUsedSuffix": "kredytów wykorzystanych w tym okresie",
+    "buyExtraCredits": "Kup dodatkowe kredyty",
+    "credits": "kredyty",
+    "oneTime": "jednorazowo",
+    "buy": "Kup {credits} kredytów",
+    "allPlans": "Wszystkie plany"
   },
   "suiteLanding": {
     "getStarted": "Zacznij",
