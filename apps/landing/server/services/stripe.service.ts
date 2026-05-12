@@ -162,8 +162,13 @@ async function provisionEntitlements(orgId: string, planKey: string) {
   const plan = getPlan(planKey)
   if (!plan) return
 
+  // Clear PLAN entitlements (they get re-created below) AND any leftover
+  // TRIAL entitlements — once the user converts to a paid plan, the trial
+  // is no longer relevant. Without this, `resolveEntitlements` keeps
+  // setting `isTrial: true` and the dashboard still reads "Your trial
+  // expires on …" under the Starter badge.
   await prisma.entitlement.deleteMany({
-    where: { orgId, source: "PLAN" },
+    where: { orgId, source: { in: ["PLAN", "TRIAL"] } },
   })
 
   const entitlements = plan.suites.map((suiteId) => ({

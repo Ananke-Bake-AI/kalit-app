@@ -16,16 +16,16 @@ export const proxy = auth((req) => {
   const segments = pathname.split("/")
   const maybeLocale = segments[1]
 
-  // Note: we used to canonicalise /en/* → /* (308 redirect) here, but
-  // that combined with step 6's bare-path rewrite produces an
-  // ERR_TOO_MANY_REDIRECTS loop under Next.js 16's middleware-rewrite
-  // semantics (which now emit a 308 alongside the x-middleware-rewrite
-  // header — the browser follows the 308 back to /, middleware strips
-  // /en back to /, loop). Keeping /en/foo as-is for default-locale
-  // English URLs is a non-issue at this scale (no SEO hit yet; we
-  // were the only consumer of the canonical-strip). If we restore
-  // this later, gate it on an explicit "is this a fresh inbound
-  // request, not a rewrite continuation" signal.
+  // 1. /en/* → 308 redirect to strip default locale prefix (canonical URL).
+  //
+  // Disabled on self-hosted Node because middleware re-runs after our
+  // internal rewrite (/ → /en/<path>) and the strip bounces it back to /,
+  // re-triggering the rewrite — infinite loop, no page ever renders. On
+  // Vercel this loop never materializes (middleware doesn't re-fire after
+  // an internal rewrite). Re-enable when the strip can be safely
+  // distinguished from a rewrite re-entry — for now /en/* renders directly
+  // and stays in the URL bar; non-default locales (/fr, /es, …) keep their
+  // canonical-prefix behavior since rule 1 only matched DEFAULT_LOCALE.
 
   // 2. Determine locale + bare path
   let locale: Locale = DEFAULT_LOCALE
@@ -99,19 +99,19 @@ function localeRewrite(req: NextRequest, pathname: string, locale: Locale) {
     return NextResponse.next({ request: { headers } })
   }
 
-  // Bare path → rewrite internally to /en/<path>. CRITICAL: never produce
-  // a trailing slash on the rewrite target. With Next.js 16's
-  // trailingSlash:false default, `/en/` is treated as "needs canonical
-  // /en redirect" → Next.js issues a 308 alongside our rewrite, the
-  // browser hits /en, step 1 above strips it back to /, and we loop
-  // forever (ERR_TOO_MANY_REDIRECTS on the homepage). The fix is to
-  // collapse the leading slash when the source path is "/" itself.
-  const targetPath = pathname === "/" ? `/${DEFAULT_LOCALE}` : `/${DEFAULT_LOCALE}${pathname}`
-  const url = new URL(targetPath, req.url)
-  url.search = req.nextUrl.search
+  // Bare path → rewrite internally to /en/<path>.
+  // We clone req.nextUrl (rather than building `new URL(path, req.url)`) so
+  // the rewrite stays anchored to the parsed request origin — keeping it
+  // internal instead of falling back to a fetch-proxy through public DNS.
+  // x-locale-rewrite=1 tells rule 1 above to NOT re-strip /en on the
+  // rewritten request (on self-hosted Next.js middleware re-runs after a
+  // rewrite, which would otherwise infinite-loop / → /en → / → /en …).
+  const target = req.nextUrl.clone()
+  target.pathname = `/${DEFAULT_LOCALE}${pathname}`
   const headers = new Headers(req.headers)
   headers.set("x-locale", DEFAULT_LOCALE)
-  return NextResponse.rewrite(url, { request: { headers } })
+  headers.set("x-locale-rewrite", "1")
+  return NextResponse.rewrite(target, { request: { headers } })
 }
 
 function detectPreferred(request: NextRequest): Locale {
