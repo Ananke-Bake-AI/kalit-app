@@ -18,7 +18,13 @@
 
 set -e
 
-cd "$(dirname "$0")"
+# Resolve our own absolute path BEFORE the flock re-exec — `flock`
+# uses execvp() which searches PATH, and "." is virtually never in
+# PATH, so re-execing with `$0` (commonly "restart.sh") fails with
+# ENOENT. Compute it here so both the initial run and the post-flock
+# re-exec point at the same file.
+SELF="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
+cd "$(dirname "$SELF")"
 
 FORCE_DIRTY=0
 USE_LOCK=1
@@ -49,12 +55,12 @@ if [ "$USE_LOCK" = "1" ] && command -v flock >/dev/null 2>&1; then
     export KALIT_DEPLOY_LOCK_HELD=1
     # -w 1800 → wait up to 30 min (long Next.js builds + pnpm install).
     # Exit code 1 from flock means "lock not acquired in time".
-    exec flock -x -w 1800 "$LOCK_FILE" "$0" "$@"
+    exec flock -x -w 1800 "$LOCK_FILE" "$SELF" "$@"
   fi
   echo "▶ deploy lock held by this process"
 elif [ "$USE_LOCK" = "1" ]; then
   # No flock — best-effort process check. Kills my own duplicates only.
-  if pgrep -f "$(realpath "$0")" | grep -v "^$$\$" >/dev/null 2>&1; then
+  if pgrep -f "$SELF" | grep -v "^$$\$" >/dev/null 2>&1; then
     echo "✗ another restart.sh appears to be running (no flock available)" >&2
     echo "  rerun with --no-lock once you've confirmed it's safe." >&2
     exit 1
