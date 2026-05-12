@@ -118,9 +118,9 @@ export const STRIPE_KEYS = {
   PRICE_STARTER: "STRIPE_PRICE_STARTER",
   PRICE_PRO: "STRIPE_PRICE_PRO",
   PRICE_ENTERPRISE: "STRIPE_PRICE_ENTERPRISE",
-  PRICE_CREDITS_50: "STRIPE_PRICE_CREDITS_50",
-  PRICE_CREDITS_150: "STRIPE_PRICE_CREDITS_150",
-  PRICE_CREDITS_500: "STRIPE_PRICE_CREDITS_500",
+  PRICE_CREDITS_25: "STRIPE_PRICE_CREDITS_25",
+  PRICE_CREDITS_100: "STRIPE_PRICE_CREDITS_100",
+  PRICE_CREDITS_400: "STRIPE_PRICE_CREDITS_400",
 } as const
 
 export const ALL_STRIPE_KEYS = Object.values(STRIPE_KEYS)
@@ -163,12 +163,12 @@ export async function getPlanKeyByPriceId(priceId: string): Promise<string | nul
 
 export async function getCreditPackPriceId(packKey: string): Promise<string | null> {
   switch (packKey) {
-    case "credits_50":
-      return getSetting(STRIPE_KEYS.PRICE_CREDITS_50)
-    case "credits_150":
-      return getSetting(STRIPE_KEYS.PRICE_CREDITS_150)
-    case "credits_500":
-      return getSetting(STRIPE_KEYS.PRICE_CREDITS_500)
+    case "credits_25":
+      return getSetting(STRIPE_KEYS.PRICE_CREDITS_25)
+    case "credits_100":
+      return getSetting(STRIPE_KEYS.PRICE_CREDITS_100)
+    case "credits_400":
+      return getSetting(STRIPE_KEYS.PRICE_CREDITS_400)
     default:
       return null
   }
@@ -178,13 +178,13 @@ export async function getCreditPackPriceId(packKey: string): Promise<string | nu
 // when `checkout.session.completed` fires in mode=payment.
 export async function getCreditPackByPriceId(priceId: string): Promise<string | null> {
   if (!priceId) return null
-  const [p50, p150, p500] = await Promise.all([
-    getSetting(STRIPE_KEYS.PRICE_CREDITS_50),
-    getSetting(STRIPE_KEYS.PRICE_CREDITS_150),
-    getSetting(STRIPE_KEYS.PRICE_CREDITS_500),
+  const [p25, p100, p400] = await Promise.all([
+    getSetting(STRIPE_KEYS.PRICE_CREDITS_25),
+    getSetting(STRIPE_KEYS.PRICE_CREDITS_100),
+    getSetting(STRIPE_KEYS.PRICE_CREDITS_400),
   ])
-  if (priceId === p50) return "credits_50"
-  if (priceId === p150) return "credits_150"
-  if (priceId === p500) return "credits_500"
+  if (priceId === p25) return "credits_25"
+  if (priceId === p100) return "credits_100"
+  if (priceId === p400) return "credits_400"
   return null
 }

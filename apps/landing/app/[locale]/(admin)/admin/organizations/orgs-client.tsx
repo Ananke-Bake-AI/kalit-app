@@ -28,9 +28,9 @@ const SUITE_ENTITLEMENTS = [
 ]
 
 const PLANS = [
-  { key: "starter", label: "Starter", desc: "Flow — 100 credits — 2 members" },
-  { key: "pro", label: "Pro", desc: "Flow — 500 credits — 10 members" },
-  { key: "enterprise", label: "Enterprise", desc: "Flow + Pentest + Search — 2,000 credits — Unlimited members" }
+  { key: "starter", label: "Starter", desc: "Flow — 75 credits — 2 members" },
+  { key: "pro", label: "Pro", desc: "Flow — 350 credits — 10 members" },
+  { key: "enterprise", label: "Enterprise", desc: "Flow + Pentest + Search — 1,200 credits — Unlimited members" }
 ]
 
 export function OrgsClient({ initialData }: { initialData: OrgData }) {

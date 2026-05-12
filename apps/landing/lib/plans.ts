@@ -37,11 +37,11 @@ export const PLANS: PlanConfig[] = [
     name: "Starter",
     monthlyPrice: 2900,
     suites: ["flow"],
-    creditsPerMonth: 100,
+    creditsPerMonth: 75,
     maxMembers: 2,
     features: [
       "Kalit Flow access",
-      "100 credits / month",
+      "75 credits / month",
       "2 team members",
       "Custom domain",
       "Email support",
@@ -52,12 +52,12 @@ export const PLANS: PlanConfig[] = [
     name: "Pro",
     monthlyPrice: 9900,
     suites: ["flow"],
-    creditsPerMonth: 500,
+    creditsPerMonth: 350,
     maxMembers: 10,
     popular: true,
     features: [
       "Kalit Flow — pages and apps",
-      "500 credits / month",
+      "350 credits / month",
       "10 team members",
       "Deploy to production",
       "Priority support",
@@ -69,11 +69,11 @@ export const PLANS: PlanConfig[] = [
     name: "Enterprise",
     monthlyPrice: 29900,
     suites: ["flow", "pentest", "search"],
-    creditsPerMonth: 2000,
+    creditsPerMonth: 1200,
     maxMembers: -1,
     features: [
       "Flow + Pentest + Search",
-      "2,000 credits / month",
+      "1,200 credits / month",
       "Unlimited team members",
       "Priority execution",
       "Pre-launch security scans",
@@ -98,9 +98,9 @@ export interface CreditPackConfig {
 }
 
 export const CREDIT_PACKS: CreditPackConfig[] = [
-  { key: "credits_50", credits: 50, priceCents: 900 },
-  { key: "credits_150", credits: 150, priceCents: 1900, popular: true },
-  { key: "credits_500", credits: 500, priceCents: 4900 },
+  { key: "credits_25", credits: 25, priceCents: 1500 },
+  { key: "credits_100", credits: 100, priceCents: 4900, popular: true },
+  { key: "credits_400", credits: 400, priceCents: 15900 },
 ]
 
 export function getCreditPack(key: string): CreditPackConfig | undefined {

@@ -59,7 +59,7 @@ export const flowPlans: Omit<PlanProps, "action">[] = [
     priceSuffix: "per month",
     features: [
       "Kalit Flow access",
-      "100 credits / month",
+      "75 credits / month",
       "AI-generated landing pages",
       "Live previews",
       "Custom domain support",
@@ -75,7 +75,7 @@ export const flowPlans: Omit<PlanProps, "action">[] = [
     priceSuffix: "per month",
     features: [
       "Flow + Kalit Studio",
-      "500 credits / month",
+      "350 credits / month",
       "Deploy and redeploy pages",
       "Project files and exports",
       "Priority support",
@@ -89,7 +89,7 @@ export const flowPlans: Omit<PlanProps, "action">[] = [
     priceSuffix: "per month",
     features: [
       "Flow + Pentest access",
-      "2,000 credits / month",
+      "1,200 credits / month",
       "Pre-launch security scan",
       "Report export",
       "Custom onboarding",
