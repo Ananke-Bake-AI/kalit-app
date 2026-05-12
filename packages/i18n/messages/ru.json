@@ -208,7 +208,11 @@
     "checkoutSuccessBody": "Ваш план настраивается — это может занять несколько секунд.",
     "checkoutCanceled": "Оплата отменена. Списания не было.",
     "creditsAddedTitle": "+{amount} кредитов добавлено",
-    "creditsAddedBody": "Ваш баланс обновляется — обновите страницу, если ещё не видите."
+    "creditsAddedBody": "Ваш баланс обновляется — обновите страницу, если ещё не видите.",
+    "checkoutCanceledTitle": "Оплата отменена",
+    "checkoutCanceledBody": "Списания не было. Вы можете выбрать тариф в любое время.",
+    "checkoutErrorTitle": "Оплата не прошла",
+    "checkoutErrorBody": "Stripe вернул ошибку. Попробуйте ещё раз или свяжитесь со службой поддержки."
   },
   "common": {
     "previous": "Назад",
@@ -219,7 +223,8 @@
     "delete": "Удалить",
     "confirm": "Подтвердить",
     "search": "Поиск",
-    "noResults": "Результатов не найдено."
+    "noResults": "Результатов не найдено.",
+    "dismiss": "Закрыть"
   },
   "settings": {
     "profileLabel": "Профиль",
@@ -314,7 +319,8 @@
     "credits": "кредитов",
     "oneTime": "разовый платёж",
     "buy": "Купить {credits} кредитов",
-    "allPlans": "Все тарифы"
+    "allPlans": "Все тарифы",
+    "extraCreditsRemainingSuffix": "дополнительных кредитов осталось"
   },
   "suiteLanding": {
     "getStarted": "Начать",

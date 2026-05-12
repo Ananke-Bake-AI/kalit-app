@@ -208,7 +208,11 @@
     "checkoutSuccessBody": "Din plan tillhandahålls — det kan ta några sekunder.",
     "checkoutCanceled": "Utcheckning avbruten. Inget debiterades.",
     "creditsAddedTitle": "+{amount} krediter tillagda",
-    "creditsAddedBody": "Ditt saldo uppdateras — ladda om om du inte ser det än."
+    "creditsAddedBody": "Ditt saldo uppdateras — ladda om om du inte ser det än.",
+    "checkoutCanceledTitle": "Utcheckning avbruten",
+    "checkoutCanceledBody": "Inget debiterades. Du kan välja en plan när du vill.",
+    "checkoutErrorTitle": "Betalningen slutfördes inte",
+    "checkoutErrorBody": "Stripe returnerade ett fel. Försök igen eller kontakta supporten."
   },
   "common": {
     "previous": "Föregående",
@@ -219,7 +223,8 @@
     "delete": "Ta bort",
     "confirm": "Bekräfta",
     "search": "Sök",
-    "noResults": "Inga resultat hittades."
+    "noResults": "Inga resultat hittades.",
+    "dismiss": "Stäng"
   },
   "settings": {
     "profileLabel": "Profil",
@@ -314,7 +319,8 @@
     "credits": "krediter",
     "oneTime": "engångsbetalning",
     "buy": "Köp {credits} krediter",
-    "allPlans": "Alla planer"
+    "allPlans": "Alla planer",
+    "extraCreditsRemainingSuffix": "extra krediter kvar"
   },
   "suiteLanding": {
     "getStarted": "Kom igång",

@@ -208,7 +208,11 @@
     "checkoutSuccessBody": "Votre plan est en cours d activation — ça peut prendre quelques secondes.",
     "checkoutCanceled": "Paiement annulé. Aucun débit effectué.",
     "creditsAddedTitle": "+{amount} crédits ajoutés",
-    "creditsAddedBody": "Votre solde se met à jour — rafraîchissez si vous ne voyez pas encore le changement."
+    "creditsAddedBody": "Votre solde se met à jour — rafraîchissez si vous ne voyez pas encore le changement.",
+    "checkoutCanceledTitle": "Paiement annulé",
+    "checkoutCanceledBody": "Aucun débit. Tu peux relancer un plan quand tu veux.",
+    "checkoutErrorTitle": "Le paiement n a pas abouti",
+    "checkoutErrorBody": "Stripe a renvoyé une erreur. Réessaie, ou contacte le support si ça persiste."
   },
   "common": {
     "previous": "Précédent",
@@ -219,7 +223,8 @@
     "delete": "Supprimer",
     "confirm": "Confirmer",
     "search": "Rechercher",
-    "noResults": "Aucun résultat."
+    "noResults": "Aucun résultat.",
+    "dismiss": "Fermer"
   },
   "settings": {
     "profileLabel": "Profil",
@@ -318,7 +323,8 @@
     "credits": "crédits",
     "oneTime": "paiement unique",
     "buy": "Acheter {credits} crédits",
-    "allPlans": "Tous les plans"
+    "allPlans": "Tous les plans",
+    "extraCreditsRemainingSuffix": "crédits supplémentaires restants"
   },
   "suiteLanding": {
     "getStarted": "Commencer",

@@ -208,7 +208,11 @@
     "checkoutSuccessBody": "Seu plano está sendo provisionado — pode levar alguns segundos.",
     "checkoutCanceled": "Checkout cancelado. Nada foi cobrado.",
     "creditsAddedTitle": "+{amount} créditos adicionados",
-    "creditsAddedBody": "Seu saldo está atualizando — recarregue se ainda não viu."
+    "creditsAddedBody": "Seu saldo está atualizando — recarregue se ainda não viu.",
+    "checkoutCanceledTitle": "Pagamento cancelado",
+    "checkoutCanceledBody": "Nada foi cobrado. Você pode escolher um plano quando quiser.",
+    "checkoutErrorTitle": "O pagamento não foi concluído",
+    "checkoutErrorBody": "A Stripe retornou um erro. Tente novamente ou contate o suporte."
   },
   "common": {
     "previous": "Anterior",
@@ -219,7 +223,8 @@
     "delete": "Excluir",
     "confirm": "Confirmar",
     "search": "Buscar",
-    "noResults": "Nenhum resultado encontrado."
+    "noResults": "Nenhum resultado encontrado.",
+    "dismiss": "Fechar"
   },
   "settings": {
     "profileLabel": "Perfil",
@@ -314,7 +319,8 @@
     "credits": "créditos",
     "oneTime": "pagamento único",
     "buy": "Comprar {credits} créditos",
-    "allPlans": "Todos os planos"
+    "allPlans": "Todos os planos",
+    "extraCreditsRemainingSuffix": "créditos extras restantes"
   },
   "suiteLanding": {
     "getStarted": "Começar",

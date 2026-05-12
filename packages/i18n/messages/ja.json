@@ -208,7 +208,11 @@
     "checkoutSuccessBody": "プランをプロビジョニング中です — 数秒かかる場合があります。",
     "checkoutCanceled": "チェックアウトはキャンセルされました。請求はありません。",
     "creditsAddedTitle": "+{amount} クレジットを追加しました",
-    "creditsAddedBody": "クレジット残高を更新中です — まだ反映されない場合は再読み込みしてください。"
+    "creditsAddedBody": "クレジット残高を更新中です — まだ反映されない場合は再読み込みしてください。",
+    "checkoutCanceledTitle": "チェックアウトがキャンセルされました",
+    "checkoutCanceledBody": "請求はありません。いつでもプランを選び直せます。",
+    "checkoutErrorTitle": "支払いが完了しませんでした",
+    "checkoutErrorBody": "Stripeがエラーを返しました。もう一度試すか、サポートにお問い合わせください。"
   },
   "common": {
     "previous": "前へ",
@@ -219,7 +223,8 @@
     "delete": "削除",
     "confirm": "確認",
     "search": "検索",
-    "noResults": "結果が見つかりません。"
+    "noResults": "結果が見つかりません。",
+    "dismiss": "閉じる"
   },
   "settings": {
     "profileLabel": "プロフィール",
@@ -314,7 +319,8 @@
     "credits": "クレジット",
     "oneTime": "一回払い",
     "buy": "{credits} クレジット購入",
-    "allPlans": "すべてのプラン"
+    "allPlans": "すべてのプラン",
+    "extraCreditsRemainingSuffix": "追加クレジット残り"
   },
   "suiteLanding": {
     "getStarted": "今すぐ始める",

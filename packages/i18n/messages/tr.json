@@ -208,7 +208,11 @@
     "checkoutSuccessBody": "Planınız hazırlanıyor — birkaç saniye sürebilir.",
     "checkoutCanceled": "Ödeme iptal edildi. Ücret alınmadı.",
     "creditsAddedTitle": "+{amount} kredi eklendi",
-    "creditsAddedBody": "Bakiyeniz güncelleniyor — henüz görmüyorsanız sayfayı yenileyin."
+    "creditsAddedBody": "Bakiyeniz güncelleniyor — henüz görmüyorsanız sayfayı yenileyin.",
+    "checkoutCanceledTitle": "Ödeme iptal edildi",
+    "checkoutCanceledBody": "Ücret alınmadı. İstediğiniz zaman yeniden bir plan seçebilirsiniz.",
+    "checkoutErrorTitle": "Ödeme tamamlanmadı",
+    "checkoutErrorBody": "Stripe bir hata döndürdü. Tekrar deneyin veya destek ekibiyle iletişime geçin."
   },
   "common": {
     "previous": "Önceki",
@@ -219,7 +223,8 @@
     "delete": "Sil",
     "confirm": "Onayla",
     "search": "Ara",
-    "noResults": "Sonuç bulunamadı."
+    "noResults": "Sonuç bulunamadı.",
+    "dismiss": "Kapat"
   },
   "settings": {
     "profileLabel": "Profil",
@@ -314,7 +319,8 @@
     "credits": "kredi",
     "oneTime": "tek seferlik",
     "buy": "{credits} kredi satın al",
-    "allPlans": "Tüm planlar"
+    "allPlans": "Tüm planlar",
+    "extraCreditsRemainingSuffix": "kalan ek kredi"
   },
   "suiteLanding": {
     "getStarted": "Başlayın",

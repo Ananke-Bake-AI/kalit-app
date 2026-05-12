@@ -208,7 +208,11 @@
     "checkoutSuccessBody": "Tu plan se está aprovisionando — puede tardar unos segundos.",
     "checkoutCanceled": "Pago cancelado. No se cobró nada.",
     "creditsAddedTitle": "+{amount} créditos añadidos",
-    "creditsAddedBody": "Tu saldo se está actualizando — recarga si aún no lo ves."
+    "creditsAddedBody": "Tu saldo se está actualizando — recarga si aún no lo ves.",
+    "checkoutCanceledTitle": "Pago cancelado",
+    "checkoutCanceledBody": "No se cobró nada. Puedes elegir un plan cuando quieras.",
+    "checkoutErrorTitle": "El pago no se completó",
+    "checkoutErrorBody": "Stripe devolvió un error. Inténtalo de nuevo o contacta con soporte."
   },
   "common": {
     "previous": "Anterior",
@@ -219,7 +223,8 @@
     "delete": "Eliminar",
     "confirm": "Confirmar",
     "search": "Buscar",
-    "noResults": "Sin resultados."
+    "noResults": "Sin resultados.",
+    "dismiss": "Cerrar"
   },
   "settings": {
     "profileLabel": "Perfil",
@@ -314,7 +319,8 @@
     "credits": "créditos",
     "oneTime": "pago único",
     "buy": "Comprar {credits} créditos",
-    "allPlans": "Todos los planes"
+    "allPlans": "Todos los planes",
+    "extraCreditsRemainingSuffix": "créditos extra restantes"
   },
   "suiteLanding": {
     "getStarted": "Empezar",

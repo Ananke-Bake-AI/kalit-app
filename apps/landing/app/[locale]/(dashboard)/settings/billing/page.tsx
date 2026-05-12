@@ -5,7 +5,7 @@ import info from "@/components/settings-info-rows/settings-info-rows.module.scss
 import { SurfacePanel } from "@/components/surface-panel"
 import { auth } from "@/lib/auth"
 import { getServerTranslation, localeHref } from "@/lib/i18n-server"
-import { getRemainingCredits, resolveEntitlements } from "@/lib/entitlements"
+import { getCreditBreakdown } from "@/lib/entitlements"
 import { CREDIT_PACKS, FREE_PLAN, getPlan, PLANS } from "@/lib/plans"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
@@ -34,15 +34,21 @@ export default async function BillingPage() {
   })
 
   const currentPlan = subscription ? getPlan(subscription.planKey) : null
-  const entitlements = await resolveEntitlements(session.user.orgId)
-  const remainingCreditsRaw = await getRemainingCredits(session.user.orgId)
-  const totalCredits = entitlements.creditsPerMonth
-  // UsageRecord.credits is a Decimal column — sums come back with float-
-  // precision dust (e.g. 29.256499999999505). Round both sides for display
-  // so the strip stays readable; internal accounting still uses raw values.
-  const remainingCredits = Math.max(0, Math.round(remainingCreditsRaw))
-  const usedCredits = Math.max(0, totalCredits - remainingCredits)
-  const usedPct = totalCredits > 0 ? Math.min(100, Math.round((usedCredits / totalCredits) * 100)) : 0
+  const breakdown = await getCreditBreakdown(session.user.orgId)
+  // UsageRecord.credits is Decimal — sums come back with float dust
+  // (e.g. 29.256499999999505). Round everything here for display; the
+  // raw breakdown still drives credit gating server-side.
+  const planMonthly = breakdown.planMonthly
+  const bonus = Math.round(breakdown.bonus)
+  const totalUsedRaw = Math.round(breakdown.used)
+  // Split used credits across the plan first, spillover into the bonus
+  // pool — gives the user a clear "you've consumed X of your plan, Y of
+  // your extra credits" mental model.
+  const planUsed = Math.min(planMonthly, totalUsedRaw)
+  const bonusUsed = Math.min(bonus, Math.max(0, totalUsedRaw - planMonthly))
+  const planPct = planMonthly > 0 ? Math.min(100, Math.round((planUsed / planMonthly) * 100)) : 0
+  const bonusPct = bonus > 0 ? Math.min(100, Math.round((bonusUsed / bonus) * 100)) : 0
+  const bonusRemaining = Math.max(0, bonus - bonusUsed)
 
   const formatMembers = (limit: number) =>
     limit === -1 ? t("settingsPages.unlimitedMembers") : t("settingsPages.memberCountPlural", { count: limit })
@@ -71,14 +77,28 @@ export default async function BillingPage() {
         subtitle={subtitle}
         headerAside={statusBadge}
       >
-        {/* Credits usage bar — works for both free and paid plans */}
-        {totalCredits > 0 ? (
+        {/* Plan usage bar */}
+        {planMonthly > 0 ? (
           <div className={s.creditsStrip}>
             <span className={s.used}>
-              <strong>{usedCredits}</strong> / {totalCredits} {t("settingsPages.creditsUsedSuffix")}
+              <strong>{planUsed}</strong> / {planMonthly} {t("settingsPages.creditsUsedSuffix")}
             </span>
-            <span className={s.label}>{usedPct}%</span>
-            <div className={s.bar}><span style={{ width: `${usedPct}%` }} /></div>
+            <span className={s.label}>{planPct}%</span>
+            <div className={s.bar}><span style={{ width: `${planPct}%` }} /></div>
+          </div>
+        ) : null}
+
+        {/* Extra credit pool — only shown when the org has purchased / been
+            granted top-up credits. Separate bar so the plan usage doesn't
+            visually merge with the top-ups (the user just bought +25 and
+            expects to SEE them somewhere). */}
+        {bonus > 0 ? (
+          <div className={s.creditsStrip}>
+            <span className={s.used}>
+              <strong>{bonusRemaining}</strong> / {bonus} {t("settingsPages.extraCreditsRemainingSuffix")}
+            </span>
+            <span className={s.label}>{bonusPct}%</span>
+            <div className={`${s.bar} ${s.barBonus}`}><span style={{ width: `${bonusPct}%` }} /></div>
           </div>
         ) : null}
 

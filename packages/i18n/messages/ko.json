@@ -208,7 +208,11 @@
     "checkoutSuccessBody": "플랜을 프로비저닝 중입니다 — 몇 초 정도 걸릴 수 있습니다.",
     "checkoutCanceled": "결제가 취소되었습니다. 청구되지 않았습니다.",
     "creditsAddedTitle": "+{amount} 크레딧 추가됨",
-    "creditsAddedBody": "잔액이 업데이트 중입니다 — 보이지 않으면 새로고침하세요."
+    "creditsAddedBody": "잔액이 업데이트 중입니다 — 보이지 않으면 새로고침하세요.",
+    "checkoutCanceledTitle": "결제가 취소되었습니다",
+    "checkoutCanceledBody": "청구되지 않았습니다. 언제든지 플랜을 다시 선택할 수 있습니다.",
+    "checkoutErrorTitle": "결제가 완료되지 않았습니다",
+    "checkoutErrorBody": "Stripe에서 오류가 반환되었습니다. 다시 시도하거나 지원팀에 문의하세요."
   },
   "common": {
     "previous": "이전",
@@ -219,7 +223,8 @@
     "delete": "삭제",
     "confirm": "확인",
     "search": "검색",
-    "noResults": "결과를 찾을 수 없습니다."
+    "noResults": "결과를 찾을 수 없습니다.",
+    "dismiss": "닫기"
   },
   "settings": {
     "profileLabel": "프로필",
@@ -314,7 +319,8 @@
     "credits": "크레딧",
     "oneTime": "일회성 결제",
     "buy": "{credits} 크레딧 구매",
-    "allPlans": "모든 요금제"
+    "allPlans": "모든 요금제",
+    "extraCreditsRemainingSuffix": "추가 크레딧 남음"
   },
   "suiteLanding": {
     "getStarted": "시작하기",

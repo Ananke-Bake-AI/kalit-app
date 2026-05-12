@@ -91,6 +91,54 @@ export async function checkSuiteAccess(orgId: string, suiteId: SuiteId): Promise
   return entitlements.suites[suiteId] === true
 }
 
+/**
+ * Per-period credit breakdown — splits the user's allowance into the
+ * monthly plan allocation, any top-up packs purchased, and what's been
+ * consumed. Used by the dashboard / billing UI to show "plan usage" and
+ * "extra credits" separately so a paid top-up doesn't get hidden behind
+ * a never-incrementing "0 / 75" bar.
+ */
+export interface CreditBreakdown {
+  planMonthly: number   // plan allowance for the month (e.g. 75 for Starter)
+  bonus: number          // sum of CreditRecord CREDIT this period (top-up packs + admin grants)
+  used: number           // usageRecord.credits + creditRecord DEBIT this period
+  remaining: number      // (planMonthly + bonus) - used, never < 0
+}
+
+export async function getCreditBreakdown(orgId: string): Promise<CreditBreakdown> {
+  const entitlements = await resolveEntitlements(orgId)
+
+  const now = new Date()
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+
+  const [usage, bonusAgg, debitsAgg] = await Promise.all([
+    prisma.usageRecord.aggregate({
+      where: { orgId, createdAt: { gte: startOfMonth } },
+      _sum: { credits: true },
+    }),
+    prisma.creditRecord.aggregate({
+      where: { orgId, direction: "CREDIT", createdAt: { gte: startOfMonth } },
+      _sum: { amount: true },
+    }),
+    prisma.creditRecord.aggregate({
+      where: { orgId, direction: "DEBIT", createdAt: { gte: startOfMonth } },
+      _sum: { amount: true },
+    }),
+  ])
+
+  const usedCredits = usage._sum.credits ? Number(usage._sum.credits) : 0
+  const debits = debitsAgg._sum.amount || 0
+  const bonus = bonusAgg._sum.amount || 0
+  const used = usedCredits + debits
+
+  return {
+    planMonthly: entitlements.creditsPerMonth,
+    bonus,
+    used,
+    remaining: Math.max(0, entitlements.creditsPerMonth + bonus - used),
+  }
+}
+
 export async function getRemainingCredits(orgId: string): Promise<number> {
   const entitlements = await resolveEntitlements(orgId)
 

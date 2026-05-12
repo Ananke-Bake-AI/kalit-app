@@ -208,7 +208,11 @@
     "checkoutSuccessBody": "يتم تجهيز خطتك — قد يستغرق ذلك بضع ثوانٍ.",
     "checkoutCanceled": "تم إلغاء الدفع. لم يتم خصم أي مبلغ.",
     "creditsAddedTitle": "تم إضافة {amount}+ رصيد",
-    "creditsAddedBody": "يتم تحديث رصيدك — أعد التحميل إذا لم تره بعد."
+    "creditsAddedBody": "يتم تحديث رصيدك — أعد التحميل إذا لم تره بعد.",
+    "checkoutCanceledTitle": "تم إلغاء الدفع",
+    "checkoutCanceledBody": "لم يتم خصم أي مبلغ. يمكنك اختيار خطة في أي وقت.",
+    "checkoutErrorTitle": "لم يكتمل الدفع",
+    "checkoutErrorBody": "أرجعت Stripe خطأ. حاول مرة أخرى أو اتصل بالدعم."
   },
   "common": {
     "previous": "السابق",
@@ -219,7 +223,8 @@
     "delete": "حذف",
     "confirm": "تأكيد",
     "search": "بحث",
-    "noResults": "لم يتم العثور على نتائج."
+    "noResults": "لم يتم العثور على نتائج.",
+    "dismiss": "إغلاق"
   },
   "settings": {
     "profileLabel": "الملف الشخصي",
@@ -314,7 +319,8 @@
     "credits": "رصيد",
     "oneTime": "دفعة واحدة",
     "buy": "شراء {credits} رصيد",
-    "allPlans": "جميع الخطط"
+    "allPlans": "جميع الخطط",
+    "extraCreditsRemainingSuffix": "رصيد إضافي متبقي"
   },
   "suiteLanding": {
     "getStarted": "ابدأ الآن",

@@ -208,7 +208,11 @@
     "checkoutSuccessBody": "正在配置您的套餐 — 这可能需要几秒钟。",
     "checkoutCanceled": "结账已取消。未产生任何费用。",
     "creditsAddedTitle": "+{amount} 积分已添加",
-    "creditsAddedBody": "您的余额正在更新 — 如果还没看到请刷新。"
+    "creditsAddedBody": "您的余额正在更新 — 如果还没看到请刷新。",
+    "checkoutCanceledTitle": "结账已取消",
+    "checkoutCanceledBody": "未产生任何费用。您可以随时再次选择套餐。",
+    "checkoutErrorTitle": "支付未完成",
+    "checkoutErrorBody": "Stripe 返回错误。请重试，或联系支持。"
   },
   "common": {
     "previous": "上一页",
@@ -219,7 +223,8 @@
     "delete": "删除",
     "confirm": "确认",
     "search": "搜索",
-    "noResults": "未找到结果。"
+    "noResults": "未找到结果。",
+    "dismiss": "关闭"
   },
   "settings": {
     "profileLabel": "个人资料",
@@ -314,7 +319,8 @@
     "credits": "积分",
     "oneTime": "一次性",
     "buy": "购买 {credits} 积分",
-    "allPlans": "所有套餐"
+    "allPlans": "所有套餐",
+    "extraCreditsRemainingSuffix": "剩余额外积分"
   },
   "suiteLanding": {
     "getStarted": "立即开始",

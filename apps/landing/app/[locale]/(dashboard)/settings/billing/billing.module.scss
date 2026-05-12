@@ -22,7 +22,13 @@
   grid-template-columns: 1fr auto;
   gap: 0.5rem 1rem;
   align-items: end;
-  margin: 0.75rem 0 1rem;
+  margin: 0.75rem 0;
+
+  & + & {
+    // Tighter spacing between consecutive strips (plan + bonus) so they
+    // read as a stack rather than two unrelated rows.
+    margin-top: 0.4rem;
+  }
 
   @include max($responsive) {
     grid-template-columns: 1fr;
@@ -41,6 +47,12 @@
       background: linear-gradient(90deg, var(--color-2), var(--color-5));
       border-radius: inherit;
     }
+  }
+
+  // Extra-credit bar — distinct hue so the user can tell the two stacks
+  // apart at a glance.
+  .barBonus > span {
+    background: linear-gradient(90deg, oklch(0.78 0.18 80), oklch(0.7 0.21 50));
   }
 
   .used,

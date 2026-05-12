@@ -208,7 +208,11 @@
     "checkoutSuccessBody": "आपकी योजना तैयार की जा रही है — इसमें कुछ सेकंड लग सकते हैं।",
     "checkoutCanceled": "चेकआउट रद्द कर दिया गया। कोई शुल्क नहीं लिया गया।",
     "creditsAddedTitle": "+{amount} क्रेडिट जोड़े गए",
-    "creditsAddedBody": "आपका बैलेंस अपडेट हो रहा है — अगर अभी नहीं दिख रहा तो रिफ्रेश करें।"
+    "creditsAddedBody": "आपका बैलेंस अपडेट हो रहा है — अगर अभी नहीं दिख रहा तो रिफ्रेश करें।",
+    "checkoutCanceledTitle": "चेकआउट रद्द कर दिया गया",
+    "checkoutCanceledBody": "कोई शुल्क नहीं लिया गया। आप जब चाहें कोई योजना चुन सकते हैं।",
+    "checkoutErrorTitle": "भुगतान पूरा नहीं हुआ",
+    "checkoutErrorBody": "Stripe ने एक त्रुटि लौटाई। पुनः प्रयास करें या सहायता से संपर्क करें।"
   },
   "common": {
     "previous": "पिछला",
@@ -219,7 +223,8 @@
     "delete": "हटाएँ",
     "confirm": "पुष्टि करें",
     "search": "खोजें",
-    "noResults": "कोई परिणाम नहीं मिला।"
+    "noResults": "कोई परिणाम नहीं मिला।",
+    "dismiss": "बंद करें"
   },
   "settings": {
     "profileLabel": "प्रोफ़ाइल",
@@ -314,7 +319,8 @@
     "credits": "क्रेडिट",
     "oneTime": "एक बार का भुगतान",
     "buy": "{credits} क्रेडिट खरीदें",
-    "allPlans": "सभी योजनाएँ"
+    "allPlans": "सभी योजनाएँ",
+    "extraCreditsRemainingSuffix": "अतिरिक्त क्रेडिट शेष"
   },
   "suiteLanding": {
     "getStarted": "शुरू करें",

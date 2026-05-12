@@ -208,7 +208,11 @@
     "checkoutSuccessBody": "Je plan wordt klaargemaakt — dit kan een paar seconden duren.",
     "checkoutCanceled": "Afrekenen geannuleerd. Er is niets afgeschreven.",
     "creditsAddedTitle": "+{amount} credits toegevoegd",
-    "creditsAddedBody": "Je saldo wordt bijgewerkt — vernieuw als je het nog niet ziet."
+    "creditsAddedBody": "Je saldo wordt bijgewerkt — vernieuw als je het nog niet ziet.",
+    "checkoutCanceledTitle": "Afrekenen geannuleerd",
+    "checkoutCanceledBody": "Er is niets afgeschreven. Je kunt op elk moment een plan kiezen.",
+    "checkoutErrorTitle": "Betaling niet voltooid",
+    "checkoutErrorBody": "Stripe gaf een foutmelding. Probeer opnieuw of neem contact op met support."
   },
   "common": {
     "previous": "Vorige",
@@ -219,7 +223,8 @@
     "delete": "Verwijderen",
     "confirm": "Bevestigen",
     "search": "Zoeken",
-    "noResults": "Geen resultaten gevonden."
+    "noResults": "Geen resultaten gevonden.",
+    "dismiss": "Sluiten"
   },
   "settings": {
     "profileLabel": "Profiel",
@@ -314,7 +319,8 @@
     "credits": "credits",
     "oneTime": "eenmalige betaling",
     "buy": "Koop {credits} credits",
-    "allPlans": "Alle abonnementen"
+    "allPlans": "Alle abonnementen",
+    "extraCreditsRemainingSuffix": "extra credits resterend"
   },
   "suiteLanding": {
     "getStarted": "Aan de slag",

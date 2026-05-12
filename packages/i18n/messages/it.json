@@ -208,7 +208,11 @@
     "checkoutSuccessBody": "Il tuo piano è in fase di attivazione — potrebbe richiedere qualche secondo.",
     "checkoutCanceled": "Checkout annullato. Nessun addebito.",
     "creditsAddedTitle": "+{amount} crediti aggiunti",
-    "creditsAddedBody": "Il tuo saldo si sta aggiornando — ricarica se non lo vedi ancora."
+    "creditsAddedBody": "Il tuo saldo si sta aggiornando — ricarica se non lo vedi ancora.",
+    "checkoutCanceledTitle": "Checkout annullato",
+    "checkoutCanceledBody": "Nessun addebito. Puoi scegliere un piano quando vuoi.",
+    "checkoutErrorTitle": "Il pagamento non è andato a buon fine",
+    "checkoutErrorBody": "Stripe ha restituito un errore. Riprova o contatta il supporto."
   },
   "common": {
     "previous": "Precedente",
@@ -219,7 +223,8 @@
     "delete": "Elimina",
     "confirm": "Conferma",
     "search": "Cerca",
-    "noResults": "Nessun risultato trovato."
+    "noResults": "Nessun risultato trovato.",
+    "dismiss": "Chiudi"
   },
   "settings": {
     "profileLabel": "Profilo",
@@ -314,7 +319,8 @@
     "credits": "crediti",
     "oneTime": "pagamento unico",
     "buy": "Acquista {credits} crediti",
-    "allPlans": "Tutti i piani"
+    "allPlans": "Tutti i piani",
+    "extraCreditsRemainingSuffix": "crediti extra rimanenti"
   },
   "suiteLanding": {
     "getStarted": "Inizia ora",

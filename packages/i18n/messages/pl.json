@@ -208,7 +208,11 @@
     "checkoutSuccessBody": "Twój plan jest przygotowywany — może to potrwać kilka sekund.",
     "checkoutCanceled": "Płatność anulowana. Nic nie zostało pobrane.",
     "creditsAddedTitle": "+{amount} kredytów dodano",
-    "creditsAddedBody": "Twoje saldo się aktualizuje — odśwież, jeśli jeszcze nie widzisz."
+    "creditsAddedBody": "Twoje saldo się aktualizuje — odśwież, jeśli jeszcze nie widzisz.",
+    "checkoutCanceledTitle": "Płatność anulowana",
+    "checkoutCanceledBody": "Nic nie zostało pobrane. Możesz wybrać plan w dowolnym momencie.",
+    "checkoutErrorTitle": "Płatność nie powiodła się",
+    "checkoutErrorBody": "Stripe zwrócił błąd. Spróbuj ponownie lub skontaktuj się z pomocą."
   },
   "common": {
     "previous": "Poprzedni",
@@ -219,7 +223,8 @@
     "delete": "Usuń",
     "confirm": "Potwierdź",
     "search": "Szukaj",
-    "noResults": "Nie znaleziono wyników."
+    "noResults": "Nie znaleziono wyników.",
+    "dismiss": "Zamknij"
   },
   "settings": {
     "profileLabel": "Profil",
@@ -314,7 +319,8 @@
     "credits": "kredyty",
     "oneTime": "jednorazowo",
     "buy": "Kup {credits} kredytów",
-    "allPlans": "Wszystkie plany"
+    "allPlans": "Wszystkie plany",
+    "extraCreditsRemainingSuffix": "dodatkowych kredytów pozostało"
   },
   "suiteLanding": {
     "getStarted": "Zacznij",

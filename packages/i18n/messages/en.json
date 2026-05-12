@@ -208,7 +208,11 @@
     "checkoutSuccessBody": "Your plan is provisioning — this can take a few seconds.",
     "checkoutCanceled": "Checkout canceled. Nothing was charged.",
     "creditsAddedTitle": "+{amount} credits added",
-    "creditsAddedBody": "Your credit balance is updating — refresh in a moment if you don't see it yet."
+    "creditsAddedBody": "Your credit balance is updating — refresh in a moment if you don't see it yet.",
+    "checkoutCanceledTitle": "Checkout canceled",
+    "checkoutCanceledBody": "No charge was made. You can pick a plan again whenever you are ready.",
+    "checkoutErrorTitle": "Payment did not complete",
+    "checkoutErrorBody": "Stripe returned an error. Please try again, or contact support if it keeps failing."
   },
   "common": {
     "previous": "Previous",
@@ -219,7 +223,8 @@
     "delete": "Delete",
     "confirm": "Confirm",
     "search": "Search",
-    "noResults": "No results found."
+    "noResults": "No results found.",
+    "dismiss": "Dismiss"
   },
   "settings": {
     "profileLabel": "Profile",
@@ -318,7 +323,8 @@
     "credits": "credits",
     "oneTime": "one-time",
     "buy": "Buy {credits} credits",
-    "allPlans": "All plans"
+    "allPlans": "All plans",
+    "extraCreditsRemainingSuffix": "extra credits remaining"
   },
   "suiteLanding": {
     "getStarted": "Get started",
