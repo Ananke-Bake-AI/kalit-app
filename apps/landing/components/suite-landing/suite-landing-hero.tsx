@@ -83,7 +83,7 @@ export function SuiteLandingHero({
           </div>
           <div className={s.right}>
             {rightSlot}
-            <div className={s.bg} data-reveal>
+            <div className={s.bg}>
               <Color4Bg className={s.gradient} style="blur-gradient" colors={gradientColors} />
             </div>
           </div>
