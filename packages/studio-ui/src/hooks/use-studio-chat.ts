@@ -450,6 +450,15 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
   // the room is actually live — otherwise the persisted partial
   // stays as is, no flicker).
   const prunedAssistantRef = useRef<Map<string, string>>(new Map())
+  // Sessions for which handleSend is currently driving the SSE body.
+  // session_idle from the WS arrives BEFORE the broker opens the
+  // streamHub room for a brand-new session (POST /messages races the
+  // subscribe), so without this set we'd flip isStreaming=false right
+  // after handleSend set it true. The dots vanish, the user thinks
+  // nothing's happening. The fix is to suppress session_idle's
+  // setIsStreaming(false) while a local POST is in flight for the
+  // same session — handleSend owns the flag in that window.
+  const inflightSendsRef = useRef<Set<string>>(new Set())
 
   // Subscribe / unsubscribe to the active session's WS stream.
   // The candidate-to-prune capture used to live here too — but local
@@ -549,7 +558,12 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
         case "session_idle": {
           // Broker has no live room — clear any optimistic
           // isStreaming we set in handleSessionSelect.
-          if (sid === activeSessionRef.current) {
+          // EXCEPT: if a local handleSend is currently driving this
+          // session's POST, the broker just hasn't called Open yet and
+          // session_idle is racing the streamHub setup. Trusting it
+          // would flip the dots off for the entire first-message
+          // window. Let handleSend own the flag for in-flight sends.
+          if (sid === activeSessionRef.current && !inflightSendsRef.current.has(sid)) {
             setIsStreaming(false)
             setStreamThinking("")
             prunedAssistantRef.current.delete(sid)
@@ -576,6 +590,14 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
         case "session_event": {
           const ev = (frame.data ?? {}) as Record<string, unknown>
           if (!ev || typeof ev !== "object") break
+          // Any inbound event is proof of life — promote isStreaming
+          // back to true in case an earlier session_idle (race against
+          // streamHub.Open on a brand-new session) left it false.
+          // Cheap idempotent setter; the store no-ops a same-value
+          // write.
+          if (sid === activeSessionRef.current) {
+            setIsStreaming(true)
+          }
           // Get-or-create the reducer for this session, with handlers
           // that ONLY commit to the global UI state when the event
           // belongs to the currently-active session. Events from
@@ -795,6 +817,10 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
     // guard kills the reconnect — that's why thinking icons disappeared
     // when the user switched away mid-stream and came back.
     markSessionProcessing(sessionId, true)
+    // Claim this session as "locally sending" so the WS session_idle
+    // handler doesn't race us and flip isStreaming back to false
+    // while our POST is still opening the broker's streamHub room.
+    inflightSendsRef.current.add(sessionId)
 
     const controller = new AbortController()
     abortRef.current = controller
@@ -1140,6 +1166,10 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
       // Safe to call regardless of which session is active — it keys on
       // the originating sessionId, not the current view.
       if (sessionId) markSessionProcessing(sessionId, false)
+      // Release the in-flight claim — from here on, session_idle from
+      // the WS is authoritative again (e.g., we're back to background
+      // observer mode for this session).
+      if (sessionId) inflightSendsRef.current.delete(sessionId)
       // Drop the live flags but leave streamSegments populated; the
       // typewriter drains the buffered text and clears segments via its
       // onCaughtUp callback. Avoids the persisted bubble snapping in with
