@@ -35,8 +35,12 @@ export default async function BillingPage() {
 
   const currentPlan = subscription ? getPlan(subscription.planKey) : null
   const entitlements = await resolveEntitlements(session.user.orgId)
-  const remainingCredits = await getRemainingCredits(session.user.orgId)
+  const remainingCreditsRaw = await getRemainingCredits(session.user.orgId)
   const totalCredits = entitlements.creditsPerMonth
+  // UsageRecord.credits is a Decimal column — sums come back with float-
+  // precision dust (e.g. 29.256499999999505). Round both sides for display
+  // so the strip stays readable; internal accounting still uses raw values.
+  const remainingCredits = Math.max(0, Math.round(remainingCreditsRaw))
   const usedCredits = Math.max(0, totalCredits - remainingCredits)
   const usedPct = totalCredits > 0 ? Math.min(100, Math.round((usedCredits / totalCredits) * 100)) : 0
 

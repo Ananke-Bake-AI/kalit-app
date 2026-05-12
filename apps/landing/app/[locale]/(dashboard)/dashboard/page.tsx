@@ -35,7 +35,10 @@ export default async function DashboardPage() {
   }
 
   const entitlements = await resolveEntitlements(membership.orgId)
-  const credits = await getRemainingCredits(membership.orgId)
+  // Round for display — usage credits are stored as Decimal so the raw
+  // number can come back with float dust like 99.7549999999. The user
+  // doesn't care about sub-credit precision in the stat card.
+  const credits = Math.max(0, Math.round(await getRemainingCredits(membership.orgId)))
   const memberCount = await prisma.membership.count({
     where: { orgId: membership.orgId }
   })
