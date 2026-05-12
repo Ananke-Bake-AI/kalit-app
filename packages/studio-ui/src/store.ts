@@ -35,6 +35,16 @@ interface StudioStore {
   setMessagesLoading: (loading: boolean) => void
   addMessage: (message: ChatMessage) => void
   removeMessage: (id: string) => void
+  // Per-session cache. Populated when the active session changes
+  // (immediate hand-off → no fetch flash) and refreshed whenever
+  // the WS delivers an authoritative session_context or the SSE
+  // fallback wraps up a run. Keyed by sessionId. Switching back to
+  // a previously-visited session renders instantly from here,
+  // while the WS revalidates in the background.
+  messagesBySession: Map<string, ChatMessage[]>
+  cacheSessionMessages: (sessionId: string, messages: ChatMessage[]) => void
+  getCachedSessionMessages: (sessionId: string) => ChatMessage[] | undefined
+  clearCachedSessionMessages: (sessionId: string) => void
 
   // Streaming
   isStreaming: boolean
@@ -190,7 +200,7 @@ function shouldSkipAdd(prev: ChatMessage[], msg: ChatMessage): boolean {
   return !!last && sameContent(last, msg)
 }
 
-export const useStudioStore = create<StudioStore>((set) => ({
+export const useStudioStore = create<StudioStore>((set, get) => ({
   // Sessions
   sessions: [],
   activeSessionId: null,
@@ -223,6 +233,31 @@ export const useStudioStore = create<StudioStore>((set) => ({
     set((s) => (shouldSkipAdd(s.messages, message) ? s : { messages: [...s.messages, message] })),
   removeMessage: (id) =>
     set((s) => ({ messages: s.messages.filter((m) => m.id !== id) })),
+
+  // Per-session cache. Map is referentially stable across set() calls
+  // (we mutate in place) which is fine because consumers always read
+  // through the getter, not as a memoized selector. If a renderer
+  // ever needs reactivity on a specific session's entry, swap to a
+  // record-style object — for now zustand subscribers only care
+  // about `messages` changing, not the cache map.
+  messagesBySession: new Map<string, ChatMessage[]>(),
+  cacheSessionMessages: (sessionId, messages) =>
+    set((s) => {
+      s.messagesBySession.set(sessionId, messages)
+      // Return the same reference — we mutated in place. zustand
+      // won't re-render anything that subscribes to messagesBySession
+      // (intentional), but consumers reading via getCachedSessionMessages
+      // see the fresh value.
+      return s
+    }),
+  getCachedSessionMessages: (sessionId) => {
+    return get().messagesBySession.get(sessionId)
+  },
+  clearCachedSessionMessages: (sessionId) =>
+    set((s) => {
+      s.messagesBySession.delete(sessionId)
+      return s
+    }),
 
   // Streaming
   isStreaming: false,

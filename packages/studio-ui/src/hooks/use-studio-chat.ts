@@ -21,9 +21,9 @@ import {
   useNotificationSystem,
   writeNotificationPrefs,
 } from "./use-notification-system"
-import { AgentStreamReducer, consumeStream } from "../lib/stream-consumer"
+import { AgentStreamReducer } from "../lib/stream-consumer"
 import type { SuiteId } from "../lib/suites"
-import type { ChatSession, StreamSegment, UploadedFile } from "../types"
+import type { ChatMessage, ChatSession, StreamSegment, UploadedFile } from "../types"
 import { useStudioSocket, type StudioSocketFrame } from "./use-studio-socket"
 
 const PROGRESS_MODE_KEY = "kalit_studio_progress_mode"
@@ -207,9 +207,17 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
   const fetchMessages = useCallback(async (sessionId: string) => {
     try {
       const res = await brokerFetch(`/api/broker/sessions/${sessionId}/messages`)
-      if (res.ok && activeSessionRef.current === sessionId) {
+      if (res.ok) {
         const data = await res.json()
-        setMessages(data.messages || [])
+        const fresh = data.messages || []
+        // Always populate the cross-session cache, even if the
+        // active session changed during the fetch. A user that
+        // swaps A→B→A within 2 seconds gets A's messages cached
+        // when the original fetch lands, ready for the re-entry.
+        useStudioStore.getState().cacheSessionMessages(sessionId, fresh)
+        if (activeSessionRef.current === sessionId) {
+          setMessages(fresh)
+        }
       }
     } catch {
       // silent
@@ -271,11 +279,30 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
       clearMessages()
       return
     }
-    // Hard-clear (not setMessages([]), which merges and carries over
-    // optimistic temps — that's how "ca va?" typed in session A leaked
-    // into session B's view). clearMessages bypasses mergeMessages.
-    clearMessages()
-    setMessagesLoading(true)
+    // Per-session cache hit → render INSTANTLY from the cached
+    // snapshot. Switching back to a recently-visited session
+    // skips the fetch round-trip and the loader flash entirely;
+    // the WS still revalidates the cached view in the background
+    // via `session_context`.
+    //
+    // Cache miss → hard-clear and show the loader; the upcoming
+    // fetchMessages / WS session_context will fill it.
+    const cached = useStudioStore.getState().getCachedSessionMessages(activeSessionId)
+    if (cached && cached.length > 0) {
+      // Hard-clear first (drops any optimistic temp from the
+      // previous session) THEN set the cached snapshot. Doing it
+      // in one set call would race with mergeMessages and re-pull
+      // a stale temp from the previous session.
+      clearMessages()
+      setMessages(cached)
+      setMessagesLoading(false)
+    } else {
+      // No cache — same dance as before (hard-clear + loader),
+      // mergeMessages's user-temp leak protection is the reason
+      // for clearMessages over setMessages([]).
+      clearMessages()
+      setMessagesLoading(true)
+    }
 
     // Optimistic streaming flip on session activation. Covers ALL
     // entry paths to a session: sidebar click (handleSessionSelect
@@ -298,7 +325,7 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
         setMessagesLoading(false)
       }
     })
-  }, [activeSessionId, clearMessages, setMessagesLoading, setIsStreaming, fetchMessages])
+  }, [activeSessionId, clearMessages, setMessages, setMessagesLoading, setIsStreaming, fetchMessages])
 
   // ── Hydrate imported repo state for the active session ──
 
@@ -459,15 +486,18 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
         case "session_context": {
           // session_context replaces our REST GET /messages: the
           // server sent persisted messages + repo state + cursor.
-          // Only paint into the store when this matches the active
-          // session — context for OTHER subscribed sessions is
-          // tracked silently for future per-session caching.
-          if (sid && sid === activeSessionRef.current) {
-            const ctx = frame as unknown as {
-              messages?: Array<Record<string, unknown>>
-            }
-            if (Array.isArray(ctx.messages)) {
-              setMessages(ctx.messages as never)
+          // We ALWAYS cache the result (lets background sessions
+          // pre-populate their entries when the WS attaches a fresh
+          // subscription), and only paint the visible chat when the
+          // sid matches activeSession.
+          const ctx = frame as unknown as {
+            messages?: Array<Record<string, unknown>>
+          }
+          if (sid && Array.isArray(ctx.messages)) {
+            const fresh = ctx.messages as never as ChatMessage[]
+            useStudioStore.getState().cacheSessionMessages(sid, fresh)
+            if (sid === activeSessionRef.current) {
+              setMessages(fresh)
             }
           }
           break
@@ -587,129 +617,13 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
     removeMessage,
   ])
 
-  // Legacy: keep the SSE follow-stream useEffect as a fallback in
-  // case the socket fails to connect at all (e.g. WS blocked by a
-  // corporate proxy). This is the cheap probe — if the socket is
-  // healthy, the broker has already de-duplicated us via the same
-  // streamHub, so the SSE consumer will just see `idle` and exit.
-  // TODO P8: remove this block once telemetry confirms 100% WS
-  // adoption across browsers.
-  useEffect(() => {
-    if (socket.status === "open") return
-    if (!activeSessionId || messagesLoading || sendingRef.current) return
-
-    lastEventIdRef.current = 0
-    const controller = new AbortController()
-    followRef.current = controller
-
-    let cancelled = false
-    let attached = false
-    setStreamSegments([])
-    setStreamThinking("")
-
-    let prunedAssistantId: string | null = null
-    {
-      const msgs = useStudioStore.getState().messages
-      for (let i = msgs.length - 1; i >= 0; i--) {
-        if (msgs[i].role === "assistant") {
-          prunedAssistantId = msgs[i].id
-          break
-        }
-        if (msgs[i].role === "user") break
-      }
-    }
-
-    ;(async () => {
-      try {
-        const res = await brokerFetch(
-          `/api/broker/sessions/${activeSessionId}/stream?lastEventId=${lastEventIdRef.current}`,
-          { signal: controller.signal },
-        )
-        if (!res.ok || !res.body) return
-
-        await consumeStream(
-          res,
-          {
-            onEventId: (id) => { lastEventIdRef.current = id },
-            onSegmentsChanged: (segs) => {
-              if (activeSessionRef.current === activeSessionId) setStreamSegments(segs)
-            },
-            onThinkingChanged: (th) => {
-              if (activeSessionRef.current === activeSessionId) setStreamThinking(th)
-            },
-            onWidget: ({ type, id }) => addActiveWidget({ type, id }),
-            onSuiteSelected: (payload) => {
-              const suite = payload?.suite
-              if (suite && suite !== "helper") {
-                selectedSuiteRef.current = suite as SuiteId
-                onSuiteChange?.(suite as SuiteId)
-              } else if (suite === "helper") {
-                selectedSuiteRef.current = null
-                onSuiteChange?.("default")
-              }
-              if (payload) {
-                setLastRouting({
-                  suite: payload.suite || "",
-                  confidence: payload.confidence || "",
-                  source: payload.source || "",
-                  reasoning: payload.reasoning,
-                  latencyMs: payload.latency_ms,
-                  at: Date.now(),
-                })
-              }
-            },
-            onError: (msg) => setError(msg),
-            onIdle: () => {
-              if (activeSessionRef.current === activeSessionId) {
-                setIsStreaming(false)
-                setStreamThinking("")
-              }
-              controller.abort()
-            },
-            onAttached: () => {
-              attached = true
-              if (activeSessionRef.current === activeSessionId) {
-                if (prunedAssistantId) removeMessage(prunedAssistantId)
-                setIsStreaming(true)
-              }
-            },
-            onStreamClosed: () => {},
-          },
-          { signal: controller.signal },
-        )
-      } catch (err) {
-        if ((err as Error)?.name !== "AbortError") {
-          console.warn("[Studio] follow stream dropped:", err)
-        }
-      } finally {
-        if (cancelled) return
-        if (!attached) {
-          if (followRef.current === controller) followRef.current = null
-          return
-        }
-        if (activeSessionRef.current === activeSessionId) {
-          setActiveWidgets([])
-          try { await fetchMessages(activeSessionId) } catch { /* silent */ }
-          fetchSessions()
-          fetchQuota()
-          setIsStreaming(false)
-          setStreamThinking("")
-          notify()
-        }
-        if (followRef.current === controller) followRef.current = null
-      }
-    })()
-
-    return () => {
-      cancelled = true
-      controller.abort()
-    }
-  }, [
-    activeSessionId, messagesLoading, socket.status,
-    setIsStreaming, setStreamSegments, setStreamThinking, setActiveWidgets,
-    addActiveWidget, setLastRouting, onSuiteChange, setError, resetStream,
-    fetchMessages, fetchSessions, fetchQuota, notify, removeMessage,
-  ])
+  // SSE follow-stream removed (P8): the per-user WS multiplex is the
+  // single transport for live agent events. The legacy GET /api/broker/
+  // sessions/{id}/stream endpoint is still served by the broker for
+  // non-browser clients (mobile capacitor, CLI tooling) but the studio
+  // never opens it anymore. If the WS connection ever fails to attach,
+  // useStudioSocket logs to console and retries with exponential
+  // backoff — there's no silent fallback.
 
   // ── Session selection ───────────────────────────────────
 
