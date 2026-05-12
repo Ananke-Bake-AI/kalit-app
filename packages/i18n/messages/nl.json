@@ -172,7 +172,17 @@
     "verifyEmail": "Verifieer je e-mailadres om toegang te krijgen tot alle functies.",
     "resendEmail": "E-mail opnieuw versturen",
     "sendingEmail": "Verzenden...",
-    "verificationSent": "Verificatie-e-mail verzonden! Controleer je inbox."
+    "verificationSent": "Verificatie-e-mail verzonden! Controleer je inbox.",
+    "verifyInvalidLink": "Ongeldige verificatielink.",
+    "verifyExpiredLink": "De verificatielink is verlopen. Vraag een nieuwe aan.",
+    "verifySuccessTitle": "E-mail geverifieerd",
+    "verifySuccessBody1": "Je e-mail is succesvol geverifieerd.",
+    "verifySuccessBody2": "Je hebt nu volledige toegang tot alle Kalit-functies.",
+    "verifyPendingTitle": "Controleer je e-mail",
+    "verifyPendingBody": "We hebben een verificatielink verstuurd. Klik erop om dashboard, Studio en je gratis proefperiode van 14 dagen te ontgrendelen.",
+    "verifyPendingHint": "Niets ontvangen? Controleer spam of stuur opnieuw. De link verloopt na 24 uur.",
+    "verifyFailedTitle": "Verificatie mislukt",
+    "backToSignIn": "Terug naar inloggen"
   },
   "dashboard": {
     "title": "Dashboard",

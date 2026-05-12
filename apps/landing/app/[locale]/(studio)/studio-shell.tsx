@@ -33,6 +33,13 @@ function StudioShellInner({ children, session, billingSummary }: { children: Rea
   const isProjectRoute = /\/studio\/project\//.test(pathname)
   const hideSiteChrome = focusMode || isProjectRoute
 
+  // Same gate as Wrapper — keep the upgrade pill / trial banner off
+  // until the user verifies their email. Middleware already blocks
+  // /studio entirely for unverified users so this is mostly defense
+  // in depth, but cheap.
+  const emailVerified = !!session?.user?.emailVerified
+  const billingForHeader = emailVerified ? billingSummary : null
+
   return (
     <div className={s.root} data-focus={hideSiteChrome || undefined}>
       <SyncAppPageFromRoute />
@@ -43,9 +50,9 @@ function StudioShellInner({ children, session, billingSummary }: { children: Rea
           the editor renders its own fullscreen shell. */}
       {!hideSiteChrome && (
         <>
-          <Header initialSession={session} billingSummary={billingSummary} />
+          <Header initialSession={session} billingSummary={billingForHeader} />
           <EmailBanner initialSession={session} />
-          <TrialBanner summary={billingSummary} />
+          {emailVerified ? <TrialBanner summary={billingSummary} /> : null}
         </>
       )}
       <main className={s.main}>{children}</main>

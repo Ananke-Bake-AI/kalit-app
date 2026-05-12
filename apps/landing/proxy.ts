@@ -74,6 +74,19 @@ export const proxy = auth((req) => {
       return NextResponse.redirect(loginUrl)
     }
 
+    // Email verification gate. Until the user clicks the link in their
+    // confirmation email, none of the in-app surfaces (Studio, dashboard,
+    // billing, suites) are reachable — they can only manage their
+    // profile (to change their email if they typo'd) or sign out.
+    // This keeps the upgrade funnel from firing on accounts we can't
+    // contact and lets us send the trial-countdown / billing CTAs
+    // exclusively to verified users.
+    const emailVerified = !!session?.user?.emailVerified
+    const allowUnverified = barePath === "/settings/profile"
+    if (!emailVerified && !allowUnverified) {
+      return NextResponse.redirect(new URL(localePath("/verify-email", locale), req.url))
+    }
+
     if (!session?.user?.onboardingDone) {
       return NextResponse.redirect(new URL(localePath("/setup", locale), req.url))
     }

@@ -95,6 +95,9 @@ export default async function DashboardPage() {
   ]
 
   const isFree = !entitlements.planKey || entitlements.planKey === "free"
+  // Pitch only fires for verified users — unverified accounts get the
+  // EmailBanner instead and shouldn't see pricing UIs until they confirm.
+  const showUpgradePitch = isFree && !!session.user.emailVerified
 
   return (
     <PageSection>
@@ -107,14 +110,16 @@ export default async function DashboardPage() {
 
         {/* Free users get a high-visibility upgrade pitch above the stats —
             it's the most reliable conversion surface in the app and runs
-            on every dashboard render until they pick a plan. */}
-        {isFree ? <UpgradePitch /> : null}
+            on every dashboard render until they pick a plan. Gated on
+            email verification so we don't push pricing to accounts that
+            can't transact yet. */}
+        {showUpgradePitch ? <UpgradePitch /> : null}
 
         <div className={s.statsGrid}>
           {stats.map((stat) => {
             // Current Plan card on Free → make it a clickable link to billing.
             const isPlanStat = stat.label === t("dashboard.currentPlan")
-            const linkable = isPlanStat && isFree
+            const linkable = isPlanStat && showUpgradePitch
             const inner = (
               <>
                 <span className={s.statLabel}>{stat.label}</span>

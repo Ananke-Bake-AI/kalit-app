@@ -1,34 +1,46 @@
 import { Button } from "@/components/button"
 import { Container } from "@/components/container"
 import { Icon } from "@/components/icon"
+import { auth } from "@/lib/auth"
+import { getServerTranslation, localeHref } from "@/lib/i18n-server"
 import { prisma } from "@/lib/prisma"
 import clsx from "clsx"
+import { redirect } from "next/navigation"
 import s from "../auth.module.scss"
 import v from "./verify.module.scss"
-import { SessionRefresh } from "./session-refresh"
 import { DashboardRedirect } from "./dashboard-redirect"
+import { ResendButton } from "./resend-button"
+import { SessionRefresh } from "./session-refresh"
 
 interface Props {
   searchParams: Promise<{ token?: string }>
 }
 
+type Status = "success" | "error" | "pending"
+
 export default async function VerifyEmailPage({ searchParams }: Props) {
   const { token } = await searchParams
-  let status: "success" | "error" = "error"
-  let message = "Invalid verification link."
+  const { t } = await getServerTranslation()
+
+  let status: Status = "pending"
+  let message = ""
 
   if (token) {
+    // Token in URL → user clicked their email link. Try to verify.
+    status = "error"
+    message = t("auth.verifyInvalidLink")
+
     const verificationToken = await prisma.verificationToken.findUnique({
       where: { token },
     })
 
     if (!verificationToken) {
-      message = "Invalid or expired verification link."
+      message = t("auth.verifyExpiredLink")
     } else if (verificationToken.expires < new Date()) {
       await prisma.verificationToken.delete({
         where: { identifier_token: { identifier: verificationToken.identifier, token } },
       })
-      message = "Verification link has expired. Please request a new one."
+      message = t("auth.verifyExpiredLink")
     } else {
       await prisma.user.update({
         where: { email: verificationToken.identifier },
@@ -39,6 +51,21 @@ export default async function VerifyEmailPage({ searchParams }: Props) {
       })
       status = "success"
     }
+  } else {
+    // No token — this is the gate page reached because middleware
+    // redirected an unverified user trying to reach Studio/dashboard.
+    // Show a friendly "please check your email" interstitial with a
+    // resend CTA. Authenticated + already-verified users shouldn't
+    // even hit this branch (middleware bypasses them), but if they
+    // do, route them to the dashboard.
+    const session = await auth()
+    if (!session?.user?.id) {
+      redirect(await localeHref("/login"))
+    }
+    if (session?.user?.emailVerified) {
+      redirect(await localeHref("/dashboard"))
+    }
+    status = "pending"
   }
 
   return (
@@ -52,10 +79,10 @@ export default async function VerifyEmailPage({ searchParams }: Props) {
                 <div className={v.iconSuccess}>
                   <Icon icon="hugeicons:checkmark-circle-03" />
                 </div>
-                <h1 className={v.title}>Email verified</h1>
+                <h1 className={v.title}>{t("auth.verifySuccessTitle")}</h1>
                 <p className={v.text}>
-                  Your email has been successfully verified.<br />
-                  You now have full access to all Kalit features.
+                  {t("auth.verifySuccessBody1")}<br />
+                  {t("auth.verifySuccessBody2")}
                 </p>
                 <div className={v.features}>
                   <div className={v.feature}>
@@ -77,14 +104,28 @@ export default async function VerifyEmailPage({ searchParams }: Props) {
                 </div>
                 <DashboardRedirect />
               </div>
+            ) : status === "pending" ? (
+              <div className={v.result}>
+                <div className={v.iconPending}>
+                  <Icon icon="hugeicons:mail-send-02" />
+                </div>
+                <h1 className={v.title}>{t("auth.verifyPendingTitle")}</h1>
+                <p className={v.text}>
+                  {t("auth.verifyPendingBody")}
+                </p>
+                <ResendButton />
+                <p className={v.subtle}>
+                  {t("auth.verifyPendingHint")}
+                </p>
+              </div>
             ) : (
               <div className={v.result}>
                 <div className={v.iconError}>
                   <Icon icon="hugeicons:cancel-circle" />
                 </div>
-                <h1 className={v.title}>Verification failed</h1>
+                <h1 className={v.title}>{t("auth.verifyFailedTitle")}</h1>
                 <p className={v.text}>{message}</p>
-                <Button href="/login" variant="secondary">Back to sign in</Button>
+                <Button href="/login" variant="secondary">{t("auth.backToSignIn")}</Button>
               </div>
             )}
           </div>

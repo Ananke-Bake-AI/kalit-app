@@ -172,7 +172,17 @@
     "verifyEmail": "Zweryfikuj swój adres email, aby uzyskać dostęp do wszystkich funkcji.",
     "resendEmail": "Wyślij ponownie",
     "sendingEmail": "Wysyłanie...",
-    "verificationSent": "E-mail weryfikacyjny wysłany! Sprawdź skrzynkę odbiorczą."
+    "verificationSent": "E-mail weryfikacyjny wysłany! Sprawdź skrzynkę odbiorczą.",
+    "verifyInvalidLink": "Nieprawidłowy link weryfikacyjny.",
+    "verifyExpiredLink": "Link weryfikacyjny wygasł. Poproś o nowy.",
+    "verifySuccessTitle": "E-mail zweryfikowany",
+    "verifySuccessBody1": "Twój e-mail został pomyślnie zweryfikowany.",
+    "verifySuccessBody2": "Masz teraz pełny dostęp do wszystkich funkcji Kalit.",
+    "verifyPendingTitle": "Sprawdź swoją skrzynkę",
+    "verifyPendingBody": "Wysłaliśmy link weryfikacyjny. Kliknij go, aby odblokować panel, Studio i 14-dniowy darmowy okres próbny.",
+    "verifyPendingHint": "Nie otrzymałeś? Sprawdź spam lub wyślij ponownie poniżej. Link wygasa po 24 godzinach.",
+    "verifyFailedTitle": "Weryfikacja nieudana",
+    "backToSignIn": "Powrót do logowania"
   },
   "dashboard": {
     "title": "Panel główny",

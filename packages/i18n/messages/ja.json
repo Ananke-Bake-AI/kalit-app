@@ -172,7 +172,17 @@
     "verifyEmail": "すべての機能にアクセスするにはメールアドレスを確認してください。",
     "resendEmail": "メールを再送信",
     "sendingEmail": "送信中...",
-    "verificationSent": "確認メールを送信しました！受信トレイを確認してください。"
+    "verificationSent": "確認メールを送信しました！受信トレイを確認してください。",
+    "verifyInvalidLink": "無効な確認リンクです。",
+    "verifyExpiredLink": "確認リンクの有効期限が切れました。新しいリンクをリクエストしてください。",
+    "verifySuccessTitle": "メールを確認しました",
+    "verifySuccessBody1": "メールアドレスの確認が完了しました。",
+    "verifySuccessBody2": "すべての Kalit 機能にアクセスできます。",
+    "verifyPendingTitle": "メールを確認してください",
+    "verifyPendingBody": "確認リンクを送信しました。クリックしてダッシュボード、Studio、14日間の無料トライアルを開始してください。",
+    "verifyPendingHint": "メールが届かない場合は迷惑メールフォルダを確認するか、下のボタンで再送してください。リンクの有効期限は24時間です。",
+    "verifyFailedTitle": "確認に失敗しました",
+    "backToSignIn": "ログインに戻る"
   },
   "dashboard": {
     "title": "ダッシュボード",

@@ -172,7 +172,17 @@
     "verifyEmail": "Tüm özelliklere erişmek için e-posta adresinizi doğrulayın.",
     "resendEmail": "E-postayı tekrar gönder",
     "sendingEmail": "Gönderiliyor...",
-    "verificationSent": "Doğrulama e-postası gönderildi! Gelen kutunuzu kontrol edin."
+    "verificationSent": "Doğrulama e-postası gönderildi! Gelen kutunuzu kontrol edin.",
+    "verifyInvalidLink": "Geçersiz doğrulama bağlantısı.",
+    "verifyExpiredLink": "Doğrulama bağlantısının süresi doldu. Yenisini talep edin.",
+    "verifySuccessTitle": "E-posta doğrulandı",
+    "verifySuccessBody1": "E-postanız başarıyla doğrulandı.",
+    "verifySuccessBody2": "Artık tüm Kalit özelliklerine tam erişiminiz var.",
+    "verifyPendingTitle": "E-postanızı kontrol edin",
+    "verifyPendingBody": "Doğrulama bağlantısı gönderdik. Tıklayarak panel, Studio ve 14 günlük ücretsiz denemenizin kilidini açın.",
+    "verifyPendingHint": "Almadınız mı? Spam'i kontrol edin veya aşağıdan yeniden gönderin. Bağlantı 24 saat sonra dolar.",
+    "verifyFailedTitle": "Doğrulama başarısız",
+    "backToSignIn": "Girişe geri dön"
   },
   "dashboard": {
     "title": "Kontrol Paneli",

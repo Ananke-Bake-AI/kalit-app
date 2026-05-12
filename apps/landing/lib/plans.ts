@@ -22,11 +22,14 @@ export const FREE_PLAN: PlanConfig = {
   name: "Free",
   monthlyPrice: 0,
   suites: ["flow"],
-  creditsPerMonth: 15,
+  // 3 credits ≈ 3 generations per month — a try-before-you-buy
+  // taste, not a sustainable usage tier. Conversion model is
+  // built around forcing the choice early.
+  creditsPerMonth: 3,
   maxMembers: 1,
   features: [
     "Kalit Flow access",
-    "15 credits / month",
+    "3 credits / month",
     "1 team member",
   ],
 }

@@ -172,7 +172,17 @@
     "verifyEmail": "Bitte bestätigen Sie Ihre E-Mail-Adresse, um auf alle Funktionen zuzugreifen.",
     "resendEmail": "E-Mail erneut senden",
     "sendingEmail": "Wird gesendet...",
-    "verificationSent": "Bestätigungs-E-Mail gesendet! Prüfen Sie Ihren Posteingang."
+    "verificationSent": "Bestätigungs-E-Mail gesendet! Prüfen Sie Ihren Posteingang.",
+    "verifyInvalidLink": "Ungültiger Verifizierungslink.",
+    "verifyExpiredLink": "Der Verifizierungslink ist abgelaufen. Bitte einen neuen anfordern.",
+    "verifySuccessTitle": "E-Mail verifiziert",
+    "verifySuccessBody1": "Deine E-Mail wurde erfolgreich verifiziert.",
+    "verifySuccessBody2": "Du hast jetzt vollen Zugriff auf alle Kalit-Funktionen.",
+    "verifyPendingTitle": "Prüfe deine E-Mails",
+    "verifyPendingBody": "Wir haben dir einen Verifizierungslink gesendet. Klicke ihn an, um Dashboard, Studio und deine 14-tägige Testversion freizuschalten.",
+    "verifyPendingHint": "Nichts angekommen? Spam-Ordner prüfen oder unten erneut senden. Der Link läuft nach 24 Stunden ab.",
+    "verifyFailedTitle": "Verifizierung fehlgeschlagen",
+    "backToSignIn": "Zurück zur Anmeldung"
   },
   "dashboard": {
     "title": "Dashboard",

@@ -172,7 +172,17 @@
     "verifyEmail": "Verifiera din e-postadress för att få tillgång till alla funktioner.",
     "resendEmail": "Skicka e-post igen",
     "sendingEmail": "Skickar...",
-    "verificationSent": "Verifieringsmail skickat! Kolla din inkorg."
+    "verificationSent": "Verifieringsmail skickat! Kolla din inkorg.",
+    "verifyInvalidLink": "Ogiltig verifieringslänk.",
+    "verifyExpiredLink": "Verifieringslänken har gått ut. Begär en ny.",
+    "verifySuccessTitle": "E-post verifierad",
+    "verifySuccessBody1": "Din e-post har verifierats.",
+    "verifySuccessBody2": "Du har nu full åtkomst till alla Kalit-funktioner.",
+    "verifyPendingTitle": "Kolla din e-post",
+    "verifyPendingBody": "Vi har skickat en verifieringslänk. Klicka för att låsa upp dashboard, Studio och din 14-dagars gratis provperiod.",
+    "verifyPendingHint": "Inget mejl? Kolla skräpposten eller skicka igen nedan. Länken går ut efter 24 timmar.",
+    "verifyFailedTitle": "Verifiering misslyckades",
+    "backToSignIn": "Tillbaka till inloggning"
   },
   "dashboard": {
     "title": "Översikt",

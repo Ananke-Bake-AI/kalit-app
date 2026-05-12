@@ -9,7 +9,8 @@
 }
 
 .iconSuccess,
-.iconError {
+.iconError,
+.iconPending {
   display: grid;
   place-items: center;
   width: 3.5rem;
@@ -17,6 +18,19 @@
   border-radius: 50%;
   font-size: 1.8rem;
   margin-bottom: 0.25rem;
+}
+
+.iconPending {
+  background: linear-gradient(135deg, #8200df, #2f44ff);
+  color: #ffffff;
+}
+
+.subtle {
+  margin-top: 0.4rem;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  opacity: 0.75;
+  max-width: 22rem;
 }
 
 .iconSuccess {

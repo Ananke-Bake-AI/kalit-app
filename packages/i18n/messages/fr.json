@@ -172,7 +172,17 @@
     "verifyEmail": "Veuillez vérifier votre adresse email pour accéder à toutes les fonctionnalités.",
     "resendEmail": "Renvoyer l'email",
     "sendingEmail": "Envoi en cours...",
-    "verificationSent": "Email de vérification envoyé ! Vérifiez votre boîte de réception."
+    "verificationSent": "Email de vérification envoyé ! Vérifiez votre boîte de réception.",
+    "verifyInvalidLink": "Lien de vérification invalide.",
+    "verifyExpiredLink": "Le lien de vérification a expiré. Demandez-en un nouveau.",
+    "verifySuccessTitle": "E-mail vérifié",
+    "verifySuccessBody1": "Votre e-mail a bien été vérifié.",
+    "verifySuccessBody2": "Vous avez maintenant accès à toutes les fonctionnalités Kalit.",
+    "verifyPendingTitle": "Vérifie ta boîte mail",
+    "verifyPendingBody": "Un lien de vérification a été envoyé. Clique dessus pour débloquer le dashboard, Studio et ton essai gratuit de 14 jours.",
+    "verifyPendingHint": "Pas reçu ? Vérifie les spams ou renvoie ci-dessous. Le lien expire après 24 heures.",
+    "verifyFailedTitle": "Échec de la vérification",
+    "backToSignIn": "Retour à la connexion"
   },
   "dashboard": {
     "title": "Tableau de bord",

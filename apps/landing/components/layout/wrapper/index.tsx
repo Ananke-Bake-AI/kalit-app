@@ -28,14 +28,21 @@ interface WrapperProps {
 export const Wrapper = ({ children, session = null, billingSummary = null, color4bg = true }: WrapperProps) => {
   useReveal()
 
+  // Conversion UIs (header pill, trial countdown banner) only fire once
+  // the user's email is verified — otherwise we'd be pushing pricing
+  // CTAs to accounts we can't yet contact, which both clutters the
+  // post-signup experience and double-stacks with the EmailBanner.
+  const emailVerified = !!session?.user?.emailVerified
+  const billingForHeader = emailVerified ? billingSummary : null
+
   return (
     <>
       <SyncAppPageFromRoute />
       <GSAP scrollTrigger />
       {/* <Lenis root options={{}} /> */}
       <EmailBanner initialSession={session} />
-      <TrialBanner summary={billingSummary} />
-      <Header initialSession={session} billingSummary={billingSummary} />
+      {emailVerified ? <TrialBanner summary={billingSummary} /> : null}
+      <Header initialSession={session} billingSummary={billingForHeader} />
       <main className={s.main}>{children}</main>
       {color4bg ? <Color4Bg style="blur-gradient" className={s.color4bg} /> : null}
       <Footer />

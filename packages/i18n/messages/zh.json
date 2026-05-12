@@ -172,7 +172,17 @@
     "verifyEmail": "请验证您的邮箱地址以访问所有功能。",
     "resendEmail": "重新发送邮件",
     "sendingEmail": "发送中...",
-    "verificationSent": "验证邮件已发送！请检查您的收件箱。"
+    "verificationSent": "验证邮件已发送！请检查您的收件箱。",
+    "verifyInvalidLink": "验证链接无效。",
+    "verifyExpiredLink": "验证链接已过期。请重新申请。",
+    "verifySuccessTitle": "邮箱已验证",
+    "verifySuccessBody1": "您的邮箱已成功验证。",
+    "verifySuccessBody2": "您现在可以使用所有 Kalit 功能。",
+    "verifyPendingTitle": "请查看您的邮箱",
+    "verifyPendingBody": "我们已发送验证链接。点击它即可解锁仪表盘、Studio 和 14 天免费试用。",
+    "verifyPendingHint": "没收到？请查看垃圾邮件或在下方重新发送。链接 24 小时后过期。",
+    "verifyFailedTitle": "验证失败",
+    "backToSignIn": "返回登录"
   },
   "dashboard": {
     "title": "控制面板",
