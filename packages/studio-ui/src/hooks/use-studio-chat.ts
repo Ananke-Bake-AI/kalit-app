@@ -452,22 +452,28 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
   const prunedAssistantRef = useRef<Map<string, string>>(new Map())
 
   // Subscribe / unsubscribe to the active session's WS stream.
+  // The candidate-to-prune capture used to live here too — but local
+  // `messages` is empty at this point (handleSessionSelect just cleared
+  // it), so the capture caught nothing. Moved into the session_context
+  // handler below where we have the fresh server snapshot.
   useEffect(() => {
     if (!activeSessionId) return
-    // Capture the candidate-to-prune BEFORE subscribing so the
-    // `session_attached` handler below has the right id to remove.
-    {
-      const msgs = useStudioStore.getState().messages
-      for (let i = msgs.length - 1; i >= 0; i--) {
-        if (msgs[i].role === "assistant") {
-          prunedAssistantRef.current.set(activeSessionId, msgs[i].id)
-          break
-        }
-        if (msgs[i].role === "user") break
-      }
-    }
     socket.subscribe(activeSessionId)
     wsSubsRef.current.add(activeSessionId)
+
+    // Re-emit the existing reducer's segments + thinking for this
+    // session, if any. Without this, switching back to a session whose
+    // agent is still mid-stream leaves the UI blank until the NEXT
+    // event arrives (could be 10+ seconds during a tool call). The
+    // reducer holds the full accumulated state from the streamHub
+    // replay we got the first time we subscribed; emit() pushes it
+    // straight into setStreamSegments / setStreamThinking so the user
+    // sees the current frame the moment they click the session.
+    const reducer = reducersRef.current.get(activeSessionId)
+    if (reducer) {
+      reducer.emit()
+    }
+
     return () => {
       // We DON'T unsubscribe on session switch — keeping live subs
       // open across sessions is the whole point of the multiplexed
@@ -492,12 +498,36 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
           // sid matches activeSession.
           const ctx = frame as unknown as {
             messages?: Array<Record<string, unknown>>
+            isLive?: boolean
           }
-          if (sid && Array.isArray(ctx.messages)) {
-            const fresh = ctx.messages as never as ChatMessage[]
+          const fresh = (Array.isArray(ctx.messages) ? ctx.messages : []) as never as ChatMessage[]
+          if (sid) {
             useStudioStore.getState().cacheSessionMessages(sid, fresh)
             if (sid === activeSessionRef.current) {
               setMessages(fresh)
+              // Capture the partial assistant for pruning when the
+              // following `session_attached` fires. Used to live in the
+              // subscribe useEffect but local messages was empty at
+              // that point (handleSessionSelect had just cleared it),
+              // so the capture caught nothing and the persisted partial
+              // double-rendered alongside the live reducer segments.
+              for (let i = fresh.length - 1; i >= 0; i--) {
+                if (fresh[i].role === "assistant") {
+                  prunedAssistantRef.current.set(sid, fresh[i].id)
+                  break
+                }
+                if (fresh[i].role === "user") break
+              }
+              // Optimistic streaming flip the moment the broker tells
+              // us a live room exists. Without this, the dots / partial
+              // segments don't show until the first session_event
+              // arrives (which can lag several hundred ms behind
+              // session_context when the broker is busy), and the user
+              // perceives the chat as "frozen" right after switching
+              // into an active session.
+              if (ctx.isLive) {
+                setIsStreaming(true)
+              }
             }
           }
           break

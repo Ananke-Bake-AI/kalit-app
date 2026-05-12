@@ -89,9 +89,15 @@ export class AgentStreamReducer {
     this.segments = initial ? [...initial] : []
   }
 
-  /** Drop-in callback for callers that want the current segment view. */
+  /** Drop-in callback for callers that want the current segment view.
+   *  Pushes BOTH segments and thinking so a host re-mounting (e.g.,
+   *  session switch-back) sees the full live state without waiting for
+   *  the next inbound event. */
   emit(): void {
     this.handlers.onSegmentsChanged([...this.segments])
+    if (this.thinking) {
+      this.handlers.onThinkingChanged(this.thinking)
+    }
   }
 
   /** Process one parsed event. Returns "terminal" on idle / stream_closed. */
