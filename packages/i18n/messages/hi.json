@@ -213,7 +213,13 @@
     "checkoutCanceledBody": "कोई शुल्क नहीं लिया गया। आप जब चाहें कोई योजना चुन सकते हैं।",
     "checkoutErrorTitle": "भुगतान पूरा नहीं हुआ",
     "checkoutErrorBody": "Stripe ने एक त्रुटि लौटाई। पुनः प्रयास करें या सहायता से संपर्क करें।",
-    "creditsHintWithBonus": "योजना: {plan}/माह · अतिरिक्त: +{bonus}"
+    "creditsHintWithBonus": "योजना: {plan}/माह · अतिरिक्त: +{bonus}",
+    "upgradeNow": "अभी अपग्रेड करें",
+    "pitchEyebrow": "मूल्य निर्धारण",
+    "pitchTitle": "बनाते रहने के लिए कोई योजना चुनें।",
+    "pitchBody": "आप मुफ़्त योजना पर हैं। क्रेडिट सीमा बढ़ाने, साथियों को जोड़ने और सभी सूट अनलॉक करने के लिए सब्सक्राइब करें।",
+    "pitchSeePlans": "सभी योजनाएँ देखें",
+    "pitchCreditsLine": "{credits} क्रेडिट / माह"
   },
   "common": {
     "previous": "पिछला",
@@ -797,7 +803,15 @@
     "patchPlanning": "Planning",
     "patchWorking": "Editing",
     "patchTesting": "Testing",
-    "patchDone": "Done"
+    "patchDone": "Done",
+    "outOfCreditsModalTitle": "क्रेडिट समाप्त हो गए",
+    "outOfCreditsModalBody": "जनरेट करना जारी रखने के लिए कोई योजना चुनें। सब्सक्रिप्शन हर महीने नवीनीकृत होते हैं — कोई और प्रतिबद्धता नहीं।",
+    "lowCreditsModalTitle": "क्रेडिट कम हो रहे हैं",
+    "lowCreditsModalBody": "आप मासिक सीमा के करीब हैं। रुकावट से बचने के लिए टॉप-अप या अपग्रेड करें।",
+    "creditsPerMonthLine": "{credits} क्रेडिट / माह",
+    "mostSelected": "सबसे अधिक चुना गया",
+    "openBilling": "बिलिंग खोलें",
+    "maybeLater": "शायद बाद में"
   },
   "seo": {
     "homeTitle": "अपनी साइट लॉन्च करें - गो-लाइव से पहले स्कैन करें",
@@ -898,5 +912,13 @@
     "discordTitle": "Discord community",
     "discordText": "Join the community to follow updates, share feedback, and get help from the team.",
     "discordLink": "Join Discord"
+  },
+  "billing": {
+    "upgrade": "अपग्रेड करें",
+    "pickPlan": "योजना चुनें",
+    "trialDaysLeft": "मुफ़्त ट्रायल के {count} दिन शेष",
+    "trialBannerBody": "ट्रायल समाप्त होने के बाद पहुँच बनाए रखने के लिए अभी योजना चुनें",
+    "freePlanLabel": "मुफ़्त योजना",
+    "freeBannerBody": "{credits} क्रेडिट / माह — अधिक क्षमता और सीटों के लिए अपग्रेड करें"
   }
 }

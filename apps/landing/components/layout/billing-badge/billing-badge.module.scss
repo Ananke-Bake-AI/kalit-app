@@ -1,0 +1,116 @@
+@use "@/styles/mixins" as *;
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2.25rem;
+  padding: 0 0.75rem;
+  border-radius: var(--radius-rounded);
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  // Hide entirely on very narrow viewports — header gets cramped and the
+  // /settings/billing link in the dropdown menu is still one tap away.
+  @include max(680px) {
+    display: none;
+  }
+}
+
+// Free-tier accent: bright gradient pill, the brand "Upgrade" beacon.
+.accent {
+  background: linear-gradient(135deg, #8200df, #2f44ff);
+  color: #ffffff;
+  box-shadow: 0 4px 16px -4px oklch(0.55 0.27 280 / 0.5);
+
+  &:hover {
+    box-shadow: 0 6px 22px -4px oklch(0.55 0.27 280 / 0.65);
+  }
+
+  .icon {
+    font-size: 1rem;
+  }
+
+  .text {
+    opacity: 0.95;
+  }
+
+  .cta {
+    background: rgba(255, 255, 255, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    color: #ffffff;
+    padding: 0.15rem 0.55rem;
+    border-radius: var(--radius-rounded);
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.01em;
+  }
+}
+
+// Paid: muted glass pill — informative, not pushy.
+.paid {
+  background: oklch(from var(--text) l c h / 0.05);
+  border: 1px solid oklch(from var(--text) l c h / 0.08);
+  color: var(--text);
+  position: relative;
+  padding-bottom: 0.3rem;
+  padding-top: 0.3rem;
+  height: auto;
+
+  &:hover {
+    background: oklch(from var(--text) l c h / 0.08);
+  }
+
+  .planName {
+    font-weight: 600;
+  }
+
+  .divider {
+    color: var(--text-secondary);
+    opacity: 0.5;
+  }
+
+  .credits {
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .creditsTotal {
+    color: var(--text-secondary);
+    opacity: 0.7;
+  }
+
+  .bar {
+    position: absolute;
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 0.2rem;
+    height: 3px;
+    border-radius: 999px;
+    background: oklch(from var(--text) l c h / 0.08);
+    overflow: hidden;
+
+    > span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--color-2), var(--color-5));
+    }
+  }
+}
+
+// Low-credit warning swap — amber bar + slightly tinted background.
+.warn {
+  background: oklch(from var(--danger) l c h / 0.08);
+  border-color: oklch(from var(--danger) l c h / 0.25);
+
+  .bar > span {
+    background: linear-gradient(90deg, oklch(0.78 0.18 80), oklch(0.7 0.21 50));
+  }
+}

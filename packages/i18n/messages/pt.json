@@ -213,7 +213,13 @@
     "checkoutCanceledBody": "Nada foi cobrado. Você pode escolher um plano quando quiser.",
     "checkoutErrorTitle": "O pagamento não foi concluído",
     "checkoutErrorBody": "A Stripe retornou um erro. Tente novamente ou contate o suporte.",
-    "creditsHintWithBonus": "Plano: {plan}/mês · Extra: +{bonus}"
+    "creditsHintWithBonus": "Plano: {plan}/mês · Extra: +{bonus}",
+    "upgradeNow": "Atualizar agora",
+    "pitchEyebrow": "Preços",
+    "pitchTitle": "Escolha um plano para continuar construindo.",
+    "pitchBody": "Você está no Free. Assine para elevar o limite de créditos, adicionar colegas e desbloquear todas as suites.",
+    "pitchSeePlans": "Ver todos os planos",
+    "pitchCreditsLine": "{credits} créditos / mês"
   },
   "common": {
     "previous": "Anterior",
@@ -797,7 +803,15 @@
     "patchPlanning": "Planning",
     "patchWorking": "Editing",
     "patchTesting": "Testing",
-    "patchDone": "Done"
+    "patchDone": "Done",
+    "outOfCreditsModalTitle": "Você ficou sem créditos",
+    "outOfCreditsModalBody": "Escolha um plano para continuar gerando. Assinaturas renovam mensalmente — sem compromisso além do período.",
+    "lowCreditsModalTitle": "Créditos acabando",
+    "lowCreditsModalBody": "Você está perto do limite mensal. Recarregue ou atualize para evitar interrupção.",
+    "creditsPerMonthLine": "{credits} créditos / mês",
+    "mostSelected": "Mais escolhido",
+    "openBilling": "Abrir cobrança",
+    "maybeLater": "Talvez depois"
   },
   "seo": {
     "homeTitle": "Lance seu site - Escaneie antes do go-live",
@@ -898,5 +912,13 @@
     "discordTitle": "Discord community",
     "discordText": "Join the community to follow updates, share feedback, and get help from the team.",
     "discordLink": "Join Discord"
+  },
+  "billing": {
+    "upgrade": "Atualizar",
+    "pickPlan": "Escolher plano",
+    "trialDaysLeft": "{count} dias de teste gratuito restantes",
+    "trialBannerBody": "escolha um plano agora para manter o acesso após o teste",
+    "freePlanLabel": "Plano grátis",
+    "freeBannerBody": "{credits} créditos / mês — atualize para mais capacidade e assentos"
   }
 }

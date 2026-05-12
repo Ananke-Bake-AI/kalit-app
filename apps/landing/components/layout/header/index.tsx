@@ -7,6 +7,7 @@ import { Icon } from "@/components/icon"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { Link } from "@/components/link"
 import { Logotype } from "@/components/logotype"
+import type { BillingSummary } from "@/lib/billing-summary"
 import { SUITES, type AppPageState, type SuiteId } from "@/lib/suites"
 import { useAppStore } from "@/stores/app"
 import { useTranslation } from "@/stores/i18n"
@@ -15,6 +16,7 @@ import clsx from "clsx"
 import type { Session } from "next-auth"
 import { signOut, useSession } from "next-auth/react"
 import { useEffect, useRef, useState } from "react"
+import { BillingBadge } from "../billing-badge"
 import { Nav } from "../nav"
 import s from "./header.module.scss"
 
@@ -22,9 +24,10 @@ const SUITE_LABEL_EXIT_MS = 620
 
 interface HeaderProps {
   initialSession?: Session | null
+  billingSummary?: BillingSummary | null
 }
 
-export const Header = ({ initialSession = null }: HeaderProps) => {
+export const Header = ({ initialSession = null, billingSummary = null }: HeaderProps) => {
   const { nav, setNav, page } = useAppStore()
   const { data: session, status } = useSession()
   const { darkMode, toggleTheme } = useTheme()
@@ -89,6 +92,7 @@ export const Header = ({ initialSession = null }: HeaderProps) => {
 
         {resolvedSession?.user ? (
           <>
+          <BillingBadge summary={billingSummary} />
           <Button className={s.btn} circle href="/studio">
             {t("studio.studio")}
           </Button>

@@ -213,7 +213,13 @@
     "checkoutCanceledBody": "Aucun débit. Tu peux relancer un plan quand tu veux.",
     "checkoutErrorTitle": "Le paiement n a pas abouti",
     "checkoutErrorBody": "Stripe a renvoyé une erreur. Réessaie, ou contacte le support si ça persiste.",
-    "creditsHintWithBonus": "Plan : {plan}/mois · Extra : +{bonus}"
+    "creditsHintWithBonus": "Plan : {plan}/mois · Extra : +{bonus}",
+    "upgradeNow": "Mettre à niveau",
+    "pitchEyebrow": "Tarifs",
+    "pitchTitle": "Choisis un plan pour continuer à construire.",
+    "pitchBody": "Tu es sur le plan gratuit. Abonne-toi pour lever la limite de crédits, ajouter des coéquipiers et débloquer toutes les suites.",
+    "pitchSeePlans": "Voir tous les plans",
+    "pitchCreditsLine": "{credits} crédits / mois"
   },
   "common": {
     "previous": "Précédent",
@@ -870,7 +876,15 @@
     "patchPlanning": "Planification",
     "patchWorking": "Édition",
     "patchTesting": "Tests",
-    "patchDone": "Terminé"
+    "patchDone": "Terminé",
+    "outOfCreditsModalTitle": "Tu n'as plus de crédits",
+    "outOfCreditsModalBody": "Choisis un plan pour continuer à générer. Les abonnements sont mensuels — pas d'engagement au-delà.",
+    "lowCreditsModalTitle": "Crédits bientôt épuisés",
+    "lowCreditsModalBody": "Tu approches de ta limite mensuelle. Recharge ou passe à un plan supérieur pour éviter une interruption.",
+    "creditsPerMonthLine": "{credits} crédits / mois",
+    "mostSelected": "Le plus choisi",
+    "openBilling": "Ouvrir la facturation",
+    "maybeLater": "Plus tard"
   },
   "seo": {
     "homeTitle": "Lancez votre site et scannez avant la mise en ligne",
@@ -971,5 +985,13 @@
     "discordTitle": "Communauté Discord",
     "discordText": "Rejoignez la communauté pour suivre les nouveautés, partager vos retours et obtenir de l’aide.",
     "discordLink": "Rejoindre Discord"
+  },
+  "billing": {
+    "upgrade": "Passer à un plan payant",
+    "pickPlan": "Choisir un plan",
+    "trialDaysLeft": "Il reste {count} jours d'essai gratuit",
+    "trialBannerBody": "choisis un plan dès maintenant pour garder ton accès à la fin de l'essai",
+    "freePlanLabel": "Plan gratuit",
+    "freeBannerBody": "{credits} crédits / mois — passe à un plan supérieur pour plus de capacité et de places"
   }
 }

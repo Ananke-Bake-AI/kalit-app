@@ -213,7 +213,13 @@
     "checkoutCanceledBody": "Ücret alınmadı. İstediğiniz zaman yeniden bir plan seçebilirsiniz.",
     "checkoutErrorTitle": "Ödeme tamamlanmadı",
     "checkoutErrorBody": "Stripe bir hata döndürdü. Tekrar deneyin veya destek ekibiyle iletişime geçin.",
-    "creditsHintWithBonus": "Plan: {plan}/ay · Ek: +{bonus}"
+    "creditsHintWithBonus": "Plan: {plan}/ay · Ek: +{bonus}",
+    "upgradeNow": "Şimdi yükselt",
+    "pitchEyebrow": "Fiyatlandırma",
+    "pitchTitle": "Geliştirmeye devam etmek için bir plan seçin.",
+    "pitchBody": "Ücretsiz plandasınız. Kredi sınırını yükseltmek, takım arkadaşlarınızı eklemek ve tüm paketlerin kilidini açmak için abone olun.",
+    "pitchSeePlans": "Tüm planları gör",
+    "pitchCreditsLine": "ayda {credits} kredi"
   },
   "common": {
     "previous": "Önceki",
@@ -797,7 +803,15 @@
     "patchPlanning": "Planning",
     "patchWorking": "Editing",
     "patchTesting": "Testing",
-    "patchDone": "Done"
+    "patchDone": "Done",
+    "outOfCreditsModalTitle": "Krediniz tükendi",
+    "outOfCreditsModalBody": "Üretime devam etmek için bir plan seçin. Abonelikler aylık yenilenir — başka bir taahhüt yok.",
+    "lowCreditsModalTitle": "Krediler azalıyor",
+    "lowCreditsModalBody": "Aylık limite yaklaşıyorsunuz. Kesintiyi önlemek için yükleyin veya yükseltin.",
+    "creditsPerMonthLine": "ayda {credits} kredi",
+    "mostSelected": "En çok seçilen",
+    "openBilling": "Faturayı aç",
+    "maybeLater": "Belki sonra"
   },
   "seo": {
     "homeTitle": "Siteni yayina al - Canliya gecmeden tara",
@@ -898,5 +912,13 @@
     "discordTitle": "Discord community",
     "discordText": "Join the community to follow updates, share feedback, and get help from the team.",
     "discordLink": "Join Discord"
+  },
+  "billing": {
+    "upgrade": "Yükselt",
+    "pickPlan": "Plan seç",
+    "trialDaysLeft": "Ücretsiz denemenin {count} günü kaldı",
+    "trialBannerBody": "denemeden sonra erişiminizi korumak için şimdi bir plan seçin",
+    "freePlanLabel": "Ücretsiz plan",
+    "freeBannerBody": "ayda {credits} kredi — daha fazla kapasite ve koltuk için yükseltin"
   }
 }

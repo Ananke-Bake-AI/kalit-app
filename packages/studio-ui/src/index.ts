@@ -35,6 +35,7 @@ export { WidgetRenderer } from "./components/widget-renderer"
 export { FileExplorer } from "./components/file-explorer"
 export { FilePreviewModal } from "./components/file-preview-modal"
 export { ImportRepoModal } from "./components/import-repo-modal"
+export { CreditsModal } from "./components/credits-modal"
 
 export {
   ProjectWidget,

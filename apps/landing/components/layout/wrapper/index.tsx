@@ -5,6 +5,7 @@ import type { ReactNode } from "react"
 
 import { Color4Bg } from "@/components/color4bg"
 import { useReveal } from "@/hooks/useReveal"
+import type { BillingSummary } from "@/lib/billing-summary"
 import NextTopLoader from "nextjs-toploader"
 import { EmailBanner } from "../email-banner"
 import { Footer } from "../footer"
@@ -13,16 +14,18 @@ import { Header } from "../header"
 import { RealViewport } from "../real-viewport"
 import { SyncAppPageFromRoute } from "../sync-app-page-from-route"
 import { Toast } from "../toast"
+import { TrialBanner } from "../trial-banner"
 import { Defs } from "./defs"
 import s from "./wrapper.module.scss"
 
 interface WrapperProps {
   children: ReactNode
   session?: Session | null
+  billingSummary?: BillingSummary | null
   color4bg?: boolean
 }
 
-export const Wrapper = ({ children, session = null, color4bg = true }: WrapperProps) => {
+export const Wrapper = ({ children, session = null, billingSummary = null, color4bg = true }: WrapperProps) => {
   useReveal()
 
   return (
@@ -31,7 +34,8 @@ export const Wrapper = ({ children, session = null, color4bg = true }: WrapperPr
       <GSAP scrollTrigger />
       {/* <Lenis root options={{}} /> */}
       <EmailBanner initialSession={session} />
-      <Header initialSession={session} />
+      <TrialBanner summary={billingSummary} />
+      <Header initialSession={session} billingSummary={billingSummary} />
       <main className={s.main}>{children}</main>
       {color4bg ? <Color4Bg style="blur-gradient" className={s.color4bg} /> : null}
       <Footer />

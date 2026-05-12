@@ -213,7 +213,13 @@
     "checkoutCanceledBody": "لم يتم خصم أي مبلغ. يمكنك اختيار خطة في أي وقت.",
     "checkoutErrorTitle": "لم يكتمل الدفع",
     "checkoutErrorBody": "أرجعت Stripe خطأ. حاول مرة أخرى أو اتصل بالدعم.",
-    "creditsHintWithBonus": "الخطة: {plan}/شهر · إضافي: +{bonus}"
+    "creditsHintWithBonus": "الخطة: {plan}/شهر · إضافي: +{bonus}",
+    "upgradeNow": "الترقية الآن",
+    "pitchEyebrow": "الأسعار",
+    "pitchTitle": "اختر خطة لمواصلة البناء.",
+    "pitchBody": "أنت على الخطة المجانية. اشترك لرفع حد الرصيد، وإضافة زملاء، وفتح جميع المجموعات.",
+    "pitchSeePlans": "عرض جميع الخطط",
+    "pitchCreditsLine": "{credits} رصيد / شهر"
   },
   "common": {
     "previous": "السابق",
@@ -797,7 +803,15 @@
     "patchPlanning": "Planning",
     "patchWorking": "Editing",
     "patchTesting": "Testing",
-    "patchDone": "Done"
+    "patchDone": "Done",
+    "outOfCreditsModalTitle": "نفد رصيدك",
+    "outOfCreditsModalBody": "اختر خطة لمواصلة التوليد. تتجدد الاشتراكات شهريًا — لا التزامات إضافية.",
+    "lowCreditsModalTitle": "رصيد قليل",
+    "lowCreditsModalBody": "أنت قريب من الحد الشهري. أعد الشحن أو قم بالترقية لتجنب الانقطاع.",
+    "creditsPerMonthLine": "{credits} رصيد / شهر",
+    "mostSelected": "الأكثر اختيارًا",
+    "openBilling": "فتح الفواتير",
+    "maybeLater": "ربما لاحقًا"
   },
   "seo": {
     "homeTitle": "أطلق موقعك - افحص قبل النشر",
@@ -898,5 +912,13 @@
     "discordTitle": "Discord community",
     "discordText": "Join the community to follow updates, share feedback, and get help from the team.",
     "discordLink": "Join Discord"
+  },
+  "billing": {
+    "upgrade": "الترقية",
+    "pickPlan": "اختر خطة",
+    "trialDaysLeft": "تبقى {count} أيام من النسخة التجريبية المجانية",
+    "trialBannerBody": "اختر خطة الآن للحفاظ على وصولك بعد انتهاء النسخة التجريبية",
+    "freePlanLabel": "الخطة المجانية",
+    "freeBannerBody": "{credits} رصيد / شهر — قم بالترقية للحصول على سعة أكبر ومقاعد إضافية"
   }
 }

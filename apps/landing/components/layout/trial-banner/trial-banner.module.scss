@@ -1,0 +1,85 @@
+@use "@/styles/mixins" as *;
+
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-3);
+  padding: 0.55rem var(--size-6);
+  color: #ffffff;
+  font-size: 0.84rem;
+  position: relative;
+  z-index: 898;
+}
+
+// Urgent: trial ticking down — strong gradient, attention-grabbing.
+.urgent {
+  background: linear-gradient(135deg, #ff7a00, #ff3d77);
+}
+
+// Soft: Free user not trialing — calmer brand gradient, still visible.
+.soft {
+  background: linear-gradient(135deg, #12bcff, #8200df);
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+
+  :global(svg) {
+    flex-shrink: 0;
+    font-size: 1.1rem;
+  }
+}
+
+.text {
+  line-height: 1.4;
+
+  strong {
+    font-weight: 700;
+  }
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.82rem;
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: var(--radius-rounded);
+  padding: 0.25rem 0.7rem 0.25rem 0.85rem;
+  margin-left: 0.4rem;
+  white-space: nowrap;
+  transition: background 0.15s ease, transform 0.15s ease;
+
+  :global(svg) {
+    font-size: 0.9rem;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.32);
+    transform: translateX(1px);
+  }
+}
+
+.close {
+  position: absolute;
+  right: 0.6rem;
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  color: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+  border-radius: var(--radius-rounded);
+  transition: color 0.15s, background-color 0.15s;
+
+  &:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.18);
+  }
+}

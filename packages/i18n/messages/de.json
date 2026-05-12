@@ -213,7 +213,13 @@
     "checkoutCanceledBody": "Es wurde nichts abgebucht. Du kannst jederzeit erneut einen Plan wählen.",
     "checkoutErrorTitle": "Zahlung nicht abgeschlossen",
     "checkoutErrorBody": "Stripe meldet einen Fehler. Bitte erneut versuchen oder den Support kontaktieren.",
-    "creditsHintWithBonus": "Plan: {plan}/Monat · Extra: +{bonus}"
+    "creditsHintWithBonus": "Plan: {plan}/Monat · Extra: +{bonus}",
+    "upgradeNow": "Jetzt upgraden",
+    "pitchEyebrow": "Preise",
+    "pitchTitle": "Wähle einen Plan, um weiterzubauen.",
+    "pitchBody": "Du bist auf Free. Abonniere, um das Credit-Limit zu erhöhen, Teammitglieder hinzuzufügen und alle Suiten freizuschalten.",
+    "pitchSeePlans": "Alle Pläne ansehen",
+    "pitchCreditsLine": "{credits} Credits / Monat"
   },
   "common": {
     "previous": "Zurück",
@@ -797,7 +803,15 @@
     "patchPlanning": "Planning",
     "patchWorking": "Editing",
     "patchTesting": "Testing",
-    "patchDone": "Done"
+    "patchDone": "Done",
+    "outOfCreditsModalTitle": "Keine Credits mehr",
+    "outOfCreditsModalBody": "Wähle einen Plan, um weiter zu generieren. Abos werden monatlich erneuert — keine Bindung darüber hinaus.",
+    "lowCreditsModalTitle": "Credits gehen zur Neige",
+    "lowCreditsModalBody": "Du näherst dich dem Monatslimit. Aufladen oder upgraden, um Unterbrechungen zu vermeiden.",
+    "creditsPerMonthLine": "{credits} Credits / Monat",
+    "mostSelected": "Am häufigsten gewählt",
+    "openBilling": "Abrechnung öffnen",
+    "maybeLater": "Vielleicht später"
   },
   "seo": {
     "homeTitle": "Starte deine Website - Scanne vor dem Go-live",
@@ -898,5 +912,13 @@
     "discordTitle": "Discord community",
     "discordText": "Join the community to follow updates, share feedback, and get help from the team.",
     "discordLink": "Join Discord"
+  },
+  "billing": {
+    "upgrade": "Upgrade",
+    "pickPlan": "Plan wählen",
+    "trialDaysLeft": "Noch {count} Tage Testphase",
+    "trialBannerBody": "wähle jetzt einen Plan, um den Zugang nach Ablauf zu behalten",
+    "freePlanLabel": "Gratis-Plan",
+    "freeBannerBody": "{credits} Credits / Monat — upgrade für mehr Kapazität und Team-Plätze"
   }
 }

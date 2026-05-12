@@ -213,7 +213,13 @@
     "checkoutCanceledBody": "No charge was made. You can pick a plan again whenever you are ready.",
     "checkoutErrorTitle": "Payment did not complete",
     "checkoutErrorBody": "Stripe returned an error. Please try again, or contact support if it keeps failing.",
-    "creditsHintWithBonus": "Plan: {plan}/mo · Extra: +{bonus}"
+    "creditsHintWithBonus": "Plan: {plan}/mo · Extra: +{bonus}",
+    "upgradeNow": "Upgrade now",
+    "pitchEyebrow": "Pricing",
+    "pitchTitle": "Pick a plan to keep building.",
+    "pitchBody": "You're on Free. Subscribe to lift the credit cap, add teammates, and unlock all suites.",
+    "pitchSeePlans": "See all plans",
+    "pitchCreditsLine": "{credits} credits / month"
   },
   "common": {
     "previous": "Previous",
@@ -870,7 +876,15 @@
     "patchPlanning": "Planning",
     "patchWorking": "Editing",
     "patchTesting": "Testing",
-    "patchDone": "Done"
+    "patchDone": "Done",
+    "outOfCreditsModalTitle": "You're out of credits",
+    "outOfCreditsModalBody": "Pick a plan to keep generating. Subscriptions reset every month — no commitment beyond the period.",
+    "lowCreditsModalTitle": "Running low on credits",
+    "lowCreditsModalBody": "You're close to your monthly limit. Top up or upgrade to avoid an interruption.",
+    "creditsPerMonthLine": "{credits} credits / mo",
+    "mostSelected": "Most selected",
+    "openBilling": "Open billing",
+    "maybeLater": "Maybe later"
   },
   "seo": {
     "homeTitle": "Launch your site and scan before go-live",
@@ -971,5 +985,13 @@
     "discordTitle": "Discord community",
     "discordText": "Join the community to follow updates, share feedback, and get help from the team.",
     "discordLink": "Join Discord"
+  },
+  "billing": {
+    "upgrade": "Upgrade",
+    "pickPlan": "Pick a plan",
+    "trialDaysLeft": "{count} days of free trial left",
+    "trialBannerBody": "pick a plan now to keep your access after the trial ends",
+    "freePlanLabel": "Free plan",
+    "freeBannerBody": "{credits} credits / month — upgrade for more capacity and team seats"
   }
 }

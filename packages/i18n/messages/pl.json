@@ -213,7 +213,13 @@
     "checkoutCanceledBody": "Nic nie zostało pobrane. Możesz wybrać plan w dowolnym momencie.",
     "checkoutErrorTitle": "Płatność nie powiodła się",
     "checkoutErrorBody": "Stripe zwrócił błąd. Spróbuj ponownie lub skontaktuj się z pomocą.",
-    "creditsHintWithBonus": "Plan: {plan}/mies · Dod: +{bonus}"
+    "creditsHintWithBonus": "Plan: {plan}/mies · Dod: +{bonus}",
+    "upgradeNow": "Ulepsz teraz",
+    "pitchEyebrow": "Ceny",
+    "pitchTitle": "Wybierz plan, aby kontynuować budowanie.",
+    "pitchBody": "Jesteś na planie darmowym. Subskrybuj, aby zwiększyć limit kredytów, dodać członków zespołu i odblokować wszystkie pakiety.",
+    "pitchSeePlans": "Zobacz wszystkie plany",
+    "pitchCreditsLine": "{credits} kredytów / mies"
   },
   "common": {
     "previous": "Poprzedni",
@@ -797,7 +803,15 @@
     "patchPlanning": "Planning",
     "patchWorking": "Editing",
     "patchTesting": "Testing",
-    "patchDone": "Done"
+    "patchDone": "Done",
+    "outOfCreditsModalTitle": "Brak kredytów",
+    "outOfCreditsModalBody": "Wybierz plan, aby kontynuować generowanie. Subskrypcje odnawiają się co miesiąc — bez dodatkowych zobowiązań.",
+    "lowCreditsModalTitle": "Mało kredytów",
+    "lowCreditsModalBody": "Zbliżasz się do miesięcznego limitu. Doładuj lub ulepsz, aby uniknąć przerwy.",
+    "creditsPerMonthLine": "{credits} kredytów / mies",
+    "mostSelected": "Najczęściej wybierany",
+    "openBilling": "Otwórz rozliczenia",
+    "maybeLater": "Może później"
   },
   "seo": {
     "homeTitle": "Uruchom swoja strone - Skanuj przed publikacja",
@@ -898,5 +912,13 @@
     "discordTitle": "Discord community",
     "discordText": "Join the community to follow updates, share feedback, and get help from the team.",
     "discordLink": "Join Discord"
+  },
+  "billing": {
+    "upgrade": "Ulepsz",
+    "pickPlan": "Wybierz plan",
+    "trialDaysLeft": "Pozostało {count} dni darmowego okresu",
+    "trialBannerBody": "wybierz plan teraz, aby zachować dostęp po zakończeniu okresu próbnego",
+    "freePlanLabel": "Plan darmowy",
+    "freeBannerBody": "{credits} kredytów / mies — ulepsz, aby uzyskać większą pojemność i miejsca"
   }
 }

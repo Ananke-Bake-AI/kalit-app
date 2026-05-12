@@ -213,7 +213,13 @@
     "checkoutCanceledBody": "未产生任何费用。您可以随时再次选择套餐。",
     "checkoutErrorTitle": "支付未完成",
     "checkoutErrorBody": "Stripe 返回错误。请重试，或联系支持。",
-    "creditsHintWithBonus": "套餐: {plan}/月 · 额外: +{bonus}"
+    "creditsHintWithBonus": "套餐: {plan}/月 · 额外: +{bonus}",
+    "upgradeNow": "立即升级",
+    "pitchEyebrow": "定价",
+    "pitchTitle": "选择套餐继续构建。",
+    "pitchBody": "你正在使用免费套餐。订阅可提高积分上限、添加成员并解锁所有套件。",
+    "pitchSeePlans": "查看所有套餐",
+    "pitchCreditsLine": "每月 {credits} 积分"
   },
   "common": {
     "previous": "上一页",
@@ -797,7 +803,15 @@
     "patchPlanning": "Planning",
     "patchWorking": "Editing",
     "patchTesting": "Testing",
-    "patchDone": "Done"
+    "patchDone": "Done",
+    "outOfCreditsModalTitle": "积分已用完",
+    "outOfCreditsModalBody": "选择套餐以继续生成。订阅按月续费，无其他承诺。",
+    "lowCreditsModalTitle": "积分即将用完",
+    "lowCreditsModalBody": "你已接近本月上限。请充值或升级以避免中断。",
+    "creditsPerMonthLine": "每月 {credits} 积分",
+    "mostSelected": "最常选择",
+    "openBilling": "打开账单",
+    "maybeLater": "稍后"
   },
   "seo": {
     "homeTitle": "发布你的网站 - 上线前扫描",
@@ -898,5 +912,13 @@
     "discordTitle": "Discord community",
     "discordText": "Join the community to follow updates, share feedback, and get help from the team.",
     "discordLink": "Join Discord"
+  },
+  "billing": {
+    "upgrade": "升级",
+    "pickPlan": "选择套餐",
+    "trialDaysLeft": "免费试用还剩 {count} 天",
+    "trialBannerBody": "立即选择套餐，以在试用结束后保留访问权限",
+    "freePlanLabel": "免费套餐",
+    "freeBannerBody": "每月 {credits} 积分 — 升级以获得更多容量和团队席位"
   }
 }

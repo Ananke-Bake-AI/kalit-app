@@ -213,7 +213,13 @@
     "checkoutCanceledBody": "請求はありません。いつでもプランを選び直せます。",
     "checkoutErrorTitle": "支払いが完了しませんでした",
     "checkoutErrorBody": "Stripeがエラーを返しました。もう一度試すか、サポートにお問い合わせください。",
-    "creditsHintWithBonus": "プラン: {plan}/月 · 追加: +{bonus}"
+    "creditsHintWithBonus": "プラン: {plan}/月 · 追加: +{bonus}",
+    "upgradeNow": "今すぐアップグレード",
+    "pitchEyebrow": "料金",
+    "pitchTitle": "プランを選んで開発を続けましょう。",
+    "pitchBody": "現在は無料プランです。サブスクリプションでクレジット上限を引き上げ、メンバーを追加し、すべてのスイートを解放できます。",
+    "pitchSeePlans": "すべてのプランを見る",
+    "pitchCreditsLine": "{credits} クレジット / 月"
   },
   "common": {
     "previous": "前へ",
@@ -797,7 +803,15 @@
     "patchPlanning": "Planning",
     "patchWorking": "Editing",
     "patchTesting": "Testing",
-    "patchDone": "Done"
+    "patchDone": "Done",
+    "outOfCreditsModalTitle": "クレジットがなくなりました",
+    "outOfCreditsModalBody": "プランを選んで生成を続けてください。サブスクリプションは月単位で更新されます。",
+    "lowCreditsModalTitle": "クレジット残量が少なくなっています",
+    "lowCreditsModalBody": "月間上限に近づいています。中断を避けるため、追加購入またはアップグレードをご検討ください。",
+    "creditsPerMonthLine": "月{credits}クレジット",
+    "mostSelected": "最も選ばれている",
+    "openBilling": "請求を開く",
+    "maybeLater": "後で"
   },
   "seo": {
     "homeTitle": "サイトを公開 - 公開前にスキャン",
@@ -898,5 +912,13 @@
     "discordTitle": "Discord community",
     "discordText": "Join the community to follow updates, share feedback, and get help from the team.",
     "discordLink": "Join Discord"
+  },
+  "billing": {
+    "upgrade": "アップグレード",
+    "pickPlan": "プランを選ぶ",
+    "trialDaysLeft": "無料トライアル残り{count}日",
+    "trialBannerBody": "今プランを選んで、トライアル終了後もアクセスを維持しましょう",
+    "freePlanLabel": "無料プラン",
+    "freeBannerBody": "{credits} クレジット / 月 — アップグレードで容量とシート数を増やせます"
   }
 }

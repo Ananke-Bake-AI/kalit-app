@@ -17,6 +17,17 @@ import type { AtCommand, UploadedFile } from "../../types"
 import clsx from "clsx"
 import s from "./chat-input.module.scss"
 import { ImportRepoModal } from "../import-repo-modal"
+import { CreditsModal } from "../credits-modal"
+
+// Subscription tiles surfaced in the out-of-credits modal. Kept inline
+// here so the shared studio-ui package stays self-contained — hosts
+// (landing, desktop, mobile) all show the same pricing without each
+// having to wire in their own plan registry.
+const CREDIT_MODAL_PLANS = [
+  { key: "starter",    name: "Starter",    price: "$29",  credits: 75 },
+  { key: "pro",        name: "Pro",        price: "$99",  credits: 350, popular: true },
+  { key: "enterprise", name: "Enterprise", price: "$299", credits: 1200 },
+]
 
 const AT_COMMAND_DEFS: { name: string; descKey: string; hint: string }[] = [
   { name: "find-assets", descKey: "studio.atFindAssets", hint: "chocolate icons 2d" },
@@ -44,6 +55,7 @@ export function ChatInput({ onSend, disabled, prefill, onEnsureSession }: ChatIn
   const { t } = useI18n()
   const [input, setInput] = useState("")
   const [repoModalOpen, setRepoModalOpen] = useState(false)
+  const [creditsModalOpen, setCreditsModalOpen] = useState(false)
   const {
     atMenu,
     setAtMenu,
@@ -396,7 +408,10 @@ export function ChatInput({ onSend, disabled, prefill, onEnsureSession }: ChatIn
         </div>
       )}
 
-      {/* Out-of-credits banner */}
+      {/* Out-of-credits banner. The "Upgrade" CTA opens the inline plan
+          picker modal — clicking it on the disabled input row is the user's
+          highest-intent signal, we don't want to lose that to a full page
+          navigation away from their half-typed prompt. */}
       {outOfCredits && (
         <div className={s.outOfCreditsBanner} role="alert">
           <Icon icon="hugeicons:credit-card" />
@@ -404,12 +419,25 @@ export function ChatInput({ onSend, disabled, prefill, onEnsureSession }: ChatIn
             <strong>{t("studio.outOfCreditsTitle")}</strong>
             <span>{t("studio.outOfCreditsDesc")}</span>
           </div>
-          <a href={BILLING_HREF} className={s.outOfCreditsCta}>
+          <button
+            type="button"
+            onClick={() => setCreditsModalOpen(true)}
+            className={s.outOfCreditsCta}
+          >
             {t("studio.upgradePlan")}
             <Icon icon="hugeicons:arrow-right-02" />
-          </a>
+          </button>
         </div>
       )}
+
+      <CreditsModal
+        open={creditsModalOpen}
+        onClose={() => setCreditsModalOpen(false)}
+        billingHref={BILLING_HREF}
+        plans={CREDIT_MODAL_PLANS}
+        mode="out_of_credits"
+      />
+
 
       {/* Input row */}
       <div className={s.inputRow}>

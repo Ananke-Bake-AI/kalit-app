@@ -13,6 +13,7 @@ import { PageHeader } from "@/components/page-header"
 import { PageSection } from "@/components/page-section"
 import { SurfacePanel } from "@/components/surface-panel"
 import { CheckoutFeedback } from "./checkout-feedback"
+import { UpgradePitch } from "./upgrade-pitch"
 import s from "./dashboard.module.scss"
 
 export default async function DashboardPage() {
@@ -93,6 +94,8 @@ export default async function DashboardPage() {
     { href: "/settings/usage", label: t("dashboard.usageLabel"), value: t("dashboard.usageDesc") }
   ]
 
+  const isFree = !entitlements.planKey || entitlements.planKey === "free"
+
   return (
     <PageSection>
       <Container>
@@ -102,14 +105,43 @@ export default async function DashboardPage() {
           description={t("dashboard.welcomeBack", { orgName: membership.org.name })}
         />
 
+        {/* Free users get a high-visibility upgrade pitch above the stats —
+            it's the most reliable conversion surface in the app and runs
+            on every dashboard render until they pick a plan. */}
+        {isFree ? <UpgradePitch /> : null}
+
         <div className={s.statsGrid}>
-          {stats.map((stat) => (
-            <div key={stat.label} className={s.statCard}>
-              <span className={s.statLabel}>{stat.label}</span>
-              <span className={s.statValue}>{stat.value}</span>
-              <span className={s.statHint}>{stat.hint}</span>
-            </div>
-          ))}
+          {stats.map((stat) => {
+            // Current Plan card on Free → make it a clickable link to billing.
+            const isPlanStat = stat.label === t("dashboard.currentPlan")
+            const linkable = isPlanStat && isFree
+            const inner = (
+              <>
+                <span className={s.statLabel}>{stat.label}</span>
+                <span className={s.statValue}>{stat.value}</span>
+                <span className={s.statHint}>{stat.hint}</span>
+                {linkable ? (
+                  <span className={s.statCta}>{t("dashboard.upgradeNow")} →</span>
+                ) : null}
+              </>
+            )
+            if (linkable) {
+              return (
+                <Link
+                  key={stat.label}
+                  href="/settings/billing"
+                  className={`${s.statCard} ${s.statCardClickable}`}
+                >
+                  {inner}
+                </Link>
+              )
+            }
+            return (
+              <div key={stat.label} className={s.statCard}>
+                {inner}
+              </div>
+            )
+          })}
         </div>
 
         <SurfacePanel

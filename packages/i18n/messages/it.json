@@ -213,7 +213,13 @@
     "checkoutCanceledBody": "Nessun addebito. Puoi scegliere un piano quando vuoi.",
     "checkoutErrorTitle": "Il pagamento non è andato a buon fine",
     "checkoutErrorBody": "Stripe ha restituito un errore. Riprova o contatta il supporto.",
-    "creditsHintWithBonus": "Piano: {plan}/mese · Extra: +{bonus}"
+    "creditsHintWithBonus": "Piano: {plan}/mese · Extra: +{bonus}",
+    "upgradeNow": "Aggiorna ora",
+    "pitchEyebrow": "Prezzi",
+    "pitchTitle": "Scegli un piano per continuare a costruire.",
+    "pitchBody": "Sei sul piano gratuito. Abbonati per aumentare i crediti, aggiungere membri e sbloccare tutte le suite.",
+    "pitchSeePlans": "Vedi tutti i piani",
+    "pitchCreditsLine": "{credits} crediti / mese"
   },
   "common": {
     "previous": "Precedente",
@@ -797,7 +803,15 @@
     "patchPlanning": "Planning",
     "patchWorking": "Editing",
     "patchTesting": "Testing",
-    "patchDone": "Done"
+    "patchDone": "Done",
+    "outOfCreditsModalTitle": "Crediti esauriti",
+    "outOfCreditsModalBody": "Scegli un piano per continuare a generare. Gli abbonamenti si rinnovano mensilmente — nessun impegno oltre.",
+    "lowCreditsModalTitle": "Crediti in esaurimento",
+    "lowCreditsModalBody": "Sei vicino al limite mensile. Ricarica o aggiorna per evitare un'interruzione.",
+    "creditsPerMonthLine": "{credits} crediti / mese",
+    "mostSelected": "Più scelto",
+    "openBilling": "Apri fatturazione",
+    "maybeLater": "Più tardi"
   },
   "seo": {
     "homeTitle": "Lancia il tuo sito - Scansiona prima del go-live",
@@ -898,5 +912,13 @@
     "discordTitle": "Discord community",
     "discordText": "Join the community to follow updates, share feedback, and get help from the team.",
     "discordLink": "Join Discord"
+  },
+  "billing": {
+    "upgrade": "Aggiorna",
+    "pickPlan": "Scegli un piano",
+    "trialDaysLeft": "Restano {count} giorni di prova gratuita",
+    "trialBannerBody": "scegli un piano ora per mantenere l'accesso dopo la prova",
+    "freePlanLabel": "Piano gratuito",
+    "freeBannerBody": "{credits} crediti / mese — passa a un piano superiore per più capacità e posti"
   }
 }

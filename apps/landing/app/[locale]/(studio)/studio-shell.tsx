@@ -12,6 +12,8 @@ import { RealViewport } from "@/components/layout/real-viewport"
 import { SyncAppPageFromRoute } from "@/components/layout/sync-app-page-from-route"
 import { Toast } from "@/components/layout/toast"
 import { EmailBanner } from "@/components/layout/email-banner"
+import { TrialBanner } from "@/components/layout/trial-banner"
+import type { BillingSummary } from "@/lib/billing-summary"
 import "@/lib/broker-direct"
 import { StudioFocusProvider, useStudioFocus } from "./studio-focus-context"
 import s from "./studio-shell.module.scss"
@@ -19,11 +21,12 @@ import s from "./studio-shell.module.scss"
 interface StudioShellProps {
   children: ReactNode
   session?: Session | null
+  billingSummary?: BillingSummary | null
 }
 
 const FOCUS_STORAGE_KEY = "studio-focus-mode"
 
-function StudioShellInner({ children, session }: { children: ReactNode; session: Session | null }) {
+function StudioShellInner({ children, session, billingSummary }: { children: ReactNode; session: Session | null; billingSummary: BillingSummary | null }) {
   const { focusMode } = useStudioFocus()
   const pathname = usePathname() || ""
 
@@ -40,8 +43,9 @@ function StudioShellInner({ children, session }: { children: ReactNode; session:
           the editor renders its own fullscreen shell. */}
       {!hideSiteChrome && (
         <>
-          <Header initialSession={session} />
+          <Header initialSession={session} billingSummary={billingSummary} />
           <EmailBanner initialSession={session} />
+          <TrialBanner summary={billingSummary} />
         </>
       )}
       <main className={s.main}>{children}</main>
@@ -52,7 +56,7 @@ function StudioShellInner({ children, session }: { children: ReactNode; session:
   )
 }
 
-export const StudioShell = ({ children, session = null }: StudioShellProps) => {
+export const StudioShell = ({ children, session = null, billingSummary = null }: StudioShellProps) => {
   const [initialFocus, setInitialFocus] = useState<boolean>(false)
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -82,7 +86,7 @@ export const StudioShell = ({ children, session = null }: StudioShellProps) => {
   return (
     <StudioHostProvider value={hostValue}>
       <StudioFocusProvider initial={initialFocus} storageKey={FOCUS_STORAGE_KEY}>
-        <StudioShellInner session={session}>{children}</StudioShellInner>
+        <StudioShellInner session={session} billingSummary={billingSummary}>{children}</StudioShellInner>
       </StudioFocusProvider>
     </StudioHostProvider>
   )

@@ -213,7 +213,13 @@
     "checkoutCanceledBody": "No se cobró nada. Puedes elegir un plan cuando quieras.",
     "checkoutErrorTitle": "El pago no se completó",
     "checkoutErrorBody": "Stripe devolvió un error. Inténtalo de nuevo o contacta con soporte.",
-    "creditsHintWithBonus": "Plan: {plan}/mes · Extra: +{bonus}"
+    "creditsHintWithBonus": "Plan: {plan}/mes · Extra: +{bonus}",
+    "upgradeNow": "Actualizar",
+    "pitchEyebrow": "Precios",
+    "pitchTitle": "Elige un plan para seguir construyendo.",
+    "pitchBody": "Estás en gratuito. Suscríbete para subir el límite de créditos, agregar compañeros y desbloquear todas las suites.",
+    "pitchSeePlans": "Ver todos los planes",
+    "pitchCreditsLine": "{credits} créditos / mes"
   },
   "common": {
     "previous": "Anterior",
@@ -797,7 +803,15 @@
     "patchPlanning": "Planning",
     "patchWorking": "Editing",
     "patchTesting": "Testing",
-    "patchDone": "Done"
+    "patchDone": "Done",
+    "outOfCreditsModalTitle": "Te quedaste sin créditos",
+    "outOfCreditsModalBody": "Elige un plan para seguir generando. Las suscripciones se renuevan cada mes, sin compromiso.",
+    "lowCreditsModalTitle": "Pocos créditos restantes",
+    "lowCreditsModalBody": "Estás cerca del límite mensual. Recarga o sube de plan para evitar una interrupción.",
+    "creditsPerMonthLine": "{credits} créditos / mes",
+    "mostSelected": "Más elegido",
+    "openBilling": "Abrir facturación",
+    "maybeLater": "Quizás luego"
   },
   "seo": {
     "homeTitle": "Lanza tu sitio y escanea antes de salir",
@@ -898,5 +912,13 @@
     "discordTitle": "Comunidad Discord",
     "discordText": "Únete para seguir novedades, compartir feedback y recibir ayuda del equipo.",
     "discordLink": "Unirse a Discord"
+  },
+  "billing": {
+    "upgrade": "Actualizar",
+    "pickPlan": "Elegir plan",
+    "trialDaysLeft": "Quedan {count} días de prueba gratuita",
+    "trialBannerBody": "elige un plan ahora para mantener tu acceso al final de la prueba",
+    "freePlanLabel": "Plan gratuito",
+    "freeBannerBody": "{credits} créditos / mes — sube de plan para más capacidad y asientos"
   }
 }

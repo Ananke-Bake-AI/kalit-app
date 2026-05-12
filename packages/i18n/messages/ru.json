@@ -213,7 +213,13 @@
     "checkoutCanceledBody": "Списания не было. Вы можете выбрать тариф в любое время.",
     "checkoutErrorTitle": "Оплата не прошла",
     "checkoutErrorBody": "Stripe вернул ошибку. Попробуйте ещё раз или свяжитесь со службой поддержки.",
-    "creditsHintWithBonus": "Тариф: {plan}/мес · Доп.: +{bonus}"
+    "creditsHintWithBonus": "Тариф: {plan}/мес · Доп.: +{bonus}",
+    "upgradeNow": "Улучшить сейчас",
+    "pitchEyebrow": "Тарифы",
+    "pitchTitle": "Выберите тариф, чтобы продолжить.",
+    "pitchBody": "Вы на бесплатном тарифе. Оформите подписку, чтобы увеличить лимит кредитов, добавить участников и открыть все наборы.",
+    "pitchSeePlans": "Все тарифы",
+    "pitchCreditsLine": "{credits} кредитов / мес"
   },
   "common": {
     "previous": "Назад",
@@ -797,7 +803,15 @@
     "patchPlanning": "Planning",
     "patchWorking": "Editing",
     "patchTesting": "Testing",
-    "patchDone": "Done"
+    "patchDone": "Done",
+    "outOfCreditsModalTitle": "Кредиты закончились",
+    "outOfCreditsModalBody": "Выберите тариф, чтобы продолжить генерацию. Подписки продлеваются ежемесячно — без обязательств сверх этого.",
+    "lowCreditsModalTitle": "Мало кредитов",
+    "lowCreditsModalBody": "Вы близки к месячному лимиту. Пополните или улучшите, чтобы избежать перерыва.",
+    "creditsPerMonthLine": "{credits} кредитов / мес",
+    "mostSelected": "Выбирают чаще",
+    "openBilling": "Открыть оплату",
+    "maybeLater": "Позже"
   },
   "seo": {
     "homeTitle": "Запустите сайт - Проверьте до go-live",
@@ -898,5 +912,13 @@
     "discordTitle": "Discord community",
     "discordText": "Join the community to follow updates, share feedback, and get help from the team.",
     "discordLink": "Join Discord"
+  },
+  "billing": {
+    "upgrade": "Улучшить",
+    "pickPlan": "Выбрать тариф",
+    "trialDaysLeft": "Осталось {count} дней бесплатного периода",
+    "trialBannerBody": "выберите тариф сейчас, чтобы сохранить доступ после окончания пробного периода",
+    "freePlanLabel": "Бесплатный тариф",
+    "freeBannerBody": "{credits} кредитов / мес — улучшите, чтобы получить больше возможностей и мест"
   }
 }

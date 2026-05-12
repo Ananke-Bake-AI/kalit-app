@@ -213,7 +213,13 @@
     "checkoutCanceledBody": "Er is niets afgeschreven. Je kunt op elk moment een plan kiezen.",
     "checkoutErrorTitle": "Betaling niet voltooid",
     "checkoutErrorBody": "Stripe gaf een foutmelding. Probeer opnieuw of neem contact op met support.",
-    "creditsHintWithBonus": "Plan: {plan}/mnd · Extra: +{bonus}"
+    "creditsHintWithBonus": "Plan: {plan}/mnd · Extra: +{bonus}",
+    "upgradeNow": "Nu upgraden",
+    "pitchEyebrow": "Prijzen",
+    "pitchTitle": "Kies een plan om te blijven bouwen.",
+    "pitchBody": "Je zit op Gratis. Neem een abonnement om de credit-limiet te verhogen, teamleden toe te voegen en alle suites te ontgrendelen.",
+    "pitchSeePlans": "Bekijk alle plannen",
+    "pitchCreditsLine": "{credits} credits / maand"
   },
   "common": {
     "previous": "Vorige",
@@ -797,7 +803,15 @@
     "patchPlanning": "Planning",
     "patchWorking": "Editing",
     "patchTesting": "Testing",
-    "patchDone": "Done"
+    "patchDone": "Done",
+    "outOfCreditsModalTitle": "Geen credits meer",
+    "outOfCreditsModalBody": "Kies een plan om door te gaan met genereren. Abonnementen verlengen maandelijks — geen verdere verplichting.",
+    "lowCreditsModalTitle": "Credits raken op",
+    "lowCreditsModalBody": "Je nadert je maandlimiet. Vul aan of upgrade om een onderbreking te voorkomen.",
+    "creditsPerMonthLine": "{credits} credits / maand",
+    "mostSelected": "Meest gekozen",
+    "openBilling": "Facturatie openen",
+    "maybeLater": "Misschien later"
   },
   "seo": {
     "homeTitle": "Lanceer je site - Scan voor go-live",
@@ -898,5 +912,13 @@
     "discordTitle": "Discord community",
     "discordText": "Join the community to follow updates, share feedback, and get help from the team.",
     "discordLink": "Join Discord"
+  },
+  "billing": {
+    "upgrade": "Upgraden",
+    "pickPlan": "Plan kiezen",
+    "trialDaysLeft": "Nog {count} dagen gratis proefperiode",
+    "trialBannerBody": "kies nu een plan om je toegang te behouden na de proefperiode",
+    "freePlanLabel": "Gratis plan",
+    "freeBannerBody": "{credits} credits / maand — upgrade voor meer capaciteit en team-slots"
   }
 }

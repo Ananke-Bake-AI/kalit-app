@@ -29,6 +29,41 @@
   }
 }
 
+.statCardClickable {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+
+  &::before {
+    background: linear-gradient(90deg, #12bcff, #8200df, #ff3d77);
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px -10px oklch(0.55 0.27 280 / 0.4);
+
+    .statCta {
+      transform: translateX(2px);
+    }
+  }
+}
+
+.statCta {
+  display: block;
+  margin-top: 0.6rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+  transition: transform 0.15s ease;
+  background: linear-gradient(90deg, #8200df, #2f44ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .statLabel {
   display: block;
   margin-bottom: 0.55rem;

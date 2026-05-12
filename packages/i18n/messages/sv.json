@@ -213,7 +213,13 @@
     "checkoutCanceledBody": "Inget debiterades. Du kan välja en plan när du vill.",
     "checkoutErrorTitle": "Betalningen slutfördes inte",
     "checkoutErrorBody": "Stripe returnerade ett fel. Försök igen eller kontakta supporten.",
-    "creditsHintWithBonus": "Plan: {plan}/mån · Extra: +{bonus}"
+    "creditsHintWithBonus": "Plan: {plan}/mån · Extra: +{bonus}",
+    "upgradeNow": "Uppgradera nu",
+    "pitchEyebrow": "Priser",
+    "pitchTitle": "Välj en plan för att fortsätta bygga.",
+    "pitchBody": "Du är på gratisplanen. Prenumerera för att höja kreditgränsen, lägga till teammedlemmar och låsa upp alla sviter.",
+    "pitchSeePlans": "Se alla planer",
+    "pitchCreditsLine": "{credits} krediter / månad"
   },
   "common": {
     "previous": "Föregående",
@@ -797,7 +803,15 @@
     "patchPlanning": "Planning",
     "patchWorking": "Editing",
     "patchTesting": "Testing",
-    "patchDone": "Done"
+    "patchDone": "Done",
+    "outOfCreditsModalTitle": "Krediter slut",
+    "outOfCreditsModalBody": "Välj en plan för att fortsätta generera. Prenumerationer förnyas varje månad — ingen ytterligare bindning.",
+    "lowCreditsModalTitle": "Krediter tar slut",
+    "lowCreditsModalBody": "Du närmar dig månadsgränsen. Fyll på eller uppgradera för att undvika avbrott.",
+    "creditsPerMonthLine": "{credits} krediter / månad",
+    "mostSelected": "Mest valda",
+    "openBilling": "Öppna fakturering",
+    "maybeLater": "Kanske senare"
   },
   "seo": {
     "homeTitle": "Lansera din webbplats - Skanna fore go-live",
@@ -898,5 +912,13 @@
     "discordTitle": "Discord community",
     "discordText": "Join the community to follow updates, share feedback, and get help from the team.",
     "discordLink": "Join Discord"
+  },
+  "billing": {
+    "upgrade": "Uppgradera",
+    "pickPlan": "Välj plan",
+    "trialDaysLeft": "{count} dagar kvar av gratis provperiod",
+    "trialBannerBody": "välj en plan nu för att behålla åtkomsten efter provperioden",
+    "freePlanLabel": "Gratisplan",
+    "freeBannerBody": "{credits} krediter / månad — uppgradera för mer kapacitet och teamplatser"
   }
 }
