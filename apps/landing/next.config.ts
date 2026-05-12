@@ -31,6 +31,18 @@ const nextConfig: NextConfig = {
         destination: "/:locale/flow/:path*",
         permanent: true,
       },
+      // /pricing — agent error messages, the skill prompts and the team
+      // "Seat limit reached" CTA all hardcode kalit.ai/pricing. Resolve
+      // them at the routing layer (no server component) so the i18n
+      // middleware rewrite + next/navigation.redirect() don't collide
+      // and produce a self-loop on /pricing. /settings/billing has the
+      // upgrade UI and gates unauth users to /login itself.
+      { source: "/pricing", destination: "/settings/billing", permanent: false },
+      {
+        source: `/:locale${localeRegex}/pricing`,
+        destination: "/:locale/settings/billing",
+        permanent: false,
+      },
     ]
   },
   async rewrites() {

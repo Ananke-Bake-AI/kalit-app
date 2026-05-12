@@ -96,8 +96,15 @@ function localeRewrite(req: NextRequest, pathname: string, locale: Locale) {
     return NextResponse.next({ request: { headers } })
   }
 
-  // Bare path → rewrite internally to /en/<path>
-  const url = new URL(`/${DEFAULT_LOCALE}${pathname}`, req.url)
+  // Bare path → rewrite internally to /en/<path>. CRITICAL: never produce
+  // a trailing slash on the rewrite target. With Next.js 16's
+  // trailingSlash:false default, `/en/` is treated as "needs canonical
+  // /en redirect" → Next.js issues a 308 alongside our rewrite, the
+  // browser hits /en, step 1 above strips it back to /, and we loop
+  // forever (ERR_TOO_MANY_REDIRECTS on the homepage). The fix is to
+  // collapse the leading slash when the source path is "/" itself.
+  const targetPath = pathname === "/" ? `/${DEFAULT_LOCALE}` : `/${DEFAULT_LOCALE}${pathname}`
+  const url = new URL(targetPath, req.url)
   url.search = req.nextUrl.search
   const headers = new Headers(req.headers)
   headers.set("x-locale", DEFAULT_LOCALE)
