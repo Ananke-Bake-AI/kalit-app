@@ -1,6 +1,7 @@
 import { APP_THEME_COLOR } from "@/lib/config"
 import { DEFAULT_LOCALE } from "@/lib/i18n"
 import { headers } from "next/headers"
+import { Toaster } from "sonner"
 import "@/styles/globals.scss"
 import { fonts } from "./fonts"
 
@@ -38,6 +39,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className={fonts}>
         {children}
+        <Toaster position="top-right" theme="system" richColors closeButton />
       </body>
     </html>
   )

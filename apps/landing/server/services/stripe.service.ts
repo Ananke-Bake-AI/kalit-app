@@ -1,6 +1,23 @@
 import { prisma } from "@/lib/prisma"
 import { getCreditPack, getPlanByPriceId } from "@/lib/plans"
 
+/**
+ * Stripe API 2025+ (incl. 2026-02-25.clover) moved billing-period fields
+ * from the subscription root to each `items.data[i]` — `subscription.current_period_start`
+ * is now undefined and the per-item fields are authoritative. We read from
+ * the first item with a fallback to the (legacy) root field so older API
+ * versions still work without a code change.
+ */
+function readPeriodStart(sub: any): Date {
+  const epoch = sub?.items?.data?.[0]?.current_period_start ?? sub?.current_period_start ?? sub?.start_date
+  return new Date((epoch || 0) * 1000)
+}
+
+function readPeriodEnd(sub: any): Date {
+  const epoch = sub?.items?.data?.[0]?.current_period_end ?? sub?.current_period_end
+  return new Date((epoch || 0) * 1000)
+}
+
 export async function handleCheckoutCompleted(session: any) {
   const orgId = session.metadata?.orgId
   if (!orgId) return
@@ -54,15 +71,15 @@ export async function handleCheckoutCompleted(session: any) {
       stripePriceId: sub.items.data[0].price.id,
       planKey,
       status: "ACTIVE",
-      currentPeriodStart: new Date(sub.current_period_start * 1000),
-      currentPeriodEnd: new Date(sub.current_period_end * 1000),
+      currentPeriodStart: readPeriodStart(sub),
+      currentPeriodEnd: readPeriodEnd(sub),
     },
     update: {
       status: "ACTIVE",
       planKey,
       stripePriceId: sub.items.data[0].price.id,
-      currentPeriodStart: new Date(sub.current_period_start * 1000),
-      currentPeriodEnd: new Date(sub.current_period_end * 1000),
+      currentPeriodStart: readPeriodStart(sub),
+      currentPeriodEnd: readPeriodEnd(sub),
     },
   })
 
@@ -94,16 +111,16 @@ export async function handleSubscriptionUpdated(sub: any) {
       stripePriceId: priceId || "",
       planKey,
       status: (statusMap[sub.status] || "ACTIVE") as any,
-      currentPeriodStart: new Date(sub.current_period_start * 1000),
-      currentPeriodEnd: new Date(sub.current_period_end * 1000),
+      currentPeriodStart: readPeriodStart(sub),
+      currentPeriodEnd: readPeriodEnd(sub),
       cancelAtPeriodEnd: sub.cancel_at_period_end,
     },
     update: {
       status: (statusMap[sub.status] || "ACTIVE") as any,
       planKey,
       stripePriceId: priceId || "",
-      currentPeriodStart: new Date(sub.current_period_start * 1000),
-      currentPeriodEnd: new Date(sub.current_period_end * 1000),
+      currentPeriodStart: readPeriodStart(sub),
+      currentPeriodEnd: readPeriodEnd(sub),
       cancelAtPeriodEnd: sub.cancel_at_period_end,
     },
   })
