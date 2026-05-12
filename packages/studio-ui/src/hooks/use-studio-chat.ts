@@ -275,12 +275,29 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
     // into session B's view). clearMessages bypasses mergeMessages.
     clearMessages()
     setMessagesLoading(true)
+
+    // Optimistic streaming flip on session activation. Covers ALL
+    // entry paths to a session: sidebar click (handleSessionSelect
+    // already flips this, but this is the safety net for the click),
+    // page reload on /studio?session=<id>, and shared-link nav. The
+    // follow-stream useEffect that fires below keeps `isStreaming=true`
+    // when it `onAttached`s; if `onIdle` fires (the broker has no live
+    // room — DB flag was stale), it resets the flag itself. Without
+    // this flip, returning to an actively-processing session showed
+    // the chat with no thinking dots until /api/broker/.../stream
+    // attached (200-500 ms), and the user thought the agent had
+    // stopped.
+    const targetSession = useStudioStore.getState().sessions.find((s) => s.id === activeSessionId)
+    if (targetSession?.isProcessing) {
+      setIsStreaming(true)
+    }
+
     fetchMessages(activeSessionId).finally(() => {
       if (activeSessionRef.current === activeSessionId) {
         setMessagesLoading(false)
       }
     })
-  }, [activeSessionId, clearMessages, setMessagesLoading, fetchMessages])
+  }, [activeSessionId, clearMessages, setMessagesLoading, setIsStreaming, fetchMessages])
 
   // ── Hydrate imported repo state for the active session ──
 
