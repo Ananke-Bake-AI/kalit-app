@@ -20,8 +20,13 @@
 }
 
 .popular {
-  background: oklch(from var(--text) l c h / 0.92);
-  color: var(--white);
+  // --text and --body both flip per theme, so the pair keeps a strong
+  // contrast in both modes. The previous version used `--text` for the
+  // background and a hardcoded --white for the label — which rendered
+  // white-on-white in dark mode (--text is near-white there, so the
+  // 0.92-alpha background looked white and the label disappeared).
+  background: var(--text);
+  color: var(--body);
 }
 
 .white {

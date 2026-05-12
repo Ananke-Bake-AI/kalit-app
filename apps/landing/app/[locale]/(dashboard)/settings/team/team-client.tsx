@@ -168,7 +168,7 @@ export function TeamClient({
             ? "Your current plan only includes 1 seat."
             : `Your plan is capped at ${maxMembers} seats.`}{" "}
           Upgrade to invite teammates, or revoke a pending invitation below to free a seat.
-          <a href="/pricing" className={s.seatsFullCta}>
+          <a href="/settings/billing" className={s.seatsFullCta}>
             Upgrade plan →
           </a>
         </div>
