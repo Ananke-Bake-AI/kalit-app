@@ -87,6 +87,15 @@ export function useStudioSocket(opts?: { enabled?: boolean }): StudioSocketAPI {
   // Unmount sentinel — prevents the reconnect path from racing the
   // effect's cleanup when the hook unmounts mid-backoff.
   const mountedRef = useRef(true)
+  // Client-side heartbeat — without this, a silently-dropped link
+  // (Cloudflare idle close, sleeping laptop, broken intermediary) goes
+  // unnoticed for minutes until TCP keepalive eventually fires. The
+  // server pings us every 25 s, but server pings don't surface to the
+  // browser API so we can't observe them — we have to drive our own.
+  // Symptom that prompted this: "thinking stops while I'm watching,
+  // only resumes when I send another message."
+  const pingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const pongWatchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     mountedRef.current = true
@@ -138,6 +147,14 @@ export function useStudioSocket(opts?: { enabled?: boolean }): StudioSocketAPI {
         for (const [sid, lastEventId] of subsRef.current.entries()) {
           ws.send(JSON.stringify({ op: "subscribe", sessionId: sid, lastEventId }))
         }
+
+        // Start the client-side heartbeat. Send ping every 20 s and
+        // arm a 30 s watchdog — if no pong comes back in that window,
+        // we declare the link dead and force-close so onclose triggers
+        // reconnect. 20 s is well under any sane proxy idle timeout
+        // (Cloudflare's default is 100 s); 30 s for the pong tolerates
+        // one missed heartbeat.
+        startHeartbeat(ws)
       }
 
       ws.onmessage = (event) => {
@@ -147,6 +164,13 @@ export function useStudioSocket(opts?: { enabled?: boolean }): StudioSocketAPI {
           frame = JSON.parse(event.data) as StudioSocketFrame
         } catch {
           return
+        }
+        // Any inbound frame is liveness evidence — clear the pong
+        // watchdog even on non-pong frames (a session_event tells us
+        // the link is fine just as well as a pong does).
+        if (pongWatchdogRef.current != null) {
+          clearTimeout(pongWatchdogRef.current)
+          pongWatchdogRef.current = null
         }
         // Track the highest eventId per session so reconnects can
         // ask the broker to resume from there. session_event
@@ -170,6 +194,7 @@ export function useStudioSocket(opts?: { enabled?: boolean }): StudioSocketAPI {
 
       ws.onclose = () => {
         if (wsRef.current === ws) wsRef.current = null
+        stopHeartbeat()
         setStatus("closed")
         if (!cancelled && mountedRef.current) {
           scheduleReconnect()
@@ -179,6 +204,37 @@ export function useStudioSocket(opts?: { enabled?: boolean }): StudioSocketAPI {
       ws.onerror = (err) => {
         console.warn("[studio-socket] error:", err)
         // onclose follows automatically — let it drive the reconnect.
+      }
+    }
+
+    function startHeartbeat(ws: WebSocket) {
+      stopHeartbeat()
+      pingTimerRef.current = setInterval(() => {
+        if (ws.readyState !== WebSocket.OPEN) return
+        try {
+          ws.send(JSON.stringify({ op: "ping" }))
+        } catch {
+          return
+        }
+        // Arm watchdog only if none in flight (avoid stacking).
+        if (pongWatchdogRef.current == null) {
+          pongWatchdogRef.current = setTimeout(() => {
+            pongWatchdogRef.current = null
+            console.warn("[studio-socket] pong watchdog: no traffic in 30 s, forcing reconnect")
+            try { ws.close(4001, "heartbeat timeout") } catch { /* noop */ }
+          }, 30_000)
+        }
+      }, 20_000)
+    }
+
+    function stopHeartbeat() {
+      if (pingTimerRef.current != null) {
+        clearInterval(pingTimerRef.current)
+        pingTimerRef.current = null
+      }
+      if (pongWatchdogRef.current != null) {
+        clearTimeout(pongWatchdogRef.current)
+        pongWatchdogRef.current = null
       }
     }
 
@@ -204,6 +260,7 @@ export function useStudioSocket(opts?: { enabled?: boolean }): StudioSocketAPI {
         clearTimeout(reconnectTimerRef.current)
         reconnectTimerRef.current = null
       }
+      stopHeartbeat()
       const ws = wsRef.current
       wsRef.current = null
       if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
