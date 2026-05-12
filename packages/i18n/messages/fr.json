@@ -212,7 +212,8 @@
     "checkoutCanceledTitle": "Paiement annulé",
     "checkoutCanceledBody": "Aucun débit. Tu peux relancer un plan quand tu veux.",
     "checkoutErrorTitle": "Le paiement n a pas abouti",
-    "checkoutErrorBody": "Stripe a renvoyé une erreur. Réessaie, ou contacte le support si ça persiste."
+    "checkoutErrorBody": "Stripe a renvoyé une erreur. Réessaie, ou contacte le support si ça persiste.",
+    "creditsHintWithBonus": "Plan : {plan}/mois · Extra : +{bonus}"
   },
   "common": {
     "previous": "Précédent",

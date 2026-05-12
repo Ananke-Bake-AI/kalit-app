@@ -212,7 +212,8 @@
     "checkoutCanceledTitle": "Afrekenen geannuleerd",
     "checkoutCanceledBody": "Er is niets afgeschreven. Je kunt op elk moment een plan kiezen.",
     "checkoutErrorTitle": "Betaling niet voltooid",
-    "checkoutErrorBody": "Stripe gaf een foutmelding. Probeer opnieuw of neem contact op met support."
+    "checkoutErrorBody": "Stripe gaf een foutmelding. Probeer opnieuw of neem contact op met support.",
+    "creditsHintWithBonus": "Plan: {plan}/mnd · Extra: +{bonus}"
   },
   "common": {
     "previous": "Vorige",

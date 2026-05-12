@@ -212,7 +212,8 @@
     "checkoutCanceledTitle": "结账已取消",
     "checkoutCanceledBody": "未产生任何费用。您可以随时再次选择套餐。",
     "checkoutErrorTitle": "支付未完成",
-    "checkoutErrorBody": "Stripe 返回错误。请重试，或联系支持。"
+    "checkoutErrorBody": "Stripe 返回错误。请重试，或联系支持。",
+    "creditsHintWithBonus": "套餐: {plan}/月 · 额外: +{bonus}"
   },
   "common": {
     "previous": "上一页",

@@ -212,7 +212,8 @@
     "checkoutCanceledTitle": "Pago cancelado",
     "checkoutCanceledBody": "No se cobró nada. Puedes elegir un plan cuando quieras.",
     "checkoutErrorTitle": "El pago no se completó",
-    "checkoutErrorBody": "Stripe devolvió un error. Inténtalo de nuevo o contacta con soporte."
+    "checkoutErrorBody": "Stripe devolvió un error. Inténtalo de nuevo o contacta con soporte.",
+    "creditsHintWithBonus": "Plan: {plan}/mes · Extra: +{bonus}"
   },
   "common": {
     "previous": "Anterior",

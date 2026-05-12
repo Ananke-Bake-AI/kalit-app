@@ -212,7 +212,8 @@
     "checkoutCanceledTitle": "Utcheckning avbruten",
     "checkoutCanceledBody": "Inget debiterades. Du kan välja en plan när du vill.",
     "checkoutErrorTitle": "Betalningen slutfördes inte",
-    "checkoutErrorBody": "Stripe returnerade ett fel. Försök igen eller kontakta supporten."
+    "checkoutErrorBody": "Stripe returnerade ett fel. Försök igen eller kontakta supporten.",
+    "creditsHintWithBonus": "Plan: {plan}/mån · Extra: +{bonus}"
   },
   "common": {
     "previous": "Föregående",

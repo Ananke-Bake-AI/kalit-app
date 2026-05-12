@@ -212,7 +212,8 @@
     "checkoutCanceledTitle": "Checkout annullato",
     "checkoutCanceledBody": "Nessun addebito. Puoi scegliere un piano quando vuoi.",
     "checkoutErrorTitle": "Il pagamento non è andato a buon fine",
-    "checkoutErrorBody": "Stripe ha restituito un errore. Riprova o contatta il supporto."
+    "checkoutErrorBody": "Stripe ha restituito un errore. Riprova o contatta il supporto.",
+    "creditsHintWithBonus": "Piano: {plan}/mese · Extra: +{bonus}"
   },
   "common": {
     "previous": "Precedente",

@@ -212,7 +212,8 @@
     "checkoutCanceledTitle": "Pagamento cancelado",
     "checkoutCanceledBody": "Nada foi cobrado. Você pode escolher um plano quando quiser.",
     "checkoutErrorTitle": "O pagamento não foi concluído",
-    "checkoutErrorBody": "A Stripe retornou um erro. Tente novamente ou contate o suporte."
+    "checkoutErrorBody": "A Stripe retornou um erro. Tente novamente ou contate o suporte.",
+    "creditsHintWithBonus": "Plano: {plan}/mês · Extra: +{bonus}"
   },
   "common": {
     "previous": "Anterior",

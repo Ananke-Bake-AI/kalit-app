@@ -212,7 +212,8 @@
     "checkoutCanceledTitle": "チェックアウトがキャンセルされました",
     "checkoutCanceledBody": "請求はありません。いつでもプランを選び直せます。",
     "checkoutErrorTitle": "支払いが完了しませんでした",
-    "checkoutErrorBody": "Stripeがエラーを返しました。もう一度試すか、サポートにお問い合わせください。"
+    "checkoutErrorBody": "Stripeがエラーを返しました。もう一度試すか、サポートにお問い合わせください。",
+    "creditsHintWithBonus": "プラン: {plan}/月 · 追加: +{bonus}"
   },
   "common": {
     "previous": "前へ",

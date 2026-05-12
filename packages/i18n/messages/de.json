@@ -212,7 +212,8 @@
     "checkoutCanceledTitle": "Checkout abgebrochen",
     "checkoutCanceledBody": "Es wurde nichts abgebucht. Du kannst jederzeit erneut einen Plan wählen.",
     "checkoutErrorTitle": "Zahlung nicht abgeschlossen",
-    "checkoutErrorBody": "Stripe meldet einen Fehler. Bitte erneut versuchen oder den Support kontaktieren."
+    "checkoutErrorBody": "Stripe meldet einen Fehler. Bitte erneut versuchen oder den Support kontaktieren.",
+    "creditsHintWithBonus": "Plan: {plan}/Monat · Extra: +{bonus}"
   },
   "common": {
     "previous": "Zurück",

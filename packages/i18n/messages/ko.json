@@ -212,7 +212,8 @@
     "checkoutCanceledTitle": "결제가 취소되었습니다",
     "checkoutCanceledBody": "청구되지 않았습니다. 언제든지 플랜을 다시 선택할 수 있습니다.",
     "checkoutErrorTitle": "결제가 완료되지 않았습니다",
-    "checkoutErrorBody": "Stripe에서 오류가 반환되었습니다. 다시 시도하거나 지원팀에 문의하세요."
+    "checkoutErrorBody": "Stripe에서 오류가 반환되었습니다. 다시 시도하거나 지원팀에 문의하세요.",
+    "creditsHintWithBonus": "플랜: {plan}/월 · 추가: +{bonus}"
   },
   "common": {
     "previous": "이전",

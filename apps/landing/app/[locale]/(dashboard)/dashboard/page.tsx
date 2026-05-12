@@ -4,7 +4,7 @@ import { Link } from "@/components/link"
 import { Logo } from "@/components/logo"
 import { SUITES, type SuiteId } from "@/lib/app-suites"
 import { auth } from "@/lib/auth"
-import { getRemainingCredits, resolveEntitlements } from "@/lib/entitlements"
+import { getCreditBreakdown, resolveEntitlements } from "@/lib/entitlements"
 import { getServerTranslation, localeHref } from "@/lib/i18n-server"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
@@ -38,7 +38,10 @@ export default async function DashboardPage() {
   // Round for display — usage credits are stored as Decimal so the raw
   // number can come back with float dust like 99.7549999999. The user
   // doesn't care about sub-credit precision in the stat card.
-  const credits = Math.max(0, Math.round(await getRemainingCredits(membership.orgId)))
+  const breakdown = await getCreditBreakdown(membership.orgId)
+  const creditsRemaining = Math.max(0, Math.round(breakdown.remaining))
+  const creditsTotal = breakdown.planMonthly + Math.round(breakdown.bonus)
+  const bonusRemaining = Math.max(0, Math.round(breakdown.bonus - Math.max(0, breakdown.used - breakdown.planMonthly)))
   const memberCount = await prisma.membership.count({
     where: { orgId: membership.orgId }
   })
@@ -65,8 +68,10 @@ export default async function DashboardPage() {
     },
     {
       label: t("dashboard.creditsRemaining"),
-      value: `${credits} / ${entitlements.creditsPerMonth}`,
-      hint: t("dashboard.creditsHint")
+      value: `${creditsRemaining} / ${creditsTotal}`,
+      hint: bonusRemaining > 0
+        ? t("dashboard.creditsHintWithBonus", { plan: entitlements.creditsPerMonth, bonus: bonusRemaining })
+        : t("dashboard.creditsHint")
     },
     {
       label: t("dashboard.activeJobs"),
@@ -90,8 +95,8 @@ export default async function DashboardPage() {
 
   return (
     <PageSection>
-      <CheckoutFeedback />
       <Container>
+        <CheckoutFeedback />
         <PageHeader
           title={t("dashboard.title")}
           description={t("dashboard.welcomeBack", { orgName: membership.org.name })}

@@ -212,7 +212,8 @@
     "checkoutCanceledTitle": "Płatność anulowana",
     "checkoutCanceledBody": "Nic nie zostało pobrane. Możesz wybrać plan w dowolnym momencie.",
     "checkoutErrorTitle": "Płatność nie powiodła się",
-    "checkoutErrorBody": "Stripe zwrócił błąd. Spróbuj ponownie lub skontaktuj się z pomocą."
+    "checkoutErrorBody": "Stripe zwrócił błąd. Spróbuj ponownie lub skontaktuj się z pomocą.",
+    "creditsHintWithBonus": "Plan: {plan}/mies · Dod: +{bonus}"
   },
   "common": {
     "previous": "Poprzedni",

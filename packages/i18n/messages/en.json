@@ -212,7 +212,8 @@
     "checkoutCanceledTitle": "Checkout canceled",
     "checkoutCanceledBody": "No charge was made. You can pick a plan again whenever you are ready.",
     "checkoutErrorTitle": "Payment did not complete",
-    "checkoutErrorBody": "Stripe returned an error. Please try again, or contact support if it keeps failing."
+    "checkoutErrorBody": "Stripe returned an error. Please try again, or contact support if it keeps failing.",
+    "creditsHintWithBonus": "Plan: {plan}/mo · Extra: +{bonus}"
   },
   "common": {
     "previous": "Previous",

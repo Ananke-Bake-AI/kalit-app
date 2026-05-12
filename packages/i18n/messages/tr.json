@@ -212,7 +212,8 @@
     "checkoutCanceledTitle": "Ödeme iptal edildi",
     "checkoutCanceledBody": "Ücret alınmadı. İstediğiniz zaman yeniden bir plan seçebilirsiniz.",
     "checkoutErrorTitle": "Ödeme tamamlanmadı",
-    "checkoutErrorBody": "Stripe bir hata döndürdü. Tekrar deneyin veya destek ekibiyle iletişime geçin."
+    "checkoutErrorBody": "Stripe bir hata döndürdü. Tekrar deneyin veya destek ekibiyle iletişime geçin.",
+    "creditsHintWithBonus": "Plan: {plan}/ay · Ek: +{bonus}"
   },
   "common": {
     "previous": "Önceki",

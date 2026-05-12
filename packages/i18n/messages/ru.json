@@ -212,7 +212,8 @@
     "checkoutCanceledTitle": "Оплата отменена",
     "checkoutCanceledBody": "Списания не было. Вы можете выбрать тариф в любое время.",
     "checkoutErrorTitle": "Оплата не прошла",
-    "checkoutErrorBody": "Stripe вернул ошибку. Попробуйте ещё раз или свяжитесь со службой поддержки."
+    "checkoutErrorBody": "Stripe вернул ошибку. Попробуйте ещё раз или свяжитесь со службой поддержки.",
+    "creditsHintWithBonus": "Тариф: {plan}/мес · Доп.: +{bonus}"
   },
   "common": {
     "previous": "Назад",

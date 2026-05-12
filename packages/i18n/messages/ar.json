@@ -212,7 +212,8 @@
     "checkoutCanceledTitle": "تم إلغاء الدفع",
     "checkoutCanceledBody": "لم يتم خصم أي مبلغ. يمكنك اختيار خطة في أي وقت.",
     "checkoutErrorTitle": "لم يكتمل الدفع",
-    "checkoutErrorBody": "أرجعت Stripe خطأ. حاول مرة أخرى أو اتصل بالدعم."
+    "checkoutErrorBody": "أرجعت Stripe خطأ. حاول مرة أخرى أو اتصل بالدعم.",
+    "creditsHintWithBonus": "الخطة: {plan}/شهر · إضافي: +{bonus}"
   },
   "common": {
     "previous": "السابق",

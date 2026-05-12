@@ -212,7 +212,8 @@
     "checkoutCanceledTitle": "चेकआउट रद्द कर दिया गया",
     "checkoutCanceledBody": "कोई शुल्क नहीं लिया गया। आप जब चाहें कोई योजना चुन सकते हैं।",
     "checkoutErrorTitle": "भुगतान पूरा नहीं हुआ",
-    "checkoutErrorBody": "Stripe ने एक त्रुटि लौटाई। पुनः प्रयास करें या सहायता से संपर्क करें।"
+    "checkoutErrorBody": "Stripe ने एक त्रुटि लौटाई। पुनः प्रयास करें या सहायता से संपर्क करें।",
+    "creditsHintWithBonus": "योजना: {plan}/माह · अतिरिक्त: +{bonus}"
   },
   "common": {
     "previous": "पिछला",
