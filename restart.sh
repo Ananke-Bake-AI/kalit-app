@@ -121,7 +121,13 @@ fi
 # 4. Install, build, reload
 # ────────────────────────────────────────────────────────────────────
 echo "▶ pnpm install (workspace, frozen lockfile)"
-pnpm install --frozen-lockfile || pnpm install
+# Force NODE_ENV= for the install so devDeps (prisma, @types/*, eslint,
+# next CLI plumbing) come through. The sourced .env above sets
+# NODE_ENV=production, which pnpm honors by SKIPPING devDependencies —
+# the build then dies with "prisma: not found" before next build even
+# starts. We undo it just for this command.
+NODE_ENV= pnpm install --frozen-lockfile --prod=false \
+  || NODE_ENV= pnpm install --prod=false
 
 echo "▶ pnpm build @kalit/landing"
 pnpm --filter @kalit/landing build
