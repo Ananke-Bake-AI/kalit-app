@@ -27,23 +27,22 @@ export function CheckoutFeedback() {
   useEffect(() => {
     if (firedRef.current) return
     const checkout = searchParams.get("checkout")
+    console.info("[CheckoutFeedback] mount — checkout param:", checkout)
     if (checkout !== "success" && checkout !== "canceled") return
     firedRef.current = true
 
     if (checkout === "success") {
       const type = searchParams.get("type")
       const amount = searchParams.get("amount")
-      if (type === "credits" && amount) {
-        toast.success(t("dashboard.creditsAddedTitle", { amount }), {
-          description: t("dashboard.creditsAddedBody"),
-          duration: 6000,
-        })
-      } else {
-        toast.success(t("dashboard.checkoutSuccessTitle"), {
-          description: t("dashboard.checkoutSuccessBody"),
-          duration: 6000,
-        })
-      }
+      const title = type === "credits" && amount
+        ? t("dashboard.creditsAddedTitle", { amount })
+        : t("dashboard.checkoutSuccessTitle")
+      const description = type === "credits" && amount
+        ? t("dashboard.creditsAddedBody")
+        : t("dashboard.checkoutSuccessBody")
+      console.info("[CheckoutFeedback] firing success toast:", { title, description })
+      const id = toast.success(title, { description, duration: 8000 })
+      console.info("[CheckoutFeedback] toast id:", id)
       // Wait for the Stripe webhook to land before refetching server props,
       // otherwise the plan stat / credit count still reads the pre-purchase
       // value and the user thinks nothing happened.
@@ -52,7 +51,8 @@ export function CheckoutFeedback() {
       return () => window.clearTimeout(handle)
     }
 
-    toast.info(t("dashboard.checkoutCanceled"), { duration: 5000 })
+    console.info("[CheckoutFeedback] firing canceled toast")
+    toast.info(t("dashboard.checkoutCanceled"), { duration: 6000 })
     cleanUrl()
   }, [searchParams, router, t, pathname])
 
