@@ -23,8 +23,17 @@ async function fetchBrokerToken(): Promise<string | null> {
   }
 }
 
+// WebSocket can't transit Next.js's HTTP rewrites — connectWebSocket
+// dials the broker origin directly. NEXT_PUBLIC_BROKER_URL must be
+// exposed at build time (set in apps/landing/.env or .env.production)
+// pointing at the public broker host (e.g. https://broker-api.kalit.ai).
+// Falls back to relative same-origin in dev where the broker proxy
+// upgrade is wired through nginx + a /api/flow/user-ws location block.
+const wsBaseUrl = process.env.NEXT_PUBLIC_BROKER_URL || ""
+
 const client = createBrokerClient({
   baseUrl: "",
+  wsBaseUrl,
   getToken: fetchBrokerToken,
   fileUrlPrefix: { from: "/api/flow/", to: "/api/broker/" },
 })

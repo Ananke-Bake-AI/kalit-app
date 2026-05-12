@@ -37,6 +37,13 @@ function requireClient(): BrokerClient {
   return client
 }
 
+/** Internal-use accessor for hooks that need the BrokerClient
+ *  itself (e.g. useStudioSocket wants connectWebSocket). Throws if
+ *  the host hasn't run setStudioBrokerClient yet. */
+export function getStudioBrokerClient(): BrokerClient {
+  return requireClient()
+}
+
 /** Drop-in replacement for the legacy `brokerFetch` export. */
 export async function brokerFetch(path: string, options?: RequestInit): Promise<Response> {
   return requireClient().fetch(path, options)

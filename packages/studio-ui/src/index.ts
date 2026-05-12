@@ -80,3 +80,9 @@ export type {
   StudioChatParamReader,
   SuiteRouteTarget,
 } from "./hooks/use-studio-chat"
+export {
+  useStudioSocket,
+  type StudioSocketAPI,
+  type StudioSocketFrame,
+  type StudioSocketStatus,
+} from "./hooks/use-studio-socket"
