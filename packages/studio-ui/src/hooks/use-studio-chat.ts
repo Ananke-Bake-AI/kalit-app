@@ -21,9 +21,10 @@ import {
   useNotificationSystem,
   writeNotificationPrefs,
 } from "./use-notification-system"
-import { consumeStream } from "../lib/stream-consumer"
+import { AgentStreamReducer, consumeStream } from "../lib/stream-consumer"
 import type { SuiteId } from "../lib/suites"
 import type { ChatSession, StreamSegment, UploadedFile } from "../types"
+import { useStudioSocket, type StudioSocketFrame } from "./use-studio-socket"
 
 const PROGRESS_MODE_KEY = "kalit_studio_progress_mode"
 
@@ -401,7 +402,200 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
   // follow — the cheap probe replaces a guard that was wrong half
   // the time.
 
+  // ── Single-socket transport ─────────────────────────────
+  //
+  // useStudioSocket owns ONE WebSocket against /api/flow/user-ws
+  // multiplexing events for every session the user has open. We
+  // route inbound frames into the existing setStreamSegments /
+  // setStreamThinking / setActiveWidgets pipeline through the
+  // shared AgentStreamReducer (same logic the legacy SSE consumer
+  // uses). Replaces the per-session GET /stream + EventSource
+  // patchwork with one durable, auto-reconnecting connection.
+  const socket = useStudioSocket()
+  // Per-session reducer cache so events for sessionA don't pollute
+  // sessionB's segments when the user has both subscribed.
+  const reducersRef = useRef<Map<string, AgentStreamReducer>>(new Map())
+  // Subscriptions we currently hold (kept in sync with socket-level
+  // subs, used to drop subs we no longer need on session switch).
+  const wsSubsRef = useRef<Set<string>>(new Set())
+  // Per-session candidate-to-prune assistant id. Captured the moment
+  // we subscribe; flushed when `session_attached` fires (only if
+  // the room is actually live — otherwise the persisted partial
+  // stays as is, no flicker).
+  const prunedAssistantRef = useRef<Map<string, string>>(new Map())
+
+  // Subscribe / unsubscribe to the active session's WS stream.
   useEffect(() => {
+    if (!activeSessionId) return
+    // Capture the candidate-to-prune BEFORE subscribing so the
+    // `session_attached` handler below has the right id to remove.
+    {
+      const msgs = useStudioStore.getState().messages
+      for (let i = msgs.length - 1; i >= 0; i--) {
+        if (msgs[i].role === "assistant") {
+          prunedAssistantRef.current.set(activeSessionId, msgs[i].id)
+          break
+        }
+        if (msgs[i].role === "user") break
+      }
+    }
+    socket.subscribe(activeSessionId)
+    wsSubsRef.current.add(activeSessionId)
+    return () => {
+      // We DON'T unsubscribe on session switch — keeping live subs
+      // open across sessions is the whole point of the multiplexed
+      // socket (lets the sidebar show "new message" badges from
+      // other sessions later). Only unsubscribe on hard cleanup
+      // (component unmount via the socket's own dispose path).
+    }
+  }, [activeSessionId, socket])
+
+  // Mount the WS frame router once. The reducer per session takes
+  // care of every event the SSE consumer used to handle.
+  useEffect(() => {
+    const off = socket.onMessage((frame: StudioSocketFrame) => {
+      const sid = (frame.sessionId as string) || ""
+      switch (frame.type) {
+        case "session_context": {
+          // session_context replaces our REST GET /messages: the
+          // server sent persisted messages + repo state + cursor.
+          // Only paint into the store when this matches the active
+          // session — context for OTHER subscribed sessions is
+          // tracked silently for future per-session caching.
+          if (sid && sid === activeSessionRef.current) {
+            const ctx = frame as unknown as {
+              messages?: Array<Record<string, unknown>>
+            }
+            if (Array.isArray(ctx.messages)) {
+              setMessages(ctx.messages as never)
+            }
+          }
+          break
+        }
+        case "session_attached": {
+          // Room is live — commit the optimistic streaming UI now
+          // and prune the persisted partial assistant message so the
+          // replayed segments don't double-render.
+          if (sid === activeSessionRef.current) {
+            const pid = prunedAssistantRef.current.get(sid)
+            if (pid) {
+              removeMessage(pid)
+              prunedAssistantRef.current.delete(sid)
+            }
+            setIsStreaming(true)
+          }
+          break
+        }
+        case "session_idle": {
+          // Broker has no live room — clear any optimistic
+          // isStreaming we set in handleSessionSelect.
+          if (sid === activeSessionRef.current) {
+            setIsStreaming(false)
+            setStreamThinking("")
+            prunedAssistantRef.current.delete(sid)
+          }
+          break
+        }
+        case "session_stream_closed": {
+          // Run wrapped up. Refetch the canonical messages list +
+          // sessions list (for title/usage updates) + quota.
+          if (sid === activeSessionRef.current) {
+            setActiveWidgets([])
+            void fetchMessages(sid)
+            fetchSessions()
+            fetchQuota()
+            setIsStreaming(false)
+            setStreamThinking("")
+            notify()
+          }
+          // Drop the reducer; a fresh subscribe later will create a
+          // new one (e.g. on session re-activation).
+          reducersRef.current.delete(sid)
+          break
+        }
+        case "session_event": {
+          const ev = (frame.data ?? {}) as Record<string, unknown>
+          if (!ev || typeof ev !== "object") break
+          // Get-or-create the reducer for this session, with handlers
+          // that ONLY commit to the global UI state when the event
+          // belongs to the currently-active session. Events from
+          // background sessions (other tabs of the multiplex) still
+          // advance their local reducer's segments cache, but don't
+          // affect the visible chat.
+          let reducer = reducersRef.current.get(sid)
+          if (!reducer) {
+            reducer = new AgentStreamReducer({
+              onSegmentsChanged: (segs) => {
+                if (sid === activeSessionRef.current) setStreamSegments(segs)
+              },
+              onThinkingChanged: (th) => {
+                if (sid === activeSessionRef.current) setStreamThinking(th)
+              },
+              onWidget: ({ type, id }) => {
+                if (sid === activeSessionRef.current) addActiveWidget({ type, id })
+              },
+              onSuiteSelected: (payload) => {
+                if (sid !== activeSessionRef.current) return
+                const suite = payload?.suite
+                if (suite && suite !== "helper") {
+                  selectedSuiteRef.current = suite as SuiteId
+                  onSuiteChange?.(suite as SuiteId)
+                } else if (suite === "helper") {
+                  selectedSuiteRef.current = null
+                  onSuiteChange?.("default")
+                }
+                if (payload) {
+                  setLastRouting({
+                    suite: payload.suite || "",
+                    confidence: payload.confidence || "",
+                    source: payload.source || "",
+                    reasoning: payload.reasoning,
+                    latencyMs: payload.latency_ms,
+                    at: Date.now(),
+                  })
+                }
+              },
+              onError: (msg) => {
+                if (sid === activeSessionRef.current) setError(msg)
+              },
+            })
+            reducersRef.current.set(sid, reducer)
+          }
+          reducer.apply(ev as Parameters<typeof reducer.apply>[0])
+          break
+        }
+        default:
+          break
+      }
+    })
+    return off
+  }, [
+    socket,
+    setMessages,
+    setStreamSegments,
+    setStreamThinking,
+    setIsStreaming,
+    setActiveWidgets,
+    addActiveWidget,
+    setLastRouting,
+    onSuiteChange,
+    setError,
+    fetchMessages,
+    fetchSessions,
+    fetchQuota,
+    notify,
+    removeMessage,
+  ])
+
+  // Legacy: keep the SSE follow-stream useEffect as a fallback in
+  // case the socket fails to connect at all (e.g. WS blocked by a
+  // corporate proxy). This is the cheap probe — if the socket is
+  // healthy, the broker has already de-duplicated us via the same
+  // streamHub, so the SSE consumer will just see `idle` and exit.
+  // TODO P8: remove this block once telemetry confirms 100% WS
+  // adoption across browsers.
+  useEffect(() => {
+    if (socket.status === "open") return
     if (!activeSessionId || messagesLoading || sendingRef.current) return
 
     lastEventIdRef.current = 0
@@ -410,23 +604,9 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
 
     let cancelled = false
     let attached = false
-    // Don't flip setIsStreaming(true) up-front anymore — that paints
-    // the "thinking…" indicator before we know a room actually exists.
-    // We wait for onAttached and only commit then. Without that, on
-    // page reload the user sees a "thinking" spinner for ~50ms even
-    // when there's nothing to thinking about.
     setStreamSegments([])
     setStreamThinking("")
 
-    // Identify (but do NOT yet remove) the most-recent assistant
-    // message. We used to prune it unconditionally here to avoid
-    // double-rendering when the SSE stream replays the partial — but
-    // that caused a visible "messages minus the last one" flash when
-    // the broker had nothing live to stream (onIdle): the message was
-    // removed and only came back when something else triggered a
-    // refetch seconds later. Now we capture the candidate and commit
-    // the removal in onAttached. If onIdle fires, the persisted copy
-    // stays put — no flicker, no missing-last-message state.
     let prunedAssistantId: string | null = null
     {
       const msgs = useStudioStore.getState().messages
@@ -480,16 +660,6 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
             },
             onError: (msg) => setError(msg),
             onIdle: () => {
-              // Broker has no live room for this session — nothing to
-              // follow. Close the controller cleanly so the finally
-              // block doesn't post-process as if we'd streamed events.
-              // ALSO clear the optimistic `isStreaming=true` we may
-              // have set in handleSessionSelect: the session's
-              // `isProcessing` flag in the store can be stale (the
-              // POST /messages already finished and the broker
-              // released the lock between our optimistic flip and
-              // here). If we don't clear it, the thinking dots would
-              // be pinned forever on a quiet session.
               if (activeSessionRef.current === activeSessionId) {
                 setIsStreaming(false)
                 setStreamThinking("")
@@ -497,12 +667,6 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
               controller.abort()
             },
             onAttached: () => {
-              // Real room — only NOW commit the streaming UI so we
-              // don't flash a "thinking" indicator on every reload of
-              // a quiet session. Also commit the partial-assistant
-              // prune here: the stream is about to replay the same
-              // content via streamSegments, so we drop the persisted
-              // partial to avoid double-rendering.
               attached = true
               if (activeSessionRef.current === activeSessionId) {
                 if (prunedAssistantId) removeMessage(prunedAssistantId)
@@ -519,9 +683,6 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
         }
       } finally {
         if (cancelled) return
-        // Skip the post-stream cleanup when we never attached — the
-        // broker just said "idle", nothing to reconcile, no need to
-        // refetch messages/quota/sessions.
         if (!attached) {
           if (followRef.current === controller) followRef.current = null
           return
@@ -531,9 +692,6 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
           try { await fetchMessages(activeSessionId) } catch { /* silent */ }
           fetchSessions()
           fetchQuota()
-          // Drop the live flags but leave streamSegments populated; the
-          // typewriter drains the buffered text at human pace and clears
-          // segments via its onCaughtUp callback once revealed.
           setIsStreaming(false)
           setStreamThinking("")
           notify()
@@ -547,7 +705,7 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
       controller.abort()
     }
   }, [
-    activeSessionId, messagesLoading,
+    activeSessionId, messagesLoading, socket.status,
     setIsStreaming, setStreamSegments, setStreamThinking, setActiveWidgets,
     addActiveWidget, setLastRouting, onSuiteChange, setError, resetStream,
     fetchMessages, fetchSessions, fetchQuota, notify, removeMessage,
