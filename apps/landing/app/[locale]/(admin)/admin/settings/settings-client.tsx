@@ -58,6 +58,24 @@ const STRIPE_FIELDS: Array<{
     hint: "price_… — the Stripe Price object backing the Enterprise plan ($299/mo).",
     placeholder: "price_***",
   },
+  {
+    key: "STRIPE_PRICE_CREDITS_25",
+    label: "Boost 25 credits price ID",
+    hint: "price_… — Stripe Price for the one-off 25-credit top-up pack ($15). Mode: payment (not subscription).",
+    placeholder: "price_***",
+  },
+  {
+    key: "STRIPE_PRICE_CREDITS_100",
+    label: "Boost 100 credits price ID",
+    hint: "price_… — Stripe Price for the one-off 100-credit top-up pack ($49). Mode: payment.",
+    placeholder: "price_***",
+  },
+  {
+    key: "STRIPE_PRICE_CREDITS_400",
+    label: "Boost 400 credits price ID",
+    hint: "price_… — Stripe Price for the one-off 400-credit top-up pack ($159). Mode: payment.",
+    placeholder: "price_***",
+  },
 ]
 
 export function SettingsClient({ initialStripe }: { initialStripe: SettingMeta[] }) {
