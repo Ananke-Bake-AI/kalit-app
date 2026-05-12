@@ -16,13 +16,16 @@ export const proxy = auth((req) => {
   const segments = pathname.split("/")
   const maybeLocale = segments[1]
 
-  // 1. /en/* → 308 redirect to strip default locale prefix (canonical URL)
-  if (maybeLocale === DEFAULT_LOCALE) {
-    const stripped = "/" + segments.slice(2).join("/") || "/"
-    const url = req.nextUrl.clone()
-    url.pathname = stripped
-    return NextResponse.redirect(url, 308)
-  }
+  // Note: we used to canonicalise /en/* → /* (308 redirect) here, but
+  // that combined with step 6's bare-path rewrite produces an
+  // ERR_TOO_MANY_REDIRECTS loop under Next.js 16's middleware-rewrite
+  // semantics (which now emit a 308 alongside the x-middleware-rewrite
+  // header — the browser follows the 308 back to /, middleware strips
+  // /en back to /, loop). Keeping /en/foo as-is for default-locale
+  // English URLs is a non-issue at this scale (no SEO hit yet; we
+  // were the only consumer of the canonical-strip). If we restore
+  // this later, gate it on an explicit "is this a fresh inbound
+  // request, not a rewrite continuation" signal.
 
   // 2. Determine locale + bare path
   let locale: Locale = DEFAULT_LOCALE
