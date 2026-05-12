@@ -466,6 +466,17 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
               // Broker has no live room for this session — nothing to
               // follow. Close the controller cleanly so the finally
               // block doesn't post-process as if we'd streamed events.
+              // ALSO clear the optimistic `isStreaming=true` we may
+              // have set in handleSessionSelect: the session's
+              // `isProcessing` flag in the store can be stale (the
+              // POST /messages already finished and the broker
+              // released the lock between our optimistic flip and
+              // here). If we don't clear it, the thinking dots would
+              // be pinned forever on a quiet session.
+              if (activeSessionRef.current === activeSessionId) {
+                setIsStreaming(false)
+                setStreamThinking("")
+              }
               controller.abort()
             },
             onAttached: () => {
@@ -550,6 +561,23 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
     // shows the loader immediately instead of an empty list.
     clearMessages()
     setMessagesLoading(true)
+
+    // Optimistic streaming flip: if the target session is flagged as
+    // currently processing on the broker side (we have `isProcessing`
+    // from /api/broker/sessions cached in the store), set `isStreaming`
+    // true RIGHT NOW so the dots/thinking indicator renders in the
+    // same frame as the session switch. Without this the user clicked
+    // a busy session, saw "no thinking icon" for the 200-500 ms the
+    // follow-stream effect needed to fetch + connect + `onAttached`,
+    // and felt the UI was unresponsive. The follow-stream useEffect
+    // keeps `isStreaming=true` when it `onAttached`s (no flicker), and
+    // resets it via `onIdle` if it turns out the broker has no live
+    // room (rare race where the DB flag is stale).
+    const targetSession = useStudioStore.getState().sessions.find((s) => s.id === id)
+    if (targetSession?.isProcessing) {
+      setIsStreaming(true)
+    }
+
     // Abort the SSE follow-subscription only. We DO NOT abort the
     // in-flight POST /messages (abortRef): doing so triggers the
     // broker's defer to UnlockSession, which flips is_processing back
@@ -562,7 +590,7 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
     followRef.current = null
     setActiveSessionId(id)
     onSessionActivated?.(id, { clearPrompt: true, clearSuite: true })
-  }, [resetStream, setActiveWidgets, setError, clearMessages, setMessagesLoading, setActiveSessionId, onSessionActivated])
+  }, [resetStream, setActiveWidgets, setError, clearMessages, setMessagesLoading, setIsStreaming, setActiveSessionId, onSessionActivated])
 
   // ── Welcome prompt click ────────────────────────────────
 
