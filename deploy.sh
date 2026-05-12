@@ -29,16 +29,18 @@ PASS="KonT@KTK@LIT20"
 REMOTE_PATH="/opt/kalit-landing"
 LOCAL_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Files the server owns and we MUST NOT overwrite from local:
-#   apps/landing/.env       — prod env (Neon DB, https://kalit.ai URLs,
-#                             Stripe live keys, all OAuth IDs). Local
-#                             .env is a dev pointer to localhost.
-#   apps/landing/proxy.ts   — self-hosted patch (locale-canonical strip
-#                             disabled to avoid the rewrite loop that
-#                             only manifests outside Vercel).
+# Files the server owns and we MUST NOT overwrite from local. Paths are
+# RELATIVE TO EACH RSYNC SOURCE ROOT, not the repo root — so when we
+# rsync apps/landing/ → :/opt/kalit-landing/apps/landing/, .env at the
+# top of the source maps to bare `.env` (NOT `apps/landing/.env`).
+# Getting this wrong silently overwrites:
+#   .env       — prod env on server (Neon DB, https://kalit.ai URLs,
+#                Stripe live keys, OAuth). Local .env points to localhost.
+#   proxy.ts   — self-hosted patch (locale-canonical strip disabled to
+#                avoid the rewrite loop that only manifests outside Vercel).
 RSYNC_EXCLUDES=(
-  --exclude='apps/landing/.env'
-  --exclude='apps/landing/proxy.ts'
+  --exclude='/.env'
+  --exclude='/proxy.ts'
   --exclude='node_modules'
   --exclude='.next'
   --exclude='.turbo'
