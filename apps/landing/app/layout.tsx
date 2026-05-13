@@ -27,19 +27,21 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-        {/* Single gtag.js bootstrap. The src param picks any registered
-            tag — both AW-* (Google Ads) and G-* (GA4) configs ride on
-            this one loader and we register each with their own
-            gtag('config', ID) call below. */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18025663729" />
+        {/* Single gtag.js bootstrap. Loader src uses the GA4 ID so
+            Google's tag-detector and the GA4 admin's "Test your site"
+            check both pick up the install — the AW-* Ads tag rides
+            on the same loader via the second gtag('config', …) call.
+            Putting AW-* in the loader src instead used to make GA4
+            report the tag as missing even though it was firing. */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-816EPS8GX8" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', 'AW-18025663729');
               gtag('config', 'G-816EPS8GX8');
+              gtag('config', 'AW-18025663729');
             `
           }}
         />
