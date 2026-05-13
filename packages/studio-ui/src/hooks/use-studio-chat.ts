@@ -23,7 +23,7 @@ import {
 } from "./use-notification-system"
 import { AgentStreamReducer } from "../lib/stream-consumer"
 import type { SuiteId } from "../lib/suites"
-import type { ChatMessage, ChatSession, StreamSegment, UploadedFile } from "../types"
+import type { ChatMessage, ChatSession, UploadedFile } from "../types"
 import { useStudioSocket, type StudioSocketFrame } from "./use-studio-socket"
 
 const PROGRESS_MODE_KEY = "kalit_studio_progress_mode"
@@ -575,7 +575,17 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
           // sessions list (for title/usage updates) + quota.
           if (sid === activeSessionRef.current) {
             setActiveWidgets([])
-            void fetchMessages(sid)
+            // Order matters: await the messages refresh BEFORE clearing
+            // streamSegments. Otherwise the live stream view disappears
+            // before the persisted assistant bubble is in the list and
+            // the user sees a blank gap. The typewriter used to handle
+            // this swap via its onCaughtUp callback — without it, the
+            // parent has to sequence the handoff manually.
+            void fetchMessages(sid).finally(() => {
+              if (sid === activeSessionRef.current) {
+                setStreamSegments([])
+              }
+            })
             fetchSessions()
             fetchQuota()
             setIsStreaming(false)
@@ -884,8 +894,6 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
       const reader = res.body.getReader()
       const decoder = new TextDecoder()
       let buffer = ""
-      let thinking = ""
-      const segments: StreamSegment[] = []
 
       let lastByteAt = Date.now()
       watchdog = setInterval(() => {
@@ -909,27 +917,22 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
         })
       }
 
-      const pushText = (chunk: string) => {
-        const last = segments[segments.length - 1]
-        if (last?.type === "text") {
-          last.content += chunk
-        } else {
-          segments.push({ type: "text", content: chunk })
-        }
-        for (let i = segments.length - 2; i >= 0; i--) {
-          if (segments[i].type === "tool") {
-            ;(segments[i] as { type: "tool"; done: boolean }).done = true
-            break
-          }
-        }
-        streamText += chunk
-        if (isStill()) setStreamSegments([...segments])
-      }
-
-      const pushTool = (name: string, input: unknown) => {
-        segments.push({ type: "tool", name, input, done: false })
-        if (isStill()) setStreamSegments([...segments])
-      }
+      // STREAM CONSUMPTION POLICY: the per-user WS multiplex is the
+      // ONLY writer for streamSegments / streamThinking / activeWidgets
+      // now. We still drain this POST response body so the broker can
+      // flush events without backpressure and so we know when the run
+      // ends, but every "case" below is either:
+      //   - a side-effect that can't go through the WS bridge
+      //     (debug_summary, console logs, optimistic quota decrement,
+      //     402 credit gate, suite-change side-effects, notify() on
+      //     widget terminal state), OR
+      //   - a counter for admin console (textCharCount / toolCount).
+      // We do NOT call setStreamSegments / setStreamThinking from here.
+      // Two writers were ping-ponging on the same state (POST and WS
+      // both see the same events but with different arrival ordering),
+      // producing the flicker the user described as "sometimes nothing
+      // shows" — sometimes the WS already had segments populated and
+      // the slightly-behind POST overwrote them with a shorter list.
 
       while (true) {
         const { done, value } = await reader.read()
@@ -948,7 +951,7 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
               switch (event.type) {
                 case "text":
                   if (event.content) {
-                    pushText(event.content)
+                    streamText += event.content
                     textCharCount += event.content.length
                     if (textCharCount % 200 < event.content.length) {
                       clog("text", "TEXT", `Streaming... ${textCharCount} chars received`)
@@ -957,16 +960,13 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
                   break
 
                 case "thinking":
-                  thinking += event.content || ""
-                  if (isStill()) setStreamThinking(thinking)
-                  if (thinking.length <= (event.content?.length || 0)) {
+                  if (event.content) {
                     clog("think", "THINK", "Thinking block started...")
                   }
                   break
 
                 case "tool_use":
                   if (event.name) {
-                    pushTool(event.name, event.input)
                     toolCount++
                     const inputPreview = event.input ? JSON.stringify(event.input).slice(0, 120) : ""
                     clog("tool", "TOOL", `#${toolCount} ${event.name}(${inputPreview}${inputPreview.length >= 120 ? "..." : ""})`)
@@ -974,14 +974,7 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
                   break
 
                 case "tool_result":
-                  for (let i = segments.length - 1; i >= 0; i--) {
-                    if (segments[i].type === "tool" && !(segments[i] as { done: boolean }).done) {
-                      ;(segments[i] as { type: "tool"; done: boolean }).done = true
-                      clog("tool", "TOOL", `#${toolCount} completed`)
-                      break
-                    }
-                  }
-                  if (isStill()) setStreamSegments([...segments])
+                  clog("tool", "TOOL", `#${toolCount} completed`)
                   break
 
                 case "widget": {
@@ -989,68 +982,38 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
                   const wi = event.widget?.widgetId || event.widgetId
                   if (wt && wi) {
                     clog("widget", "WIDGET", `${wt} ${wi.slice(0, 8)} status=${event.status || "active"}`)
-                    const existingIdx = segments.findIndex(
-                      (seg) => seg.type === "widget" && seg.widgetId === wi,
-                    )
-                    const prevStatus =
-                      existingIdx >= 0
-                        ? (segments[existingIdx] as { status?: string }).status
-                        : undefined
-                    const widgetSeg: StreamSegment = {
-                      type: "widget",
-                      widgetType: wt,
-                      widgetId: wi,
-                      status: event.status,
-                      assets: event.assets,
-                      count: event.count,
-                    }
-                    if (existingIdx >= 0) {
-                      segments[existingIdx] = widgetSeg
-                    } else {
-                      segments.push(widgetSeg)
-                    }
-                    if (isStill()) {
-                      setStreamSegments([...segments])
-                      addActiveWidget({ type: wt, id: wi })
-                    }
-
                     const status = String(event.status || "").toLowerCase()
                     const terminal =
                       status === "completed" || status === "deployed" || status === "failed"
-                    if (terminal && prevStatus !== event.status) notify()
+                    if (terminal) notify()
                   }
                   break
                 }
 
-                case "progress": {
+                case "progress":
                   clog("progress", "PROG", event.content || "...")
-                  const lastSeg = segments[segments.length - 1]
-                  if (lastSeg?.type === "progress") {
-                    lastSeg.messages.push(event.content)
-                  } else {
-                    segments.push({ type: "progress", messages: [event.content] })
-                  }
-                  if (isStill()) setStreamSegments([...segments])
                   break
-                }
 
                 case "file":
                   clog("file", "FILE", `${event.name} (${event.mimeType})`)
-                  segments.push({
-                    type: "file",
-                    name: event.name,
-                    mimeType: event.mimeType,
-                    url: event.url,
-                  })
-                  if (isStill()) setStreamSegments([...segments])
                   break
 
                 case "error":
                   clog("error", "ERROR", event.content || "Unknown error")
+                  // setError stays here — the WS reducer also surfaces
+                  // errors, but having both is idempotent (the same
+                  // message overwrites itself) and we avoid a race
+                  // where WS lags and the user sees "(no message yet)".
                   if (isStill()) setError(event.content || t("studio.streamError"))
                   break
 
                 case "suite_selected": {
+                  // Suite side-effects (URL sync, sidebar highlight)
+                  // are kept here so they fire even if the WS reducer
+                  // hasn't created a per-session reducer yet (the
+                  // first session_event creates it). Without this, the
+                  // very first turn could land the assistant text
+                  // before the suite-route header settled.
                   const payload = event.input as {
                     suite?: string
                     confidence?: string
@@ -1067,14 +1030,6 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
                     onSuiteChange?.("default")
                   }
                   if (payload) {
-                    setLastRouting({
-                      suite: payload.suite || "",
-                      confidence: payload.confidence || "",
-                      source: payload.source || "",
-                      reasoning: payload.reasoning,
-                      latencyMs: payload.latency_ms,
-                      at: Date.now(),
-                    })
                     const latStr = payload.latency_ms !== undefined ? ` latency=${payload.latency_ms}ms` : ""
                     clog("route", "ROUTE", `suite=${payload.suite} confidence=${payload.confidence} source=${payload.source}${latStr}`)
                     if (payload.reasoning) clog("route", "ROUTE", `reason: ${payload.reasoning}`)
@@ -1170,13 +1125,16 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
       // the WS is authoritative again (e.g., we're back to background
       // observer mode for this session).
       if (sessionId) inflightSendsRef.current.delete(sessionId)
-      // Drop the live flags but leave streamSegments populated; the
-      // typewriter drains the buffered text and clears segments via its
-      // onCaughtUp callback. Avoids the persisted bubble snapping in with
-      // the full text the moment the broker's stream closes.
+      // Drop the live flags AND clear streamSegments now that the
+      // persisted message is in the list (fetchMessages above filled
+      // it in). The typewriter used to call onCaughtUp to do this
+      // handoff; without it, we just sequence the swap here so the
+      // user sees the persisted bubble (with grouped tools, click-to-
+      // expand etc) instead of the minimal live view forever.
       if (stillActive) {
         setIsStreaming(false)
         setStreamThinking("")
+        setStreamSegments([])
       }
       // abortRef/sendingRef are non-render flags scoped to the in-flight
       // send — clear them unconditionally so we don't get stuck.
