@@ -1,7 +1,9 @@
 import { APP_THEME_COLOR } from "@/lib/config"
 import { DEFAULT_LOCALE } from "@/lib/i18n"
 import { headers } from "next/headers"
+import { Suspense } from "react"
 import { Toaster } from "sonner"
+import { GARouteTracker } from "@/components/analytics/ga-route-tracker"
 import "@/styles/globals.scss"
 import { fonts } from "./fonts"
 
@@ -45,6 +47,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className={fonts}>
         {children}
         <Toaster position="top-right" theme="system" richColors closeButton />
+        {/* Fires page_view to GA4 on every Next.js SPA navigation —
+            the initial gtag('config', G-…) above only covers first paint.
+            Suspense boundary because GARouteTracker reads useSearchParams. */}
+        <Suspense fallback={null}>
+          <GARouteTracker />
+        </Suspense>
       </body>
     </html>
   )
