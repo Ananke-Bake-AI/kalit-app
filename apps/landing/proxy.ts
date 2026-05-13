@@ -69,6 +69,13 @@ export const proxy = auth((req) => {
   const isAppPage = appPages.some((p) => barePath === p || barePath.startsWith(`${p}/`))
   if (isAppPage) {
     if (!isAuthenticated) {
+      // Stale or shared links into /settings/billing shouldn't dump
+      // visitors at /login with no context. Redirect them to the
+      // public /pricing page instead — they can browse plans, click
+      // through to register, and complete the purchase post-signup.
+      if (barePath === "/settings/billing") {
+        return NextResponse.redirect(new URL(localePath("/pricing", locale), req.url))
+      }
       const loginUrl = new URL(localePath("/login", locale), req.url)
       loginUrl.searchParams.set("callbackUrl", localePath(barePath, locale))
       return NextResponse.redirect(loginUrl)

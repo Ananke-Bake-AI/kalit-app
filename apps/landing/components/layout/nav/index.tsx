@@ -21,11 +21,19 @@ interface ResourceLink {
 }
 
 const RESOURCE_LINKS: ResourceLink[] = [
-  { href: "/blog", title: "Blog", desc: "Build notes and deep dives.", icon: "hugeicons:notebook-01" },
-  { href: "/changelog", title: "Changelog", desc: "What we ship, when.", icon: "hugeicons:rocket-01" },
-  { href: "/compare", title: "Compare", desc: "Kalit vs other AI builders.", icon: "hugeicons:left-to-right-list-bullet" },
-  { href: "/alternatives", title: "Alternatives", desc: "Switching from another tool?", icon: "hugeicons:arrow-data-transfer-horizontal" },
-  { href: "/customers", title: "Customers", desc: "Teams shipping with Kalit.", icon: "hugeicons:user-group" }
+  // Real semantic icons for each Resources item — generic notebook /
+  // rocket / list / arrows didn't convey what the entry actually
+  // links to.
+  //   Blog          → open book (reading long-form posts)
+  //   Changelog     → tag (release/version tags)
+  //   Compare       → balance scale (side-by-side comparison)
+  //   Alternatives  → exchange arrows (switching tools)
+  //   Customers     → building (companies / teams shipping with Kalit)
+  { href: "/blog", title: "Blog", desc: "Build notes and deep dives.", icon: "hugeicons:book-open-01" },
+  { href: "/changelog", title: "Changelog", desc: "What we ship, when.", icon: "hugeicons:tag-01" },
+  { href: "/compare", title: "Compare", desc: "Kalit vs other AI builders.", icon: "hugeicons:scales-01" },
+  { href: "/alternatives", title: "Alternatives", desc: "Switching from another tool?", icon: "hugeicons:exchange-01" },
+  { href: "/customers", title: "Customers", desc: "Teams shipping with Kalit.", icon: "hugeicons:building-06" }
 ]
 
 export const Nav = () => {
