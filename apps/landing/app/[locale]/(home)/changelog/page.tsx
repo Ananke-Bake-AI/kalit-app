@@ -3,15 +3,16 @@ import { PageHeader } from "@/components/page-header"
 import { PageSection } from "@/components/page-section"
 import { isValidLocale, type Locale } from "@/lib/i18n"
 import { MetadataSeo } from "@/lib/metadata"
+import { getPageStrings } from "@/lib/page-strings"
 import s from "./changelog.module.scss"
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: raw } = await params
   const locale = isValidLocale(raw) ? (raw as Locale) : "en"
+  const c = (await getPageStrings(locale)).changelog
   return MetadataSeo({
-    fullTitle: "Changelog - Kalit AI",
-    description:
-      "What's new at Kalit AI. Releases across Flow, Pentest, Search and the dashboard, grouped by week.",
+    fullTitle: c.metaTitle,
+    description: c.metaDescription,
     locale,
     pathname: "/changelog"
   })
@@ -25,6 +26,11 @@ interface Entry {
   bullets: string[]
 }
 
+// Entries are dated build notes — the dates themselves don't translate, and the
+// title/bullets are kept in EN for the v1 changelog (they reference specific
+// commit messages). Only the chrome (page title, tag pills, header) gets
+// localized. If/when we want full multilingual changelog, move these into
+// EN_PAGE_STRINGS too.
 const ENTRIES: Entry[] = [
   {
     date: "May 12, 2026",
@@ -126,14 +132,22 @@ const ENTRIES: Entry[] = [
   }
 ]
 
-export default function ChangelogPage() {
+export default async function ChangelogPage({
+  params
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale: raw } = await params
+  const locale = isValidLocale(raw) ? (raw as Locale) : "en"
+  const c = (await getPageStrings(locale)).changelog
+
+  const tagLabel = (tag: Tag) =>
+    tag === "feature" ? c.tagFeature : tag === "fix" ? c.tagFix : c.tagChore
+
   return (
     <PageSection>
       <Container>
-        <PageHeader
-          title="Changelog"
-          description="What we ship, when we ship it. Newest first."
-        />
+        <PageHeader title={c.title} description={c.subtitle} />
 
         <div className={s.list}>
           {ENTRIES.map((entry, i) => (
@@ -141,12 +155,14 @@ export default function ChangelogPage() {
               <div className={s.head}>
                 <h2 className={s.title}>{entry.title}</h2>
                 <div className={s.meta}>
-                  <span className={`${s.tag} ${s[entry.tag]}`}>{entry.tag}</span>
+                  <span className={`${s.tag} ${s[entry.tag]}`}>{tagLabel(entry.tag)}</span>
                   <time>{entry.date}</time>
                 </div>
               </div>
               <ul className={s.bullets}>
-                {entry.bullets.map((b, j) => <li key={j}>{b}</li>)}
+                {entry.bullets.map((b, j) => (
+                  <li key={j}>{b}</li>
+                ))}
               </ul>
             </article>
           ))}

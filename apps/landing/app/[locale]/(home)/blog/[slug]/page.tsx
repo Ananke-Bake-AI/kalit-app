@@ -7,6 +7,7 @@ import { MetadataSeo } from "@/lib/metadata"
 import { notFound } from "next/navigation"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
+import { getPageStrings } from "@/lib/page-strings"
 import { getPostBySlug, listAllPublishedSlugs, listRelatedPosts } from "../posts-server"
 import { ReadingProgress } from "../reading-progress"
 import { Toc } from "../toc"
@@ -92,6 +93,7 @@ export default async function BlogPostPage({
   const post = await getPostBySlug(slug, locale)
   if (!post) notFound()
 
+  const b = (await getPageStrings(locale)).blog
   const related = await listRelatedPosts(post.slug, post.tags, locale, 3)
   const headings = extractHeadings(post.body)
 
@@ -174,7 +176,7 @@ export default async function BlogPostPage({
           <article className={s.post}>
             <div className={s.postMain}>
               <Link href="/blog" className={s.backLink}>
-                ← All posts
+                {b.allPosts}
               </Link>
 
               {post.coverImageUrl && (
@@ -209,7 +211,7 @@ export default async function BlogPostPage({
                 <div className={s.authorInfo}>
                   <strong>{post.authorName}</strong>
                   <span>
-                    {fmtDate(post.publishedAt)} · {post.readingMinutes} min read
+                    {fmtDate(post.publishedAt)} · {post.readingMinutes} {b.minRead}
                   </span>
                 </div>
                 <div className={s.shareRow}>
@@ -218,8 +220,8 @@ export default async function BlogPostPage({
                     href={`https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`}
                     target="_blank"
                     rel="noreferrer"
-                    aria-label="Share on X"
-                    title="Share on X"
+                    aria-label={b.shareX}
+                    title={b.shareX}
                   >
                     𝕏
                   </a>
@@ -228,8 +230,8 @@ export default async function BlogPostPage({
                     href={`https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`}
                     target="_blank"
                     rel="noreferrer"
-                    aria-label="Share on LinkedIn"
-                    title="Share on LinkedIn"
+                    aria-label={b.shareLinkedIn}
+                    title={b.shareLinkedIn}
                   >
                     in
                   </a>
@@ -238,8 +240,8 @@ export default async function BlogPostPage({
                     href={`https://news.ycombinator.com/submitlink?u=${shareUrl}&t=${shareText}`}
                     target="_blank"
                     rel="noreferrer"
-                    aria-label="Share on Hacker News"
-                    title="Share on Hacker News"
+                    aria-label={b.shareHN}
+                    title={b.shareHN}
                   >
                     Y
                   </a>
@@ -254,7 +256,7 @@ export default async function BlogPostPage({
 
               {related.length > 0 && (
                 <section className={s.related}>
-                  <h3>Keep reading</h3>
+                  <h3>{b.keepReading}</h3>
                   <div className={s.relatedGrid}>
                     {related.map((r) => (
                       <Link key={r.slug} href={`/blog/${r.slug}`} className={s.relatedCard}>
@@ -267,7 +269,7 @@ export default async function BlogPostPage({
               )}
             </div>
 
-            <Toc items={headings} />
+            <Toc items={headings} label={b.onThisPage} />
           </article>
         </Container>
       </PageSection>

@@ -1,0 +1,459 @@
+{
+  "pricing": {
+    "metaTitle": "Tarifs - Kalit AI",
+    "metaDescription": "Tarifs simples et transparents pour l'usine logicielle Kalit AI. Forfait gratuit, tarifs payants pour les constructeurs solo, les agences et les équipes. Pentest et Search inclus dans l'entreprise.",
+    "title": "Tarification simple. Une usine logicielle d'intelligence artificielle.",
+    "description": "Essai gratuit. Les plans payants sont facturés en fonction des crédits et des sièges. Pentest et Search inclus dans l'entreprise.",
+    "intervalMonth": "/ mois",
+    "creditsLabel": "crédits",
+    "monthLabel": "mois",
+    "popularBadge": "Le plus choisi",
+    "packsTitle": "Recharger avec des packs de crédits",
+    "packsNote": "Les packs à usage unique s'ajoutent à votre abonnement. Utiles pour une semaine de lancement chargée ou un seul scan Pentest.",
+    "oneTimeLabel": "à usage unique",
+    "faqTitle": "FAQ sur les tarifs",
+    "planOutcomes": {
+      "free": "Essayez Kalit Flow avec 3 générations. Aucune carte requise.",
+      "starter": "Publiez un site d'atterrissage poli ou un petit MVP par mois.",
+      "pro": "Concevez et itérez un produit complet, ou exécutez des travaux pour des clients d'agence.",
+      "enterprise": "Exécutez Flow + Pentest + Search avec des sièges illimités."
+    },
+    "planCtas": {
+      "free": "Commencez gratuitement",
+      "starter": "Commencez avec Starter",
+      "pro": "Commencez avec Pro",
+      "enterprise": "Parlez avec nous"
+    },
+    "faqs": [
+      {
+        "q": "Qu'est-ce qu'un crédit ?",
+        "a": "Les crédits sont l'unité d'utilisation sous-jacente. À titre de guide approximatif : ~1 crédit par génération de page dans Flow, ~10-15 crédits pour une exécution de construction d'un MVP, ~5 crédits par analyse de Pentest. Les coûts exacts dépendent de la taille du projet et des agents spécialisés impliqués. Vous verrez toujours le coût en crédits avant le démarrage d'une exécution."
+      },
+      {
+        "q": "Puis-je annuler à tout moment ?",
+        "a": "Oui. Annulez depuis le tableau de bord, sans poser de questions. Votre plan reste actif jusqu'à la fin de la période de facturation en cours, puis passe à Gratuit."
+      },
+      {
+        "q": "Les crédits non utilisés sont-ils reportés ?",
+        "a": "Les crédits d'abonnement mensuel ne sont pas reportés - ils sont réinitialisés à chaque renouvellement. Les packs de crédits à usage unique que vous achetez en plus d'un abonnement restent sur votre compte jusqu'à ce qu'ils soient utilisés."
+      },
+      {
+        "q": "Pentest est-il disponible sur Pro ?",
+        "a": "Pentest est inclus dans l'offre Enterprise. Nous le déployons sur Pro à titre de version bêta - rejoignez la liste d'attente de Pentest depuis votre tableau de bord ou contactez-nous pour accéder plus tôt."
+      },
+      {
+        "q": "Proposez-vous des tarifs pour les agences ou les volumes ?",
+        "a": "Oui. Si vous réalisez des travaux pour des clients, utilisez plus de 10 postes ou avez besoin d'une allocation de crédits personnalisée, contactez-nous - nous avons un plan de partenariat pour les agences."
+      },
+      {
+        "q": "Qu'en est-il des remises pour l'éducation ou les organismes à but non lucratif ?",
+        "a": "Nous proposons des plans Pro à tarif réduit pour les étudiants, les enseignants et les organismes à but non lucratif enregistrés. Envoyez un e-mail à contact@kalit.ai depuis votre adresse institutionnelle."
+      },
+      {
+        "q": "Où sont stockées mes données ?",
+        "a": "Kalit AI est exploité par Merkle Tech Labs LTD. (Malte). Les données sont traitées dans les régions de l'UE. Consultez notre Politique de confidentialité et nos pages de sécurité pour obtenir l'ensemble des informations, y compris les sous-traitants et le cryptage."
+      },
+      {
+        "q": "Puis-je exécuter Pentest sur n'importe quel site ?",
+        "a": "Non. Pentest n'est autorisé que pour les cibles que vous possédez ou que vous êtes explicitement autorisé à tester. Consultez notre page Utilisation responsable avant d'exécuter une analyse."
+      }
+    ]
+  },
+  "security": {
+    "metaTitle": "Sécurité - Kalit AI",
+    "metaDescription": "Comment Kalit AI protège vos données : chiffrement lors du transit et au repos, traitement dans la région UE, fournisseurs OAuth, liste des sous-traitants, divulgation des vulnérabilités et réponse aux incidents.",
+    "title": "Sécurité chez Kalit AI",
+    "subtitle": "Notre posture de sécurité, en langage clair. Dernière mise à jour : 13 mai 2026.",
+    "intro": "Kalit AI est exploité par Merkle Tech Labs LTD. (Malte, enregistrement d'entreprise C 107851). Cette page décrit comment nous protégeons les données des clients, avec qui nous les partageons et comment signaler une vulnérabilité. Si vous avez besoin d'une copie signée pour les achats, envoyez un email à security@kalit.ai.",
+    "encryptionTitle": "Chiffrement des données",
+    "encryptionInTransit": "Lors du transit : tout le trafic client est chiffré via TLS 1.2+ (HTTPS/WSS). Le trafic interne entre les services (broker, taskforce et moteurs de pentest) est authentifié avec des JWT à durée de vie courte.",
+    "encryptionAtRest": "Au repos : la base de données PostgreSQL principale est chiffrée au repos par notre fournisseur de cloud (Neon, région UE). Le stockage d'objets (artefacts de projet, ressources générées) est chiffré côté serveur avec des clés gérées par le fournisseur.",
+    "encryptionSecrets": "Secrets : les clés API que vous fournissez (Stripe, clés LLM personnalisées, informations d'authentification de déploiement) sont chiffrées avec un chiffrement par enveloppe avant d'être écrites dans la base de données. Le texte brut n'existe que dans la mémoire pendant l'exécution d'un travail.",
+    "authTitle": "Authentification",
+    "authText": "Connectez-vous avec une adresse e-mail + mot de passe (hachages Argon2id), ou avec Google, GitHub, Discord, LinkedIn ou Facebook OAuth. Les sessions utilisent des JWT signés avec des jetons de rafraîchissement rotatifs. La récupération de compte nécessite une vérification par lien de messagerie électronique.",
+    "residencyTitle": "Résidence et traitement des données",
+    "residencyText": "Les données client sont traitées et stockées dans l'Union européenne. Nous ne répliquons pas actuellement les jeux de données principaux en dehors de l'UE. Les appels LLM effectués en votre nom peuvent transiter par des fournisseurs basés aux États-Unis (voir sous-traitants). Si vous avez besoin d'une routage LLM uniquement dans l'UE pour un accord, contactez-nous.",
+    "subprocessorsTitle": "Sous-traitants",
+    "subprocessorsIntro": "Kalit AI utilise les services tiers suivants pour fournir la plateforme :",
+    "subprocessorsList": [
+      "Anthropic — LLM principal (Claude) pour la génération de code, les agents de pentest et l'orchestration.",
+      "OpenAI — LLM de secours (Codex) pour des tâches spécifiques.",
+      "Neon — PostgreSQL géré (région UE).",
+      "MongoDB Atlas — stockage des données et des résultats des analyses de pentest (région UE).",
+      "Stripe — traitement des paiements et facturation des abonnements.",
+      "Resend — e-mail transactionnel (vérification, réinitialisation du mot de passe, notifications).",
+      "Vercel — hébergement du site d'atterrissage + tableau de bord ; l'une des plusieurs cibles de déploiement pour les applications générées.",
+      "Cloudflare — DNS et CDN pour kalit.ai et les domaines personnalisés.",
+      "Porkbun — enregistrement de domaine (lorsque vous achetez un domaine via Flow).",
+      "Google Analytics 4 — analyse de trafic anonyme sur les pages marketing."
+    ],
+    "subprocessorsNote": "Une liste de sous-traitants signée et un DPA sont disponibles sur demande pour les clients payants.",
+    "accessTitle": "Contrôle d'accès",
+    "accessList": [
+      "Accès aux systèmes de production avec les privilèges minimum. Tous les accès administratifs sont consignés.",
+      "Les déploiements de production passent par des pipelines signés et des demandes d'extraction examinées.",
+      "Les ordinateurs portables des employés utilisent un chiffrement de disque complet et une configuration gérée.",
+      "Aucune donnée client n'est copiée sur des machines personnelles."
+    ],
+    "pentestTitle": "Suite de tests de sécurité",
+    "pentestText": "Kalit Pentest peut effectuer des tests de sécurité actifs (injection SQL, XSS, SSRF, contournement d'authentification, etc.). Il ne doit être utilisé que contre des cibles que vous possédez ou que vous êtes explicitement autorisé à tester. Une utilisation abusive peut entraîner des conséquences juridiques et une fermeture immédiate du compte. Consultez notre politique d'utilisation responsable avant d'exécuter une analyse.",
+    "pentestEgress": "Les analyses de Pentest s'exécutent à partir d'adresses IP de sortie dédiées. Sur demande, nous pouvons fournir la plage d'adresses IP source afin que votre équipe puisse définir la surveillance et les règles WAF pendant une fenêtre d'analyse.",
+    "disclosureTitle": "Divulgation de vulnérabilités",
+    "disclosureText": "Si vous pensez avoir trouvé une vulnérabilité de sécurité dans Kalit AI, veuillez envoyer un e-mail à security@kalit.ai avec une description, une preuve de concept et votre niveau de gravité suggéré. Nous nous engageons à :",
+    "disclosureCommitments": [
+      "Reconnaître votre signalement dans les 3 jours ouvrables.",
+      "Fournir une décision de triage dans les 10 jours ouvrables.",
+      "Coordonner la divulgation publique une fois que la correction est apportée.",
+      "Vous créditer dans le journal des modifications si vous le souhaitez."
+    ],
+    "disclosureBounty": "Nous n'avons pas actuellement de programme de prime de bogues payante. Nous récompensons toutefois les signalements sérieux et pertinents avec des crédits, des goodies et un remerciement public.",
+    "incidentTitle": "Réponse aux incidents",
+    "incidentText": "Nous maintenons un guide de réponse aux incidents couvrant la détection, la contention, la notification des clients et l'analyse post-mortem. Si un incident de sécurité affecte matériellement vos données, nous notifierons les clients concernés dans les 72 heures par courriel et publierons une mise à jour de statut sur status.kalit.ai.",
+    "complianceTitle": "Feuille de route de la conformité",
+    "complianceText": "Kalit AI n'est pas encore certifiée SOC 2 ou ISO 27001. Nous suivons des contrôles alignés sur ces normes et nous proposons de demander une certification formelle en 2026. Les artefacts de conformité disponibles aujourd'hui : liste des sous-traitants, DPA, questionnaire de sécurité (sur demande).",
+    "contactTitle": "Contact",
+    "contactText": "Pour les questions de sécurité, les rapports de vulnérabilités ou les examens de sécurité d'approvisionnement :",
+    "contactAddress": "Merkle Tech Labs LTD., Northlink Business Centre, Level 2, Triq Burmarrad, Naxxar, NXR 6345, Malta"
+  },
+  "responsibleUse": {
+    "metaTitle": "Politique d'utilisation responsable - Kalit AI",
+    "metaDescription": "Utilisation acceptable de Kalit AI, avec une section spécifique sur les cibles autorisées pour la suite Pentest. Lisez avant d'exécuter un scan de sécurité actif.",
+    "title": "Politique d'utilisation responsable",
+    "subtitle": "Ce que vous pouvez et ne pouvez pas faire avec Kalit AI — avec des règles spéciales pour Pentest. Dernière mise à jour : 13 mai 2026.",
+    "intro": "Cette politique d'utilisation responsable complète nos conditions de service. Elle s'applique à chaque compte Kalit AI et à chaque suite (Flow, Pentest, Search, Marketing). Les règles pour Pentest sont plus strictes car la suite effectue des tests de sécurité actifs contre des systèmes réels. Lisez cette page avant d'exécuter un scan Pentest.",
+    "authTitle": "1. Utilisation autorisée uniquement — Pentest",
+    "authIntro": "Vous ne pouvez utiliser Kalit Pentest que contre des cibles pour lesquelles vous avez une autorisation explicite et écrite pour effectuer des tests de sécurité actifs. Les autorisations acceptables incluent :",
+    "authBullets": [
+      "Un système que vous possédez et exploitez personnellement.",
+      "Un système appartenant à une entreprise qui vous a retenu, avec une lettre d'engagement ou un accord de pentest signé.",
+      "Une cible répertoriée dans le périmètre explicite d'un programme de chasse aux bogues public où vous êtes un participant inscrit.",
+      "Un environnement de préproduction ou de test appartenant à votre employeur, à condition que votre employeur l'autorise."
+    ],
+    "authConfirm": "Avant votre premier scan Pentest, nous vous demandons de confirmer l'autorisation. Les fausses attestations constituent une violation matérielle de nos conditions et peuvent être signalées aux autorités.",
+    "prohibitedTitle": "2. Cibles interdites — Pentest",
+    "prohibitedIntro": "Vous ne pouvez pas exécuter Kalit Pentest contre les cibles suivantes :",
+    "prohibitedBullets": [
+      "Les systèmes que vous ne possédez pas ou pour lesquels vous n'avez pas conclu un contrat de test.",
+      "Les systèmes gouvernementaux, militaires, les infrastructures critiques, les systèmes de santé ou financiers, sauf si vous êtes couvert par un accord formel.",
+      "Les sites et services appartenant à des écoles, des organisations caritatives ou des mineurs, sauf si vous êtes lié par un accord formel.",
+      "Les cibles de chasse aux bugs en dehors de la portée publiée d'un programme inscrit.",
+      "Les services hébergés par des tiers (par exemple, SaaS partagé) où vos activités pourraient affecter d'autres locataires. Les analyses doivent être limitées aux instances ou environnements que vous contrôlez.",
+      "Tout système situé dans un pays où vous êtes soumis à des sanctions ou des contrôles à l'exportation actifs."
+    ],
+    "prohibitedNote": "Nous surveillons les cibles d'analyse pour détecter les signaux de mauvaise utilisation répétés (par exemple, pics contre des domaines de haute visibilité, attaques par dictionnaire contre des cibles non liées). Une utilisation suspecte déclenchera une suspension immédiate en attendant la révision.",
+    "evidenceTitle": "3. Gestion des preuves",
+    "evidenceIntro": "Les résultats des tests de Pentest contiennent souvent des informations sensibles — des informations d'identification découvertes dans des fichiers mal configurés, des URL internes, des données client exposées via IDOR, etc. Vous acceptez de :",
+    "evidenceBullets": [
+      "Traiter les résultats comme confidentiels pour le propriétaire de la cible.",
+      "Ne pas extraire plus de données que nécessaire pour démontrer une vulnérabilité.",
+      "Supprimer ou anonymiser les preuves sensibles après correction.",
+      "Partager les rapports de Pentest uniquement avec les personnes autorisées par le propriétaire de la cible à les recevoir."
+    ],
+    "generalTitle": "4. Utilisation générale acceptable — tous les ensembles",
+    "generalIntro": "Vous acceptez de ne pas utiliser Kalit AI pour :",
+    "generalBullets": [
+      "Générer ou distribuer du contenu illégal, y compris le CSAM, le contenu incitant à la violence, ou le contenu qui viole les droits d'auteur ou de marque.",
+      "Créer des pages de phishing, des logiciels malveillants, des spywares, des rançongiciels ou d'autres logiciels conçus pour tromper, nuire ou compromettre les utilisateurs.",
+      "Construire, entraîner ou affiner des systèmes d'IA concurrents sur les sorties de Kalit AI en masse.",
+      "Extraire, récolter ou ingénierie inverse de Kalit AI lui-même.",
+      "Envoyer des communications en bloc non sollicitées (pourriels) à partir de comptes créés avec Marketing ou Flow.",
+      "Usurper l'identité de toute personne ou organisation, y compris Kalit AI ou son personnel.",
+      "Contourner les limites de taux, les quotas d'utilisation ou les paiements."
+    ],
+    "outputTitle": "5. Sortie de l'IA — votre responsabilité",
+    "outputIntro": "Kalit AI produit du code, du contenu et des résultats de sécurité à l'aide de modèles de langage. Les sorties peuvent être incorrectes, biaisées ou non sécurisées. Vous êtes responsable de vérifier les sorties avant :",
+    "outputBullets": [
+      "Déployer du code généré en production.",
+      "Publier du contenu marketing sous votre marque.",
+      "Agir sur un résultat de Pentest (par exemple, le signaler à un tiers)."
+    ],
+    "outputNote": "Nous travaillons en permanence pour améliorer la précision des agents, mais vous demeurez l'intermédiaire humain.",
+    "enforcementTitle": "6. Application",
+    "enforcementIntro": "Les violations de cette politique peuvent entraîner :",
+    "enforcementBullets": [
+      "Un avertissement et une pause forcée des activités d'analyse ou de génération.",
+      "La suspension ou la résiliation de votre compte sans remboursement.",
+      "La perte de crédits et du solde du compte.",
+      "La notification des forces de l'ordre, des fournisseurs d'hébergement ou des tiers concernés."
+    ],
+    "enforcementNote": "Nous pouvons publier une note de transparence sur une mesure d'application sérieuse sans nommer les individus.",
+    "reportTitle": "7. Signaler un abus",
+    "reportText": "Si vous pensez qu'un utilisateur de Kalit AI vise vos systèmes sans autorisation, ou enfreint autrement cette politique, envoyez un email à abuse@kalit.ai avec des horodatages, des adresses IP source et tous les journaux que vous pouvez partager. Nous nous efforçons de reconnaître les rapports d'abus dans un délai d'un jour ouvrable et d'agir sur les rapports confirmés immédiatement.",
+    "updatesTitle": "8. Mises à jour",
+    "updatesText": "Nous pouvons mettre à jour cette politique. Les changements importants seront annoncés dans le journal des modifications et par email aux clients actifs au moins 14 jours avant leur entrée en vigueur.",
+    "contactTitle": "Contact"
+  },
+  "changelog": {
+    "metaTitle": "Journal des modifications - Kalit AI",
+    "metaDescription": "Quoi de neuf chez Kalit AI. Versions mises à jour de Flow, Pentest, Search et du tableau de bord, regroupées par semaine.",
+    "title": "Journal des modifications",
+    "subtitle": "Ce que nous livrons, quand nous le livrons. Les plus récents en premier.",
+    "tagFeature": "fonctionnalité",
+    "tagFix": "correction",
+    "tagChore": "tâche"
+  },
+  "compare": {
+    "metaTitleIndex": "Comparez Kalit AI aux autres constructeurs d'applications d'IA",
+    "metaDescriptionIndex": "Comparaisons côte à côte de Kalit AI et de Lovable, Base44, Emergent et Bolt — matrices de capacités, quand choisir lequel et les différences qui comptent pour le lancement.",
+    "indexTitle": "Comparez Kalit AI",
+    "indexDescription": "Comparaisons honnêtes avec les constructeurs d'applications d'IA que vous évaluez probablement également.",
+    "pickCompetitorTitle": "Choisissez {name} lorsque",
+    "pickKalitTitle": "Choisissez Kalit AI lorsque",
+    "cta": "Commencez avec Kalit AI — gratuit",
+    "cellYes": "Oui",
+    "cellPartial": "Partiel",
+    "cellNo": "Non",
+    "capabilityHeader": "Capacité",
+    "kalitColumn": "Kalit AI",
+    "competitors": {
+      "lovable": {
+        "oneLiner": "Lovable est l'un des constructeurs d'applications d'IA les plus puissants pour obtenir une application web fonctionnelle à partir d'une invite. Kalit part du même point de départ et ajoute Pentest, Search et une équipe de construction de 21 agents.",
+        "competitorOneLiner": "Lovable — \"ingénieur fullstack IA\". Fort prompt-to-app avec une grande communauté.",
+        "intro": "Lovable est un excellent choix si vous n'avez besoin de construire que l'application elle-même. Kalit AI est conçu pour les fondateurs qui ont besoin de construire, de sécuriser et de lancer le produit — et pas seulement de générer du code.",
+        "whenToPick": [
+          "Vous voulez la communauté prompt-to-app la plus établie.",
+          "Vous n'avez besoin que de génération de code, et non de sécurité ou de recherche.",
+          "Vous avez déjà choisi votre hébergement et votre pile de croissance."
+        ],
+        "whenToPickKalit": [
+          "Vous voulez un rapport de sécurité attaché à chaque lancement.",
+          "Vous voulez un seul espace de travail qui va de l'idée au lancement en direct, avec recherche et marketing sur le côté.",
+          "Vous voulez une équipe de construction multi-agents et un plan de tâche explicite, et non un générateur à tir unique.",
+          "Vous expédiez dans plusieurs langues — Kalit est localisé en 16."
+        ]
+      },
+      "base44": {
+        "oneLiner": "Base44 mise sur le \"vibe coding\" pour les non-codificateurs. Kalit adopte une approche différente : la sortie est un code réel, portable, dans un framework réel, construit par une équipe d'agents coordonnés.",
+        "competitorOneLiner": "Base44 — des applications web codées pour les créateurs non techniques.",
+        "intro": "Base44 est optimisé pour les non-codeurs qui veulent une application fonctionnelle sans se soucier de la pile. Kalit AI vous offre la même rapidité, mais avec une base de code réelle que vous pouvez emporter avec vous, ainsi que des outils de sécurité et de croissance.",
+        "whenToPick": [
+          "Vous ne voulez pas voir le code du tout.",
+          "Vous voulez un outil unique qui cache entièrement la pile.",
+          "Vos besoins sont principalement des applications internes à faible risque."
+        ],
+        "whenToPickKalit": [
+          "Vous voulez du code que vous pouvez exporter, versionner et posséder.",
+          "Vous voulez un rapport de pentest avant de lancer.",
+          "Vous voulez passer d'une sensation de sans code à un flux de travail d'ingénierie réel sans changer d'outils.",
+          "Vous voulez une infrastructure basée dans l'UE et un chemin de DPA clair."
+        ]
+      },
+      "emergent": {
+        "oneLiner": "Emergent se positionne autour d'applications prêtes pour la production à partir de la conversation. Kalit partage cette ambition et ajoute une suite de sécurité, une équipe de construction multi-agents et une porte de recherche gratuite.",
+        "competitorOneLiner": "Emergent — des applications prêtes pour la production via une conversation naturelle.",
+        "intro": "Emergent est un choix solide pour un flux de travail de prompte à produit à canal unique. Kalit AI étend la même idée en une usine logicielle à quatre ensembles, avec un pentest autonome en tant que citoyen de première classe.",
+        "whenToPick": [
+          "Vous souhaitez une expérience d'application à canal unique.",
+          "Vous n'avez pas besoin d'outils de sécurité.",
+          "Votre public cible est principalement basé aux États-Unis et parle anglais."
+        ],
+        "whenToPickKalit": [
+          "Vous souhaitez un test de pentest autonome intégré.",
+          "Vous souhaitez une localisation en 16 langues dès le premier jour.",
+          "Vous souhaitez des suites de construction et de croissance sous un seul espace de travail.",
+          "Vous souhaitez des résultats notés CVSS avec export SARIF."
+        ]
+      },
+      "bolt": {
+        "oneLiner": "Bolt est un constructeur de prototypes rapide dans le navigateur. Kalit est conçu pour l'étape suivante — passer d'un prototype à un produit prêt à lancer, scanné et prêt à la croissance.",
+        "competitorOneLiner": "Bolt — prototypage AI dans le navigateur, rapide et visuel.",
+        "intro": "Bolt est un environnement de prototypage exceptionnel. Kalit AI le complète : lorsque vous dépassez la phase de prototype et avez besoin d'un déploiement réel, d'un scan de sécurité et d'un plan de lancement, vous passez à Kalit.",
+        "whenToPick": [
+          "Vous souhaitez le prototype visuel le plus rapide possible.",
+          "Vous n'envisagez pas encore le lancement ou la sécurité.",
+          "Vous êtes prêt à migrer plus tard."
+        ],
+        "whenToPickKalit": [
+          "Vous souhaitez lancer votre projet, et non simplement le prototyper.",
+          "Vous souhaitez un résultat Dockerisé réel et un dépôt GitHub réel.",
+          "Vous souhaitez que la sécurité et la recherche soient intégrées dans le même espace de travail."
+        ]
+      }
+    },
+    "capabilities": [
+      "Générer des applications web full-stack à partir d'une invite",
+      "Déployer en production à partir de l'espace de travail",
+      "Importer un dépôt GitHub existant pour continuer à itérer",
+      "Équipe de construction multi-agents (20+ agents spécialisés)",
+      "Un conteneur Docker par projet est livré avec la construction",
+      "Test de pentest autonome intégré avec export OWASP / SARIF",
+      "Cartographie de la conformité (OWASP, CWE, PCI DSS, NIST, ISO 27001, SOC 2)",
+      "Suite de recherche de marché gratuite (Search)",
+      "Interface utilisateur localisée dans 16 langues",
+      "Portefeuille public de projets réels (/discover)",
+      "Construit par l'équipe de {name} pour {name} uniquement",
+      "Fondé par le fondateur, basé dans l'UE, construction transparente en public"
+    ]
+  },
+  "alternatives": {
+    "metaTitleIndex": "Alternatives à Kalit AI — l'usine de logiciels d'intelligence artificielle",
+    "metaDescriptionIndex": "Envisagez une alternative à Lovable, Base44 ou Bolt ? Kalit AI est l'usine de logiciels multi-suites conçue pour la mise en production, et non juste pour la génération.",
+    "indexTitle": "Alternatives aux constructeurs d'applications d'intelligence artificielle",
+    "indexDescription": "Si vous évaluez un autre outil, voici où Kalit AI s'intègre.",
+    "whyLeaveTitle": "Pourquoi les gens quittent {name}",
+    "whyKalitTitle": "Ce que Kalit AI apporte",
+    "cta": "Essayez Kalit AI — gratuit",
+    "pageTitle": "La meilleure alternative à {name}",
+    "competitors": {
+      "lovable": {
+        "searchHook": "Recherchez une alternative à Lovable ? Kalit AI prend le relais là où Lovable s'arrête : une équipe de construction de 21 agents, un ensemble de tests de sécurité autonomes et un espace de travail qui va de l'idée au lancement.",
+        "whyLeave": [
+          "Les applications générées ne sont pas livrées avec une revue de sécurité.",
+          "Il est difficile de continuer à itérer une fois que l'excitation de la création d'applications à partir de prompts s'est estompée.",
+          "Support limité pour conserver votre propre workflow GitHub.",
+          "Expérience uniquement en anglais pour les publics internationaux."
+        ],
+        "whyKalit": [
+          "Le test de sécurité intégré produit un rapport noté CVSS et exportable au format SARIF.",
+          "Une Taskforce de 21 agents construit, teste, expédie et documente - et ne se contente pas de générer.",
+          "Apportez ou prenez n'importe quel référentiel GitHub. La sortie est un fichier Docker réel.",
+          "Interface utilisateur en 16 langues dès le premier jour - vendez à des publics mondiaux sans avoir à reconstruire."
+        ]
+      },
+      "base44": {
+        "searchHook": "Recherchez une alternative à Base44 ? Kalit AI vous offre la même rapidité de « prompt et expédition » mais avec du code réel, une sortie Docker réelle et un rapport de sécurité joint.",
+        "whyLeave": [
+          "Les applications codées avec une approche vibe sont difficiles à emporter avec vous si vous dépassez la plateforme.",
+          "Aucune analyse de sécurité avant expédition.",
+          "Flux de travail d'équipe limité pour les agences et les équipes de produits.",
+          "La pile est cachée — le débogage devient plus difficile à grande échelle."
+        ],
+        "whyKalit": [
+          "Du code réel dans un framework réel, exporté vers votre GitHub.",
+          "Chaque projet est conteneurisé avec Docker — votre équipe d'infrastructure peut reprendre à partir de là.",
+          "Le Pentest est inclus avec l'espace de travail, et non comme un module complémentaire tiers.",
+          "Basé en Europe, dirigé par son fondateur, construction transparente en public."
+        ]
+      },
+      "bolt": {
+        "searchHook": "Recherchez une alternative à Bolt lorsque vous devez passer du prototype au lancement ? Kalit AI prend un prompt pour créer un produit déployé, analysé et prêt à croître.",
+        "whyLeave": [
+          "Bolt est excellent pour la création de prototypes, mais les outils de lancement sont limités.",
+          "La migration d'un prototype à une base de code réelle nécessite un effort manuel.",
+          "Aucun outil de sécurité dans le même espace de travail.",
+          "Aucun ensemble d'outils de recherche de marché pour valider avant de construire."
+        ],
+        "whyKalit": [
+          "Une équipe de construction de 21 agents conçue explicitement pour livrer, et non juste pour créer des prototypes.",
+          "Suite de recherche gratuite pour valider avant de construire.",
+          "Analyse de Pentest incluse dans le même espace de travail.",
+          "Déployez en production à partir de la même invite."
+        ]
+      }
+    }
+  },
+  "pentestExtras": {
+    "agentsEyebrow": "12 agents spécialisés · 11 classes de vulnérabilités",
+    "agentsTitleA": "Un scan, douze spécialistes.",
+    "agentsTitleB": "Aucun contexte partagé perdu entre eux.",
+    "agentsLede": "Kalit Pentest lance un agent spécialisé par classe de vulnérabilité, en parallèle. Chaque agent est équipé de sa propre bibliothèque de charge utile, de moteur de mutation et de stratégie de contournement de WAF — et partage ses résultats en direct avec les autres pendant l'analyse.",
+    "standardsEyebrow": "Normes · Conformité · Exportations",
+    "standardsTitleA": "Correspond aux cadres",
+    "standardsTitleB": "que votre auditeur demande réellement.",
+    "standardsLede": "Chaque résultat est noté CVSS 3.1 et mappé aux normes attendues par les équipes de sécurité et les auditeurs. Exportez SARIF directement dans GitHub Advanced Security ou votre pipeline CI.",
+    "reportTitle": "Qu'y a-t-il dans le rapport",
+    "reportLede": "Chaque analyse produit un rapport dédupliqué et validé sans faux positifs, prêt pour l'ingénierie, l'examen de sécurité ou un auditeur.",
+    "reportFields": [
+      "Résumé exécutif",
+      "Découvertes classées par CVSS",
+      "Preuves de concept",
+      "Guidance pour la correction",
+      "Journal étape par étape",
+      "Mappages de conformité",
+      "Récit de la chaîne d'attaque",
+      "Liste de contrôle pour les tests de reprise"
+    ],
+    "authTitle": "Cibles autorisées uniquement.",
+    "authText": "Kalit Pentest exécute des tests de sécurité actifs. N'exécutez une analyse que contre un système que vous possédez ou pour lequel vous avez une autorisation écrite explicite pour le tester.",
+    "authCta": "Lisez les règles",
+    "severityCritical": "CRIT",
+    "severityHigh": "HAUT",
+    "severityMedium": "MOYEN",
+    "severityLow": "FAIBLE",
+    "agents": [
+      {
+        "name": "Chasseur d'injections SQL",
+        "targets": "Basés sur les erreurs, UNION, aveugle (temps / booléen), hors bande."
+      },
+      {
+        "name": "Spécialiste des failles XSS",
+        "targets": "Réfléchies, stockées, basées sur le DOM avec mutation de charge utile contextuelle."
+      },
+      {
+        "name": "Spécialiste SSRF",
+        "targets": "Méta-données cloud (AWS / GCP / Azure), relier le DNS, contournement de l'encodage IP."
+      },
+      {
+        "name": "Injection de commandes",
+        "targets": "Directe et aveugle (DNS, temps, rappel HTTP)."
+      },
+      {
+        "name": "Désérialisation",
+        "targets": "Java, PHP, Python, .NET, chaînes de gadgets Ruby."
+      },
+      {
+        "name": "Contournement d'authentification",
+        "targets": "Fixation de session, failles JWT, escalation de privilèges."
+      },
+      {
+        "name": "Testeur IDOR",
+        "targets": "Manipulation de référence d'objet entre les points de terminaison."
+      },
+      {
+        "name": "Pulvérisation de mots de passe",
+        "targets": "Test de réutilisation contre les surfaces découvertes."
+      },
+      {
+        "name": "Prise de contrôle de sous-domaine",
+        "targets": "Empreinte digitale CNAME contre 15+ services cloud."
+      },
+      {
+        "name": "Auditeur cloud",
+        "targets": "Seaux ouverts (S3 / GCS / Blob), points de terminaison serverless exposés."
+      },
+      {
+        "name": "Sécurité WebSocket",
+        "targets": "CSWSH, contournement d'authentification, falsification de messages."
+      },
+      {
+        "name": "Sécurité GraphQL",
+        "targets": "Introspection, attaques de profondeur et de complexité, authentification de champs."
+      }
+    ],
+    "sampleFindings": [
+      {
+        "title": "SQLi — /api/auth/login"
+      },
+      {
+        "title": "SSRF — /api/avatar?url=…"
+      },
+      {
+        "title": "XSS stocké — /comments"
+      },
+      {
+        "title": "IDOR — /api/orders/:id"
+      },
+      {
+        "title": "Bucket S3 ouvert — assets-prod"
+      },
+      {
+        "title": "En-têtes de sécurité manquants"
+      }
+    ]
+  },
+  "blog": {
+    "metaTitle": "Blog - Kalit AI",
+    "metaDescription": "Notes de l'équipe derrière Kalit AI — pourquoi nous construisons une usine de logiciels basée sur l'IA, comment Taskforce et Pentest fonctionnent réellement, et ce que nous allons livrer ensuite.",
+    "title": "Blog Kalit",
+    "description": "Notes de version, analyses techniques approfondies et réflexions sur les produits de l'équipe Kalit.",
+    "featured": "En vedette",
+    "minRead": "min de lecture",
+    "allPosts": "← Tous les articles",
+    "keepReading": "Continuer la lecture",
+    "onThisPage": "Sur cette page",
+    "shareX": "Partager sur X",
+    "shareLinkedIn": "Partager sur LinkedIn",
+    "shareHN": "Partager sur Hacker News",
+    "empty": "Aucun article pour le moment. Revenez bientôt."
+  }
+}

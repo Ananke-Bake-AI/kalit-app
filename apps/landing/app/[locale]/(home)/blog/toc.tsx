@@ -11,9 +11,13 @@ interface TocItem {
 
 interface TocProps {
   items: TocItem[]
+  /** Optional heading shown above the list. Defaults to "On this page"
+   *  in English; pass a translated label when rendering from a
+   *  localized page. */
+  label?: string
 }
 
-export function Toc({ items }: TocProps) {
+export function Toc({ items, label = "On this page" }: TocProps) {
   const [activeId, setActiveId] = useState<string | null>(items[0]?.id || null)
 
   useEffect(() => {
@@ -38,7 +42,7 @@ export function Toc({ items }: TocProps) {
 
   return (
     <aside className={s.toc} aria-label="Table of contents">
-      <div className={s.tocTitle}>On this page</div>
+      <div className={s.tocTitle}>{label}</div>
       <ul className={s.tocList}>
         {items.map((it) => (
           <li key={it.id} className={it.level === 3 ? s.h3 : undefined}>

@@ -3,8 +3,9 @@ import { Link } from "@/components/link"
 import { PageHeader } from "@/components/page-header"
 import { PageSection } from "@/components/page-section"
 import { isValidLocale, type Locale } from "@/lib/i18n"
-import { MetadataSeo } from "@/lib/metadata"
 import { getServerTranslation } from "@/lib/i18n-server"
+import { MetadataSeo } from "@/lib/metadata"
+import { getPageStrings } from "@/lib/page-strings"
 import { listPublishedPosts } from "./posts-server"
 import s from "./blog.module.scss"
 
@@ -20,10 +21,10 @@ const fmt = (d: Date | null, locale: string) =>
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: raw } = await params
   const locale = isValidLocale(raw) ? (raw as Locale) : "en"
+  const b = (await getPageStrings(locale)).blog
   return MetadataSeo({
-    fullTitle: "Blog - Kalit AI",
-    description:
-      "Notes from the team behind Kalit AI — why we're building an AI software factory, how Taskforce and Pentest actually work, and what we ship next.",
+    fullTitle: b.metaTitle,
+    description: b.metaDescription,
     locale,
     pathname: "/blog"
   })
@@ -36,7 +37,7 @@ export default async function BlogIndex({
 }) {
   const { locale: raw } = await params
   const locale = isValidLocale(raw) ? (raw as Locale) : "en"
-  const { t } = await getServerTranslation()
+  const b = (await getPageStrings(locale)).blog
   const posts = await listPublishedPosts(locale)
 
   const [featured, ...rest] = posts
@@ -45,19 +46,11 @@ export default async function BlogIndex({
     <PageSection>
       <Container>
         <div className={s.indexHeader}>
-          <PageHeader
-            title={t("blogPage.title") || "Kalit Blog"}
-            description={
-              t("blogPage.description") ||
-              "Build notes, technical deep-dives and product thinking from the Kalit team."
-            }
-          />
+          <PageHeader title={b.title} description={b.description} />
         </div>
 
         {!posts.length && (
-          <p style={{ textAlign: "center", color: "var(--text-secondary)" }}>
-            No posts yet. Check back soon.
-          </p>
+          <p style={{ textAlign: "center", color: "var(--text-secondary)" }}>{b.empty}</p>
         )}
 
         {featured && (
@@ -71,14 +64,14 @@ export default async function BlogIndex({
               )}
             </div>
             <div className={s.featuredBody}>
-              <span className={s.badge}>{t("blogPage.featured") || "Featured"}</span>
+              <span className={s.badge}>{b.featured}</span>
               <h2>{featured.title}</h2>
               <p>{featured.description}</p>
               <div className={s.cardMeta}>
                 <span>{fmt(featured.publishedAt, locale)}</span>
                 <span className={s.dot}>·</span>
                 <span>
-                  {featured.readingMinutes} {t("blogPage.minRead") || "min read"}
+                  {featured.readingMinutes} {b.minRead}
                 </span>
                 <span className={s.dot}>·</span>
                 <span>{featured.authorName}</span>
@@ -114,7 +107,7 @@ export default async function BlogIndex({
                   <span>{fmt(post.publishedAt, locale)}</span>
                   <span className={s.dot}>·</span>
                   <span>
-                    {post.readingMinutes} {t("blogPage.minRead") || "min read"}
+                    {post.readingMinutes} {b.minRead}
                   </span>
                 </div>
               </div>

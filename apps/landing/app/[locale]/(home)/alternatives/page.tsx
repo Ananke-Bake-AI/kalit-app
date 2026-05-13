@@ -4,36 +4,49 @@ import { PageHeader } from "@/components/page-header"
 import { PageSection } from "@/components/page-section"
 import { isValidLocale, type Locale } from "@/lib/i18n"
 import { MetadataSeo } from "@/lib/metadata"
+import { getPageStrings } from "@/lib/page-strings"
 import { ALTERNATIVES } from "./data"
 import s from "../blog/blog.module.scss"
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: raw } = await params
   const locale = isValidLocale(raw) ? (raw as Locale) : "en"
+  const a = (await getPageStrings(locale)).alternatives
   return MetadataSeo({
-    fullTitle: "Kalit AI alternatives — the AI software factory",
-    description:
-      "Considering a Lovable, Base44 or Bolt alternative? Kalit AI is the multi-suite software factory built for shipping, not just generating.",
+    fullTitle: a.metaTitleIndex,
+    description: a.metaDescriptionIndex,
     locale,
     pathname: "/alternatives"
   })
 }
 
-export default function AlternativesIndex() {
+export default async function AlternativesIndex({
+  params
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale: raw } = await params
+  const locale = isValidLocale(raw) ? (raw as Locale) : "en"
+  const a = (await getPageStrings(locale)).alternatives
+
   return (
     <PageSection>
       <Container>
-        <PageHeader
-          title="Alternatives to AI app builders"
-          description="If you're evaluating another tool, here's where Kalit AI fits."
-        />
+        <PageHeader title={a.indexTitle} description={a.indexDescription} />
         <div className={s.index}>
-          {ALTERNATIVES.map((a) => (
-            <Link key={a.slug} href={`/alternatives/${a.slug}`} className={s.card}>
-              <h2 className={s.cardTitle}>The best {a.competitorName} alternative</h2>
-              <p className={s.cardDesc}>{a.searchHook}</p>
-            </Link>
-          ))}
+          {ALTERNATIVES.map((alt) => {
+            const cs = a.competitors[alt.stringsKey]
+            return (
+              <Link key={alt.slug} href={`/alternatives/${alt.slug}`} className={s.card}>
+                <div className={s.cardBody}>
+                  <h2 className={s.cardTitle}>
+                    {a.pageTitle.replace(/\{name\}/g, alt.competitorName)}
+                  </h2>
+                  <p className={s.cardDesc}>{cs.searchHook}</p>
+                </div>
+              </Link>
+            )
+          })}
         </div>
       </Container>
     </PageSection>

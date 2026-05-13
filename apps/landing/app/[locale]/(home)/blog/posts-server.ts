@@ -62,25 +62,44 @@ function resolveLocale(post: BlogPost, locale: Locale): ResolvedPost {
 }
 
 export async function listPublishedPosts(locale: Locale): Promise<ResolvedPost[]> {
-  const posts = await prisma.blogPost.findMany({
-    where: { status: "PUBLISHED" },
-    orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }]
-  })
-  return posts.map((p) => resolveLocale(p, locale))
+  try {
+    const posts = await prisma.blogPost.findMany({
+      where: { status: "PUBLISHED" },
+      orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }]
+    })
+    return posts.map((p) => resolveLocale(p, locale))
+  } catch (err) {
+    console.warn("[blog] listPublishedPosts failed — empty list:", (err as Error)?.message)
+    return []
+  }
 }
 
 export async function getPostBySlug(slug: string, locale: Locale): Promise<ResolvedPost | null> {
-  const post = await prisma.blogPost.findUnique({ where: { slug } })
-  if (!post || post.status !== "PUBLISHED") return null
-  return resolveLocale(post, locale)
+  try {
+    const post = await prisma.blogPost.findUnique({ where: { slug } })
+    if (!post || post.status !== "PUBLISHED") return null
+    return resolveLocale(post, locale)
+  } catch (err) {
+    console.warn("[blog] getPostBySlug failed:", (err as Error)?.message)
+    return null
+  }
 }
 
 export async function listAllPublishedSlugs(): Promise<string[]> {
-  const posts = await prisma.blogPost.findMany({
-    where: { status: "PUBLISHED" },
-    select: { slug: true }
-  })
-  return posts.map((p) => p.slug)
+  try {
+    const posts = await prisma.blogPost.findMany({
+      where: { status: "PUBLISHED" },
+      select: { slug: true }
+    })
+    return posts.map((p) => p.slug)
+  } catch (err) {
+    // Swallow the error so the build doesn't fail when the BlogPost
+    // table is missing (fresh Neon branch, Vercel preview env without
+    // migrations applied, etc.). The dynamic [slug] route still
+    // server-renders on demand once the table exists.
+    console.warn("[blog] listAllPublishedSlugs failed — returning empty list:", (err as Error)?.message)
+    return []
+  }
 }
 
 export async function listRelatedPosts(

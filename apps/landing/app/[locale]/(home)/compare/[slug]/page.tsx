@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/page-header"
 import { PageSection } from "@/components/page-section"
 import { isValidLocale, type Locale } from "@/lib/i18n"
 import { MetadataSeo } from "@/lib/metadata"
+import { getPageStrings } from "@/lib/page-strings"
 import { notFound } from "next/navigation"
 import { COMPETITORS, getCompetitor, type CapValue } from "../data"
 import s from "../compare.module.scss"
@@ -29,77 +30,93 @@ export async function generateMetadata({
       noIndex: true
     })
   }
+  const c = (await getPageStrings(locale)).compare
+  const compStrings = c.competitors[comp.stringsKey]
   return MetadataSeo({
-    fullTitle: `Kalit AI vs ${comp.name} - Which AI software factory should you pick?`,
-    description: comp.oneLiner,
+    fullTitle: `Kalit AI vs ${comp.name} - Kalit AI`,
+    description: compStrings.oneLiner,
     locale,
     pathname: `/compare/${comp.slug}`
   })
 }
 
-const CELL: Record<CapValue, { label: string; cls: string }> = {
-  yes: { label: "Yes", cls: "cellYes" },
-  partial: { label: "Partial", cls: "cellPartial" },
-  no: { label: "No", cls: "cellNo" }
+const CELL_CLS: Record<CapValue, string> = {
+  yes: "cellYes",
+  partial: "cellPartial",
+  no: "cellNo"
 }
 
 export default async function ComparePage({
   params
 }: {
-  params: Promise<{ slug: string }>
+  params: Promise<{ locale: string; slug: string }>
 }) {
-  const { slug } = await params
+  const { locale: raw, slug } = await params
+  const locale = isValidLocale(raw) ? (raw as Locale) : "en"
   const comp = getCompetitor(slug)
   if (!comp) notFound()
+
+  const c = (await getPageStrings(locale)).compare
+  const compStrings = c.competitors[comp.stringsKey]
+
+  const cellLabel = (v: CapValue) =>
+    v === "yes" ? c.cellYes : v === "partial" ? c.cellPartial : c.cellNo
 
   return (
     <PageSection>
       <Container>
         <PageHeader
           title={`Kalit AI vs ${comp.name}`}
-          description={comp.competitorOneLiner}
+          description={compStrings.competitorOneLiner}
         />
 
-        <p className={s.intro}>{comp.intro}</p>
+        <p className={s.intro}>{compStrings.intro}</p>
 
         <div className={s.tableWrap}>
           <table className={s.table}>
             <thead>
               <tr>
-                <th>Capability</th>
-                <th>Kalit AI</th>
+                <th>{c.capabilityHeader}</th>
+                <th>{c.kalitColumn}</th>
                 <th>{comp.name}</th>
               </tr>
             </thead>
             <tbody>
-              {comp.capabilities.map((row, i) => (
-                <tr key={i}>
-                  <td>{row.label}</td>
-                  <td className={s[CELL[row.kalit].cls]}>{CELL[row.kalit].label}</td>
-                  <td className={s[CELL[row.competitor].cls]}>{CELL[row.competitor].label}</td>
-                </tr>
-              ))}
+              {comp.capabilities.map((row, i) => {
+                const label = c.capabilities[i]?.replace(/\{name\}/g, comp.name) ?? ""
+                return (
+                  <tr key={i}>
+                    <td>{label}</td>
+                    <td className={s[CELL_CLS[row.kalit]]}>{cellLabel(row.kalit)}</td>
+                    <td className={s[CELL_CLS[row.competitor]]}>{cellLabel(row.competitor)}</td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </div>
 
         <div className={s.whenGrid}>
           <div className={s.whenCard}>
-            <h3>Pick {comp.name} when</h3>
+            <h3>{c.pickCompetitorTitle.replace(/\{name\}/g, comp.name)}</h3>
             <ul>
-              {comp.whenToPick.map((p, i) => <li key={i}>{p}</li>)}
+              {compStrings.whenToPick.map((p, i) => (
+                <li key={i}>{p}</li>
+              ))}
             </ul>
           </div>
           <div className={s.whenCard}>
-            <h3>Pick Kalit AI when</h3>
+            <h3>{c.pickKalitTitle}</h3>
             <ul>
-              {comp.whenToPickKalit.map((p, i) => <li key={i}>{p}</li>)}
+              {compStrings.whenToPickKalit.map((p, i) => (
+                <li key={i}>{p}</li>
+              ))}
             </ul>
           </div>
         </div>
 
         <div className={s.cta}>
-          <Link href="/register">Start with Kalit AI — free</Link>
+          <Link href="/register">{c.cta}</Link>
         </div>
       </Container>
     </PageSection>

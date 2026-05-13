@@ -34,8 +34,11 @@ export function PricingCta({ planKey, label, signedOutHref, className }: Pricing
   const [loading, setLoading] = useState(false)
   const loggedIn = status === "authenticated" && !!session?.user
 
-  // Free + enterprise + signed-out users → static link, no checkout call.
-  if (!loggedIn || planKey === "free" || planKey === "enterprise") {
+  // Free + signed-out + the catch-all "custom" tier → static link, no
+  // checkout call. Enterprise ($299) IS a self-serve subscription now,
+  // same flow as starter/pro — the "Talk to us" path is reserved for
+  // the explicit Custom plan (custom seats, agency, white-glove).
+  if (!loggedIn || planKey === "free" || planKey === "custom") {
     const href = !loggedIn
       ? signedOutHref
       : planKey === "free"
