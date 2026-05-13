@@ -103,29 +103,32 @@ export default async function PricingPage({
             )
           })}
 
-          {/* Custom plan — sits next to the self-serve tiers but routes
-              to contact-us instead of Stripe Checkout. Different price
-              row layout (no $-amount) so users immediately read it as
-              a different shape of offer. */}
-          <div className={`${s.planCard} ${s.customCard}`}>
-            <h2 className={s.planName}>{p.customPlanName}</h2>
-            <div className={s.priceRow}>
-              <span className={s.priceCustom}>{p.customPriceLabel}</span>
-            </div>
-            <p className={s.outcome}>{p.planOutcomes.custom}</p>
-            <ul className={s.features}>
+        </div>
+
+        {/* Custom plan — separate horizontal callout below the 4-card
+            self-serve grid. Five cards on one row got visually crowded
+            and made every card narrower than it should be. Custom is
+            an inherently different offer (contact-sales, not Stripe
+            Checkout) so a different visual treatment also reinforces
+            that — narrow tagline row + features inline + CTA at the
+            end, instead of a full vertical card. */}
+        <aside className={s.customBanner}>
+          <div className={s.customCopy}>
+            <span className={s.customLabel}>{p.customPlanName}</span>
+            <h3 className={s.customTitle}>{p.planOutcomes.custom}</h3>
+            <ul className={s.customFeaturesInline}>
               {p.customFeatures.map((f) => (
                 <li key={f}>{f}</li>
               ))}
             </ul>
-            <PricingCta
-              planKey="custom"
-              label={p.planCtas.custom}
-              signedOutHref={PLAN_CTA.custom.href}
-              className={`${s.cta} ${s.secondary}`}
-            />
           </div>
-        </div>
+          <PricingCta
+            planKey="custom"
+            label={p.planCtas.custom}
+            signedOutHref={PLAN_CTA.custom.href}
+            className={s.customCta}
+          />
+        </aside>
 
         <h2 className={s.sectionTitle}>{p.packsTitle}</h2>
         <p className={s.creditsNote}>{p.packsNote}</p>

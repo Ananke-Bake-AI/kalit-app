@@ -16,14 +16,26 @@
       "free": "Prueba Kalit Flow con 3 generaciones. No se requiere tarjeta.",
       "starter": "Publica un sitio de aterrizaje pulido o un pequeño MVP por mes.",
       "pro": "Crea e itera un producto completo o ejecuta trabajos de agencia para clientes.",
-      "enterprise": "Ejecuta Flow + Pentest + Search con asientos ilimitados."
+      "enterprise": "Ejecuta Flow + Pentest + Search con asientos ilimitados.",
+      "custom": "Asientos a medida, herramientas de agencia y precios por volumen — adaptado a tu equipo."
     },
     "planCtas": {
       "free": "Comienza gratis",
       "starter": "Comienza con Starter",
       "pro": "Comienza con Pro",
-      "enterprise": "Hable con nosotros"
+      "enterprise": "Comienza con Enterprise",
+      "custom": "Hable con nosotros"
     },
+    "customPlanName": "A medida",
+    "customPriceLabel": "A medida",
+    "customFeatures": [
+      "Asientos personalizados",
+      "Programa de agencia / revendedor",
+      "Precio de créditos por volumen",
+      "Ingeniero de éxito dedicado",
+      "Onboarding y formación a medida",
+      "SLA y soporte prioritario"
+    ],
     "faqs": [
       {
         "q": "¿Qué es un crédito?",

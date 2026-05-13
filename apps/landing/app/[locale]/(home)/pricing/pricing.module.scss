@@ -22,20 +22,108 @@
   }
 }
 
-// Custom tier — no $-amount, slight dashed border to distinguish from
-// the self-serve subscription cards next to it.
-.customCard {
+// Custom tier — separate horizontal callout placed below the 4-card
+// grid (instead of a 5th vertical card). Keeps the main grid clean
+// and reinforces that "Custom" is a different shape of offer
+// (contact-sales, not self-serve Stripe Checkout).
+.customBanner {
+  @include glass-panel(1.4rem);
+  margin: 0 0 2.5rem;
+  padding: 1.4rem 1.6rem;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 1.5rem;
   border-style: dashed;
-  border-color: oklch(from var(--text) l c h / 0.18);
+  border-color: oklch(from var(--text) l c h / 0.2);
   background: oklch(from var(--text) l c h / 0.025);
+
+  @include max($responsive) {
+    grid-template-columns: 1fr;
+  }
 }
 
-.priceCustom {
+.customCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.customLabel {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.customTitle {
+  margin: 0;
   font-family: var(--font-heading);
-  font-size: 2rem;
+  font-size: clamp(1rem, 1.4vw, 1.2rem);
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.35;
+}
+
+.customFeaturesInline {
+  list-style: none;
+  padding: 0;
+  margin: 0.2rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+
+  li {
+    font-size: 0.83rem;
+    color: var(--text-secondary);
+    position: relative;
+    padding-left: 0.95rem;
+
+    &::before {
+      content: "·";
+      position: absolute;
+      left: 0;
+      top: -0.05em;
+      color: var(--color-2);
+      font-weight: 700;
+      font-size: 1.1em;
+    }
+  }
+}
+
+.customCta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.4rem;
+  font-size: 0.92rem;
   font-weight: 600;
   color: var(--text);
-  line-height: 1;
+  background: oklch(from var(--text) l c h / 0.06);
+  border: 1px solid oklch(from var(--text) l c h / 0.18);
+  border-radius: var(--radius-rounded);
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+
+  &:hover {
+    background: oklch(from var(--text) l c h / 0.1);
+    border-color: oklch(from var(--text) l c h / 0.28);
+  }
+  &:active {
+    transform: translateY(1px);
+  }
+  &:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+
+  @include max($responsive) {
+    width: 100%;
+  }
 }
 
 .popularBadge {

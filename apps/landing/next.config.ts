@@ -31,12 +31,13 @@ const nextConfig: NextConfig = {
         destination: "/:locale/flow/:path*",
         permanent: true,
       },
-      // Bare /pricing (no locale prefix) is hardcoded in agent error
-      // messages, skill prompts and the "Seat limit reached" CTA — those
-      // are in-app surfaces where landing on the in-dashboard billing UI
-      // is the right behavior. The locale-prefixed /:locale/pricing
-      // resolves to the public marketing pricing page.
-      { source: "/pricing", destination: "/settings/billing", permanent: false },
+      // Note: there used to be `/pricing → /settings/billing` for in-app
+      // CTAs (agent errors, skill prompts, "Seat limit reached"). We
+      // dropped it because it produced a redirect loop for signed-out
+      // visitors — proxy.ts now routes /settings/billing → /pricing for
+      // unauth users, and the two redirects ate each other. In-app
+      // surfaces that want the dashboard billing UI should now link
+      // directly to /settings/billing.
     ]
   },
   async rewrites() {
