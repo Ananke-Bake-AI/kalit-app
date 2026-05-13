@@ -16,25 +16,30 @@
     --puce-bg: var(--gradient-primary-radial);
   }
 
-  &:not(.recommended) {
-    .top {
-      &::before {
-        height: 150%;
-        @include mask(
-          linear-gradient(to top, oklch(from var(--bg-1) l c h / 0) 0%, oklch(from var(--bg-1) l c h / 0.5) 100%)
-        );
-      }
+  // Gradient softening + glass-CTA styling are applied to EVERY card
+  // (recommended included). The `.recommended` highlight comes from the
+  // "Most selected" badge + the gradient puces in the feature list, not
+  // from a different button or a harsher background fade — the
+  // /settings/billing rendering used to show Pro's button as opaque
+  // while the other plans had glass buttons, which read as a UI bug
+  // (different gradient on the "Choose Pro" CTA).
+  .top {
+    &::before {
+      height: 150%;
+      @include mask(
+        linear-gradient(to top, oklch(from var(--bg-1) l c h / 0) 0%, oklch(from var(--bg-1) l c h / 0.5) 100%)
+      );
     }
+  }
 
-    .button,
-    .cta > * {
-      background-color: var(--glass-50);
-      color: var(--text);
-      @include border-glass(var(--gradient-border-glass-3));
+  .button,
+  .cta > * {
+    background-color: var(--glass-50);
+    color: var(--text);
+    @include border-glass(var(--gradient-border-glass-3));
 
-      &:hover {
-        color: var(--white);
-      }
+    &:hover {
+      color: var(--white);
     }
   }
 }
@@ -156,20 +161,20 @@
     background-color: oklch(0.2 0.01 260 / 0.85);
     box-shadow: 0 24px 48px -8px oklch(0 0 0 / 0.5);
 
-    &:not(.recommended) {
-      .top::before {
-        mask: linear-gradient(to top, oklch(0 0 0 / 0) 0%, oklch(0 0 0 / 0.8) 100%);
-        -webkit-mask: linear-gradient(to top, oklch(0 0 0 / 0) 0%, oklch(0 0 0 / 0.8) 100%);
-      }
+    // Same fade + button glass on every card, including recommended —
+    // see the comment in the light-mode `.plan` rule above for why.
+    .top::before {
+      mask: linear-gradient(to top, oklch(0 0 0 / 0) 0%, oklch(0 0 0 / 0.8) 100%);
+      -webkit-mask: linear-gradient(to top, oklch(0 0 0 / 0) 0%, oklch(0 0 0 / 0.8) 100%);
+    }
 
-      .button,
-      .cta > * {
-        background-color: oklch(0.26 0.012 260);
+    .button,
+    .cta > * {
+      background-color: oklch(0.26 0.012 260);
 
-        &:hover {
-          background-color: var(--btn-bg);
-          color: var(--btn-color);
-        }
+      &:hover {
+        background-color: var(--btn-bg);
+        color: var(--btn-color);
       }
     }
   }
