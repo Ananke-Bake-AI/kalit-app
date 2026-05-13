@@ -25,6 +25,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        {/* Single gtag.js bootstrap. The src param picks any registered
+            tag — both AW-* (Google Ads) and G-* (GA4) configs ride on
+            this one loader and we register each with their own
+            gtag('config', ID) call below. */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18025663729" />
         <script
           dangerouslySetInnerHTML={{
@@ -33,6 +37,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
               gtag('config', 'AW-18025663729');
+              gtag('config', 'G-816EPS8GX8');
             `
           }}
         />
