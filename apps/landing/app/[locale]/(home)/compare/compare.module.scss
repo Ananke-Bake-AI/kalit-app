@@ -1,0 +1,114 @@
+@use "@/styles/app-glass" as *;
+@use "@/styles/mixins" as *;
+
+.intro {
+  width: 100%;
+  max-width: 48rem;
+  margin-inline: auto;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.7;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.tableWrap {
+  @include glass-panel(1.2rem);
+  width: 100%;
+  max-width: 52rem;
+  margin-inline: auto;
+  overflow: hidden;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+
+  th, td {
+    padding: 0.8rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+  }
+
+  thead th {
+    font-family: var(--font-heading);
+    color: var(--text);
+    font-weight: 600;
+    background: color-mix(in srgb, var(--color-4) 8%, transparent);
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+  tbody td:first-child {
+    color: var(--text-secondary);
+    width: 55%;
+  }
+
+  .cellYes { color: var(--color-4); font-weight: 600; }
+  .cellPartial { color: #f59e0b; font-weight: 600; }
+  .cellNo { color: color-mix(in srgb, var(--text) 40%, transparent); }
+}
+
+.whenGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 1rem;
+  margin-block: 2rem;
+  width: 100%;
+  max-width: 52rem;
+  margin-inline: auto;
+}
+
+.whenCard {
+  @include glass-panel(1.1rem);
+  padding: 1.2rem;
+
+  h3 {
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    color: var(--text);
+    margin-bottom: 0.7rem;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+
+    li {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      padding-left: 1rem;
+      position: relative;
+
+      &::before {
+        content: "→";
+        position: absolute;
+        left: 0;
+        color: var(--color-4);
+      }
+    }
+  }
+}
+
+.cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  margin-block: 2rem;
+
+  a {
+    display: inline-flex;
+    padding: 0.8rem 1.4rem;
+    border-radius: 0.7rem;
+    background: var(--color-4);
+    color: var(--bg);
+    font-weight: 600;
+    text-decoration: none;
+  }
+}

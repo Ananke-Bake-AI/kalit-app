@@ -17,20 +17,26 @@ export const Footer = () => {
       links: [
         { title: "Flow", href: "/flow" },
         { title: "Pentest", href: "/pentest" },
-        { title: "Search", href: "/search" }
+        { title: "Search", href: "/search" },
+        { title: "Pricing", href: "/pricing" }
       ]
     },
     {
       title: t("footer.resources"),
       links: [
         { title: t("footer.faq"), href: "/faq" },
-        { title: t("footer.support"), href: "/support" }
+        { title: t("footer.support"), href: "/support" },
+        { title: "Blog", href: "/blog" },
+        { title: "Changelog", href: "/changelog" },
+        { title: "Compare", href: "/compare" },
+        { title: "Alternatives", href: "/alternatives" }
       ]
     },
     {
       title: t("footer.company"),
       links: [
         { title: t("footer.aboutUs"), href: "/about" },
+        { title: "Customers", href: "/customers" },
         { title: t("footer.careers"), href: "/jobs" },
         { title: t("footer.contactUs"), href: "/contact-us" }
       ]
@@ -67,6 +73,8 @@ export const Footer = () => {
         <div className={s.bottom}>
           <Link href="/terms-of-service">{t("footer.terms")}</Link>
           <Link href="/privacy-policy">{t("footer.privacy")}</Link>
+          <Link href="/security">Security</Link>
+          <Link href="/responsible-use">Responsible use</Link>
           <p>{t("footer.trademarks")}</p>
         </div>
       </Container>

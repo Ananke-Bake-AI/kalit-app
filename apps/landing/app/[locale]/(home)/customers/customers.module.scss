@@ -1,0 +1,146 @@
+@use "@/styles/app-glass" as *;
+@use "@/styles/mixins" as *;
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 1rem;
+  width: 100%;
+  max-width: 56rem;
+  margin-inline: auto;
+}
+
+.card {
+  @include glass-panel(1.2rem);
+  padding: 1.3rem;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  position: relative;
+
+  @include is-hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--color-4) 50%, transparent);
+  }
+}
+
+.badge {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.7rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #f59e0b;
+  background: color-mix(in srgb, #f59e0b 18%, transparent);
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.4rem;
+}
+
+.customer {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  color: var(--text);
+}
+
+.oneLiner {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: auto;
+
+  span {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    background: color-mix(in srgb, var(--text) 8%, transparent);
+    padding: 0.15rem 0.5rem;
+    border-radius: 0.4rem;
+  }
+}
+
+.detail {
+  width: 100%;
+  max-width: 44rem;
+  margin-inline: auto;
+}
+
+.metaRow {
+  display: flex;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  justify-content: center;
+  margin-bottom: 2rem;
+
+  span:not(:last-child)::after {
+    content: " · ";
+    margin-left: 0.6rem;
+  }
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  h3 {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    color: var(--text);
+    margin-top: 1rem;
+  }
+}
+
+.placeholder {
+  @include glass-panel(1.2rem);
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-secondary);
+  margin-block: 1rem;
+
+  strong {
+    color: var(--text);
+  }
+}
+
+.quote {
+  @include glass-panel(1.1rem);
+  padding: 1.5rem;
+  font-style: italic;
+  color: var(--text);
+  border-left: 3px solid var(--color-4);
+
+  cite {
+    display: block;
+    margin-top: 0.7rem;
+    font-style: normal;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+}
+
+.backLink {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  text-decoration: none;
+
+  @include is-hover {
+    color: var(--text);
+  }
+}

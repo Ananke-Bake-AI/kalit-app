@@ -1,0 +1,219 @@
+@use "@/styles/app-glass" as *;
+@use "@/styles/mixins" as *;
+
+.plansGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1rem;
+  margin-block: 2rem 3rem;
+}
+
+.planCard {
+  @include glass-panel(1.2rem);
+  padding: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: relative;
+
+  &.popular {
+    border-color: color-mix(in srgb, var(--color-4) 70%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-4) 50%, transparent);
+  }
+}
+
+.popularBadge {
+  position: absolute;
+  top: -0.6rem;
+  right: 1rem;
+  background: var(--color-4);
+  color: var(--bg);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 1rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.planName {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  color: var(--text);
+}
+
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+
+  .price {
+    font-family: var(--font-heading);
+    font-size: 2.2rem;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .interval {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+}
+
+.outcome {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+
+  li {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+
+    &::before {
+      content: "";
+      flex-shrink: 0;
+      width: 1rem;
+      height: 1rem;
+      margin-top: 0.15rem;
+      background: var(--color-4);
+      mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M9 16.2l-3.5-3.6L4 14l5 5 11-11-1.5-1.4z'/></svg>") center/contain no-repeat;
+      -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M9 16.2l-3.5-3.6L4 14l5 5 11-11-1.5-1.4z'/></svg>") center/contain no-repeat;
+    }
+  }
+}
+
+.cta {
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 1rem;
+  border-radius: 0.7rem;
+  background: var(--color-4);
+  color: var(--bg);
+  font-weight: 600;
+  text-decoration: none;
+
+  @include is-hover {
+    transform: translateY(-1px);
+  }
+
+  &.secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid color-mix(in srgb, var(--text) 25%, transparent);
+  }
+}
+
+.packsRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.packCard {
+  @include glass-panel(1rem);
+  padding: 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  &.popular {
+    border-color: color-mix(in srgb, var(--color-4) 60%, transparent);
+  }
+}
+
+.packCredits {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  color: var(--text);
+}
+
+.packPrice {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.packCta {
+  margin-top: 0.55rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  background: oklch(from var(--text) l c h / 0.06);
+  border: 1px solid oklch(from var(--text) l c h / 0.1);
+  border-radius: var(--radius-rounded);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+
+  &:hover {
+    background: oklch(from var(--text) l c h / 0.1);
+    border-color: oklch(from var(--text) l c h / 0.18);
+  }
+  &:active {
+    transform: translateY(1px);
+  }
+  &:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+}
+
+.sectionTitle {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  color: var(--text);
+  margin-block: 2.5rem 0.5rem;
+}
+
+.creditsNote {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.faqList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-block: 1rem 2rem;
+
+  details {
+    @include glass-panel(0.9rem);
+    padding: 0.9rem 1.1rem;
+  }
+
+  summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text);
+    font-size: 0.95rem;
+    list-style: none;
+
+    &::-webkit-details-marker { display: none; }
+  }
+
+  p {
+    margin-top: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+}

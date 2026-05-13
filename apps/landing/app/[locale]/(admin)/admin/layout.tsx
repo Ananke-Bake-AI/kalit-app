@@ -20,6 +20,7 @@ const TABS = [
   { icon: "hugeicons:star-circle", href: "/admin/featured-projects", label: "Featured" },
   { icon: "hugeicons:bug-01", href: "/admin/bug-reports", label: "Bug reports" },
   { icon: "hugeicons:mail-send-02", href: "/admin/campaigns", label: "Campaigns" },
+  { icon: "hugeicons:notebook-01", href: "/admin/blog", label: "Blog" },
   { icon: "hugeicons:settings-02", href: "/admin/settings", label: "Settings" }
 ]
 

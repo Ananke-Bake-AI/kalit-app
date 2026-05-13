@@ -4,6 +4,25 @@ import { NextRequest, NextResponse } from "next/server"
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 const GROQ_MODEL = "llama-3.3-70b-versatile"
 
+const BLOG_SYSTEM_PROMPT = `You are a senior content writer for Kalit AI — an AI software factory that helps founders build, secure and launch products. You write blog posts that are technical, opinionated and honest, in the voice of a builder talking to other builders.
+
+Output ONLY valid JSON with these fields:
+- "title": Compelling, specific. No clickbait. 40–70 chars.
+- "description": One-sentence summary used as the SEO meta description and post subtitle. 110–160 chars.
+- "slug": URL slug, kebab-case, lowercase, ASCII only. Example: "why-we-built-kalit".
+- "body": Full post body in Markdown. Use ## for sections, ### for sub-sections, **bold**, lists, > quotes, \`inline code\` and \`\`\`fenced code\`\`\` where appropriate. 700–1500 words. Avoid AI-cliche openings ("In today's fast-paced world…"). Write in first person plural ("we") when speaking for Kalit.
+- "tags": 2–4 short tags, lowercase, kebab-case. Example: ["engineering", "agents"].
+- "seoTitle": Optional override for the HTML <title>. Leave empty if title is good as-is.
+- "seoDescription": Optional override for meta description. Leave empty if description is good as-is.
+
+Voice rules:
+- Be specific. Use concrete numbers (e.g. "12 specialist agents", "30–40 minutes").
+- No corporate filler. No "leverage", "synergy", "best-in-class", etc.
+- Honest about limits. If something is partial or beta, say so.
+- Reference real Kalit suites when relevant: Flow, Pentest, Search, Marketing.
+
+IMPORTANT: Return ONLY the JSON object, no markdown fences, no explanation.`
+
 const SYSTEM_PROMPT = `You are an email copywriter for Kalit AI, a platform that helps businesses build, launch, grow, and secure their AI products.
 
 You write marketing/announcement emails for our users. Output ONLY valid JSON with two fields:
@@ -63,6 +82,53 @@ async function callGroq(messages: { role: string; content: string }[], apiKey: s
   return { subject: parsed.subject as string, body: parsed.body as string }
 }
 
+// Blog generation needs a larger context budget than emails (4× the body).
+async function callGroqBlog(messages: { role: string; content: string }[], apiKey: string) {
+  const res = await fetch(GROQ_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: GROQ_MODEL,
+      messages,
+      temperature: 0.75,
+      max_tokens: 4096,
+    }),
+  })
+
+  if (!res.ok) {
+    const err = await res.text()
+    console.error("[ai-assist:blog] Groq API error:", err)
+    return null
+  }
+
+  const data = await res.json()
+  const raw = data.choices?.[0]?.message?.content?.trim()
+  if (!raw) return null
+
+  const cleaned = raw.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "")
+  let parsed: Record<string, unknown>
+  try {
+    parsed = JSON.parse(cleaned)
+  } catch (e) {
+    console.error("[ai-assist:blog] JSON parse failed:", e, "\nRaw:", raw.slice(0, 500))
+    return null
+  }
+
+  if (!parsed.title || !parsed.body) return null
+  return {
+    title: String(parsed.title || ""),
+    description: String(parsed.description || ""),
+    slug: String(parsed.slug || ""),
+    body: String(parsed.body || ""),
+    tags: Array.isArray(parsed.tags) ? parsed.tags.map(String) : [],
+    seoTitle: parsed.seoTitle ? String(parsed.seoTitle) : "",
+    seoDescription: parsed.seoDescription ? String(parsed.seoDescription) : ""
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     await requireAdmin()
@@ -78,7 +144,101 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  const { prompt, currentSubject, currentBody, translate } = await req.json()
+  const body = await req.json()
+  const { prompt, currentSubject, currentBody, translate, mode, blog, translateBlog } = body
+  const isBlog = mode === "blog" || blog || translateBlog
+
+  // ─── Blog: translation mode ────────────────────────────
+  if (translateBlog) {
+    const { sourceTitle, sourceDescription, sourceBody, targetLanguages } = translateBlog as {
+      sourceTitle: string
+      sourceDescription: string
+      sourceBody: string
+      targetLanguages: { code: string; name: string }[]
+    }
+
+    if (!sourceTitle || !sourceBody || !targetLanguages?.length) {
+      return NextResponse.json({ error: "Missing translation parameters" }, { status: 400 })
+    }
+
+    const results: Record<string, { title: string; description: string; body: string }> = {}
+    const errors: string[] = []
+
+    for (const lang of targetLanguages) {
+      try {
+        const res = await callGroqBlog([
+          {
+            role: "system",
+            content: `You are a professional translator for Kalit AI blog posts. Translate the following post to ${lang.name} (${lang.code}).
+
+RULES:
+- Translate naturally — never literal/word-by-word.
+- Preserve all Markdown syntax (## headings, **bold**, lists, code fences, > quotes, [links](urls)).
+- Keep URLs and code unchanged.
+- Keep brand names "Kalit", "Kalit AI", "Flow", "Pentest", "Search", "Marketing" as-is.
+- Match the original tone (technical, opinionated, honest).
+- Output ONLY valid JSON: { "title": "...", "description": "...", "body": "..." } — no other fields, no explanation.`
+          },
+          {
+            role: "user",
+            content: JSON.stringify({ title: sourceTitle, description: sourceDescription, body: sourceBody })
+          }
+        ], apiKey)
+
+        if (res && res.title && res.body) {
+          results[lang.code] = {
+            title: res.title,
+            description: res.description || sourceDescription,
+            body: res.body
+          }
+        } else {
+          errors.push(lang.code)
+        }
+      } catch {
+        errors.push(lang.code)
+      }
+    }
+
+    return NextResponse.json({ translations: results, errors })
+  }
+
+  // ─── Blog: generation / refine mode ───────────────────
+  if (isBlog) {
+    if (!prompt?.trim()) {
+      return NextResponse.json({ error: "Prompt is required" }, { status: 400 })
+    }
+
+    const messages: { role: string; content: string }[] = [
+      { role: "system", content: BLOG_SYSTEM_PROMPT }
+    ]
+
+    if (blog?.currentTitle || blog?.currentBody) {
+      messages.push({
+        role: "assistant",
+        content: JSON.stringify({
+          title: blog?.currentTitle || "",
+          description: blog?.currentDescription || "",
+          slug: blog?.currentSlug || "",
+          body: blog?.currentBody || "",
+          tags: blog?.currentTags || []
+        })
+      })
+      messages.push({ role: "user", content: `Refine the post above based on this feedback: ${prompt}` })
+    } else {
+      messages.push({ role: "user", content: prompt })
+    }
+
+    try {
+      const result = await callGroqBlog(messages, apiKey)
+      if (!result) {
+        return NextResponse.json({ error: "Failed to generate post" }, { status: 502 })
+      }
+      return NextResponse.json(result)
+    } catch (e) {
+      console.error("[ai-assist:blog] Error:", e)
+      return NextResponse.json({ error: "Failed to generate post. Please try again." }, { status: 500 })
+    }
+  }
 
   // ─── Translation mode: translate existing content to target languages ───
   if (translate) {

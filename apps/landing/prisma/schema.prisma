@@ -390,3 +390,37 @@ model PentestFinding {
 
   target PentestTarget @relation(fields: [targetId], references: [id], onDelete: Cascade)
 }
+
+// ─── Marketing blog ───────────────────────────────────────────
+// Single row per post. EN is the source-of-truth; other locales live in the
+// `translations` JSON blob keyed by locale code: { fr: { title, description,
+// body, seoTitle, seoDescription }, ... }. Keeps schema flat without forcing
+// a join for the common single-locale read path.
+model BlogPost {
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  status          String   @default("DRAFT") // DRAFT | PUBLISHED | ARCHIVED
+  title           String
+  description     String   @db.Text
+  body            String   @db.Text // Markdown
+  authorName      String
+  authorAvatarUrl String?
+  coverImageUrl   String?
+  ogImageUrl      String?
+  tags            String[] @default([])
+
+  // SEO overrides — if null, fall back to title/description.
+  seoTitle        String?
+  seoDescription  String?
+
+  // Locale fan-out. Shape:
+  // { [localeCode]: { title, description, body, seoTitle?, seoDescription? } }
+  translations    Json?
+
+  publishedAt     DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([status, publishedAt])
+  @@index([slug])
+}

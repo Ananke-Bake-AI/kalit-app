@@ -929,3 +929,149 @@ export async function getRecentSignups(limit = 10) {
     take: limit
   })
 }
+
+// ─── Blog ─────────────────────────────────────────────
+
+const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+
+function slugify(input: string): string {
+  return (
+    input
+      .toLowerCase()
+      .normalize("NFKD")
+      .replace(/[̀-ͯ]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 80) || "post"
+  )
+}
+
+export async function listBlogPosts() {
+  await requireAdmin()
+  return prisma.blogPost.findMany({
+    orderBy: [{ status: "asc" }, { publishedAt: "desc" }, { updatedAt: "desc" }]
+  })
+}
+
+export async function getBlogPost(id: string) {
+  await requireAdmin()
+  return prisma.blogPost.findUnique({ where: { id } })
+}
+
+interface BlogPostInput {
+  slug?: string
+  title: string
+  description: string
+  body: string
+  authorName: string
+  authorAvatarUrl?: string | null
+  coverImageUrl?: string | null
+  ogImageUrl?: string | null
+  tags?: string[]
+  seoTitle?: string | null
+  seoDescription?: string | null
+  translations?: Record<string, unknown> | null
+  status?: "DRAFT" | "PUBLISHED" | "ARCHIVED"
+  publishedAt?: Date | string | null
+}
+
+function normalizeStatus(s?: string): "DRAFT" | "PUBLISHED" | "ARCHIVED" {
+  if (s === "PUBLISHED" || s === "ARCHIVED") return s
+  return "DRAFT"
+}
+
+export async function createBlogPost(input: BlogPostInput) {
+  await requireAdmin()
+  if (!input.title?.trim()) return { error: "Title is required" }
+  if (!input.body?.trim()) return { error: "Body is required" }
+  if (!input.authorName?.trim()) return { error: "Author is required" }
+
+  const desiredSlug = input.slug?.trim() || slugify(input.title)
+  if (!SLUG_RE.test(desiredSlug)) return { error: "Invalid slug format" }
+
+  const exists = await prisma.blogPost.findUnique({ where: { slug: desiredSlug } })
+  if (exists) return { error: `Slug "${desiredSlug}" is already taken` }
+
+  const status = normalizeStatus(input.status)
+  const publishedAt = input.publishedAt
+    ? new Date(input.publishedAt)
+    : status === "PUBLISHED"
+      ? new Date()
+      : null
+
+  const post = await prisma.blogPost.create({
+    data: {
+      slug: desiredSlug,
+      status,
+      title: input.title.trim(),
+      description: input.description.trim(),
+      body: input.body,
+      authorName: input.authorName.trim(),
+      authorAvatarUrl: input.authorAvatarUrl ?? null,
+      coverImageUrl: input.coverImageUrl ?? null,
+      ogImageUrl: input.ogImageUrl ?? null,
+      tags: input.tags ?? [],
+      seoTitle: input.seoTitle ?? null,
+      seoDescription: input.seoDescription ?? null,
+      translations: (input.translations as object | undefined) ?? undefined,
+      publishedAt
+    }
+  })
+
+  return { post }
+}
+
+export async function updateBlogPost(id: string, input: BlogPostInput) {
+  await requireAdmin()
+  const existing = await prisma.blogPost.findUnique({ where: { id } })
+  if (!existing) return { error: "Post not found" }
+
+  if (!input.title?.trim()) return { error: "Title is required" }
+  if (!input.body?.trim()) return { error: "Body is required" }
+  if (!input.authorName?.trim()) return { error: "Author is required" }
+
+  const desiredSlug = input.slug?.trim() || existing.slug
+  if (!SLUG_RE.test(desiredSlug)) return { error: "Invalid slug format" }
+  if (desiredSlug !== existing.slug) {
+    const clash = await prisma.blogPost.findUnique({ where: { slug: desiredSlug } })
+    if (clash) return { error: `Slug "${desiredSlug}" is already taken` }
+  }
+
+  const status = normalizeStatus(input.status)
+  // Set publishedAt the first time a post transitions to PUBLISHED; preserve
+  // the original date on subsequent edits so the public sort order doesn't
+  // jump every time someone tweaks a typo.
+  let publishedAt = existing.publishedAt
+  if (status === "PUBLISHED" && !publishedAt) publishedAt = new Date()
+  if (status !== "PUBLISHED" && input.status === "DRAFT") publishedAt = null
+  if (input.publishedAt) publishedAt = new Date(input.publishedAt)
+
+  const post = await prisma.blogPost.update({
+    where: { id },
+    data: {
+      slug: desiredSlug,
+      status,
+      title: input.title.trim(),
+      description: input.description.trim(),
+      body: input.body,
+      authorName: input.authorName.trim(),
+      authorAvatarUrl: input.authorAvatarUrl ?? null,
+      coverImageUrl: input.coverImageUrl ?? null,
+      ogImageUrl: input.ogImageUrl ?? null,
+      tags: input.tags ?? [],
+      seoTitle: input.seoTitle ?? null,
+      seoDescription: input.seoDescription ?? null,
+      translations: (input.translations as object | undefined) ?? undefined,
+      publishedAt
+    }
+  })
+
+  return { post }
+}
+
+export async function deleteBlogPost(id: string) {
+  await requireAdmin()
+  await prisma.blogPost.delete({ where: { id } })
+  return { success: true }
+}
+
