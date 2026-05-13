@@ -21,6 +21,14 @@ interface FeaturedProject {
   hasThumbnail: boolean
 }
 
+function hostnameOf(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "")
+  } catch {
+    return url
+  }
+}
+
 // Pad the marquee with placeholders below this count so the track stays
 // wide enough to fill the viewport when few projects are featured.
 const MIN_CARDS = 6
@@ -125,16 +133,27 @@ export function Portfolio({
                   target="_blank"
                   rel="noreferrer noopener"
                   className={s.screen}
-                  aria-label={proj.title}
-                  title={proj.title}
+                  aria-label={proj.title || proj.url}
+                  title={proj.title || proj.url}
                 >
-                  {proj.hasThumbnail && (
+                  {proj.hasThumbnail ? (
                     <img
                       src={`/api/broker/featured/${proj.id}/thumbnail.png`}
                       alt={proj.title}
                       loading="eager"
                       decoding="async"
                     />
+                  ) : (
+                    /* Thumbnail not yet captured (broker queue mid-flight,
+                       or a fresh deploy without screenshot) — fall back to
+                       a labelled gradient tile so the card stays meaningful
+                       instead of going blank. Click still navigates to the
+                       live site. */
+                    <div className={s.fallback}>
+                      <span className={s.fallbackHost}>{hostnameOf(proj.url)}</span>
+                      <span className={s.fallbackTitle}>{proj.title || hostnameOf(proj.url)}</span>
+                      <span className={s.fallbackHint}>Open site →</span>
+                    </div>
                   )}
                 </a>
               ) : (

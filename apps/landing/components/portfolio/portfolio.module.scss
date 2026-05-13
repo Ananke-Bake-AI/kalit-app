@@ -85,6 +85,46 @@
     display: block;
   }
 
+  // Fallback tile when the broker hasn't captured a thumbnail yet —
+  // shown by Portfolio when proj.hasThumbnail is false. Conveys the
+  // domain + title + a "open site" cue so the card stays clickable
+  // and meaningful instead of going blank.
+  .fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 1.2rem;
+    background: linear-gradient(135deg, oklch(0.32 0.08 280), oklch(0.28 0.12 240));
+    color: oklch(0.95 0.02 280);
+    text-align: center;
+  }
+
+  .fallbackHost {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.78rem;
+    opacity: 0.75;
+    letter-spacing: 0.02em;
+  }
+
+  .fallbackTitle {
+    font-family: var(--font-heading);
+    font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+    font-weight: 600;
+    line-height: 1.2;
+    max-width: 14em;
+  }
+
+  .fallbackHint {
+    margin-top: 0.3rem;
+    font-size: 0.78rem;
+    opacity: 0.7;
+    letter-spacing: 0.02em;
+  }
+
   // Anchor variant — screens that link to a real featured project.
   // Subtle hover lift so users notice they're clickable.
   &[href] {
