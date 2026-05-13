@@ -83,6 +83,14 @@ export class AgentStreamReducer {
   private segments: StreamSegment[]
   private thinking = ""
   private handlers: StreamConsumerHandlers
+  // Buffer for in-flight text events. Per user request 2026-05-13,
+  // text is NOT rendered chunk-by-chunk during streaming (no
+  // "writing simulation"); we accumulate the chunks here and only
+  // flush them as a single segment when the next non-text event
+  // arrives or the stream ends. Other event types (tool/widget/
+  // progress/file) still render live so the user sees the agent is
+  // making progress.
+  private pendingText = ""
 
   constructor(handlers: StreamConsumerHandlers, initial?: StreamSegment[]) {
     this.handlers = handlers
@@ -100,41 +108,61 @@ export class AgentStreamReducer {
     }
   }
 
+  /** Flush the pending text buffer into a single segment. Called
+   *  whenever a non-text event arrives or the stream terminates —
+   *  this is what turns the chunk stream into one-shot block
+   *  appearance. Idempotent when the buffer is empty.
+   *
+   *  Also marks the most recent unfinished tool as done (same logic
+   *  the old streaming `case "text"` had) since a new text block
+   *  implicitly closes any tool group that preceded it. */
+  private flushPendingText(): void {
+    if (!this.pendingText) return
+    const chunk = this.pendingText
+    this.pendingText = ""
+    const last = this.segments[this.segments.length - 1]
+    if (last?.type === "text") {
+      last.content += chunk
+    } else {
+      this.segments.push({ type: "text", content: chunk })
+    }
+    for (let i = this.segments.length - 2; i >= 0; i--) {
+      if (this.segments[i].type === "tool") {
+        ;(this.segments[i] as { type: "tool"; done: boolean }).done = true
+        break
+      }
+    }
+  }
+
   /** Process one parsed event. Returns "terminal" on idle / stream_closed. */
   apply(event: RawEvent): AgentEventResult {
     switch (event.type) {
       case "text":
         if (event.content) {
-          const last = this.segments[this.segments.length - 1]
-          if (last?.type === "text") {
-            last.content += event.content
-          } else {
-            this.segments.push({ type: "text", content: event.content })
-          }
-          // Mark previous tool as done when new text arrives.
-          for (let i = this.segments.length - 2; i >= 0; i--) {
-            if (this.segments[i].type === "tool") {
-              ;(this.segments[i] as { type: "tool"; done: boolean }).done = true
-              break
-            }
-          }
-          this.emit()
+          this.pendingText += event.content
+          // No emit — buffered until a non-text event flushes us.
         }
         return "continue"
 
       case "thinking":
+        // Thinking arriving DOES flush any pending text — the agent has
+        // moved on from the text block into a reasoning phase.
+        this.flushPendingText()
         this.thinking += event.content || ""
         this.handlers.onThinkingChanged(this.thinking)
+        this.emit()
         return "continue"
 
       case "tool_use":
         if (event.name) {
+          this.flushPendingText()
           this.segments.push({ type: "tool", name: event.name, input: event.input, done: false })
           this.emit()
         }
         return "continue"
 
       case "tool_result": {
+        this.flushPendingText()
         for (let i = this.segments.length - 1; i >= 0; i--) {
           if (this.segments[i].type === "tool" && !(this.segments[i] as { done: boolean }).done) {
             ;(this.segments[i] as { type: "tool"; done: boolean }).done = true
@@ -149,6 +177,7 @@ export class AgentStreamReducer {
         const wt = event.widget?.widgetType || event.widgetType
         const wi = event.widget?.widgetId || event.widgetId
         if (!wt || !wi) return "continue"
+        this.flushPendingText()
         const existingIdx = this.segments.findIndex(
           (s) => s.type === "widget" && s.widgetId === wi,
         )
@@ -172,6 +201,7 @@ export class AgentStreamReducer {
 
       case "progress": {
         if (!event.content) return "continue"
+        this.flushPendingText()
         const lastSeg = this.segments[this.segments.length - 1]
         if (lastSeg?.type === "progress") {
           lastSeg.messages.push(event.content)
@@ -184,6 +214,7 @@ export class AgentStreamReducer {
 
       case "file":
         if (!event.name) return "continue"
+        this.flushPendingText()
         this.segments.push({
           type: "file",
           name: event.name,
@@ -194,6 +225,8 @@ export class AgentStreamReducer {
         return "continue"
 
       case "error":
+        this.flushPendingText()
+        this.emit()
         this.handlers.onError(event.content || "Stream error")
         return "continue"
 
@@ -206,10 +239,17 @@ export class AgentStreamReducer {
         return "continue"
 
       case "idle":
+        // Flush any buffered text before signaling terminal — though in
+        // practice the persisted-bubble swap takes over here, so this
+        // is mostly defensive.
+        this.flushPendingText()
+        this.emit()
         this.handlers.onIdle?.()
         return "terminal"
 
       case "stream_closed":
+        this.flushPendingText()
+        this.emit()
         this.handlers.onStreamClosed?.()
         return "terminal"
 
