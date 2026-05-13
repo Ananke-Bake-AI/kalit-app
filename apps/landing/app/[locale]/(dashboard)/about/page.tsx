@@ -165,7 +165,7 @@ export default async function AboutPage() {
               <Icon icon="hugeicons:linkedin-01" />
               LinkedIn
             </a>
-            <a href="https://discord.gg/b3cvdcQBAs" target="_blank" rel="noopener noreferrer" className={s.contactLink}>
+            <a href="https://discord.gg/FssPgq5hQK" target="_blank" rel="noopener noreferrer" className={s.contactLink}>
               <Icon icon="hugeicons:discord" />
               Discord
             </a>

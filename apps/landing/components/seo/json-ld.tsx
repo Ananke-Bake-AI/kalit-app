@@ -12,7 +12,7 @@ export function JsonLd({ locale = "en" }: { locale?: Locale }) {
     sameAs: [
       "https://x.com/kalit_ai",
       "https://www.linkedin.com/company/kalit-ai",
-      "https://discord.gg/b3cvdcQBAs",
+      "https://discord.gg/FssPgq5hQK",
       "https://t.me/kalit_ai",
     ],
   }

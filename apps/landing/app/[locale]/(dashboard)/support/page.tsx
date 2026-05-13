@@ -66,7 +66,7 @@ export default async function SupportPage() {
             <p className={s.cardText}>
               {t("supportPage.discordText")}
             </p>
-            <Link href="https://discord.gg/b3cvdcQBAs" className={s.cardLink}>
+            <Link href="https://discord.gg/FssPgq5hQK" className={s.cardLink}>
               {t("supportPage.discordLink")}
             </Link>
           </div>

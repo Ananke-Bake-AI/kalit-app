@@ -17,7 +17,7 @@ export default async function ContactPage() {
 
   const channels = [
     { icon: "hugeicons:mail-01", label: "Email", value: "contact@kalit.ai", href: "mailto:contact@kalit.ai" },
-    { icon: "hugeicons:discord", label: "Discord", value: t("contact.joinCommunity"), href: "https://discord.gg/b3cvdcQBAs" },
+    { icon: "hugeicons:discord", label: "Discord", value: t("contact.joinCommunity"), href: "https://discord.gg/FssPgq5hQK" },
     { icon: "hugeicons:new-twitter", label: "X (Twitter)", value: "@kalit_ai", href: "https://x.com/kalit_ai" },
     { icon: "hugeicons:linkedin-01", label: "LinkedIn", value: "Kalit AI", href: "https://www.linkedin.com/company/kalit-ai" }
   ]
