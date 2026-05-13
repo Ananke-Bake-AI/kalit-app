@@ -2,6 +2,11 @@
 
 .plan {
   --plan-padding: calc(24px + 4 * (100vw - 320px) / 1080);
+  // Default puce bg is the brand gradient — every plan card now gets
+  // the same colored checkmark in the "What's included" list. Used to
+  // be restricted to `.recommended` only, which made Pro look custom-
+  // tier vs the others ("only Pro has colored icons").
+  --puce-bg: var(--gradient-primary-radial);
   flex: 1;
   background-color: var(--glass-50);
   position: relative;
@@ -11,10 +16,6 @@
   text-align: left;
   padding: var(--size-1-5);
   overflow: hidden;
-
-  &.recommended {
-    --puce-bg: var(--gradient-primary-radial);
-  }
 
   // Gradient softening + glass-CTA styling are applied to EVERY card
   // (recommended included). The `.recommended` highlight comes from the
