@@ -350,6 +350,26 @@
   font-family: var(--font-mono);
 }
 
+// Mirror of stream-segments' active-tool styling so persisted bubbles
+// for a still-running tool (e.g. wait_for_completion mid-stream that
+// got persisted with done:false) render with a spinner + emphasized
+// label, not the all-done checkmark that misled the user into thinking
+// the work was finished.
+.toolLabelActive {
+  color: var(--text);
+  font-family: var(--font-mono);
+}
+
+.spin {
+  font-size: 0.85em;
+  flex-shrink: 0;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 .toolCount {
   font-size: 0.7rem;
   color: var(--text-secondary);
@@ -391,6 +411,29 @@
 
 .progressTextDone {
   color: var(--text-secondary);
+}
+
+// Active progress line — the LAST entry while the trailing tool is
+// still running (wait_for_completion in flight, the next "X of N"
+// hasn't arrived yet). Pulsing dot mirrors stream-segments so the
+// transition from live → persisted view is visually identical.
+.progressDotActive {
+  margin-top: 0.35em;
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--color-2, #6366f1);
+  animation: progressPulse 1.5s ease-in-out infinite;
+}
+
+.progressTextActive {
+  color: var(--text);
+}
+
+@keyframes progressPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
 }
 
 // ── File segments ───────────────────────────────────────

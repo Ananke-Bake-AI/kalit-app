@@ -274,33 +274,43 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
 
   // ── Fetch messages when active session changes ──────────
 
+  // Track the previous activeSessionId to distinguish "switched
+  // sessions" (A → B, need hard-clear to drop A's stale temps) from
+  // "session just got activated" (null → new from ensureSession, which
+  // means handleSend already added the user temp for this very
+  // session — we must NOT clearMessages or the user's just-typed bubble
+  // disappears for the entire first turn).
+  const prevActiveSessionRef = useRef<string | null>(null)
   useEffect(() => {
+    const prev = prevActiveSessionRef.current
+    prevActiveSessionRef.current = activeSessionId
+
     if (!activeSessionId) {
       clearMessages()
       return
     }
+    // True session switch: was on some other session, now on a new
+    // one. Drop the prior session's optimistic temps before painting
+    // the new one's cached/fetched view.
+    const isSwitch = prev !== null && prev !== activeSessionId
+
     // Per-session cache hit → render INSTANTLY from the cached
     // snapshot. Switching back to a recently-visited session
     // skips the fetch round-trip and the loader flash entirely;
     // the WS still revalidates the cached view in the background
     // via `session_context`.
     //
-    // Cache miss → hard-clear and show the loader; the upcoming
-    // fetchMessages / WS session_context will fill it.
+    // Cache miss → set loader; the upcoming fetchMessages / WS
+    // session_context will fill it. mergeMessages preserves the
+    // user's optimistic temp during the loader window so they see
+    // their just-typed bubble immediately on a fresh chat.
     const cached = useStudioStore.getState().getCachedSessionMessages(activeSessionId)
     if (cached && cached.length > 0) {
-      // Hard-clear first (drops any optimistic temp from the
-      // previous session) THEN set the cached snapshot. Doing it
-      // in one set call would race with mergeMessages and re-pull
-      // a stale temp from the previous session.
-      clearMessages()
+      if (isSwitch) clearMessages()
       setMessages(cached)
       setMessagesLoading(false)
     } else {
-      // No cache — same dance as before (hard-clear + loader),
-      // mergeMessages's user-temp leak protection is the reason
-      // for clearMessages over setMessages([]).
-      clearMessages()
+      if (isSwitch) clearMessages()
       setMessagesLoading(true)
     }
 

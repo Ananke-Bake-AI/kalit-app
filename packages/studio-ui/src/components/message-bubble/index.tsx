@@ -222,18 +222,30 @@ export const MessageBubble = memo(function MessageBubble({ message, showToolBadg
                 continue
               }
               if (seg.type === "tool") {
+                const isDone = (seg as { done?: boolean }).done !== false
+                // Only group consecutive tools with the same name AND
+                // same done-state. Without the done-state guard we'd
+                // hide an in-flight tool inside a "x5" badge with the
+                // four older done ones — the spinner gets lost.
                 let count = 1
-                while (
-                  i + count < segments.length &&
-                  segments[i + count].type === "tool" &&
-                  (segments[i + count] as { name: string }).name === seg.name
-                ) {
-                  count++
+                if (isDone) {
+                  while (
+                    i + count < segments.length &&
+                    segments[i + count].type === "tool" &&
+                    (segments[i + count] as { name: string }).name === seg.name &&
+                    (segments[i + count] as { done?: boolean }).done !== false
+                  ) {
+                    count++
+                  }
                 }
                 rendered.push(
                   <div key={i} className={s.toolStep}>
-                    <Icon icon="hugeicons:tick-02" className={s.toolDone} />
-                    <span className={s.toolLabelDone}>
+                    {isDone ? (
+                      <Icon icon="hugeicons:tick-02" className={s.toolDone} />
+                    ) : (
+                      <Icon icon="hugeicons:loading-03" className={s.spin} />
+                    )}
+                    <span className={isDone ? s.toolLabelDone : s.toolLabelActive}>
                       {seg.name}
                     </span>
                     {count > 1 && <span className={s.toolCount}>x{count}</span>}
@@ -246,6 +258,23 @@ export const MessageBubble = memo(function MessageBubble({ message, showToolBadg
                 const msgs = seg.messages || []
                 const visible = msgs.length > 3 ? msgs.slice(-3) : msgs
                 const hidden = msgs.length - visible.length
+                // Heuristic for "still waiting": the message immediately
+                // following this progress segment tells the story. If the
+                // next sibling is an unfinished tool (rare — tools come
+                // BEFORE their progress), or if there's no terminating
+                // tool_result yet, the LAST progress line is the live
+                // one. Simpler signal: walk backward from the end of the
+                // whole `segments` array; if the most recent tool is
+                // unfinished, the last progress line in THIS segment is
+                // the active one. Otherwise everything is settled.
+                let trailingActive = false
+                for (let k = segments.length - 1; k >= 0; k--) {
+                  const s = segments[k]
+                  if (s.type === "tool") {
+                    trailingActive = (s as { done?: boolean }).done === false
+                    break
+                  }
+                }
                 rendered.push(
                   <div key={i} className={s.progressSegment}>
                     {hidden > 0 && (
@@ -253,12 +282,20 @@ export const MessageBubble = memo(function MessageBubble({ message, showToolBadg
                         {hidden} previous updates
                       </span>
                     )}
-                    {visible.map((m, j) => (
-                      <div key={j} className={s.progressLine}>
-                        <Icon icon="hugeicons:tick-02" className={s.progressCheck} />
-                        <span className={s.progressTextDone}>{m}</span>
-                      </div>
-                    ))}
+                    {visible.map((m, j) => {
+                      const isLast = j === visible.length - 1
+                      const showAsActive = isLast && trailingActive
+                      return (
+                        <div key={j} className={s.progressLine}>
+                          {showAsActive ? (
+                            <span className={s.progressDotActive} />
+                          ) : (
+                            <Icon icon="hugeicons:tick-02" className={s.progressCheck} />
+                          )}
+                          <span className={showAsActive ? s.progressTextActive : s.progressTextDone}>{m}</span>
+                        </div>
+                      )
+                    })}
                   </div>
                 )
                 i++
