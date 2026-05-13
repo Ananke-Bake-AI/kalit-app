@@ -1,1 +1,399 @@
-{}
+{
+  "pricing": {
+    "metaTitle": "价格 - Kalit AI",
+    "metaDescription": "Kalit AI 软件工厂的简单透明定价。免费计划,为单人开发者、机构和团队提供付费层级。Pentest 和 Search 包含在 Enterprise 中。",
+    "title": "简单定价。一个 AI 软件工厂。",
+    "description": "免费试用。付费计划按积分和席位扩展。Pentest 和 Search 包含在 Enterprise 中。",
+    "intervalMonth": "/ 月",
+    "creditsLabel": "积分",
+    "monthLabel": "月",
+    "popularBadge": "最受欢迎",
+    "packsTitle": "通过积分包充值",
+    "packsNote": "一次性包附加在你的订阅之上。适合繁忙的发布周或单次 Pentest 扫描。",
+    "oneTimeLabel": "一次性",
+    "faqTitle": "价格 FAQ",
+    "planOutcomes": {
+      "free": "用 3 次生成试用 Kalit Flow。无需信用卡。",
+      "starter": "每月发布一个精致的着陆站点或小型 MVP。",
+      "pro": "构建和迭代完整产品,或运行机构客户工作。",
+      "enterprise": "使用无限席位运行 Flow + Pentest + Search。",
+      "custom": "自定义席位数、机构工具、批量定价 — 为你的团队量身定制。"
+    },
+    "planCtas": {
+      "free": "免费开始",
+      "starter": "开始 Starter",
+      "pro": "开始 Pro",
+      "enterprise": "开始 Enterprise",
+      "custom": "联系我们"
+    },
+    "customPlanName": "Custom",
+    "customPriceLabel": "Custom",
+    "customFeatures": [
+      "自定义席位数",
+      "机构 / 经销商计划",
+      "批量积分定价",
+      "专属 Success Engineer",
+      "自定义入门培训",
+      "SLA 和优先支持"
+    ],
+    "faqs": [
+      { "q": "什么是一个积分?", "a": "积分是底层使用单位。粗略来说:Flow 中每页生成 ~1 个积分,MVP 构建运行 ~10–15 个积分,Pentest 扫描 ~5 个积分。具体成本取决于项目规模和涉及的专家代理。在运行启动之前,你将始终看到积分成本。" },
+      { "q": "我可以随时取消吗?", "a": "可以。从仪表板取消,无需提问。你的计划在当前计费周期结束之前保持活跃,然后转为 Free。" },
+      { "q": "未使用的积分会结转吗?", "a": "月度订阅积分不会结转 — 它们在每次续订时重置。在订阅之上购买的一次性积分包将保留在你的帐户中,直到使用完为止。" },
+      { "q": "Pentest 在 Pro 中可用吗?", "a": "Pentest 包含在 Enterprise 中。我们正在向 Pro 推出测试版 — 从你的仪表板加入 Pentest 等候名单,或联系我们获得早期访问。" },
+      { "q": "你们提供机构或批量定价吗?", "a": "是的。如果你交付客户工作、需要超过 10 个席位或自定义积分分配,请联系我们 — 我们有机构合作计划。" },
+      { "q": "教育或非营利折扣呢?", "a": "我们为学生、教育工作者和注册非营利组织提供折扣 Pro 计划。从你的机构地址发送电子邮件到 contact@kalit.ai。" },
+      { "q": "我的数据存储在哪里?", "a": "Kalit AI 由 Merkle Tech Labs LTD.(马耳他)运营。数据在欧盟地区处理。请参阅我们的隐私政策和安全页面,了解完整图景,包括子处理商和加密。" },
+      { "q": "我可以在任何站点上运行 Pentest 吗?", "a": "不。Pentest 仅适用于你拥有或被明确授权测试的目标。在运行扫描之前,请阅读我们的负责任使用页面。" }
+    ]
+  },
+  "security": {
+    "metaTitle": "安全 - Kalit AI",
+    "metaDescription": "Kalit AI 如何保护你的数据:传输中和静止时的加密、欧盟地区处理、OAuth 提供商、子处理商列表、漏洞披露和事件响应。",
+    "title": "Kalit AI 的安全性",
+    "subtitle": "我们的安全态势,用通俗易懂的语言。最后更新:2026 年 5 月 13 日。",
+    "intro": "Kalit AI 由 Merkle Tech Labs LTD.(马耳他,公司注册 C 107851)运营。本页面描述了我们如何保护客户数据、与谁共享数据,以及如何报告漏洞。如果你需要签署副本以进行采购,请发送电子邮件到 security@kalit.ai。",
+    "encryptionTitle": "数据加密",
+    "encryptionInTransit": "传输中:所有客户流量都通过 TLS 1.2+(HTTPS/WSS)加密。broker、taskforce 和 Pentest 引擎之间的内部服务到服务流量通过短期 JWT 进行身份验证。",
+    "encryptionAtRest": "静止时:主 PostgreSQL 数据库由我们的云提供商(Neon,欧盟地区)在静止时加密。对象存储(项目工件、生成的资产)在服务器端使用提供商管理的密钥加密。",
+    "encryptionSecrets": "密钥:你提供的 API 密钥(Stripe、自定义 LLM 密钥、部署凭证)在写入数据库之前使用 envelope 加密进行加密。明文仅在作业运行期间存在于内存中。",
+    "authTitle": "身份验证",
+    "authText": "使用电子邮件 + 密码(Argon2id 哈希)或 Google、GitHub、Discord、LinkedIn 或 Facebook OAuth 登录。会话使用带有轮换刷新令牌的签名 JWT。帐户恢复需要电子邮件链接验证。",
+    "residencyTitle": "数据驻留和处理",
+    "residencyText": "客户数据在欧盟内处理和存储。我们目前不会将主要数据集复制到欧盟之外。代表你进行的 LLM 调用可能会经过美国的提供商(请参阅子处理商)。如果你需要为合同进行仅限欧盟的 LLM 路由,请联系我们。",
+    "subprocessorsTitle": "子处理商",
+    "subprocessorsIntro": "Kalit AI 使用以下第三方服务来交付平台:",
+    "subprocessorsList": [
+      "Anthropic — 用于代码生成、Pentest 代理和编排的主要 LLM(Claude)。",
+      "OpenAI — 用于特定任务的备用 LLM(Codex)。",
+      "Neon — 托管 PostgreSQL(欧盟地区)。",
+      "MongoDB Atlas — Pentest 扫描数据和发现存储(欧盟地区)。",
+      "Stripe — 支付处理和订阅计费。",
+      "Resend — 事务性电子邮件(验证、密码重置、通知)。",
+      "Vercel — 着陆站点 + 仪表板托管;生成应用的多个部署目标之一。",
+      "Cloudflare — kalit.ai 和自定义域名的 DNS 和 CDN。",
+      "Porkbun — 域名注册(当你通过 Flow 购买域名时)。",
+      "Google Analytics 4 — 营销页面上的匿名流量分析。"
+    ],
+    "subprocessorsNote": "应付费客户的要求,可提供签署的子处理商列表和 DPA。",
+    "accessTitle": "访问控制",
+    "accessList": [
+      "对生产系统的最小权限访问。所有管理员访问都被记录。",
+      "生产部署通过签名管道和经过审查的拉取请求。",
+      "员工笔记本电脑使用全盘加密和托管配置。",
+      "客户数据不会被复制到个人计算机上。"
+    ],
+    "pentestTitle": "Pentest 套件",
+    "pentestText": "Kalit Pentest 可以执行主动安全测试(SQL 注入、XSS、SSRF、身份验证绕过等)。它必须仅用于你拥有或被明确授权测试的目标。误用可能导致法律责任和帐户立即终止。在运行扫描之前,请阅读我们的负责任使用政策。",
+    "pentestEgress": "Pentest 扫描从专用的出口 IP 运行。应要求,我们可以提供源 IP 范围,以便你的团队在扫描窗口期间确定监控和 WAF 规则的范围。",
+    "disclosureTitle": "漏洞披露",
+    "disclosureText": "如果你认为在 Kalit AI 中发现了安全漏洞,请发送电子邮件到 security@kalit.ai,附上描述、概念验证和你建议的严重性。我们承诺:",
+    "disclosureCommitments": [
+      "在 3 个工作日内确认你的报告。",
+      "在 10 个工作日内提供分类决定。",
+      "在修复发布后协调公开披露。",
+      "如果你愿意,在 changelog 中给你署名。"
+    ],
+    "disclosureBounty": "我们目前不运营付费漏洞赏金计划。我们用积分、周边和公开感谢来奖励严重的、在范围内的报告。",
+    "incidentTitle": "事件响应",
+    "incidentText": "我们维护一个事件响应运行手册,涵盖检测、遏制、客户通知和事后分析。如果安全事件实质性地影响你的数据,我们将在 72 小时内通过电子邮件通知受影响的客户,并在 status.kalit.ai 上发布状态更新。",
+    "complianceTitle": "合规路线图",
+    "complianceText": "Kalit AI 尚未通过 SOC 2 或 ISO 27001 认证。我们遵循与这些标准一致的控制措施,并打算在 2026 年寻求正式认证。今天可用的合规工件:子处理商列表、DPA、安全问卷(应要求)。",
+    "contactTitle": "联系方式",
+    "contactText": "对于安全问题、漏洞报告或采购的安全审查:",
+    "contactAddress": "Merkle Tech Labs LTD., Northlink Business Centre, Level 2, Triq Burmarrad, Naxxar, NXR 6345, Malta"
+  },
+  "responsibleUse": {
+    "metaTitle": "负责任使用政策 - Kalit AI",
+    "metaDescription": "Kalit AI 的可接受使用,具有针对 Pentest 套件授权目标的重点部分。在运行主动安全扫描之前阅读。",
+    "title": "负责任使用政策",
+    "subtitle": "你可以和不能用 Kalit AI 做什么 — Pentest 有特殊规则。最后更新:2026 年 5 月 13 日。",
+    "intro": "本负责任使用政策补充我们的服务条款。它适用于每个 Kalit AI 帐户和每个套件(Flow、Pentest、Search、Marketing)。Pentest 的规则更严格,因为该套件对真实系统执行主动安全测试。在运行 Pentest 扫描之前,请阅读此页面。",
+    "authTitle": "1. 仅限授权使用 — Pentest",
+    "authIntro": "你只能针对你有明确书面授权执行主动安全测试的目标使用 Kalit Pentest。可接受的授权包括:",
+    "authBullets": [
+      "你个人拥有和运营的系统。",
+      "已聘请你的公司的系统,文件中有签署的 engagement letter 或 pentest 协议。",
+      "你是注册参与者的公共漏洞赏金计划的明确范围中列出的目标。",
+      "你雇主拥有的暂存或测试环境,前提是你的雇主授权它。"
+    ],
+    "authConfirm": "在你的第一次 Pentest 扫描之前,我们要求你确认授权。虚假证明是对我们条款的实质性违反,可能会被报告给执法部门。",
+    "prohibitedTitle": "2. 禁止的目标 — Pentest",
+    "prohibitedIntro": "你不得针对以下任何目标运行 Kalit Pentest:",
+    "prohibitedBullets": [
+      "你不拥有或没有合同测试的系统。",
+      "政府、军事、关键基础设施、医疗或金融系统,除非由正式 engagement 涵盖。",
+      "属于学校、慈善机构或未成年人的站点和服务,除非在正式 engagement 下。",
+      "你注册的程序的发布范围之外的漏洞赏金目标。",
+      "你的活动可能影响其他租户的第三方托管服务(例如共享 SaaS)。扫描必须限制在你控制的实例或环境中。",
+      "你受到主动制裁或出口管制的国家的任何系统。"
+    ],
+    "prohibitedNote": "我们监控扫描目标中的重复滥用信号(例如对高知名度域名的峰值、对不相关目标的字典攻击)。可疑的误用将触发立即暂停以等待审查。",
+    "evidenceTitle": "3. 证据处理",
+    "evidenceIntro": "Pentest 发现通常包含敏感材料 — 在配置错误的文件中发现的凭证、内部 URL、通过 IDOR 暴露的客户数据等。你同意:",
+    "evidenceBullets": [
+      "将发现视为对目标所有者保密。",
+      "不要外泄超过证明漏洞所需的数据。",
+      "在修复后删除或清理敏感证据。",
+      "仅与目标所有者授权接收 Pentest 报告的人员共享。"
+    ],
+    "generalTitle": "4. 一般可接受使用 — 所有套件",
+    "generalIntro": "你同意不使用 Kalit AI 来:",
+    "generalBullets": [
+      "生成或分发非法内容,包括 CSAM、煽动暴力的内容或侵犯版权或商标权的内容。",
+      "构建钓鱼页面、恶意软件、间谍软件、勒索软件或其他旨在欺骗、伤害或破坏用户的软件。",
+      "在 Kalit AI 输出上批量构建、训练或微调竞争 AI 系统。",
+      "抓取、收集或对 Kalit AI 本身进行逆向工程。",
+      "从使用 Marketing 或 Flow 创建的帐户发送未经请求的批量通信(垃圾邮件)。",
+      "冒充任何人或组织,包括 Kalit AI 或其员工。",
+      "规避速率限制、使用配额或付费墙。"
+    ],
+    "outputTitle": "5. AI 输出 — 你的责任",
+    "outputIntro": "Kalit AI 使用语言模型生成代码、内容和安全发现。输出可能不正确、有偏见或不安全。你负责在以下之前审查输出:",
+    "outputBullets": [
+      "将生成的代码部署到生产环境。",
+      "在你的品牌下发布营销内容。",
+      "对 Pentest 发现采取行动(例如向第三方报告)。"
+    ],
+    "outputNote": "我们持续致力于提高代理准确性,但你仍然是 human-in-the-loop。",
+    "enforcementTitle": "6. 执行",
+    "enforcementIntro": "违反此政策可能导致:",
+    "enforcementBullets": [
+      "对扫描或生成活动的警告和强制冷却。",
+      "暂停或终止你的帐户而不退款。",
+      "没收积分和帐户余额。",
+      "通知相关执法机构、托管提供商或受影响的第三方。"
+    ],
+    "enforcementNote": "我们可以在不指名个人的情况下发布有关严重执法行动的透明度说明。",
+    "reportTitle": "7. 报告滥用",
+    "reportText": "如果你认为 Kalit AI 用户在未经授权的情况下针对你的系统,或以其他方式违反此政策,请发送电子邮件到 abuse@kalit.ai,附上时间戳、源 IP 和你可以共享的任何日志。我们的目标是在 1 个工作日内确认滥用报告,并立即对确认的报告采取行动。",
+    "updatesTitle": "8. 更新",
+    "updatesText": "我们可能会更新此政策。重大更改将在 changelog 中宣布,并在生效前至少 14 天通过电子邮件发送给活跃客户。",
+    "contactTitle": "联系方式"
+  },
+  "changelog": {
+    "metaTitle": "Changelog - Kalit AI",
+    "metaDescription": "Kalit AI 的新内容。Flow、Pentest、Search 和仪表板的发布,按周分组。",
+    "title": "Changelog",
+    "subtitle": "我们发布的内容,我们发布的时间。最新优先。",
+    "tagFeature": "feature",
+    "tagFix": "fix",
+    "tagChore": "chore"
+  },
+  "compare": {
+    "metaTitleIndex": "将 Kalit AI 与其他 AI 应用构建器进行比较",
+    "metaDescriptionIndex": "Kalit AI 与 Lovable、Base44、Emergent 和 Bolt 的并排比较 — 能力矩阵、何时选择哪个,以及发布时重要的差异。",
+    "indexTitle": "比较 Kalit AI",
+    "indexDescription": "与你可能也在评估的 AI 应用构建器进行诚实的并排比较。",
+    "pickCompetitorTitle": "选择 {name} 当",
+    "pickKalitTitle": "选择 Kalit AI 当",
+    "cta": "从 Kalit AI 开始 — 免费",
+    "cellYes": "是",
+    "cellPartial": "部分",
+    "cellNo": "否",
+    "capabilityHeader": "能力",
+    "kalitColumn": "Kalit AI",
+    "competitors": {
+      "lovable": {
+        "oneLiner": "Lovable 是从提示中获取可用 Web 应用程序的最强大 AI 应用构建器之一。Kalit 从同一起点出发,并添加 Pentest、Search 和一个 21 代理构建团队。",
+        "competitorOneLiner": "Lovable — \"AI 全栈工程师\"。具有大型社区的强大提示到应用。",
+        "intro": "如果你只需要构建应用程序本身,Lovable 是一个不错的选择。Kalit AI 是为需要构建、保护和发布产品的创始人构建的 — 不仅仅是生成代码。",
+        "whenToPick": [
+          "你想要最成熟的提示到应用社区。",
+          "你只需要代码生成,不需要安全或研究。",
+          "你已经选择了你的托管和增长堆栈。"
+        ],
+        "whenToPickKalit": [
+          "你想要为每次发布附加安全报告。",
+          "你想要一个从想法到上线的工作空间,旁边有研究和营销。",
+          "你想要一个多代理构建团队和明确的任务计划,而不是单次生成器。",
+          "你以多种语言发布 — Kalit 本地化为 16 种语言。"
+        ]
+      },
+      "base44": {
+        "oneLiner": "Base44 倾向于为非编码者提供\"vibe coding\"。Kalit 采取不同的立场:输出是协调的代理团队在真实框架中构建的真实、可移植的代码。",
+        "competitorOneLiner": "Base44 — 为非技术构建者提供的 vibe-coded Web 应用程序。",
+        "intro": "Base44 针对希望在不考虑堆栈的情况下获得可用应用的非编码者进行了优化。Kalit AI 为你提供相同的速度,但具有可带走的真实代码库,加上安全和增长工具。",
+        "whenToPick": [
+          "你根本不想看到代码。",
+          "你想要一个完全隐藏堆栈的单一工具。",
+          "你的需求主要是内部低风险应用。"
+        ],
+        "whenToPickKalit": [
+          "你想要可以导出、版本化和拥有的代码。",
+          "你想要在发布前进行 pentest 报告。",
+          "你想要从 no-code 感觉毕业到真正的工程工作流程,而不切换工具。",
+          "你想要欧盟基础设施和清晰的 DPA 路径。"
+        ]
+      },
+      "emergent": {
+        "oneLiner": "Emergent 围绕从对话中生成生产就绪的应用程序进行定位。Kalit 分享这一雄心,并增加了一个安全套件、一个多代理构建团队和一个免费的研究前门。",
+        "competitorOneLiner": "Emergent — 通过自然对话生成生产就绪的应用程序。",
+        "intro": "Emergent 是单通道提示到产品工作流程的强有力选择。Kalit AI 将相同的想法扩展到四套件软件工厂,自治 pentest 作为一等公民。",
+        "whenToPick": [
+          "你想要单通道提示到应用体验。",
+          "你不需要安全工具。",
+          "你的受众主要是美国和英语使用者。"
+        ],
+        "whenToPickKalit": [
+          "你想要内置自治 pentest。",
+          "你想要从第一天开始的 16 种语言本地化。",
+          "你想要在一个工作空间下的构建和增长套件。",
+          "你想要带有 SARIF 导出的 CVSS 评分发现。"
+        ]
+      },
+      "bolt": {
+        "oneLiner": "Bolt 是用于原型的快速浏览器内构建器。Kalit 为下一步而构建 — 将原型带到可发布、已扫描、增长就绪的产品。",
+        "competitorOneLiner": "Bolt — 快速、视觉化的浏览器内 AI 原型设计。",
+        "intro": "Bolt 是一个出色的原型设计环境。Kalit AI 补充它:当你超越原型阶段并需要真正的部署、安全扫描和发布计划时,你切换到 Kalit。",
+        "whenToPick": [
+          "你想要尽可能快的视觉原型。",
+          "你还没有考虑发布或安全。",
+          "你愿意稍后迁移。"
+        ],
+        "whenToPickKalit": [
+          "你想要发布,不仅仅是原型。",
+          "你想要真正的 Docker 化输出和真正的 GitHub 仓库。",
+          "你想要安全和研究内置到同一个工作空间。"
+        ]
+      }
+    },
+    "capabilities": [
+      "从提示生成全栈 Web 应用",
+      "从工作空间部署到生产",
+      "导入现有的 GitHub 仓库以继续迭代",
+      "多代理构建团队(20+ 专家代理)",
+      "每项目 Docker 容器随构建提供",
+      "内置自治 pentest,带有 OWASP / SARIF 导出",
+      "合规映射(OWASP、CWE、PCI DSS、NIST、ISO 27001、SOC 2)",
+      "免费的市场研究套件(Search)",
+      "16 种语言本地化的 UI",
+      "真实项目的公开作品集(/discover)",
+      "由 {name} 的团队仅为 {name} 构建",
+      "创始人主导、欧盟基础、透明的 build-in-public"
+    ]
+  },
+  "alternatives": {
+    "metaTitleIndex": "Kalit AI 替代方案 — AI 软件工厂",
+    "metaDescriptionIndex": "考虑 Lovable、Base44 或 Bolt 替代方案?Kalit AI 是为发布而非仅生成而构建的多套件软件工厂。",
+    "indexTitle": "AI 应用构建器的替代方案",
+    "indexDescription": "如果你正在评估另一个工具,这里是 Kalit AI 适合的地方。",
+    "whyLeaveTitle": "为什么人们离开 {name}",
+    "whyKalitTitle": "Kalit AI 添加什么",
+    "cta": "试试 Kalit AI — 免费",
+    "pageTitle": "最佳的 {name} 替代方案",
+    "competitors": {
+      "lovable": {
+        "searchHook": "寻找 Lovable 替代方案?Kalit AI 从 Lovable 停止的地方开始:一个 21 代理构建团队、一个自治 Pentest 套件,以及一个从想法到发布的工作空间。",
+        "whyLeave": [
+          "生成的应用程序在没有任何安全审查的情况下发货。",
+          "一旦提示到应用的兴奋消退,就很难继续迭代。",
+          "保留自己的 GitHub 工作流程的支持有限。",
+          "面向国际受众的仅英语体验。"
+        ],
+        "whyKalit": [
+          "内置 Pentest 生成 CVSS 评分、SARIF 可导出的报告。",
+          "21 代理的 Taskforce 构建、测试、发货和记录 — 不仅仅是生成。",
+          "带或取任何 GitHub 仓库。输出是真正的 Dockerfile。",
+          "从第一天开始的 16 种语言 UI — 在不重建的情况下销售给全球受众。"
+        ]
+      },
+      "base44": {
+        "searchHook": "寻找 Base44 替代方案?Kalit AI 为你提供相同的\"prompt and ship\"速度,但具有真实的代码、真实的 Docker 输出和附加的安全报告。",
+        "whyLeave": [
+          "如果你超越平台,Vibe-coded 应用很难带走。",
+          "在你发货前没有安全扫描。",
+          "为机构和产品团队的团队工作流程有限。",
+          "堆栈被隐藏 — 调试在规模上变得更难。"
+        ],
+        "whyKalit": [
+          "真实框架中的真实代码,导出到你的 GitHub。",
+          "每个项目都是 Docker 化的 — 你的基础设施团队可以从那里接管。",
+          "Pentest 随工作空间一起提供,而不是作为第三方插件。",
+          "欧盟基础、创始人主导、透明的 build-in-public。"
+        ]
+      },
+      "bolt": {
+        "searchHook": "当你需要从原型毕业到发布时寻找 Bolt 替代方案?Kalit AI 将提示带到已部署、已扫描、增长就绪的产品。",
+        "whyLeave": [
+          "Bolt 对原型设计很出色,但发布工具很薄弱。",
+          "从原型迁移到真实的代码库是手动工作。",
+          "同一工作空间中没有安全工具。",
+          "没有用于在构建前验证的市场研究套件。"
+        ],
+        "whyKalit": [
+          "21 代理构建团队明确为发货而构建,而不仅仅是原型设计。",
+          "免费的 Search 套件用于在构建前验证。",
+          "同一工作空间中包含的 Pentest 扫描。",
+          "从同一提示部署到生产。"
+        ]
+      }
+    }
+  },
+  "pentestExtras": {
+    "agentsEyebrow": "12 个专家代理 · 11 个漏洞类",
+    "agentsTitleA": "一次扫描,十二位专家。",
+    "agentsTitleB": "他们之间没有共享上下文丢失。",
+    "agentsLede": "Kalit Pentest 为每个漏洞类并行启动一个专门的代理。每个代理都带有自己的有效负载库、变异引擎和 WAF-绕过策略 — 并在扫描期间与其他代理实时共享发现。",
+    "standardsEyebrow": "标准 · 合规 · 导出",
+    "standardsTitleA": "映射到你的审计员",
+    "standardsTitleB": "实际询问的框架。",
+    "standardsLede": "每个发现都按 CVSS 3.1 评分,并映射到安全团队和审计员期望的标准。将 SARIF 直接导出到 GitHub Advanced Security 或你的 CI 流水线。",
+    "reportTitle": "报告中的内容",
+    "reportLede": "每次扫描都会产生一个去重、误报验证的报告 — 准备好用于工程、安全审查或审计员。",
+    "reportFields": [
+      "执行摘要",
+      "按 CVSS 排序的发现",
+      "概念验证证据",
+      "修复指导",
+      "阶段日志",
+      "合规映射",
+      "攻击链叙事",
+      "重新测试清单"
+    ],
+    "authTitle": "仅限授权目标。",
+    "authText": "Kalit Pentest 运行主动安全测试。仅对你拥有或有明确书面授权测试的系统运行扫描。",
+    "authCta": "阅读规则",
+    "severityCritical": "严重",
+    "severityHigh": "高",
+    "severityMedium": "中",
+    "severityLow": "低",
+    "agents": [
+      { "name": "SQL Injection Hunter", "targets": "基于错误、UNION、盲注(时间 / 布尔)、带外。" },
+      { "name": "XSS Specialist", "targets": "反射、存储、基于 DOM,具有上下文感知的有效负载变异。" },
+      { "name": "SSRF Specialist", "targets": "云元数据(AWS / GCP / Azure)、DNS 重绑、IP 编码绕过。" },
+      { "name": "Command Injection", "targets": "直接和盲注(DNS、时间、HTTP 回调)。" },
+      { "name": "Deserialization", "targets": "Java、PHP、Python、.NET、Ruby 小工具链。" },
+      { "name": "Auth Bypass", "targets": "会话固定、JWT 缺陷、权限提升。" },
+      { "name": "IDOR Tester", "targets": "跨端点的对象引用操纵。" },
+      { "name": "Credential Spray", "targets": "针对发现的表面进行重用测试。" },
+      { "name": "Subdomain Takeover", "targets": "针对 15+ 云服务的 CNAME 指纹识别。" },
+      { "name": "Cloud Auditor", "targets": "开放的存储桶(S3 / GCS / Blob)、暴露的无服务器端点。" },
+      { "name": "WebSocket Security", "targets": "CSWSH、auth bypass、消息篡改。" },
+      { "name": "GraphQL Security", "targets": "Introspection、深度和复杂性攻击、字段授权。" }
+    ],
+    "sampleFindings": [
+      { "title": "SQLi — /api/auth/login" },
+      { "title": "SSRF — /api/avatar?url=…" },
+      { "title": "Stored XSS — /comments" },
+      { "title": "IDOR — /api/orders/:id" },
+      { "title": "开放 S3 存储桶 — assets-prod" },
+      { "title": "缺少安全标头" }
+    ]
+  },
+  "blog": {
+    "metaTitle": "博客 - Kalit AI",
+    "metaDescription": "Kalit AI 团队的笔记 — 我们为什么要建立一个 AI 软件工厂、Taskforce 和 Pentest 实际是如何工作的,以及我们接下来要发布什么。",
+    "title": "Kalit 博客",
+    "description": "Kalit 团队的构建笔记、技术深入和产品思考。",
+    "featured": "推荐",
+    "minRead": "分钟阅读",
+    "allPosts": "← 所有帖子",
+    "keepReading": "继续阅读",
+    "onThisPage": "在此页面",
+    "shareX": "分享到 X",
+    "shareLinkedIn": "分享到 LinkedIn",
+    "shareHN": "分享到 Hacker News",
+    "empty": "还没有帖子。请尽快回来。"
+  }
+}

@@ -1,1 +1,399 @@
-{}
+{
+  "pricing": {
+    "metaTitle": "Priser - Kalit AI",
+    "metaDescription": "Enkla, transparenta priser för Kalit AI:s mjukvarufabrik. Gratis plan, betalda nivåer för solobyggare, byråer och team. Pentest och Search ingår i Enterprise.",
+    "title": "Enkla priser. En AI-mjukvarufabrik.",
+    "description": "Gratis att prova. Betalda planer skalar efter krediter och platser. Pentest och Search ingår i Enterprise.",
+    "intervalMonth": "/ månad",
+    "creditsLabel": "krediter",
+    "monthLabel": "månad",
+    "popularBadge": "Mest valda",
+    "packsTitle": "Fyll på med kreditpaket",
+    "packsNote": "Engångspaket läggs ovanpå din prenumeration. Bra för en hektisk lanseringsvecka eller en enstaka Pentest-scan.",
+    "oneTimeLabel": "engångs",
+    "faqTitle": "FAQ om priser",
+    "planOutcomes": {
+      "free": "Prova Kalit Flow med 3 genereringar. Inget kort krävs.",
+      "starter": "Publicera en polerad landningssida eller liten MVP per månad.",
+      "pro": "Bygg och iterera en hel produkt, eller kör byråarbete åt kunder.",
+      "enterprise": "Kör Flow + Pentest + Search med obegränsade platser.",
+      "custom": "Anpassade antal platser, byråverktyg, volympriser — skräddarsytt för ditt team."
+    },
+    "planCtas": {
+      "free": "Börja gratis",
+      "starter": "Börja med Starter",
+      "pro": "Börja med Pro",
+      "enterprise": "Börja med Enterprise",
+      "custom": "Prata med oss"
+    },
+    "customPlanName": "Custom",
+    "customPriceLabel": "Custom",
+    "customFeatures": [
+      "Anpassade antal platser",
+      "Byrå- / återförsäljarprogram",
+      "Volymkreditpriser",
+      "Dedikerad Success Engineer",
+      "Anpassad onboarding & utbildning",
+      "SLA & prioriterad support"
+    ],
+    "faqs": [
+      { "q": "Vad är en kredit?", "a": "Krediter är den underliggande användningsenheten. Som riktlinje: ~1 kredit per sidgenerering i Flow, ~10–15 krediter för en MVP-build, ~5 krediter per Pentest-scan. Exakta kostnader beror på projektets storlek och de specialistagenter som ingår. Du ser alltid kreditkostnaden innan en körning startar." },
+      { "q": "Kan jag avsluta när som helst?", "a": "Ja. Avsluta från instrumentpanelen, utan frågor. Din plan är aktiv tills slutet av aktuell faktureringsperiod och växlar sedan till Free." },
+      { "q": "Förs oanvända krediter över?", "a": "Månatliga prenumerationskrediter förs inte över — de återställs vid varje förnyelse. Engångskreditpaket du köper utöver prenumerationen ligger kvar på kontot tills de används." },
+      { "q": "Finns Pentest i Pro?", "a": "Pentest ingår i Enterprise. Vi rullar ut det i beta för Pro — gå med i Pentest-väntelistan från instrumentpanelen eller kontakta oss för tidig åtkomst." },
+      { "q": "Erbjuder ni byrå- eller volympriser?", "a": "Ja. Om du levererar kundarbete, behöver fler än 10 platser eller en skräddarsydd kreditallokering, kontakta oss — vi har en byråpartnerplan." },
+      { "q": "Finns det utbildnings- eller ideell rabatt?", "a": "Vi erbjuder rabatterade Pro-planer för studenter, lärare och registrerade ideella organisationer. Mejla contact@kalit.ai från din institutionsadress." },
+      { "q": "Var lagras mina data?", "a": "Kalit AI drivs av Merkle Tech Labs LTD. (Malta). Data behandlas i EU-regioner. Se våra sidor för Integritetspolicy och Säkerhet för helheten, inklusive underbiträden och kryptering." },
+      { "q": "Kan jag köra Pentest mot vilken sajt som helst?", "a": "Nej. Pentest är endast för mål du äger eller uttryckligen är behörig att testa. Läs vår sida för Ansvarsfull användning innan du startar en scan." }
+    ]
+  },
+  "security": {
+    "metaTitle": "Säkerhet - Kalit AI",
+    "metaDescription": "Hur Kalit AI skyddar dina data: kryptering under överföring och i vila, EU-behandling, OAuth-leverantörer, lista över underbiträden, sårbarhetshantering och incidentrespons.",
+    "title": "Säkerhet på Kalit AI",
+    "subtitle": "Vår säkerhetshållning, i klartext. Senast uppdaterad: 13 maj 2026.",
+    "intro": "Kalit AI drivs av Merkle Tech Labs LTD. (Malta, bolagsreg C 107851). Den här sidan beskriver hur vi skyddar kunddata, vem vi delar med och hur du rapporterar en sårbarhet. Om du behöver en signerad kopia för upphandling, mejla security@kalit.ai.",
+    "encryptionTitle": "Datakryptering",
+    "encryptionInTransit": "Under överföring: all kundtrafik krypteras över TLS 1.2+ (HTTPS/WSS). Intern tjänst-till-tjänst-trafik mellan broker, taskforce och Pentest-motorer autentiseras med kortlivade JWT:er.",
+    "encryptionAtRest": "I vila: primär PostgreSQL-databas krypteras i vila av vår molnleverantör (Neon, EU-region). Objektlagring (projektartefakter, genererade assets) krypteras serverside med leverantörshanterade nycklar.",
+    "encryptionSecrets": "Hemligheter: API-nycklar du tillhandahåller (Stripe, egna LLM-nycklar, deploy-credentials) krypteras med envelope encryption innan de skrivs till databasen. Klartext finns bara i minnet under en körning.",
+    "authTitle": "Autentisering",
+    "authText": "Logga in med e-post + lösenord (Argon2id-hashar), eller med Google, GitHub, Discord, LinkedIn eller Facebook OAuth. Sessioner använder signerade JWT:er med roterande refresh-tokens. Kontoåterställning kräver verifiering via e-postlänk.",
+    "residencyTitle": "Datavistelse och bearbetning",
+    "residencyText": "Kunddata behandlas och lagras inom Europeiska unionen. Vi replikerar för närvarande inte primära datamängder utanför EU. LLM-anrop som görs för din räkning kan passera leverantörer baserade i USA (se underbiträden). Om du behöver EU-endast LLM-routing för en affär, kontakta oss.",
+    "subprocessorsTitle": "Underbiträden",
+    "subprocessorsIntro": "Kalit AI använder följande tredjepartstjänster för att leverera plattformen:",
+    "subprocessorsList": [
+      "Anthropic — primär LLM (Claude) för kodgenerering, Pentest-agenter och orkestrering.",
+      "OpenAI — fallback-LLM (Codex) för specifika uppgifter.",
+      "Neon — hanterad PostgreSQL (EU-region).",
+      "MongoDB Atlas — lagring av Pentest-scandata och fynd (EU-region).",
+      "Stripe — betalningshantering och prenumerationsfakturering.",
+      "Resend — transaktionsmejl (verifiering, lösenordsåterställning, notiser).",
+      "Vercel — hosting av landingssida + instrumentpanel; ett av flera deploy-mål för genererade appar.",
+      "Cloudflare — DNS och CDN för kalit.ai och egna domäner.",
+      "Porkbun — domänregistrering (när du köper en domän via Flow).",
+      "Google Analytics 4 — anonym trafikanalys på marknadsföringssidor."
+    ],
+    "subprocessorsNote": "En signerad lista över underbiträden och ett DPA finns på begäran för betalande kunder.",
+    "accessTitle": "Åtkomstkontroll",
+    "accessList": [
+      "Least-privilege-åtkomst till produktionssystem. All admin-åtkomst loggas.",
+      "Produktionsdistributioner går via signerade pipelines och granskade pull requests.",
+      "Anställdas laptops använder full-disk-kryptering och hanterad konfiguration.",
+      "Inga kunddata kopieras till privata datorer."
+    ],
+    "pentestTitle": "Pentest-svit",
+    "pentestText": "Kalit Pentest kan utföra aktiva säkerhetstester (SQL injection, XSS, SSRF, auth bypass och mer). Det får endast användas mot mål du äger eller är uttryckligen behörig att testa. Missbruk kan leda till rättsligt ansvar och omedelbar kontoavstängning. Läs vår policy för Ansvarsfull användning innan du startar en scan.",
+    "pentestEgress": "Pentest-scanningar körs från dedikerade egress-IP:n. På begäran levererar vi käll-IP-intervallet så att ditt team kan rama in övervaknings- och WAF-regler under ett scanfönster.",
+    "disclosureTitle": "Sårbarhetshantering",
+    "disclosureText": "Om du tror att du hittat en säkerhetssårbarhet i Kalit AI, mejla security@kalit.ai med en beskrivning, en proof of concept och din föreslagna allvarlighetsgrad. Vi åtar oss att:",
+    "disclosureCommitments": [
+      "Bekräfta din rapport inom 3 arbetsdagar.",
+      "Ge ett triagebeslut inom 10 arbetsdagar.",
+      "Koordinera publik avslöjning när en fix är levererad.",
+      "Kreditera dig i changelog om du vill."
+    ],
+    "disclosureBounty": "Vi driver för närvarande inget betalt bug bounty-program. Vi belönar seriösa, in-scope-rapporter med krediter, swag och ett offentligt tack.",
+    "incidentTitle": "Incidentrespons",
+    "incidentText": "Vi har en incidentrespons-runbook som täcker upptäckt, isolering, kundnotifiering och post-mortem. Om en säkerhetsincident materiellt påverkar dina data informerar vi berörda kunder inom 72 timmar via e-post och publicerar en statusuppdatering på status.kalit.ai.",
+    "complianceTitle": "Compliance-roadmap",
+    "complianceText": "Kalit AI är ännu inte SOC 2- eller ISO 27001-certifierat. Vi följer kontroller som är linjerade med dessa standarder och avser att gå mot formell certifiering 2026. Compliance-artefakter tillgängliga idag: underbiträdeslista, DPA, säkerhetsfrågeformulär (på begäran).",
+    "contactTitle": "Kontakt",
+    "contactText": "För säkerhetsfrågor, sårbarhetsrapporter eller säkerhetsgranskningar för upphandling:",
+    "contactAddress": "Merkle Tech Labs LTD., Northlink Business Centre, Level 2, Triq Burmarrad, Naxxar, NXR 6345, Malta"
+  },
+  "responsibleUse": {
+    "metaTitle": "Policy för Ansvarsfull användning - Kalit AI",
+    "metaDescription": "Acceptabel användning av Kalit AI, med ett fokuserat avsnitt om auktoriserade mål för Pentest-sviten. Läs innan du kör en aktiv säkerhetsscan.",
+    "title": "Policy för Ansvarsfull användning",
+    "subtitle": "Vad du kan och inte kan göra med Kalit AI — med särskilda regler för Pentest. Senast uppdaterad: 13 maj 2026.",
+    "intro": "Den här policyn för Ansvarsfull användning kompletterar våra Användarvillkor. Den gäller varje Kalit AI-konto och varje svit (Flow, Pentest, Search, Marketing). Reglerna för Pentest är striktare eftersom sviten utför aktiva säkerhetstester mot riktiga system. Läs denna sida innan du kör en Pentest-scan.",
+    "authTitle": "1. Endast auktoriserad användning — Pentest",
+    "authIntro": "Du får endast använda Kalit Pentest mot mål där du har uttrycklig, skriftlig auktorisering att utföra aktiva säkerhetstester. Acceptabla auktoriseringar inkluderar:",
+    "authBullets": [
+      "Ett system du personligen äger och driver.",
+      "Ett system som ägs av ett företag som anlitat dig, med signerat engagement letter eller pentest-avtal i arkivet.",
+      "Ett mål listat i det uttryckliga scopet för ett publikt bug bounty-program där du är registrerad deltagare.",
+      "En staging- eller testmiljö som ägs av din arbetsgivare, förutsatt att arbetsgivaren auktoriserar det."
+    ],
+    "authConfirm": "Före din första Pentest-scan ber vi dig bekräfta auktoriseringen. Falska intyganden är ett materiellt brott mot våra Villkor och kan rapporteras till brottsbekämpning.",
+    "prohibitedTitle": "2. Förbjudna mål — Pentest",
+    "prohibitedIntro": "Du får inte köra Kalit Pentest mot något av följande:",
+    "prohibitedBullets": [
+      "System du inte äger eller har avtal om att testa.",
+      "Statliga, militära, kritisk infrastruktur-, sjukvårds- eller finanssystem, om inte täckta av ett formellt uppdrag.",
+      "Sajter och tjänster för skolor, välgörenhet eller minderåriga, om inte under ett formellt uppdrag.",
+      "Bug bounty-mål utanför det publicerade scopet för ett program du är registrerad i.",
+      "Tredjepartshostade tjänster (t.ex. delade SaaS) där din aktivitet kan påverka andra tenant. Scanningar måste begränsas till instanser eller miljöer du kontrollerar.",
+      "Alla system i ett land där du är föremål för aktiva sanktioner eller exportkontroller."
+    ],
+    "prohibitedNote": "Vi övervakar scanmål för upprepade missbrukssignaler (t.ex. toppar mot högprofildomäner, ordboksangrepp mot orelaterade mål). Misstänkt missbruk utlöser omedelbar avstängning i väntan på granskning.",
+    "evidenceTitle": "3. Hantering av bevismaterial",
+    "evidenceIntro": "Pentest-fynd innehåller ofta känsligt material — credentials upptäckta i felkonfigurerade filer, interna URL:er, kunddata exponerade via IDOR osv. Du samtycker till att:",
+    "evidenceBullets": [
+      "Behandla fynd som konfidentiella gentemot målets ägare.",
+      "Inte exfiltrera mer data än nödvändigt för att demonstrera en sårbarhet.",
+      "Radera eller sanera känsligt bevismaterial efter åtgärd.",
+      "Endast dela Pentest-rapporter med personer som målets ägare auktoriserat att ta emot dem."
+    ],
+    "generalTitle": "4. Allmän acceptabel användning — alla sviter",
+    "generalIntro": "Du samtycker till att inte använda Kalit AI för att:",
+    "generalBullets": [
+      "Generera eller distribuera olagligt innehåll, inklusive CSAM, innehåll som uppmanar till våld, eller innehåll som bryter mot upphovsrätt eller varumärken.",
+      "Bygga phishing-sidor, malware, spyware, ransomware eller annan programvara avsedd att vilseleda, skada eller kompromettera användare.",
+      "Bygga, träna eller finjustera konkurrerande AI-system på Kalit AI-output i bulk.",
+      "Skrapa, harvesta eller reverse engineera Kalit AI självt.",
+      "Skicka oönskad masskommunikation (spam) från konton skapade med Marketing eller Flow.",
+      "Imitera någon person eller organisation, inklusive Kalit AI eller dess personal.",
+      "Kringgå rate limits, användningskvoter eller paywalls."
+    ],
+    "outputTitle": "5. AI-output — ditt ansvar",
+    "outputIntro": "Kalit AI producerar kod, innehåll och säkerhetsfynd med språkmodeller. Output kan vara felaktig, partisk eller osäker. Du ansvarar för att granska output innan du:",
+    "outputBullets": [
+      "Distribuerar genererad kod till produktion.",
+      "Publicerar marknadsföringsinnehåll under ditt varumärke.",
+      "Agerar på ett Pentest-fynd (t.ex. rapporterar det till tredje part)."
+    ],
+    "outputNote": "Vi arbetar löpande med att förbättra agenternoggrannheten, men du förblir människa-i-loopen.",
+    "enforcementTitle": "6. Tillämpning",
+    "enforcementIntro": "Brott mot denna policy kan leda till:",
+    "enforcementBullets": [
+      "En varning och tvingad cooldown på scan- eller genereringsaktivitet.",
+      "Avstängning eller uppsägning av ditt konto utan återbetalning.",
+      "Förlust av krediter och kontosaldo.",
+      "Notifiering av relevanta myndigheter, hostingleverantörer eller berörda tredje parter."
+    ],
+    "enforcementNote": "Vi kan publicera en transparensnotering om en allvarlig tillämpningsåtgärd utan att namnge individer.",
+    "reportTitle": "7. Rapportera missbruk",
+    "reportText": "Om du tror att en Kalit AI-användare riktar sig mot dina system utan tillstånd, eller på annat sätt bryter mot denna policy, mejla abuse@kalit.ai med tidsstämplar, käll-IP:n och alla loggar du kan dela. Vi strävar efter att bekräfta missbruksrapporter inom 1 arbetsdag och agera omedelbart på bekräftade rapporter.",
+    "updatesTitle": "8. Uppdateringar",
+    "updatesText": "Vi kan uppdatera denna policy. Materiella ändringar tillkännages i changeloggen och via e-post till aktiva kunder minst 14 dagar innan de träder i kraft.",
+    "contactTitle": "Kontakt"
+  },
+  "changelog": {
+    "metaTitle": "Changelog - Kalit AI",
+    "metaDescription": "Vad är nytt på Kalit AI. Releaser över Flow, Pentest, Search och instrumentpanel, grupperade per vecka.",
+    "title": "Changelog",
+    "subtitle": "Vad vi släpper, när vi släpper det. Senaste först.",
+    "tagFeature": "feature",
+    "tagFix": "fix",
+    "tagChore": "chore"
+  },
+  "compare": {
+    "metaTitleIndex": "Jämför Kalit AI med andra AI app builders",
+    "metaDescriptionIndex": "Sida-vid-sida-jämförelser av Kalit AI mot Lovable, Base44, Emergent och Bolt — capability-matriser, när du väljer vilket, och de skillnader som spelar roll vid lansering.",
+    "indexTitle": "Jämför Kalit AI",
+    "indexDescription": "Ärliga jämförelser med de AI app builders du troligen också utvärderar.",
+    "pickCompetitorTitle": "Välj {name} när",
+    "pickKalitTitle": "Välj Kalit AI när",
+    "cta": "Börja med Kalit AI — gratis",
+    "cellYes": "Ja",
+    "cellPartial": "Delvis",
+    "cellNo": "Nej",
+    "capabilityHeader": "Förmåga",
+    "kalitColumn": "Kalit AI",
+    "competitors": {
+      "lovable": {
+        "oneLiner": "Lovable är en av de starkaste AI app builders för att få en fungerande webbapp från en prompt. Kalit utgår från samma punkt och lägger till Pentest, Search och ett build-team med 21 agenter.",
+        "competitorOneLiner": "Lovable — \"AI fullstack engineer\". Stark prompt-to-app med en stor community.",
+        "intro": "Lovable är ett bra val om du bara behöver bygga själva appen. Kalit AI är byggt för founders som behöver bygga, säkra och lansera produkten — inte bara generera kod.",
+        "whenToPick": [
+          "Du vill ha den mest etablerade prompt-to-app-communityn.",
+          "Du behöver bara kodgenerering, ingen säkerhet eller research.",
+          "Du har redan valt din hosting- och growth-stack."
+        ],
+        "whenToPickKalit": [
+          "Du vill ha en säkerhetsrapport till varje lansering.",
+          "Du vill ha en workspace som går från idé till live, med research och marknadsföring vid sidan om.",
+          "Du vill ha ett multi-agent-buildteam och en explicit task-plan, inte en single-shot-generator.",
+          "Du levererar på flera språk — Kalit är lokaliserat på 16."
+        ]
+      },
+      "base44": {
+        "oneLiner": "Base44 satsar på \"vibe coding\" för icke-kodare. Kalit intar en annan position: outputen är riktig, portabel kod i ett riktigt framework, byggd av ett koordinerat agentteam.",
+        "competitorOneLiner": "Base44 — vibe-codade webbappar för icke-tekniska byggare.",
+        "intro": "Base44 är optimerat för icke-kodare som vill ha en fungerande app utan att tänka på stacken. Kalit AI ger dig samma fart men en riktig codebase du kan ta med dig, plus verktyg för säkerhet och growth.",
+        "whenToPick": [
+          "Du vill inte se kod alls.",
+          "Du vill ha ett enda verktyg som helt döljer stacken.",
+          "Dina behov är mest interna lågrisk-appar."
+        ],
+        "whenToPickKalit": [
+          "Du vill ha kod du kan exportera, versionera och äga.",
+          "Du vill ha en pentest-rapport före lansering.",
+          "Du vill växa från en no-code-känsla till ett riktigt engineering-arbetsflöde utan att byta verktyg.",
+          "Du vill ha EU-baserad infra och en tydlig DPA-väg."
+        ]
+      },
+      "emergent": {
+        "oneLiner": "Emergent positionerar sig kring produktionsfärdiga appar från konversation. Kalit delar ambitionen och lägger till en säkerhetssvit, ett multi-agent-buildteam och en gratis research-ingång.",
+        "competitorOneLiner": "Emergent — produktionsfärdiga appar via naturlig konversation.",
+        "intro": "Emergent är ett starkt val för ett single-channel prompt-to-product-arbetsflöde. Kalit AI utvidgar samma idé till en fyra-svit-mjukvarufabrik, med autonomt pentest som första klassens medborgare.",
+        "whenToPick": [
+          "Du vill ha en single-channel prompt-to-app-upplevelse.",
+          "Du behöver inga säkerhetsverktyg.",
+          "Din målgrupp är främst USA-baserad och engelskspråkig."
+        ],
+        "whenToPickKalit": [
+          "Du vill ha autonomt pentest inbyggt.",
+          "Du vill ha lokalisering på 16 språk från dag ett.",
+          "Du vill ha build- och growth-sviter under en workspace.",
+          "Du vill ha CVSS-bedömda fynd med SARIF-export."
+        ]
+      },
+      "bolt": {
+        "oneLiner": "Bolt är en snabb in-browser-byggare för prototyper. Kalit är byggt för nästa steg — att ta en prototyp till en lanseringsfärdig, scannad, growth-färdig produkt.",
+        "competitorOneLiner": "Bolt — in-browser AI-prototyping, snabbt och visuellt.",
+        "intro": "Bolt är en lysande prototypingmiljö. Kalit AI kompletterar den: när du växer ur prototypfasen och behöver en riktig deploy, en säkerhetsscan och en lanseringsplan, byter du till Kalit.",
+        "whenToPick": [
+          "Du vill ha den snabbast möjliga visuella prototypen.",
+          "Du tänker ännu inte på lansering eller säkerhet.",
+          "Du är beredd att migrera senare."
+        ],
+        "whenToPickKalit": [
+          "Du vill lansera, inte bara prototypa.",
+          "Du vill ha en riktig Dockerized-output och en riktig GitHub-repo.",
+          "Du vill ha säkerhet och research inbyggt i samma workspace."
+        ]
+      }
+    },
+    "capabilities": [
+      "Generera full-stack-webbappar från en prompt",
+      "Deploya till produktion från workspace",
+      "Importera befintlig GitHub-repo och fortsätta iterera",
+      "Multi-agent-buildteam (20+ specialistagenter)",
+      "Per-projekt Docker-container levereras med builden",
+      "Inbyggt autonomt pentest med OWASP / SARIF-export",
+      "Compliance-mappning (OWASP, CWE, PCI DSS, NIST, ISO 27001, SOC 2)",
+      "Gratis marknadsanalys-svit (Search)",
+      "16-språks lokaliserat UI",
+      "Publikt portfolio av verkliga projekt (/discover)",
+      "Byggt av {name}:s team endast för {name}",
+      "Founder-led, EU-baserat, transparent build-in-public"
+    ]
+  },
+  "alternatives": {
+    "metaTitleIndex": "Kalit AI-alternativ — AI-mjukvarufabriken",
+    "metaDescriptionIndex": "Funderar du på ett Lovable-, Base44- eller Bolt-alternativ? Kalit AI är multi-sviten mjukvarufabriken byggd för att leverera, inte bara generera.",
+    "indexTitle": "Alternativ till AI app builders",
+    "indexDescription": "Om du utvärderar ett annat verktyg, här är var Kalit AI passar in.",
+    "whyLeaveTitle": "Varför folk lämnar {name}",
+    "whyKalitTitle": "Vad Kalit AI tillför",
+    "cta": "Prova Kalit AI — gratis",
+    "pageTitle": "Det bästa {name}-alternativet",
+    "competitors": {
+      "lovable": {
+        "searchHook": "Letar du efter ett Lovable-alternativ? Kalit AI börjar där Lovable slutar: ett build-team med 21 agenter, en autonom Pentest-svit och en workspace som går från idé till lansering.",
+        "whyLeave": [
+          "Genererade appar levereras utan någon säkerhetsgranskning.",
+          "Svårt att fortsätta iterera när prompt-to-app-spänningen avtar.",
+          "Begränsat stöd för att behålla ditt eget GitHub-arbetsflöde.",
+          "Enbart engelsk upplevelse för internationella målgrupper."
+        ],
+        "whyKalit": [
+          "Inbyggt Pentest producerar en CVSS-bedömd, SARIF-exporterbar rapport.",
+          "Ett Taskforce-team med 21 agenter bygger, testar, levererar och dokumenterar — inte bara genererar.",
+          "Ta med eller ta valfri GitHub-repo. Output är en riktig Dockerfile.",
+          "16-språks UI från dag ett — sälj till globala målgrupper utan att bygga om."
+        ]
+      },
+      "base44": {
+        "searchHook": "Letar du efter ett Base44-alternativ? Kalit AI ger dig samma \"prompt and ship\"-fart, men med riktig kod, riktig Docker-output och en bifogad säkerhetsrapport.",
+        "whyLeave": [
+          "Vibe-codade appar är svåra att ta med när du växer ur plattformen.",
+          "Ingen säkerhetsscan före lansering.",
+          "Begränsat team-arbetsflöde för byråer och produktteam.",
+          "Stacken är dold — debugging blir svårare vid skalning."
+        ],
+        "whyKalit": [
+          "Riktig kod i ett riktigt framework, exporterad till din GitHub.",
+          "Varje projekt är Dockerized — ditt infra-team kan ta över därifrån.",
+          "Pentest följer med workspacen, inte som tredjeparts-addon.",
+          "EU-baserat, founder-led, transparent build-in-public."
+        ]
+      },
+      "bolt": {
+        "searchHook": "Letar du efter ett Bolt-alternativ när du behöver gå från prototyp till lansering? Kalit AI tar en prompt till en deployad, scannad, growth-färdig produkt.",
+        "whyLeave": [
+          "Bolt är utmärkt för prototyping, men lanseringsverktyg är tunna.",
+          "Att migrera från prototyp till en riktig codebase är manuellt arbete.",
+          "Inga säkerhetsverktyg i samma workspace.",
+          "Ingen marknadsanalys-svit för att validera innan du bygger."
+        ],
+        "whyKalit": [
+          "Build-team med 21 agenter uttryckligen byggt för att leverera, inte bara prototypa.",
+          "Gratis Search-svit för att validera innan du bygger.",
+          "Pentest-scan ingår i samma workspace.",
+          "Deploya till produktion från samma prompt."
+        ]
+      }
+    }
+  },
+  "pentestExtras": {
+    "agentsEyebrow": "12 specialistagenter · 11 sårbarhetsklasser",
+    "agentsTitleA": "En scan, tolv specialister.",
+    "agentsTitleB": "Ingen delad kontext förloras mellan dem.",
+    "agentsLede": "Kalit Pentest startar en specialiserad agent per sårbarhetsklass, parallellt. Varje agent kommer med sitt eget payload-bibliotek, mutationsmotor och WAF-bypass-strategi — och delar fynd live med de andra under scanningen.",
+    "standardsEyebrow": "Standarder · Compliance · Exporter",
+    "standardsTitleA": "Mappar mot de ramverk",
+    "standardsTitleB": "som din auditor faktiskt frågar om.",
+    "standardsLede": "Varje fynd är CVSS 3.1-bedömt och mappat mot de standarder som säkerhetsteam och auditorer förväntar sig. Exportera SARIF direkt till GitHub Advanced Security eller din CI-pipeline.",
+    "reportTitle": "Vad som finns i rapporten",
+    "reportLede": "Varje scan producerar en deduplicerad, falsk-positiv-validerad rapport — redo för engineering, säkerhetsgranskning eller en auditor.",
+    "reportFields": [
+      "Sammanfattning för ledningen",
+      "Fynd sorterade efter CVSS",
+      "Proof-of-concept-bevis",
+      "Åtgärdsvägledning",
+      "Fas-för-fas-logg",
+      "Compliance-mappning",
+      "Attack-chain-berättelse",
+      "Återtestningschecklista"
+    ],
+    "authTitle": "Endast auktoriserade mål.",
+    "authText": "Kalit Pentest kör aktiva säkerhetstester. Kör endast en scan mot ett system du äger eller har uttrycklig skriftlig auktorisering att testa.",
+    "authCta": "Läs reglerna",
+    "severityCritical": "KRIT",
+    "severityHigh": "HÖG",
+    "severityMedium": "MED",
+    "severityLow": "LÅG",
+    "agents": [
+      { "name": "SQL Injection Hunter", "targets": "Error-based, UNION, blind (time / boolean), out-of-band." },
+      { "name": "XSS Specialist", "targets": "Reflected, stored, DOM-based med kontextkänslig payload-mutation." },
+      { "name": "SSRF Specialist", "targets": "Cloud-metadata (AWS / GCP / Azure), DNS rebinding, IP-encoding-bypasses." },
+      { "name": "Command Injection", "targets": "Direkt och blind (DNS, time, HTTP callback)." },
+      { "name": "Deserialization", "targets": "Java-, PHP-, Python-, .NET-, Ruby-gadget-kedjor." },
+      { "name": "Auth Bypass", "targets": "Sessionfixation, JWT-brister, privilege escalation." },
+      { "name": "IDOR Tester", "targets": "Manipulation av objektreferenser över endpoints." },
+      { "name": "Credential Spray", "targets": "Återanvändningstester mot upptäckta ytor." },
+      { "name": "Subdomain Takeover", "targets": "CNAME-fingerprinting mot 15+ molntjänster." },
+      { "name": "Cloud Auditor", "targets": "Öppna buckets (S3 / GCS / Blob), exponerade serverless-endpoints." },
+      { "name": "WebSocket Security", "targets": "CSWSH, auth bypass, meddelandemanipulation." },
+      { "name": "GraphQL Security", "targets": "Introspection, djup- och komplexitetsattacker, field auth." }
+    ],
+    "sampleFindings": [
+      { "title": "SQLi — /api/auth/login" },
+      { "title": "SSRF — /api/avatar?url=…" },
+      { "title": "Stored XSS — /comments" },
+      { "title": "IDOR — /api/orders/:id" },
+      { "title": "Öppen S3-bucket — assets-prod" },
+      { "title": "Saknade säkerhetsheaders" }
+    ]
+  },
+  "blog": {
+    "metaTitle": "Blogg - Kalit AI",
+    "metaDescription": "Anteckningar från teamet bakom Kalit AI — varför vi bygger en AI-mjukvarufabrik, hur Taskforce och Pentest faktiskt fungerar, och vad vi släpper härnäst.",
+    "title": "Kalit Blogg",
+    "description": "Build-anteckningar, tekniska deep-dives och produkttänkande från Kalit-teamet.",
+    "featured": "Utvalt",
+    "minRead": "min läsning",
+    "allPosts": "← Alla inlägg",
+    "keepReading": "Fortsätt läsa",
+    "onThisPage": "På denna sida",
+    "shareX": "Dela på X",
+    "shareLinkedIn": "Dela på LinkedIn",
+    "shareHN": "Dela på Hacker News",
+    "empty": "Inga inlägg än. Kom snart tillbaka."
+  }
+}

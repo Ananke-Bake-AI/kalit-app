@@ -1,1 +1,399 @@
-{}
+{
+  "pricing": {
+    "metaTitle": "Prijzen - Kalit AI",
+    "metaDescription": "Eenvoudige, transparante prijzen voor de Kalit AI softwarefabriek. Gratis plan, betaalde lagen voor solobouwers, bureaus en teams. Pentest en Search inbegrepen in Enterprise.",
+    "title": "Eenvoudige prijzen. Eén AI-softwarefabriek.",
+    "description": "Gratis te proberen. Betaalde plannen schalen met credits en zetels. Pentest en Search inbegrepen in Enterprise.",
+    "intervalMonth": "/ maand",
+    "creditsLabel": "credits",
+    "monthLabel": "maand",
+    "popularBadge": "Meest gekozen",
+    "packsTitle": "Bijvullen met credit-pakketten",
+    "packsNote": "Eenmalige pakketten komen bovenop je abonnement. Handig voor een drukke lanceerweek of een enkele Pentest-scan.",
+    "oneTimeLabel": "eenmalig",
+    "faqTitle": "FAQ over prijzen",
+    "planOutcomes": {
+      "free": "Probeer Kalit Flow met 3 generaties. Geen kaart nodig.",
+      "starter": "Publiceer één gepolijste landingspagina of klein MVP per maand.",
+      "pro": "Bouw en itereer een volledig product, of voer klantwerk uit voor bureaus.",
+      "enterprise": "Gebruik Flow + Pentest + Search met onbeperkte zetels.",
+      "custom": "Aangepaste aantallen zetels, bureautools, volumeprijzen — op maat van je team."
+    },
+    "planCtas": {
+      "free": "Gratis beginnen",
+      "starter": "Starter beginnen",
+      "pro": "Pro beginnen",
+      "enterprise": "Enterprise beginnen",
+      "custom": "Praat met ons"
+    },
+    "customPlanName": "Custom",
+    "customPriceLabel": "Custom",
+    "customFeatures": [
+      "Aangepaste aantallen zetels",
+      "Bureau- / reseller-programma",
+      "Volume-creditprijzen",
+      "Toegewijde Success Engineer",
+      "Aangepaste onboarding & training",
+      "SLA & prioriteitsondersteuning"
+    ],
+    "faqs": [
+      { "q": "Wat is één credit?", "a": "Credits zijn de onderliggende gebruikseenheid. Als ruwe richtlijn: ~1 credit per paginageneratie in Flow, ~10–15 credits voor een MVP-build, ~5 credits per Pentest-scan. Exacte kosten hangen af van de projectgrootte en de betrokken specialistagenten. Je ziet de creditkosten altijd voor een run start." },
+      { "q": "Kan ik altijd opzeggen?", "a": "Ja. Zeg op vanuit het dashboard, zonder vragen. Je plan blijft actief tot het einde van de huidige factureringsperiode en valt daarna terug naar Free." },
+      { "q": "Rollen ongebruikte credits door?", "a": "Maandelijkse abonnementscredits rollen niet door — ze resetten bij elke verlenging. Eenmalige creditpakketten die je bovenop een abonnement koopt, blijven op je account tot ze zijn opgebruikt." },
+      { "q": "Is Pentest beschikbaar op Pro?", "a": "Pentest is inbegrepen bij Enterprise. We rollen het in beta uit naar Pro — sluit je aan bij de Pentest-wachtlijst in je dashboard of neem contact op voor vroege toegang." },
+      { "q": "Bieden jullie prijzen voor bureaus of volume?", "a": "Ja. Als je klantwerk levert, meer dan 10 zetels nodig hebt, of een aangepaste credittoewijzing wilt, neem contact op — we hebben een bureaupartnerplan." },
+      { "q": "Wat met kortingen voor onderwijs of non-profit?", "a": "We bieden kortingsplannen Pro voor studenten, docenten en geregistreerde non-profits. Mail contact@kalit.ai vanaf je institutionele adres." },
+      { "q": "Waar worden mijn gegevens opgeslagen?", "a": "Kalit AI wordt beheerd door Merkle Tech Labs LTD. (Malta). Data wordt verwerkt in EU-regio's. Zie onze Privacy- en Beveiligingspagina's voor het volledige beeld, inclusief subverwerkers en versleuteling." },
+      { "q": "Kan ik Pentest op elke site uitvoeren?", "a": "Nee. Pentest is alleen voor doelen die je bezit of waarvoor je expliciete toestemming hebt om te testen. Lees onze pagina Verantwoord Gebruik voor je een scan start." }
+    ]
+  },
+  "security": {
+    "metaTitle": "Beveiliging - Kalit AI",
+    "metaDescription": "Hoe Kalit AI je data beschermt: versleuteling tijdens transport en in rust, verwerking in EU-regio's, OAuth-providers, lijst van subverwerkers, kwetsbaarheidsdisclosure en incident response.",
+    "title": "Beveiliging bij Kalit AI",
+    "subtitle": "Onze beveiligingshouding, in duidelijke taal. Laatst bijgewerkt: 13 mei 2026.",
+    "intro": "Kalit AI wordt beheerd door Merkle Tech Labs LTD. (Malta, KvK C 107851). Deze pagina beschrijft hoe we klantdata beschermen, met wie we die delen en hoe je een kwetsbaarheid kunt melden. Als je een ondertekende kopie nodig hebt voor procurement, mail security@kalit.ai.",
+    "encryptionTitle": "Dataversleuteling",
+    "encryptionInTransit": "Tijdens transport: al het klantverkeer wordt versleuteld via TLS 1.2+ (HTTPS/WSS). Intern service-to-service-verkeer tussen broker, taskforce en Pentest-engines wordt geauthenticeerd met kortlevende JWT's.",
+    "encryptionAtRest": "In rust: de primaire PostgreSQL-database wordt in rust versleuteld door onze cloudprovider (Neon, EU-regio). Object storage (projectartefacten, gegenereerde assets) wordt server-side versleuteld met provider-beheerde sleutels.",
+    "encryptionSecrets": "Secrets: API-sleutels die jij aanlevert (Stripe, eigen LLM-sleutels, deploy-credentials) worden versleuteld met envelope encryption voor ze in de database worden geschreven. Plaintext bestaat alleen in het geheugen tijdens een job-run.",
+    "authTitle": "Authenticatie",
+    "authText": "Log in met e-mail + wachtwoord (Argon2id-hashes), of met Google-, GitHub-, Discord-, LinkedIn- of Facebook-OAuth. Sessies gebruiken ondertekende JWT's met roterende refresh-tokens. Accountherstel vereist verificatie via e-maillink.",
+    "residencyTitle": "Dataresidentie en -verwerking",
+    "residencyText": "Klantdata wordt verwerkt en opgeslagen in de Europese Unie. We repliceren momenteel geen primaire datasets buiten de EU. LLM-oproepen die namens jou worden gedaan, kunnen via providers in de Verenigde Staten gaan (zie subverwerkers). Als je voor een deal alleen-EU LLM-routing nodig hebt, neem contact op.",
+    "subprocessorsTitle": "Subverwerkers",
+    "subprocessorsIntro": "Kalit AI gebruikt de volgende externe diensten om het platform te leveren:",
+    "subprocessorsList": [
+      "Anthropic — primaire LLM (Claude) voor codegeneratie, Pentest-agenten en orkestratie.",
+      "OpenAI — fallback-LLM (Codex) voor specifieke taken.",
+      "Neon — beheerde PostgreSQL (EU-regio).",
+      "MongoDB Atlas — opslag van Pentest-scandata en findings (EU-regio).",
+      "Stripe — betalingsverwerking en abonnementsfacturatie.",
+      "Resend — transactionele e-mail (verificatie, wachtwoordreset, meldingen).",
+      "Vercel — hosting van landing + dashboard; één van meerdere deploy-doelen voor gegenereerde apps.",
+      "Cloudflare — DNS en CDN voor kalit.ai en aangepaste domeinen.",
+      "Porkbun — domeinregistratie (wanneer je een domein koopt via Flow).",
+      "Google Analytics 4 — anonieme verkeersanalyse op marketingpagina's."
+    ],
+    "subprocessorsNote": "Een ondertekende subverwerkerslijst en een DPA zijn op verzoek beschikbaar voor betalende klanten.",
+    "accessTitle": "Toegangscontrole",
+    "accessList": [
+      "Least-privilege-toegang tot productiesystemen. Alle admin-toegang wordt gelogd.",
+      "Productiedeploys lopen via ondertekende pipelines en gereviewde pull requests.",
+      "Laptops van werknemers gebruiken full-disk encryption en beheerde configuratie.",
+      "Geen klantdata wordt naar persoonlijke machines gekopieerd."
+    ],
+    "pentestTitle": "Pentest-suite",
+    "pentestText": "Kalit Pentest kan actieve beveiligingstests uitvoeren (SQL injection, XSS, SSRF, auth bypass en meer). Het mag alleen worden ingezet tegen doelen die je bezit of waarvoor je expliciet bent geautoriseerd. Misbruik kan leiden tot juridische aansprakelijkheid en onmiddellijke accountbeëindiging. Lees ons beleid voor Verantwoord Gebruik voor je een scan start.",
+    "pentestEgress": "Pentest-scans draaien vanaf toegewijde egress-IP's. Op verzoek leveren we het bronIP-bereik zodat je team monitoring- en WAF-regels kan inrichten tijdens een scanperiode.",
+    "disclosureTitle": "Kwetsbaarheidsdisclosure",
+    "disclosureText": "Als je denkt een beveiligingskwetsbaarheid in Kalit AI te hebben gevonden, mail dan security@kalit.ai met een beschrijving, een proof of concept en je voorgestelde ernst. We verbinden ons tot:",
+    "disclosureCommitments": [
+      "Je melding binnen 3 werkdagen bevestigen.",
+      "Een triage-beslissing binnen 10 werkdagen geven.",
+      "Publieke disclosure coördineren zodra er een fix is uitgerold.",
+      "Je bij naam noemen in het changelog als je dat wenst."
+    ],
+    "disclosureBounty": "We hanteren momenteel geen betaald bug bounty-programma. We belonen serieuze, in-scope-meldingen met credits, swag en publieke dank.",
+    "incidentTitle": "Incident response",
+    "incidentText": "We onderhouden een incident-response-runbook dat detectie, indamming, klantnotificatie en post-mortem dekt. Als een beveiligingsincident materieel impact heeft op je data, informeren we betrokken klanten binnen 72 uur per e-mail en plaatsen we een statusupdate op status.kalit.ai.",
+    "complianceTitle": "Compliance-roadmap",
+    "complianceText": "Kalit AI is nog niet SOC 2- of ISO 27001-gecertificeerd. We volgen controles die op deze standaarden zijn afgestemd en streven naar formele certificering in 2026. Vandaag beschikbare compliance-artefacten: subverwerkerslijst, DPA, beveiligingsvragenlijst (op verzoek).",
+    "contactTitle": "Contact",
+    "contactText": "Voor beveiligingsvragen, kwetsbaarheidsmeldingen of beveiligingsreviews voor procurement:",
+    "contactAddress": "Merkle Tech Labs LTD., Northlink Business Centre, Level 2, Triq Burmarrad, Naxxar, NXR 6345, Malta"
+  },
+  "responsibleUse": {
+    "metaTitle": "Beleid voor Verantwoord Gebruik - Kalit AI",
+    "metaDescription": "Aanvaardbaar gebruik van Kalit AI, met een gerichte sectie over geautoriseerde doelen voor de Pentest-suite. Lees voor het starten van een actieve beveiligingsscan.",
+    "title": "Beleid voor Verantwoord Gebruik",
+    "subtitle": "Wat je wel en niet kunt doen met Kalit AI — met speciale regels voor Pentest. Laatst bijgewerkt: 13 mei 2026.",
+    "intro": "Dit beleid voor Verantwoord Gebruik vult onze Servicevoorwaarden aan. Het geldt voor elk Kalit AI-account en elke suite (Flow, Pentest, Search, Marketing). De regels voor Pentest zijn strikter omdat de suite actieve beveiligingstests uitvoert tegen echte systemen. Lees deze pagina voor je een Pentest-scan start.",
+    "authTitle": "1. Alleen geautoriseerd gebruik — Pentest",
+    "authIntro": "Je mag Kalit Pentest alleen inzetten tegen doelen waarvoor je expliciete, schriftelijke toestemming hebt om actieve beveiligingstests uit te voeren. Aanvaardbare autorisaties omvatten:",
+    "authBullets": [
+      "Een systeem dat jij persoonlijk bezit en beheert.",
+      "Een systeem van een bedrijf dat je heeft ingehuurd, met een ondertekende engagement letter of pentest-overeenkomst in het dossier.",
+      "Een doel dat in de expliciete scope staat van een publiek bug-bounty-programma waarin je deelnemer bent.",
+      "Een staging- of testomgeving van je werkgever, mits je werkgever dit autoriseert."
+    ],
+    "authConfirm": "Voor je eerste Pentest-scan vragen we je de autorisatie te bevestigen. Valse verklaringen zijn een materiële schending van onze Voorwaarden en kunnen aan de autoriteiten worden gemeld.",
+    "prohibitedTitle": "2. Verboden doelen — Pentest",
+    "prohibitedIntro": "Je mag Kalit Pentest niet inzetten tegen het volgende:",
+    "prohibitedBullets": [
+      "Systemen die je niet bezit of waarvoor je geen testcontract hebt.",
+      "Overheids-, militaire, kritieke infrastructuur-, gezondheidszorg- of financiële systemen, tenzij onder een formele opdracht.",
+      "Sites en diensten van scholen, goede doelen of minderjarigen, tenzij onder een formele opdracht.",
+      "Bug bounty-doelen buiten de gepubliceerde scope van een programma waarin je deelnemer bent.",
+      "Door derden gehoste diensten (bv. gedeelde SaaS) waar je activiteit andere tenants kan raken. Scans moeten beperkt blijven tot instanties of omgevingen die jij beheert.",
+      "Elk systeem in een land waarin je onderworpen bent aan actieve sancties of exportcontroles."
+    ],
+    "prohibitedNote": "We monitoren scandoelen op herhaalde misbruiksignalen (bv. pieken tegen domeinen met hoog profiel, woordenboekaanvallen tegen niet-gerelateerde doelen). Vermoedelijk misbruik triggert onmiddellijke schorsing in afwachting van review.",
+    "evidenceTitle": "3. Omgang met bewijsmateriaal",
+    "evidenceIntro": "Pentest-findings bevatten vaak gevoelig materiaal — credentials in slecht geconfigureerde bestanden, interne URL's, klantdata blootgelegd via IDOR, enz. Je gaat akkoord:",
+    "evidenceBullets": [
+      "Findings als vertrouwelijk te behandelen voor de eigenaar van het doel.",
+      "Niet meer data te exfiltreren dan nodig om een kwetsbaarheid aan te tonen.",
+      "Gevoelig bewijs te verwijderen of te saneren na remediatie.",
+      "Pentest-rapporten alleen te delen met personen die door de eigenaar van het doel zijn geautoriseerd om ze te ontvangen."
+    ],
+    "generalTitle": "4. Algemeen aanvaardbaar gebruik — alle suites",
+    "generalIntro": "Je gaat ermee akkoord Kalit AI niet te gebruiken om:",
+    "generalBullets": [
+      "Illegale inhoud te genereren of te verspreiden, inclusief CSAM, geweldoproepende content of content die auteurs- of merkenrechten schendt.",
+      "Phishing-pagina's, malware, spyware, ransomware of andere software te bouwen die is ontworpen om te misleiden, schaden of compromitteren.",
+      "Concurrerende AI-systemen op Kalit AI-output in bulk te bouwen, trainen of fine-tunen.",
+      "Kalit AI zelf te scrapen, harvesten of reverse engineeren.",
+      "Ongevraagde massacommunicatie (spam) te sturen vanuit accounts gemaakt met Marketing of Flow.",
+      "Een persoon of organisatie, inclusief Kalit AI of medewerkers, te imiteren.",
+      "Rate limits, gebruiksquota of paywalls te omzeilen."
+    ],
+    "outputTitle": "5. AI-output — jouw verantwoordelijkheid",
+    "outputIntro": "Kalit AI produceert code, content en beveiligingsfindings met taalmodellen. Output kan onjuist, vooringenomen of onveilig zijn. Jij bent verantwoordelijk voor het reviewen van output voor je:",
+    "outputBullets": [
+      "Gegenereerde code naar productie deployt.",
+      "Marketingcontent publiceert onder je merk.",
+      "Handelt op een Pentest-finding (bv. melden aan derden)."
+    ],
+    "outputNote": "We werken continu aan betere agentnauwkeurigheid, maar jij blijft de human-in-the-loop.",
+    "enforcementTitle": "6. Handhaving",
+    "enforcementIntro": "Schendingen van dit beleid kunnen leiden tot:",
+    "enforcementBullets": [
+      "Een waarschuwing en geforceerde cooldown op scan- of generatieactiviteit.",
+      "Schorsing of beëindiging van je account zonder restitutie.",
+      "Verbeurdverklaring van credits en accountsaldo.",
+      "Melding aan relevante autoriteiten, hostingproviders of betrokken derden."
+    ],
+    "enforcementNote": "We kunnen een transparantienotitie publiceren over een ernstige handhavingsactie zonder individuen te noemen.",
+    "reportTitle": "7. Misbruik melden",
+    "reportText": "Als je gelooft dat een Kalit AI-gebruiker je systemen zonder toestemming aanvalt of dit beleid anderszins schendt, mail abuse@kalit.ai met tijdstempels, bron-IP's en alle logs die je kunt delen. We streven ernaar misbruikmeldingen binnen 1 werkdag te bevestigen en op bevestigde meldingen direct te handelen.",
+    "updatesTitle": "8. Updates",
+    "updatesText": "We kunnen dit beleid bijwerken. Materiële wijzigingen worden in het changelog en per e-mail aan actieve klanten aangekondigd, minstens 14 dagen voor ze van kracht worden.",
+    "contactTitle": "Contact"
+  },
+  "changelog": {
+    "metaTitle": "Changelog - Kalit AI",
+    "metaDescription": "Wat is er nieuw bij Kalit AI. Releases over Flow, Pentest, Search en het dashboard, per week gegroepeerd.",
+    "title": "Changelog",
+    "subtitle": "Wat we uitbrengen, wanneer we het uitbrengen. Nieuwste eerst.",
+    "tagFeature": "feature",
+    "tagFix": "fix",
+    "tagChore": "chore"
+  },
+  "compare": {
+    "metaTitleIndex": "Vergelijk Kalit AI met andere AI app builders",
+    "metaDescriptionIndex": "Vergelijkingen naast elkaar van Kalit AI vs Lovable, Base44, Emergent en Bolt — capability-matrices, wanneer je wat kiest, en de verschillen die tellen bij de lancering.",
+    "indexTitle": "Vergelijk Kalit AI",
+    "indexDescription": "Eerlijke side-by-side vergelijkingen met de AI app builders die je waarschijnlijk ook evalueert.",
+    "pickCompetitorTitle": "Kies {name} wanneer",
+    "pickKalitTitle": "Kies Kalit AI wanneer",
+    "cta": "Begin met Kalit AI — gratis",
+    "cellYes": "Ja",
+    "cellPartial": "Gedeeltelijk",
+    "cellNo": "Nee",
+    "capabilityHeader": "Capability",
+    "kalitColumn": "Kalit AI",
+    "competitors": {
+      "lovable": {
+        "oneLiner": "Lovable is een van de sterkste AI app builders om uit een prompt een werkende web app te krijgen. Kalit start vanuit hetzelfde punt en voegt Pentest, Search en een buildteam van 21 agents toe.",
+        "competitorOneLiner": "Lovable — \"AI fullstack engineer\". Sterke prompt-to-app met een grote community.",
+        "intro": "Lovable is een prima keuze als je alleen de app zelf hoeft te bouwen. Kalit AI is gebouwd voor founders die het product willen bouwen, beveiligen en lanceren — niet alleen code genereren.",
+        "whenToPick": [
+          "Je wilt de meest gevestigde prompt-to-app-community.",
+          "Je hebt alleen codegeneratie nodig, geen beveiliging of research.",
+          "Je hebt je hosting- en growthstack al gekozen."
+        ],
+        "whenToPickKalit": [
+          "Je wilt een beveiligingsrapport bij elke lancering.",
+          "Je wilt één workspace die van idee naar live gaat, met research en marketing erbij.",
+          "Je wilt een multi-agent buildteam en een expliciet taakplan, geen single-shot generator.",
+          "Je levert in meerdere talen — Kalit is in 16 talen gelokaliseerd."
+        ]
+      },
+      "base44": {
+        "oneLiner": "Base44 zet in op \"vibe coding\" voor niet-coders. Kalit kiest een andere houding: de output is echte, draagbare code in een echt framework, gebouwd door een gecoördineerd agentteam.",
+        "competitorOneLiner": "Base44 — vibe-coded web apps voor niet-technische bouwers.",
+        "intro": "Base44 is geoptimaliseerd voor niet-coders die een werkende app willen zonder over de stack na te denken. Kalit AI biedt dezelfde snelheid maar een echte codebase die je kunt meenemen, plus tools voor beveiliging en growth.",
+        "whenToPick": [
+          "Je wilt helemaal geen code zien.",
+          "Je wilt één tool die de stack volledig verbergt.",
+          "Je behoeften zijn vooral interne, laagrisico-apps."
+        ],
+        "whenToPickKalit": [
+          "Je wilt code die je kunt exporteren, versiebeheren en bezitten.",
+          "Je wilt een pentestrapport voor lancering.",
+          "Je wilt van een no-code-gevoel doorgroeien naar een echte engineering-workflow zonder van tool te wisselen.",
+          "Je wilt EU-gebaseerde infra en een duidelijk DPA-pad."
+        ]
+      },
+      "emergent": {
+        "oneLiner": "Emergent positioneert zich rond production-ready apps uit conversatie. Kalit deelt die ambitie en voegt een beveiligingssuite, een multi-agent buildteam en een gratis research-voordeur toe.",
+        "competitorOneLiner": "Emergent — production-ready apps via natuurlijke conversatie.",
+        "intro": "Emergent is een sterke keuze voor een single-channel prompt-to-product-workflow. Kalit AI breidt hetzelfde idee uit naar een softwarefabriek met vier suites, met autonoom pentest als first-class citizen.",
+        "whenToPick": [
+          "Je wilt een single-channel prompt-to-app-ervaring.",
+          "Je hebt geen beveiligingstools nodig.",
+          "Je publiek is vooral VS en Engelstalig."
+        ],
+        "whenToPickKalit": [
+          "Je wilt autonoom pentest ingebouwd.",
+          "Je wilt 16-talige lokalisatie vanaf dag één.",
+          "Je wilt build- en growth-suites in één workspace.",
+          "Je wilt findings met CVSS-score en SARIF-export."
+        ]
+      },
+      "bolt": {
+        "oneLiner": "Bolt is een snelle in-browser builder voor prototypes. Kalit is gebouwd voor de volgende stap — een prototype naar een lanceerbaar, gescand, growth-ready product brengen.",
+        "competitorOneLiner": "Bolt — in-browser AI-prototyping, snel en visueel.",
+        "intro": "Bolt is een briljante prototyping-omgeving. Kalit AI vult dit aan: wanneer je de prototypefase ontgroeit en een echte deploy, een beveiligingsscan en een lanceerplan nodig hebt, stap je over naar Kalit.",
+        "whenToPick": [
+          "Je wilt het snelst mogelijke visuele prototype.",
+          "Je denkt nog niet aan lancering of beveiliging.",
+          "Je bent bereid later te migreren."
+        ],
+        "whenToPickKalit": [
+          "Je wilt lanceren, niet alleen prototypen.",
+          "Je wilt een echte Dockerized output en een echte GitHub-repo.",
+          "Je wilt beveiliging en research geïntegreerd in dezelfde workspace."
+        ]
+      }
+    },
+    "capabilities": [
+      "Fullstack web apps genereren uit een prompt",
+      "Deployen naar productie vanuit de workspace",
+      "Bestaande GitHub-repo importeren en blijven itereren",
+      "Multi-agent buildteam (20+ specialistagenten)",
+      "Per-project Docker-container bij de build geleverd",
+      "Ingebouwde autonome pentest met OWASP / SARIF-export",
+      "Compliance-mapping (OWASP, CWE, PCI DSS, NIST, ISO 27001, SOC 2)",
+      "Gratis marktonderzoekssuite (Search)",
+      "UI gelokaliseerd in 16 talen",
+      "Publiek portfolio van echte projecten (/discover)",
+      "Gebouwd door het team van {name} alleen voor {name}",
+      "Founder-led, EU-gevestigd, transparante build-in-public"
+    ]
+  },
+  "alternatives": {
+    "metaTitleIndex": "Kalit AI-alternatieven — de AI-softwarefabriek",
+    "metaDescriptionIndex": "Overweeg je een Lovable-, Base44- of Bolt-alternatief? Kalit AI is de multi-suite softwarefabriek gebouwd om te leveren, niet alleen te genereren.",
+    "indexTitle": "Alternatieven voor AI app builders",
+    "indexDescription": "Als je een andere tool evalueert, hier past Kalit AI in.",
+    "whyLeaveTitle": "Waarom mensen {name} verlaten",
+    "whyKalitTitle": "Wat Kalit AI toevoegt",
+    "cta": "Probeer Kalit AI — gratis",
+    "pageTitle": "Het beste alternatief voor {name}",
+    "competitors": {
+      "lovable": {
+        "searchHook": "Op zoek naar een Lovable-alternatief? Kalit AI begint waar Lovable stopt: een buildteam van 21 agents, een autonome Pentest-suite en een workspace die van idee naar lancering gaat.",
+        "whyLeave": [
+          "Gegenereerde apps gaan zonder beveiligingsreview de deur uit.",
+          "Moeilijk om te blijven itereren als de prompt-to-app-opwinding wegebt.",
+          "Beperkte ondersteuning om je eigen GitHub-workflow te behouden.",
+          "Alleen-Engels ervaring voor internationaal publiek."
+        ],
+        "whyKalit": [
+          "Ingebouwde Pentest produceert een CVSS-rapport met SARIF-export.",
+          "Een Taskforce van 21 agents bouwt, test, levert en documenteert — niet alleen genereren.",
+          "Breng of neem elke GitHub-repo. Output is een echte Dockerfile.",
+          "UI in 16 talen vanaf dag één — verkoop aan wereldwijde publieken zonder herbouw."
+        ]
+      },
+      "base44": {
+        "searchHook": "Op zoek naar een Base44-alternatief? Kalit AI biedt dezelfde \"prompt and ship\"-snelheid, maar met echte code, echte Docker-output en een meegeleverd beveiligingsrapport.",
+        "whyLeave": [
+          "Vibe-coded apps zijn moeilijk mee te nemen als je het platform ontgroeit.",
+          "Geen beveiligingsscan voor je live gaat.",
+          "Beperkte teamworkflow voor bureaus en productteams.",
+          "Stack is verborgen — debugging wordt op schaal moeilijker."
+        ],
+        "whyKalit": [
+          "Echte code in een echt framework, geëxporteerd naar je GitHub.",
+          "Elk project is Dockerized — je infra-team kan het overnemen.",
+          "Pentest komt mee met de workspace, niet als externe add-on.",
+          "EU-gevestigd, founder-led, transparante build-in-public."
+        ]
+      },
+      "bolt": {
+        "searchHook": "Op zoek naar een Bolt-alternatief wanneer je van prototype naar lancering moet? Kalit AI brengt een prompt naar een gedeployd, gescand, growth-ready product.",
+        "whyLeave": [
+          "Bolt is uitstekend voor prototyping, maar lanceer-tooling is dun.",
+          "Migreren van prototype naar een echte codebase is handwerk.",
+          "Geen beveiligingstools in dezelfde workspace.",
+          "Geen marktonderzoekssuite om te valideren voor je bouwt."
+        ],
+        "whyKalit": [
+          "Buildteam van 21 agents expliciet gemaakt om te leveren, niet alleen te prototypen.",
+          "Gratis Search-suite om te valideren voor je bouwt.",
+          "Pentest-scan inbegrepen in dezelfde workspace.",
+          "Deploy naar productie vanaf dezelfde prompt."
+        ]
+      }
+    }
+  },
+  "pentestExtras": {
+    "agentsEyebrow": "12 specialistagenten · 11 kwetsbaarheidsklassen",
+    "agentsTitleA": "Eén scan, twaalf specialisten.",
+    "agentsTitleB": "Geen gedeelde context gaat tussen hen verloren.",
+    "agentsLede": "Kalit Pentest start één gespecialiseerde agent per kwetsbaarheidsklasse, parallel. Elke agent levert zijn eigen payload-bibliotheek, mutatie-engine en WAF-bypass-strategie — en deelt findings live met de anderen tijdens de scan.",
+    "standardsEyebrow": "Standaarden · Compliance · Exports",
+    "standardsTitleA": "Mapping naar de frameworks",
+    "standardsTitleB": "waar je auditor echt naar vraagt.",
+    "standardsLede": "Elk finding krijgt een CVSS 3.1-score en is gemapt op de standaarden die beveiligingsteams en auditors verwachten. Exporteer SARIF rechtstreeks naar GitHub Advanced Security of je CI-pipeline.",
+    "reportTitle": "Wat staat er in het rapport",
+    "reportLede": "Elke scan produceert een gededupliceerd, gevalideerd rapport — klaar voor engineering, security review of een auditor.",
+    "reportFields": [
+      "Executive summary",
+      "Findings gesorteerd op CVSS",
+      "Proof-of-concept-bewijs",
+      "Remediatierichtlijnen",
+      "Fase-voor-fase log",
+      "Compliance-mappings",
+      "Attack-chain-verhaal",
+      "Retest-checklist"
+    ],
+    "authTitle": "Alleen geautoriseerde doelen.",
+    "authText": "Kalit Pentest voert actieve beveiligingstests uit. Start een scan alleen tegen een systeem dat je bezit of waarvoor je expliciete schriftelijke toestemming hebt om te testen.",
+    "authCta": "Lees de regels",
+    "severityCritical": "KRIT",
+    "severityHigh": "HOOG",
+    "severityMedium": "GEM",
+    "severityLow": "LAAG",
+    "agents": [
+      { "name": "SQL Injection Hunter", "targets": "Error-based, UNION, blind (time / boolean), out-of-band." },
+      { "name": "XSS Specialist", "targets": "Reflected, stored, DOM-based met contextbewuste payload-mutatie." },
+      { "name": "SSRF Specialist", "targets": "Cloud-metadata (AWS / GCP / Azure), DNS rebinding, IP-encoding-bypasses." },
+      { "name": "Command Injection", "targets": "Direct en blind (DNS, time, HTTP-callback)." },
+      { "name": "Deserialization", "targets": "Java-, PHP-, Python-, .NET-, Ruby-gadget chains." },
+      { "name": "Auth Bypass", "targets": "Sessiefixatie, JWT-zwaktes, privilege escalation." },
+      { "name": "IDOR Tester", "targets": "Manipulatie van objectreferenties over endpoints." },
+      { "name": "Credential Spray", "targets": "Hergebruikstests tegen ontdekte oppervlakken." },
+      { "name": "Subdomain Takeover", "targets": "CNAME-fingerprinting tegen 15+ clouddiensten." },
+      { "name": "Cloud Auditor", "targets": "Open buckets (S3 / GCS / Blob), blootgestelde serverless endpoints." },
+      { "name": "WebSocket Security", "targets": "CSWSH, auth bypass, message tampering." },
+      { "name": "GraphQL Security", "targets": "Introspection, diepte- en complexiteitsaanvallen, field auth." }
+    ],
+    "sampleFindings": [
+      { "title": "SQLi — /api/auth/login" },
+      { "title": "SSRF — /api/avatar?url=…" },
+      { "title": "Stored XSS — /comments" },
+      { "title": "IDOR — /api/orders/:id" },
+      { "title": "Open S3-bucket — assets-prod" },
+      { "title": "Ontbrekende security headers" }
+    ]
+  },
+  "blog": {
+    "metaTitle": "Blog - Kalit AI",
+    "metaDescription": "Notities van het team achter Kalit AI — waarom we een AI-softwarefabriek bouwen, hoe Taskforce en Pentest echt werken, en wat we hierna uitbrengen.",
+    "title": "Kalit Blog",
+    "description": "Buildnotities, technische deep-dives en productdenken van het Kalit-team.",
+    "featured": "Uitgelicht",
+    "minRead": "min leestijd",
+    "allPosts": "← Alle posts",
+    "keepReading": "Lees verder",
+    "onThisPage": "Op deze pagina",
+    "shareX": "Deel op X",
+    "shareLinkedIn": "Deel op LinkedIn",
+    "shareHN": "Deel op Hacker News",
+    "empty": "Nog geen posts. Kom snel terug."
+  }
+}

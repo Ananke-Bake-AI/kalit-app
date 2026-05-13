@@ -1,1 +1,399 @@
-{}
+{
+  "pricing": {
+    "metaTitle": "Fiyatlar - Kalit AI",
+    "metaDescription": "Kalit AI yazılım fabrikası için basit, şeffaf fiyatlandırma. Ücretsiz plan, solo geliştiriciler, ajanslar ve ekipler için ücretli katmanlar. Pentest ve Search, Enterprise planına dahildir.",
+    "title": "Basit fiyatlandırma. Tek bir AI yazılım fabrikası.",
+    "description": "Ücretsiz dene. Ücretli planlar kredi ve koltuk ile ölçeklenir. Pentest ve Search Enterprise'a dahil.",
+    "intervalMonth": "/ ay",
+    "creditsLabel": "kredi",
+    "monthLabel": "ay",
+    "popularBadge": "En çok tercih edilen",
+    "packsTitle": "Kredi paketleriyle yükle",
+    "packsNote": "Tek seferlik paketler aboneliğinin üzerine eklenir. Yoğun bir lansman haftası veya tek bir Pentest taraması için kullanışlıdır.",
+    "oneTimeLabel": "tek seferlik",
+    "faqTitle": "Fiyat SSS",
+    "planOutcomes": {
+      "free": "Kalit Flow'u 3 üretimle dene. Kart gerekmez.",
+      "starter": "Ayda bir cilalı landing veya küçük bir MVP yayınla.",
+      "pro": "Tam bir ürün inşa et ve iyileştir, veya ajans müşteri işlerini yürüt.",
+      "enterprise": "Flow + Pentest + Search'ü sınırsız koltukla kullan.",
+      "custom": "Özel koltuk sayıları, ajans araçları, hacim fiyatlandırması — ekibine göre uyarlanmış."
+    },
+    "planCtas": {
+      "free": "Ücretsiz başla",
+      "starter": "Starter'ı başlat",
+      "pro": "Pro'yu başlat",
+      "enterprise": "Enterprise'ı başlat",
+      "custom": "Bizimle konuş"
+    },
+    "customPlanName": "Custom",
+    "customPriceLabel": "Custom",
+    "customFeatures": [
+      "Özel koltuk sayıları",
+      "Ajans / bayi programı",
+      "Hacim kredi fiyatlandırması",
+      "Özel Success Engineer",
+      "Özel onboarding & eğitim",
+      "SLA & öncelikli destek"
+    ],
+    "faqs": [
+      { "q": "Bir kredi nedir?", "a": "Krediler temel kullanım birimidir. Kabaca: Flow'da sayfa üretimi başına ~1 kredi, MVP build çalıştırması için ~10–15 kredi, Pentest taraması başına ~5 kredi. Tam maliyetler proje boyutuna ve dahil olan uzman ajanlara bağlıdır. Bir çalıştırma başlamadan önce kredi maliyetini her zaman görürsün." },
+      { "q": "İstediğim zaman iptal edebilir miyim?", "a": "Evet. Panelden iptal et, soru sormadan. Planın mevcut faturalandırma dönemi sonuna kadar aktif kalır, sonra Free'ye düşer." },
+      { "q": "Kullanılmayan krediler devrediyor mu?", "a": "Aylık abonelik kredileri devretmez — her yenilemede sıfırlanır. Aboneliğin üzerine satın aldığın tek seferlik kredi paketleri kullanılana kadar hesabında kalır." },
+      { "q": "Pentest Pro'da mevcut mu?", "a": "Pentest Enterprise'a dahildir. Pro'ya beta olarak açıyoruz — panelden Pentest bekleme listesine katıl veya erken erişim için bize ulaş." },
+      { "q": "Ajans veya hacim fiyatlandırması var mı?", "a": "Evet. Müşteri işi teslim ediyorsan, 10'dan fazla koltuğa ihtiyacın varsa veya özel kredi tahsisi gerekiyorsa bize ulaş — bir ajans ortak planımız var." },
+      { "q": "Eğitim veya kar amacı gütmeyen indirimler?", "a": "Öğrenciler, eğitmenler ve kayıtlı kar amacı gütmeyen kuruluşlar için indirimli Pro planları sunuyoruz. Kurumsal adresinden contact@kalit.ai'ye e-posta gönder." },
+      { "q": "Verim nerede saklanıyor?", "a": "Kalit AI, Merkle Tech Labs LTD. (Malta) tarafından işletilir. Veriler AB bölgelerinde işlenir. Alt işleyiciler ve şifreleme dahil tüm detaylar için Gizlilik ve Güvenlik sayfalarımıza bak." },
+      { "q": "Herhangi bir sitede Pentest çalıştırabilir miyim?", "a": "Hayır. Pentest yalnızca sahip olduğun veya açıkça test etmeye yetkili olduğun hedefler içindir. Bir tarama çalıştırmadan önce Sorumlu Kullanım sayfamızı oku." }
+    ]
+  },
+  "security": {
+    "metaTitle": "Güvenlik - Kalit AI",
+    "metaDescription": "Kalit AI verilerini nasıl koruyor: aktarımda ve durağan halde şifreleme, AB bölgelerinde işleme, OAuth sağlayıcıları, alt işleyici listesi, güvenlik açığı bildirimi ve olay müdahalesi.",
+    "title": "Kalit AI'da güvenlik",
+    "subtitle": "Güvenlik tutumumuz, sade bir dille. Son güncelleme: 13 Mayıs 2026.",
+    "intro": "Kalit AI, Merkle Tech Labs LTD. (Malta, sicil C 107851) tarafından işletilir. Bu sayfa müşteri verisini nasıl koruduğumuzu, kiminle paylaştığımızı ve bir güvenlik açığını nasıl bildireceğini açıklar. Tedarik için imzalı bir kopyaya ihtiyacın varsa security@kalit.ai'ye yaz.",
+    "encryptionTitle": "Veri şifreleme",
+    "encryptionInTransit": "Aktarımda: tüm müşteri trafiği TLS 1.2+ (HTTPS/WSS) üzerinden şifrelenir. Broker, taskforce ve Pentest motorları arasındaki dahili servis-to-servis trafiği kısa ömürlü JWT'lerle kimlik doğrulamasından geçer.",
+    "encryptionAtRest": "Durağan: birincil PostgreSQL veritabanı bulut sağlayıcımız (Neon, AB bölgesi) tarafından durağan halde şifrelenir. Nesne depolama (proje ürünleri, üretilen varlıklar) sağlayıcı tarafından yönetilen anahtarlarla sunucu tarafında şifrelenir.",
+    "encryptionSecrets": "Sırlar: sağladığın API anahtarları (Stripe, özel LLM anahtarları, deploy kimlik bilgileri) veritabanına yazılmadan önce envelope encryption ile şifrelenir. Düz metin yalnızca iş çalıştırması sırasında bellekte bulunur.",
+    "authTitle": "Kimlik doğrulama",
+    "authText": "E-posta + şifre (Argon2id hashleri) veya Google, GitHub, Discord, LinkedIn veya Facebook OAuth ile giriş yap. Oturumlar dönen refresh token'larıyla imzalı JWT'ler kullanır. Hesap kurtarma e-posta bağlantı doğrulaması gerektirir.",
+    "residencyTitle": "Veri ikametgahı ve işleme",
+    "residencyText": "Müşteri verisi Avrupa Birliği'nde işlenir ve saklanır. Şu anda birincil veri setlerini AB dışına replike etmiyoruz. Sizin adınıza yapılan LLM çağrıları ABD merkezli sağlayıcılardan geçebilir (bkz. alt işleyiciler). Bir anlaşma için yalnızca AB LLM yönlendirmesine ihtiyacın varsa bize ulaş.",
+    "subprocessorsTitle": "Alt işleyiciler",
+    "subprocessorsIntro": "Kalit AI platformu sunmak için aşağıdaki üçüncü taraf hizmetlerini kullanır:",
+    "subprocessorsList": [
+      "Anthropic — kod üretimi, Pentest ajanları ve orkestrasyon için birincil LLM (Claude).",
+      "OpenAI — belirli görevler için yedek LLM (Codex).",
+      "Neon — yönetilen PostgreSQL (AB bölgesi).",
+      "MongoDB Atlas — Pentest tarama verisi ve bulgular depolama (AB bölgesi).",
+      "Stripe — ödeme işleme ve abonelik faturalandırması.",
+      "Resend — işlemsel e-posta (doğrulama, şifre sıfırlama, bildirimler).",
+      "Vercel — landing site + panel hostingi; üretilen uygulamalar için birden çok deploy hedefinden biri.",
+      "Cloudflare — kalit.ai ve özel alan adları için DNS ve CDN.",
+      "Porkbun — alan adı kaydı (Flow üzerinden bir alan adı aldığında).",
+      "Google Analytics 4 — pazarlama sayfalarında anonim trafik analizi."
+    ],
+    "subprocessorsNote": "İmzalı bir alt işleyici listesi ve DPA ödeme yapan müşteriler için istek üzerine sunulur.",
+    "accessTitle": "Erişim kontrolü",
+    "accessList": [
+      "Üretim sistemlerine en az ayrıcalık erişimi. Tüm admin erişimi loglanır.",
+      "Üretim deploy'ları imzalı pipeline'lardan ve incelenen pull request'lerden geçer.",
+      "Çalışan dizüstü bilgisayarları tam disk şifreleme ve yönetilen yapılandırma kullanır.",
+      "Hiçbir müşteri verisi kişisel makinelere kopyalanmaz."
+    ],
+    "pentestTitle": "Pentest paketi",
+    "pentestText": "Kalit Pentest aktif güvenlik testleri (SQL injection, XSS, SSRF, kimlik doğrulama bypass'i ve daha fazlası) yapabilir. Yalnızca sahip olduğun veya açıkça test etmeye yetkili olduğun hedeflere karşı kullanılmalıdır. Kötüye kullanım yasal sorumluluğa ve hesabın derhal sonlandırılmasına yol açabilir. Tarama başlatmadan önce Sorumlu Kullanım Politikamızı oku.",
+    "pentestEgress": "Pentest taramaları özel egress IP'lerinden çalışır. Talep üzerine kaynak IP aralığını sağlarız, böylece ekibin tarama penceresinde izleme ve WAF kurallarını kapsayabilir.",
+    "disclosureTitle": "Güvenlik açığı bildirimi",
+    "disclosureText": "Kalit AI'da bir güvenlik açığı bulduğuna inanıyorsan, security@kalit.ai'ye bir açıklama, proof of concept ve önerdiğin önem derecesiyle yaz. Şuna söz veriyoruz:",
+    "disclosureCommitments": [
+      "Raporunu 3 iş günü içinde onaylamak.",
+      "10 iş günü içinde bir triyaj kararı sunmak.",
+      "Düzeltme gönderildiğinde kamuya açıklamayı koordine etmek.",
+      "İstersen seni changelog'da kredilendirmek."
+    ],
+    "disclosureBounty": "Şu anda ücretli bir bug bounty programımız yok. Ciddi, kapsam içi raporları kredilerle, swag ile ve kamuya açık teşekkürle ödüllendiriyoruz.",
+    "incidentTitle": "Olay müdahalesi",
+    "incidentText": "Tespit, kapsama alma, müşteri bildirimi ve post-mortem'i kapsayan bir olay müdahale runbook'u tutuyoruz. Bir güvenlik olayı verilerini önemli ölçüde etkilerse, etkilenen müşterileri 72 saat içinde e-posta ile bilgilendirir ve status.kalit.ai'de bir durum güncellemesi yayınlarız.",
+    "complianceTitle": "Uyum yol haritası",
+    "complianceText": "Kalit AI henüz SOC 2 veya ISO 27001 sertifikalı değil. Bu standartlarla uyumlu kontrolleri takip ediyoruz ve 2026'da resmi sertifikasyona ulaşmayı amaçlıyoruz. Bugün mevcut uyum ürünleri: alt işleyici listesi, DPA, güvenlik anketi (istek üzerine).",
+    "contactTitle": "İletişim",
+    "contactText": "Güvenlik soruları, güvenlik açığı raporları veya tedarik için güvenlik incelemeleri için:",
+    "contactAddress": "Merkle Tech Labs LTD., Northlink Business Centre, Level 2, Triq Burmarrad, Naxxar, NXR 6345, Malta"
+  },
+  "responsibleUse": {
+    "metaTitle": "Sorumlu Kullanım Politikası - Kalit AI",
+    "metaDescription": "Kalit AI'nın kabul edilebilir kullanımı, Pentest paketi için yetkili hedeflere odaklı bir bölümle. Aktif bir güvenlik taraması çalıştırmadan önce oku.",
+    "title": "Sorumlu Kullanım Politikası",
+    "subtitle": "Kalit AI ile neyi yapıp yapamayacağın — Pentest için özel kurallarla. Son güncelleme: 13 Mayıs 2026.",
+    "intro": "Bu Sorumlu Kullanım Politikası, Hizmet Şartlarımızı tamamlar. Her Kalit AI hesabına ve her pakete (Flow, Pentest, Search, Marketing) uygulanır. Pentest kuralları daha sıkıdır çünkü paket gerçek sistemlere karşı aktif güvenlik testleri yapar. Bir Pentest taraması çalıştırmadan önce bu sayfayı oku.",
+    "authTitle": "1. Yalnızca yetkili kullanım — Pentest",
+    "authIntro": "Kalit Pentest'i yalnızca aktif güvenlik testleri yapmak için açık, yazılı izne sahip olduğun hedeflere karşı kullanabilirsin. Kabul edilebilir yetkilendirmeler:",
+    "authBullets": [
+      "Şahsen sahip olduğun ve işlettiğin bir sistem.",
+      "Seni tutmuş bir şirketin sistemi, imzalı engagement letter veya pentest sözleşmesi dosyada.",
+      "Kayıtlı katılımcı olduğun kamuya açık bir bug bounty programının açık kapsamında listelenen bir hedef.",
+      "İşverenin sahip olduğu bir staging veya test ortamı, işveren yetki verdiği sürece."
+    ],
+    "authConfirm": "İlk Pentest taramandan önce yetkilendirmeyi onaylamanı isteriz. Yanlış beyanlar Şartlarımızın önemli bir ihlalidir ve kolluk kuvvetlerine bildirilebilir.",
+    "prohibitedTitle": "2. Yasak hedefler — Pentest",
+    "prohibitedIntro": "Kalit Pentest'i aşağıdakilerin hiçbirine karşı çalıştıramazsın:",
+    "prohibitedBullets": [
+      "Sahip olmadığın veya test sözleşmen olmayan sistemler.",
+      "Resmi bir engagement kapsamında olmadıkça devlet, askeri, kritik altyapı, sağlık veya finansal sistemler.",
+      "Resmi bir engagement altında olmadıkça okullara, hayır kurumlarına veya küçüklere ait site ve hizmetler.",
+      "Kayıtlı olduğun bir programın yayımlanmış kapsamı dışındaki bug bounty hedefleri.",
+      "Etkinliğinin diğer tenant'ları etkileyebileceği üçüncü taraf barındırılan hizmetler (örn. paylaşılan SaaS). Taramalar kontrol ettiğin örnekler veya ortamlarla sınırlı olmalıdır.",
+      "Aktif yaptırımlara veya ihracat kontrollerine tabi olduğun bir ülkedeki herhangi bir sistem."
+    ],
+    "prohibitedNote": "Tarama hedeflerini tekrarlayan kötüye kullanım sinyalleri (örn. yüksek profilli alan adlarına karşı sıçramalar, ilgisiz hedeflere karşı sözlük saldırıları) açısından izleriz. Şüpheli kötüye kullanım, inceleme bekleyene kadar derhal askıya alınmayı tetikler.",
+    "evidenceTitle": "3. Kanıt yönetimi",
+    "evidenceIntro": "Pentest bulguları sıklıkla hassas materyal içerir — yanlış yapılandırılmış dosyalarda keşfedilen kimlik bilgileri, dahili URL'ler, IDOR yoluyla açığa çıkmış müşteri verisi vb. Şunları kabul edersin:",
+    "evidenceBullets": [
+      "Bulguları hedef sahibine karşı gizli olarak ele almak.",
+      "Bir güvenlik açığını göstermek için gerekenden fazla veri sızdırmamak.",
+      "İyileştirme sonrası hassas kanıtları silmek veya sterilize etmek.",
+      "Pentest raporlarını yalnızca hedef sahibi tarafından alma yetkisi verilen kişilerle paylaşmak."
+    ],
+    "generalTitle": "4. Genel kabul edilebilir kullanım — tüm paketler",
+    "generalIntro": "Kalit AI'yı şunlar için kullanmamayı kabul edersin:",
+    "generalBullets": [
+      "Yasadışı içerik üretmek veya dağıtmak, CSAM, şiddete teşvik eden içerik veya telif hakkı ya da marka haklarını ihlal eden içerik dahil.",
+      "Kullanıcıları aldatmak, zarar vermek veya tehlikeye atmak üzere tasarlanmış phishing sayfaları, kötü amaçlı yazılım, casus yazılım, fidye yazılımı veya başka yazılımlar oluşturmak.",
+      "Kalit AI çıktıları üzerinde rakip AI sistemlerini toplu olarak inşa etmek, eğitmek veya ince ayar yapmak.",
+      "Kalit AI'nın kendisini scrape etmek, harvest etmek veya tersine mühendisliğe tabi tutmak.",
+      "Marketing veya Flow ile oluşturulan hesaplardan istenmeyen toplu iletişim (spam) göndermek.",
+      "Kalit AI veya çalışanları dahil herhangi bir kişi veya kuruluşun kimliğine bürünmek.",
+      "Hız limitlerini, kullanım kotalarını veya paywall'ları atlatmak."
+    ],
+    "outputTitle": "5. AI çıktısı — senin sorumluluğun",
+    "outputIntro": "Kalit AI dil modelleri kullanarak kod, içerik ve güvenlik bulguları üretir. Çıktılar yanlış, önyargılı veya güvensiz olabilir. Çıktıyı şu eylemlerden önce gözden geçirmekten sen sorumlusun:",
+    "outputBullets": [
+      "Üretilmiş kodu üretime deploy etmek.",
+      "Marka altında pazarlama içeriği yayımlamak.",
+      "Bir Pentest bulgusu üzerinde harekete geçmek (örn. üçüncü tarafa bildirmek)."
+    ],
+    "outputNote": "Ajan doğruluğunu sürekli iyileştirmek için çalışıyoruz, ama döngüdeki insan sensin.",
+    "enforcementTitle": "6. Uygulama",
+    "enforcementIntro": "Bu politikanın ihlalleri şunlarla sonuçlanabilir:",
+    "enforcementBullets": [
+      "Tarama veya üretim etkinliğinde uyarı ve zorunlu cooldown.",
+      "Hesabının iadesiz askıya alınması veya sonlandırılması.",
+      "Kredi ve hesap bakiyesinin kaybı.",
+      "İlgili kolluk kuvvetlerine, barındırma sağlayıcılarına veya etkilenen üçüncü taraflara bildirim."
+    ],
+    "enforcementNote": "Bireyleri isimlendirmeden ciddi bir uygulama eylemi hakkında bir şeffaflık notu yayınlayabiliriz.",
+    "reportTitle": "7. Kötüye kullanımı bildir",
+    "reportText": "Bir Kalit AI kullanıcısının sistemlerini izinsiz hedef aldığını veya başka şekilde bu politikayı ihlal ettiğini düşünüyorsan, zaman damgaları, kaynak IP'ler ve paylaşabileceğin loglarla abuse@kalit.ai'ye yaz. Kötüye kullanım raporlarını 1 iş günü içinde onaylamayı ve doğrulanan raporlar üzerinde derhal hareket etmeyi hedefliyoruz.",
+    "updatesTitle": "8. Güncellemeler",
+    "updatesText": "Bu politikayı güncelleyebiliriz. Önemli değişiklikler changelog'da ve yürürlüğe girmeden en az 14 gün önce aktif müşterilere e-posta ile duyurulacaktır.",
+    "contactTitle": "İletişim"
+  },
+  "changelog": {
+    "metaTitle": "Changelog - Kalit AI",
+    "metaDescription": "Kalit AI'da neler yeni. Flow, Pentest, Search ve panel üzerinde haftaya göre gruplandırılmış sürümler.",
+    "title": "Changelog",
+    "subtitle": "Ne çıkardığımız, ne zaman çıkardığımız. En yeni ilk.",
+    "tagFeature": "feature",
+    "tagFix": "fix",
+    "tagChore": "chore"
+  },
+  "compare": {
+    "metaTitleIndex": "Kalit AI'yı diğer AI app builder'larla karşılaştır",
+    "metaDescriptionIndex": "Kalit AI'nın Lovable, Base44, Emergent ve Bolt ile yan yana karşılaştırmaları — yetenek matrisleri, hangisini ne zaman seçmeli ve lansman için önemli farklar.",
+    "indexTitle": "Kalit AI'yı karşılaştır",
+    "indexDescription": "Muhtemelen değerlendirdiğin AI app builder'larla dürüst yan yana karşılaştırmalar.",
+    "pickCompetitorTitle": "{name}'i şu zaman seç",
+    "pickKalitTitle": "Kalit AI'yı şu zaman seç",
+    "cta": "Kalit AI ile başla — ücretsiz",
+    "cellYes": "Evet",
+    "cellPartial": "Kısmen",
+    "cellNo": "Hayır",
+    "capabilityHeader": "Yetenek",
+    "kalitColumn": "Kalit AI",
+    "competitors": {
+      "lovable": {
+        "oneLiner": "Lovable, bir prompt'tan çalışan bir web uygulaması elde etmek için en güçlü AI app builder'lardan biridir. Kalit aynı başlangıç noktasını alır ve Pentest, Search ve 21 ajanlı bir build ekibi ekler.",
+        "competitorOneLiner": "Lovable — \"AI fullstack engineer\". Büyük bir topluluğa sahip güçlü prompt-to-app.",
+        "intro": "Yalnızca uygulamanın kendisini inşa etmen gerekiyorsa Lovable harika bir seçimdir. Kalit AI, ürünü inşa etmek, güvende tutmak ve fırlatmak isteyen founder'lar için yapılmıştır — yalnızca kod üretmek değil.",
+        "whenToPick": [
+          "En yerleşik prompt-to-app topluluğunu istiyorsun.",
+          "Yalnızca kod üretimine ihtiyacın var, güvenlik veya araştırmaya değil.",
+          "Hosting ve growth stack'ini zaten seçtin."
+        ],
+        "whenToPickKalit": [
+          "Her lansmanda bir güvenlik raporu istiyorsun.",
+          "Fikirden canlıya giden, yanında araştırma ve pazarlama bulunan bir workspace istiyorsun.",
+          "Multi-agent bir build ekibi ve açık bir görev planı istiyorsun, tek atışlık bir üretici değil.",
+          "Birden çok dilde gönderiyorsun — Kalit 16 dilde yerelleştirilmiştir."
+        ]
+      },
+      "base44": {
+        "oneLiner": "Base44, kod yazmayanlar için \"vibe coding\"e yöneliyor. Kalit farklı bir tutum alır: çıktı, koordineli bir ajan ekibi tarafından gerçek bir framework'te inşa edilen gerçek, taşınabilir koddur.",
+        "competitorOneLiner": "Base44 — teknik olmayan yapımcılar için vibe-coded web uygulamaları.",
+        "intro": "Base44, stack'i düşünmeden çalışan bir uygulama isteyen kod yazmayanlar için optimize edilmiştir. Kalit AI aynı hızı sunar ama yanında götürebileceğin gerçek bir codebase, ayrıca güvenlik ve growth araçlarıyla birlikte.",
+        "whenToPick": [
+          "Hiç kod görmek istemiyorsun.",
+          "Stack'i tamamen gizleyen tek bir araç istiyorsun.",
+          "İhtiyaçların çoğunlukla iç, düşük riskli uygulamalar."
+        ],
+        "whenToPickKalit": [
+          "Dışa aktarabileceğin, versiyonlayabileceğin ve sahip olabileceğin kod istiyorsun.",
+          "Lansmandan önce bir pentest raporu istiyorsun.",
+          "Aracı değiştirmeden no-code hissinden gerçek bir mühendislik akışına geçmek istiyorsun.",
+          "AB merkezli altyapı ve net bir DPA yolu istiyorsun."
+        ]
+      },
+      "emergent": {
+        "oneLiner": "Emergent, konuşmadan üretime hazır uygulamalar etrafında konumlanır. Kalit aynı hırsı paylaşır ve bir güvenlik paketi, multi-agent build ekibi ve ücretsiz bir araştırma ön kapısı ekler.",
+        "competitorOneLiner": "Emergent — doğal konuşma yoluyla üretime hazır uygulamalar.",
+        "intro": "Emergent, tek kanallı prompt-to-product akışı için güçlü bir seçimdir. Kalit AI aynı fikri dört paketli bir yazılım fabrikasına genişletir, otonom pentest birinci sınıf vatandaş olarak.",
+        "whenToPick": [
+          "Tek kanallı prompt-to-app deneyimi istiyorsun.",
+          "Güvenlik araçlarına ihtiyacın yok.",
+          "Hedef kitlen çoğunlukla ABD merkezli ve İngilizce konuşan."
+        ],
+        "whenToPickKalit": [
+          "Yerleşik otonom pentest istiyorsun.",
+          "Birinci günden 16 dilde yerelleştirme istiyorsun.",
+          "Tek workspace altında build ve growth paketleri istiyorsun.",
+          "SARIF dışa aktarımıyla CVSS puanlı bulgular istiyorsun."
+        ]
+      },
+      "bolt": {
+        "oneLiner": "Bolt, prototipler için hızlı bir tarayıcı içi builder'dır. Kalit bir sonraki adım için yapılmıştır — bir prototipi fırlatılabilir, taranmış, growth'a hazır bir ürüne taşımak.",
+        "competitorOneLiner": "Bolt — tarayıcı içi AI prototipleme, hızlı ve görsel.",
+        "intro": "Bolt parlak bir prototipleme ortamıdır. Kalit AI onu tamamlar: prototip aşamasını geçtiğinde ve gerçek bir deploy, güvenlik taraması ve lansman planına ihtiyacın olduğunda Kalit'e geçersin.",
+        "whenToPick": [
+          "Mümkün olan en hızlı görsel prototipi istiyorsun.",
+          "Henüz lansman veya güvenliği düşünmüyorsun.",
+          "Daha sonra göç etmeye hazırsın."
+        ],
+        "whenToPickKalit": [
+          "Sadece prototip değil, fırlatmak istiyorsun.",
+          "Gerçek bir Dockerize edilmiş çıktı ve gerçek bir GitHub deposu istiyorsun.",
+          "Aynı workspace'e yerleşmiş güvenlik ve araştırma istiyorsun."
+        ]
+      }
+    },
+    "capabilities": [
+      "Bir prompt'tan full-stack web uygulamaları üret",
+      "Workspace'den üretime deploy et",
+      "Mevcut GitHub deposunu içe aktar ve iterasyona devam et",
+      "Multi-agent build ekibi (20+ uzman ajan)",
+      "Build ile teslim edilen proje başına Docker konteyneri",
+      "OWASP / SARIF dışa aktarımıyla yerleşik otonom pentest",
+      "Uyum eşlemesi (OWASP, CWE, PCI DSS, NIST, ISO 27001, SOC 2)",
+      "Ücretsiz pazar araştırması paketi (Search)",
+      "16 dilde yerelleştirilmiş arayüz",
+      "Gerçek projelerin kamuya açık portföyü (/discover)",
+      "{name}'in ekibi tarafından yalnızca {name} için yapıldı",
+      "Founder-led, AB merkezli, şeffaf build-in-public"
+    ]
+  },
+  "alternatives": {
+    "metaTitleIndex": "Kalit AI alternatifleri — AI yazılım fabrikası",
+    "metaDescriptionIndex": "Lovable, Base44 veya Bolt alternatifi mi düşünüyorsun? Kalit AI, yalnızca üretmek için değil göndermek için yapılmış multi-suite yazılım fabrikasıdır.",
+    "indexTitle": "AI app builder'lara alternatifler",
+    "indexDescription": "Başka bir aracı değerlendiriyorsan, Kalit AI'nın yeri burası.",
+    "whyLeaveTitle": "İnsanlar {name}'i neden bırakır",
+    "whyKalitTitle": "Kalit AI ne ekler",
+    "cta": "Kalit AI'yı dene — ücretsiz",
+    "pageTitle": "En iyi {name} alternatifi",
+    "competitors": {
+      "lovable": {
+        "searchHook": "Lovable alternatifi mi arıyorsun? Kalit AI, Lovable'ın bittiği yerden başlar: 21 ajanlı bir build ekibi, otonom bir Pentest paketi ve fikirden lansmana giden bir workspace.",
+        "whyLeave": [
+          "Üretilen uygulamalar herhangi bir güvenlik incelemesi olmadan çıkar.",
+          "Prompt-to-app heyecanı geçince iterasyona devam etmek zor.",
+          "Kendi GitHub akışını korumak için sınırlı destek.",
+          "Uluslararası izleyiciler için yalnızca İngilizce deneyim."
+        ],
+        "whyKalit": [
+          "Yerleşik Pentest, CVSS puanlı, SARIF dışa aktarılabilir bir rapor üretir.",
+          "21 ajanlı bir Taskforce inşa eder, test eder, gönderir ve belgeler — yalnızca üretmez.",
+          "Herhangi bir GitHub deposunu getir veya götür. Çıktı gerçek bir Dockerfile.",
+          "Birinci günden 16 dilde arayüz — yeniden inşa etmeden küresel izleyicilere sat."
+        ]
+      },
+      "base44": {
+        "searchHook": "Base44 alternatifi mi arıyorsun? Kalit AI aynı \"prompt and ship\" hızını sunar, ama gerçek kod, gerçek Docker çıktısı ve ekli bir güvenlik raporu ile.",
+        "whyLeave": [
+          "Vibe-coded uygulamalar, platformu aşınca yanında götürmek zordur.",
+          "Göndermeden önce güvenlik taraması yok.",
+          "Ajanslar ve ürün ekipleri için sınırlı ekip akışı.",
+          "Stack gizlidir — ölçekte hata ayıklama zorlaşır."
+        ],
+        "whyKalit": [
+          "Gerçek bir framework'te gerçek kod, GitHub'ına dışa aktarılmış.",
+          "Her proje Dockerize edilmiştir — altyapı ekibin oradan devralabilir.",
+          "Pentest, üçüncü taraf eklenti olarak değil workspace ile gelir.",
+          "AB merkezli, founder-led, şeffaf build-in-public."
+        ]
+      },
+      "bolt": {
+        "searchHook": "Prototipten lansmana geçmen gerektiğinde Bolt alternatifi mi arıyorsun? Kalit AI bir prompt'u deploy edilmiş, taranmış, growth'a hazır bir ürüne taşır.",
+        "whyLeave": [
+          "Bolt prototipleme için harikadır, ama lansman aracı ince.",
+          "Prototipten gerçek bir codebase'e geçmek elle yapılan bir iştir.",
+          "Aynı workspace'te güvenlik araçları yok.",
+          "İnşa etmeden önce doğrulama için pazar araştırması paketi yok."
+        ],
+        "whyKalit": [
+          "Yalnızca prototiplemek için değil göndermek için açıkça yapılmış 21 ajanlı bir build ekibi.",
+          "İnşa etmeden önce doğrulama için ücretsiz Search paketi.",
+          "Aynı workspace'te Pentest taraması dahil.",
+          "Aynı prompt'tan üretime deploy."
+        ]
+      }
+    }
+  },
+  "pentestExtras": {
+    "agentsEyebrow": "12 uzman ajan · 11 güvenlik açığı sınıfı",
+    "agentsTitleA": "Bir tarama, on iki uzman.",
+    "agentsTitleB": "Aralarında paylaşılan bağlam kaybolmaz.",
+    "agentsLede": "Kalit Pentest, güvenlik açığı sınıfı başına bir uzman ajanı paralel olarak başlatır. Her ajan kendi payload kütüphanesini, mutasyon motorunu ve WAF-bypass stratejisini taşır — ve tarama sırasında bulguları diğerleriyle canlı paylaşır.",
+    "standardsEyebrow": "Standartlar · Uyum · Dışa aktarımlar",
+    "standardsTitleA": "Denetçinin gerçekten sorduğu",
+    "standardsTitleB": "framework'lere eşleşir.",
+    "standardsLede": "Her bulgu CVSS 3.1 ile puanlanır ve güvenlik ekiplerinin ve denetçilerin beklediği standartlara eşlenir. SARIF'i doğrudan GitHub Advanced Security'ye veya CI pipeline'ına dışa aktar.",
+    "reportTitle": "Raporda neler var",
+    "reportLede": "Her tarama, deduplike, false-positive doğrulanmış bir rapor üretir — mühendislik, güvenlik incelemesi veya bir denetçi için hazır.",
+    "reportFields": [
+      "Yönetici özeti",
+      "CVSS'ye göre sıralanmış bulgular",
+      "Proof-of-concept kanıtı",
+      "İyileştirme rehberi",
+      "Aşama-aşama log",
+      "Uyum eşlemeleri",
+      "Attack chain anlatısı",
+      "Yeniden test kontrol listesi"
+    ],
+    "authTitle": "Yalnızca yetkili hedefler.",
+    "authText": "Kalit Pentest aktif güvenlik testleri çalıştırır. Yalnızca sahip olduğun veya açıkça yazılı yetkin olan bir sisteme karşı tarama çalıştır.",
+    "authCta": "Kuralları oku",
+    "severityCritical": "KRİT",
+    "severityHigh": "YÜK",
+    "severityMedium": "ORT",
+    "severityLow": "DÜŞ",
+    "agents": [
+      { "name": "SQL Injection Hunter", "targets": "Error-based, UNION, blind (time / boolean), out-of-band." },
+      { "name": "XSS Specialist", "targets": "Reflected, stored, DOM-based, bağlama duyarlı payload mutasyonu ile." },
+      { "name": "SSRF Specialist", "targets": "Bulut metadata (AWS / GCP / Azure), DNS rebinding, IP encoding bypass'ları." },
+      { "name": "Command Injection", "targets": "Doğrudan ve blind (DNS, time, HTTP callback)." },
+      { "name": "Deserialization", "targets": "Java, PHP, Python, .NET, Ruby gadget zincirleri." },
+      { "name": "Auth Bypass", "targets": "Oturum fiksasyonu, JWT zaafları, ayrıcalık yükseltme." },
+      { "name": "IDOR Tester", "targets": "Endpoint'ler arası nesne referans manipülasyonu." },
+      { "name": "Credential Spray", "targets": "Keşfedilen yüzeylere karşı yeniden kullanım testleri." },
+      { "name": "Subdomain Takeover", "targets": "15+ bulut hizmetine karşı CNAME fingerprinting." },
+      { "name": "Cloud Auditor", "targets": "Açık bucket'lar (S3 / GCS / Blob), açığa çıkmış serverless endpoint'ler." },
+      { "name": "WebSocket Security", "targets": "CSWSH, auth bypass, mesaj kurcalama." },
+      { "name": "GraphQL Security", "targets": "Introspection, derinlik ve karmaşıklık saldırıları, field auth." }
+    ],
+    "sampleFindings": [
+      { "title": "SQLi — /api/auth/login" },
+      { "title": "SSRF — /api/avatar?url=…" },
+      { "title": "Stored XSS — /comments" },
+      { "title": "IDOR — /api/orders/:id" },
+      { "title": "Açık S3 bucket — assets-prod" },
+      { "title": "Eksik güvenlik header'ları" }
+    ]
+  },
+  "blog": {
+    "metaTitle": "Blog - Kalit AI",
+    "metaDescription": "Kalit AI'nın arkasındaki ekibin notları — neden bir AI yazılım fabrikası inşa ediyoruz, Taskforce ve Pentest aslında nasıl çalışır ve bir sonraki ne göndereceğimiz.",
+    "title": "Kalit Blog",
+    "description": "Kalit ekibinden build notları, teknik deep-dive'lar ve ürün düşüncesi.",
+    "featured": "Öne çıkan",
+    "minRead": "dk okuma",
+    "allPosts": "← Tüm yazılar",
+    "keepReading": "Okumaya devam et",
+    "onThisPage": "Bu sayfada",
+    "shareX": "X'te paylaş",
+    "shareLinkedIn": "LinkedIn'de paylaş",
+    "shareHN": "Hacker News'de paylaş",
+    "empty": "Henüz yazı yok. Yakında tekrar bak."
+  }
+}
