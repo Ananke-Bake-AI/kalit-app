@@ -241,7 +241,8 @@
     "confirm": "확인",
     "search": "검색",
     "noResults": "결과를 찾을 수 없습니다.",
-    "dismiss": "닫기"
+    "dismiss": "닫기",
+    "joinDiscord": "Discord 참여하기"
   },
   "settings": {
     "profileLabel": "프로필",

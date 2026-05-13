@@ -241,7 +241,8 @@
     "confirm": "تأكيد",
     "search": "بحث",
     "noResults": "لم يتم العثور على نتائج.",
-    "dismiss": "إغلاق"
+    "dismiss": "إغلاق",
+    "joinDiscord": "انضم إلى Discord"
   },
   "settings": {
     "profileLabel": "الملف الشخصي",

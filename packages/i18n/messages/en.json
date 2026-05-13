@@ -241,7 +241,8 @@
     "confirm": "Confirm",
     "search": "Search",
     "noResults": "No results found.",
-    "dismiss": "Dismiss"
+    "dismiss": "Dismiss",
+    "joinDiscord": "Join our Discord"
   },
   "settings": {
     "profileLabel": "Profile",

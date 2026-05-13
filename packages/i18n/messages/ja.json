@@ -241,7 +241,8 @@
     "confirm": "確認",
     "search": "検索",
     "noResults": "結果が見つかりません。",
-    "dismiss": "閉じる"
+    "dismiss": "閉じる",
+    "joinDiscord": "Discord に参加"
   },
   "settings": {
     "profileLabel": "プロフィール",

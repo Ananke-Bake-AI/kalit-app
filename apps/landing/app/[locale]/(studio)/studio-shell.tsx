@@ -13,6 +13,7 @@ import { SyncAppPageFromRoute } from "@/components/layout/sync-app-page-from-rou
 import { Toast } from "@/components/layout/toast"
 import { EmailBanner } from "@/components/layout/email-banner"
 import { TrialBanner } from "@/components/layout/trial-banner"
+import { DiscordFAB } from "@/components/layout/discord-fab"
 import type { BillingSummary } from "@/lib/billing-summary"
 import "@/lib/broker-direct"
 import { StudioFocusProvider, useStudioFocus } from "./studio-focus-context"
@@ -57,6 +58,10 @@ function StudioShellInner({ children, session, billingSummary }: { children: Rea
       )}
       <main className={s.main}>{children}</main>
       <Toast />
+      {/* Discord CTA stays mounted even in focus mode — it sits in the
+          bottom-right and respects user-dismiss, so it never crowds the
+          chat surface. */}
+      <DiscordFAB />
       <RealViewport />
       <NextTopLoader height={2} showSpinner={false} zIndex={9999999} />
     </div>

@@ -7,6 +7,7 @@ import { Color4Bg } from "@/components/color4bg"
 import { useReveal } from "@/hooks/useReveal"
 import type { BillingSummary } from "@/lib/billing-summary"
 import NextTopLoader from "nextjs-toploader"
+import { DiscordFAB } from "../discord-fab"
 import { EmailBanner } from "../email-banner"
 import { Footer } from "../footer"
 import { GSAP } from "../gsap"
@@ -47,6 +48,7 @@ export const Wrapper = ({ children, session = null, billingSummary = null, color
       {color4bg ? <Color4Bg style="blur-gradient" className={s.color4bg} /> : null}
       <Footer />
       <Toast />
+      <DiscordFAB />
       <RealViewport />
       <Defs />
       <NextTopLoader height={2} showSpinner={false} zIndex={9999999} />

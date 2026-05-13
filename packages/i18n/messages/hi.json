@@ -241,7 +241,8 @@
     "confirm": "पुष्टि करें",
     "search": "खोजें",
     "noResults": "कोई परिणाम नहीं मिला।",
-    "dismiss": "बंद करें"
+    "dismiss": "बंद करें",
+    "joinDiscord": "हमारे Discord में शामिल हों"
   },
   "settings": {
     "profileLabel": "प्रोफ़ाइल",

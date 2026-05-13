@@ -1,0 +1,88 @@
+@use "@/styles/mixins" as *;
+
+.fab {
+  position: fixed;
+  bottom: 1.4rem;
+  right: 1.4rem;
+  z-index: 850;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.7rem 0.95rem 0.7rem 0.85rem;
+  background: #5865F2;
+  color: #ffffff;
+  border-radius: var(--radius-rounded);
+  text-decoration: none;
+  font-size: 0.86rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  box-shadow:
+    0 10px 30px -10px rgba(88, 101, 242, 0.55),
+    0 2px 8px -2px rgba(0, 0, 0, 0.25);
+  transition: transform 0.18s ease, box-shadow 0.22s ease;
+  animation: fab-slide-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.6s backwards;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 14px 36px -10px rgba(88, 101, 242, 0.7),
+      0 4px 12px -2px rgba(0, 0, 0, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  // On narrow viewports, collapse to icon-only pill — keeps it useful
+  // without crowding small screens.
+  @include max($responsive) {
+    padding: 0.7rem;
+
+    .label {
+      display: none;
+    }
+    .dismiss {
+      margin-left: 0.1rem;
+    }
+  }
+}
+
+@keyframes fab-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  font-size: 1.2rem;
+}
+
+.label {
+  white-space: nowrap;
+}
+
+.dismiss {
+  display: grid;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  margin-left: 0.2rem;
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+  }
+}

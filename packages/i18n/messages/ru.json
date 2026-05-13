@@ -241,7 +241,8 @@
     "confirm": "Подтвердить",
     "search": "Поиск",
     "noResults": "Результатов не найдено.",
-    "dismiss": "Закрыть"
+    "dismiss": "Закрыть",
+    "joinDiscord": "Присоединиться к Discord"
   },
   "settings": {
     "profileLabel": "Профиль",

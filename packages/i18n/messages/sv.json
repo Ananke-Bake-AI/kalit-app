@@ -241,7 +241,8 @@
     "confirm": "Bekräfta",
     "search": "Sök",
     "noResults": "Inga resultat hittades.",
-    "dismiss": "Stäng"
+    "dismiss": "Stäng",
+    "joinDiscord": "Gå med i vår Discord"
   },
   "settings": {
     "profileLabel": "Profil",

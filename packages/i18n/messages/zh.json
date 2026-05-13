@@ -241,7 +241,8 @@
     "confirm": "确认",
     "search": "搜索",
     "noResults": "未找到结果。",
-    "dismiss": "关闭"
+    "dismiss": "关闭",
+    "joinDiscord": "加入我们的 Discord"
   },
   "settings": {
     "profileLabel": "个人资料",

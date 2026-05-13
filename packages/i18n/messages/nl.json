@@ -241,7 +241,8 @@
     "confirm": "Bevestigen",
     "search": "Zoeken",
     "noResults": "Geen resultaten gevonden.",
-    "dismiss": "Sluiten"
+    "dismiss": "Sluiten",
+    "joinDiscord": "Word lid van onze Discord"
   },
   "settings": {
     "profileLabel": "Profiel",

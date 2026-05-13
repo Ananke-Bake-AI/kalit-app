@@ -1,13 +1,13 @@
 export const socials = [
   {
+    name: "Discord",
+    icon: "hugeicons:discord",
+    url: "https://discord.gg/FssPgq5hQK"
+  },
+  {
     name: "X",
     icon: "hugeicons:new-twitter",
     url: "https://x.com/kalit_ai"
-  },
-  {
-    name: "Instagram",
-    icon: "hugeicons:instagram",
-    url: "https://discord.gg/b3cvdcQBAs"
   },
   {
     name: "Linkedin",
@@ -18,10 +18,5 @@ export const socials = [
     name: "Telegram",
     icon: "hugeicons:telegram",
     url: "https://t.me/kalit_ai"
-  },
-  {
-    name: "Discord",
-    icon: "hugeicons:discord",
-    url: "https://discord.gg/b3cvdcQBAs"
   }
 ]
