@@ -477,6 +477,94 @@ export const EN_PAGE_STRINGS = {
     ]
   },
 
+  // ─── Suite landing plan cards (Flow + Pentest) ───────────
+  // Hero text and feature cards on the suite pages already pull from the
+  // existing `messages/{locale}.json` via t(). The plan card data lived in
+  // landing-data.ts as hardcoded English; lifting it here so it translates
+  // through the same page-strings deep-merge resolver.
+  suitePlans: {
+    // Shared labels
+    perMonth: "per month",
+    toStart: "to start",
+    launchPick: "Launch pick",
+    flow: {
+      starter: {
+        name: "Starter",
+        tagline: "For testing Flow and shipping a first page.",
+        features: [
+          "Kalit Flow access",
+          "75 credits / month",
+          "AI-generated landing pages",
+          "Live previews",
+          "Custom domain support"
+        ],
+        buttonText: "Start with Flow"
+      },
+      launch: {
+        name: "Launch",
+        tagline: "For founders preparing a public launch.",
+        features: [
+          "Flow + Kalit Studio",
+          "350 credits / month",
+          "Deploy and redeploy pages",
+          "Project files and exports",
+          "Priority support"
+        ],
+        buttonText: "Build my launch site"
+      },
+      launchPro: {
+        name: "Launch Pro",
+        tagline: "For teams that want launch pages plus security review.",
+        features: [
+          "Flow + Pentest access",
+          "1,200 credits / month",
+          "Pre-launch security scan",
+          "Report export",
+          "Custom onboarding"
+        ],
+        buttonText: "Launch with scan"
+      }
+    },
+    pentest: {
+      preview: {
+        name: "Preview",
+        tagline: "For reviewing the workflow and sample reports.",
+        features: [
+          "Sample findings report",
+          "Workspace preview",
+          "Scope planning in Studio",
+          "Authorized target intake",
+          "Upgrade when ready to scan"
+        ],
+        buttonText: "Preview Pentest"
+      },
+      prelaunchScan: {
+        name: "Pre-launch Scan",
+        tagline: "For one app, API, or staging target before launch.",
+        features: [
+          "Quick or standard scan profiles",
+          "Live phase feed",
+          "Findings with evidence",
+          "PDF/HTML report export",
+          "Remediation guidance"
+        ],
+        buttonText: "Start scan"
+      },
+      securityPro: {
+        name: "Security Pro",
+        tagline: "For deeper scans, retests, and launch teams.",
+        features: [
+          "Deep and targeted scan profiles",
+          "Multiple workspaces",
+          "Finding retests",
+          "Advisory runs",
+          "Priority support"
+        ],
+        buttonText: "Secure my launch"
+      }
+    }
+  },
+
   // ─── Blog chrome (index + post detail labels) ────────────
   blog: {
     metaTitle: "Blog - Kalit AI",

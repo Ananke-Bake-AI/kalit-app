@@ -37,14 +37,38 @@
       "SLA ودعم ذو أولوية"
     ],
     "faqs": [
-      { "q": "ما هو الرصيد الواحد؟", "a": "الأرصدة هي وحدة الاستخدام الأساسية. كدليل تقريبي: ~1 رصيد لكل توليد صفحة في Flow، ~10–15 رصيد لتشغيل بناء MVP، ~5 أرصدة لكل فحص Pentest. التكاليف الدقيقة تعتمد على حجم المشروع والوكلاء المتخصصين المعنيين. سترى دائماً تكلفة الرصيد قبل بدء التشغيل." },
-      { "q": "هل يمكنني الإلغاء في أي وقت؟", "a": "نعم. ألغِ من لوحة التحكم، دون أسئلة. تبقى خطتك نشطة حتى نهاية فترة الفوترة الحالية، ثم تنخفض إلى Free." },
-      { "q": "هل تنتقل الأرصدة غير المستخدمة؟", "a": "أرصدة الاشتراك الشهرية لا تنتقل — تُعاد تعيينها عند كل تجديد. حزم الأرصدة لمرة واحدة التي تشتريها فوق الاشتراك تبقى على حسابك حتى استخدامها." },
-      { "q": "هل Pentest متاح في Pro؟", "a": "Pentest مشمول في Enterprise. نحن نطرحه في Pro بشكل تجريبي — انضم إلى قائمة انتظار Pentest من لوحة التحكم أو تواصل معنا للحصول على وصول مبكر." },
-      { "q": "هل تقدمون أسعار وكالات أو بالحجم؟", "a": "نعم. إذا كنت تنفذ أعمال عملاء، أو تحتاج أكثر من 10 مقاعد، أو تخصيص أرصدة مفصّل، تواصل معنا — لدينا خطة شريك وكالات." },
-      { "q": "ماذا عن خصومات التعليم أو المنظمات غير الربحية؟", "a": "نقدم خطط Pro بخصم للطلاب والمعلمين والمنظمات غير الربحية المسجلة. راسلنا على contact@kalit.ai من عنوانك المؤسسي." },
-      { "q": "أين تُخزَّن بياناتي؟", "a": "Kalit AI تشغّلها Merkle Tech Labs LTD. (مالطا). تُعالَج البيانات في مناطق الاتحاد الأوروبي. راجع صفحات سياسة الخصوصية والأمان لدينا للصورة الكاملة، بما في ذلك المعالجون الفرعيون والتشفير." },
-      { "q": "هل يمكنني تشغيل Pentest على أي موقع؟", "a": "لا. Pentest فقط للأهداف التي تملكها أو مُصرَّح لك صراحةً باختبارها. اقرأ صفحة الاستخدام المسؤول لدينا قبل تشغيل فحص." }
+      {
+        "q": "ما هو الرصيد الواحد؟",
+        "a": "الأرصدة هي وحدة الاستخدام الأساسية. كدليل تقريبي: ~1 رصيد لكل توليد صفحة في Flow، ~10–15 رصيد لتشغيل بناء MVP، ~5 أرصدة لكل فحص Pentest. التكاليف الدقيقة تعتمد على حجم المشروع والوكلاء المتخصصين المعنيين. سترى دائماً تكلفة الرصيد قبل بدء التشغيل."
+      },
+      {
+        "q": "هل يمكنني الإلغاء في أي وقت؟",
+        "a": "نعم. ألغِ من لوحة التحكم، دون أسئلة. تبقى خطتك نشطة حتى نهاية فترة الفوترة الحالية، ثم تنخفض إلى Free."
+      },
+      {
+        "q": "هل تنتقل الأرصدة غير المستخدمة؟",
+        "a": "أرصدة الاشتراك الشهرية لا تنتقل — تُعاد تعيينها عند كل تجديد. حزم الأرصدة لمرة واحدة التي تشتريها فوق الاشتراك تبقى على حسابك حتى استخدامها."
+      },
+      {
+        "q": "هل Pentest متاح في Pro؟",
+        "a": "Pentest مشمول في Enterprise. نحن نطرحه في Pro بشكل تجريبي — انضم إلى قائمة انتظار Pentest من لوحة التحكم أو تواصل معنا للحصول على وصول مبكر."
+      },
+      {
+        "q": "هل تقدمون أسعار وكالات أو بالحجم؟",
+        "a": "نعم. إذا كنت تنفذ أعمال عملاء، أو تحتاج أكثر من 10 مقاعد، أو تخصيص أرصدة مفصّل، تواصل معنا — لدينا خطة شريك وكالات."
+      },
+      {
+        "q": "ماذا عن خصومات التعليم أو المنظمات غير الربحية؟",
+        "a": "نقدم خطط Pro بخصم للطلاب والمعلمين والمنظمات غير الربحية المسجلة. راسلنا على contact@kalit.ai من عنوانك المؤسسي."
+      },
+      {
+        "q": "أين تُخزَّن بياناتي؟",
+        "a": "Kalit AI تشغّلها Merkle Tech Labs LTD. (مالطا). تُعالَج البيانات في مناطق الاتحاد الأوروبي. راجع صفحات سياسة الخصوصية والأمان لدينا للصورة الكاملة، بما في ذلك المعالجون الفرعيون والتشفير."
+      },
+      {
+        "q": "هل يمكنني تشغيل Pentest على أي موقع؟",
+        "a": "لا. Pentest فقط للأهداف التي تملكها أو مُصرَّح لك صراحةً باختبارها. اقرأ صفحة الاستخدام المسؤول لدينا قبل تشغيل فحص."
+      }
     ]
   },
   "security": {
@@ -359,26 +383,74 @@
     "severityMedium": "متوسط",
     "severityLow": "منخفض",
     "agents": [
-      { "name": "SQL Injection Hunter", "targets": "Error-based, UNION, blind (time / boolean), out-of-band." },
-      { "name": "XSS Specialist", "targets": "Reflected, stored, DOM-based مع مسخ payload واعٍ بالسياق." },
-      { "name": "SSRF Specialist", "targets": "Cloud metadata (AWS / GCP / Azure)، DNS rebinding، تجاوزات ترميز IP." },
-      { "name": "Command Injection", "targets": "مباشر وblind (DNS، وقت، HTTP callback)." },
-      { "name": "Deserialization", "targets": "سلاسل gadget Java، PHP، Python، .NET، Ruby." },
-      { "name": "Auth Bypass", "targets": "تثبيت الجلسة، عيوب JWT، تصعيد الامتيازات." },
-      { "name": "IDOR Tester", "targets": "تلاعب بمراجع الكائنات عبر endpoints." },
-      { "name": "Credential Spray", "targets": "اختبارات إعادة الاستخدام ضد الأسطح المكتشفة." },
-      { "name": "Subdomain Takeover", "targets": "بصمة CNAME ضد 15+ خدمة سحابية." },
-      { "name": "Cloud Auditor", "targets": "buckets مفتوحة (S3 / GCS / Blob)، endpoints serverless مكشوفة." },
-      { "name": "WebSocket Security", "targets": "CSWSH، تجاوز auth، تلاعب الرسائل." },
-      { "name": "GraphQL Security", "targets": "Introspection، هجمات العمق والتعقيد، صلاحية الحقول." }
+      {
+        "name": "SQL Injection Hunter",
+        "targets": "Error-based, UNION, blind (time / boolean), out-of-band."
+      },
+      {
+        "name": "XSS Specialist",
+        "targets": "Reflected, stored, DOM-based مع مسخ payload واعٍ بالسياق."
+      },
+      {
+        "name": "SSRF Specialist",
+        "targets": "Cloud metadata (AWS / GCP / Azure)، DNS rebinding، تجاوزات ترميز IP."
+      },
+      {
+        "name": "Command Injection",
+        "targets": "مباشر وblind (DNS، وقت، HTTP callback)."
+      },
+      {
+        "name": "Deserialization",
+        "targets": "سلاسل gadget Java، PHP، Python، .NET، Ruby."
+      },
+      {
+        "name": "Auth Bypass",
+        "targets": "تثبيت الجلسة، عيوب JWT، تصعيد الامتيازات."
+      },
+      {
+        "name": "IDOR Tester",
+        "targets": "تلاعب بمراجع الكائنات عبر endpoints."
+      },
+      {
+        "name": "Credential Spray",
+        "targets": "اختبارات إعادة الاستخدام ضد الأسطح المكتشفة."
+      },
+      {
+        "name": "Subdomain Takeover",
+        "targets": "بصمة CNAME ضد 15+ خدمة سحابية."
+      },
+      {
+        "name": "Cloud Auditor",
+        "targets": "buckets مفتوحة (S3 / GCS / Blob)، endpoints serverless مكشوفة."
+      },
+      {
+        "name": "WebSocket Security",
+        "targets": "CSWSH، تجاوز auth، تلاعب الرسائل."
+      },
+      {
+        "name": "GraphQL Security",
+        "targets": "Introspection، هجمات العمق والتعقيد، صلاحية الحقول."
+      }
     ],
     "sampleFindings": [
-      { "title": "SQLi — /api/auth/login" },
-      { "title": "SSRF — /api/avatar?url=…" },
-      { "title": "Stored XSS — /comments" },
-      { "title": "IDOR — /api/orders/:id" },
-      { "title": "S3 bucket مفتوح — assets-prod" },
-      { "title": "ترويسات أمان مفقودة" }
+      {
+        "title": "SQLi — /api/auth/login"
+      },
+      {
+        "title": "SSRF — /api/avatar?url=…"
+      },
+      {
+        "title": "Stored XSS — /comments"
+      },
+      {
+        "title": "IDOR — /api/orders/:id"
+      },
+      {
+        "title": "S3 bucket مفتوح — assets-prod"
+      },
+      {
+        "title": "ترويسات أمان مفقودة"
+      }
     ]
   },
   "blog": {
@@ -395,5 +467,86 @@
     "shareLinkedIn": "شارك على LinkedIn",
     "shareHN": "شارك على Hacker News",
     "empty": "لا منشورات بعد. عُد قريباً."
+  },
+  "suitePlans": {
+    "perMonth": "شهرياً",
+    "toStart": "للبدء",
+    "launchPick": "اختيار الإطلاق",
+    "flow": {
+      "starter": {
+        "name": "Starter",
+        "tagline": "لاختبار Flow وإطلاق صفحة أولى.",
+        "features": [
+          "وصول إلى Kalit Flow",
+          "75 رصيد / شهر",
+          "صفحات هبوط مولّدة بالذكاء الاصطناعي",
+          "معاينات مباشرة",
+          "دعم نطاقات مخصصة"
+        ],
+        "buttonText": "ابدأ مع Flow"
+      },
+      "launch": {
+        "name": "Launch",
+        "tagline": "للمؤسسين الذين يحضّرون إطلاقاً علنياً.",
+        "features": [
+          "Flow + Kalit Studio",
+          "350 رصيد / شهر",
+          "نشر وإعادة نشر الصفحات",
+          "ملفات المشروع والتصدير",
+          "دعم ذو أولوية"
+        ],
+        "buttonText": "ابنِ موقع إطلاقي"
+      },
+      "launchPro": {
+        "name": "Launch Pro",
+        "tagline": "للفِرق التي تريد صفحات إطلاق مع مراجعة أمنية.",
+        "features": [
+          "وصول إلى Flow + Pentest",
+          "1,200 رصيد / شهر",
+          "فحص أمني قبل الإطلاق",
+          "تصدير التقرير",
+          "تأهيل مخصص"
+        ],
+        "buttonText": "أطلِق مع فحص"
+      }
+    },
+    "pentest": {
+      "preview": {
+        "name": "Preview",
+        "tagline": "لمراجعة سير العمل وتقارير العينة.",
+        "features": [
+          "تقرير نتائج عينة",
+          "معاينة الـ workspace",
+          "تخطيط النطاق في Studio",
+          "إدخال الأهداف المصرّح بها",
+          "ترقية عند الجاهزية للفحص"
+        ],
+        "buttonText": "Preview Pentest"
+      },
+      "prelaunchScan": {
+        "name": "فحص ما قبل الإطلاق",
+        "tagline": "لتطبيق أو API أو هدف staging واحد قبل الإطلاق.",
+        "features": [
+          "ملفات فحص سريع أو قياسي",
+          "تغذية مراحل مباشرة",
+          "نتائج مع أدلة",
+          "تصدير تقرير PDF/HTML",
+          "إرشادات الإصلاح"
+        ],
+        "buttonText": "ابدأ الفحص"
+      },
+      "securityPro": {
+        "name": "Security Pro",
+        "tagline": "لفحوصات أعمق وإعادة اختبارات وفِرق إطلاق.",
+        "features": [
+          "ملفات فحص عميقة وموجَّهة",
+          "workspaces متعددة",
+          "إعادة اختبار النتائج",
+          "جلسات استشارية",
+          "دعم ذو أولوية"
+        ],
+        "buttonText": "أمّن إطلاقي"
+      }
+    }
   }
 }

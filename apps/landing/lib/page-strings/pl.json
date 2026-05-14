@@ -37,14 +37,38 @@
       "SLA i wsparcie priorytetowe"
     ],
     "faqs": [
-      { "q": "Czym jest jeden kredyt?", "a": "Kredyty są bazową jednostką zużycia. W przybliżeniu: ~1 kredyt za generację strony w Flow, ~10–15 kredytów za build MVP, ~5 kredytów za skan Pentest. Dokładne koszty zależą od wielkości projektu i zaangażowanych agentów specjalistycznych. Zawsze widzisz koszt w kredytach przed startem przebiegu." },
-      { "q": "Czy mogę anulować w dowolnym momencie?", "a": "Tak. Anuluj w panelu, bez pytań. Twój plan pozostaje aktywny do końca bieżącego okresu rozliczeniowego, a potem przechodzi w Free." },
-      { "q": "Czy niewykorzystane kredyty się przenoszą?", "a": "Miesięczne kredyty z subskrypcji nie przenoszą się — resetują się przy każdym odnowieniu. Jednorazowe pakiety kredytów kupowane dodatkowo zostają na koncie, aż je zużyjesz." },
-      { "q": "Czy Pentest jest dostępny w Pro?", "a": "Pentest jest wliczony w Enterprise. Wdrażamy go w wersji beta w Pro — zapisz się na listę oczekujących Pentest w panelu lub skontaktuj się z nami w sprawie wczesnego dostępu." },
-      { "q": "Czy oferujecie ceny agencyjne lub wolumenowe?", "a": "Tak. Jeśli realizujesz prace klienckie, potrzebujesz ponad 10 miejsc lub niestandardowej alokacji kredytów, skontaktuj się z nami — mamy plan partnera agencyjnego." },
-      { "q": "A zniżki dla edukacji lub organizacji non-profit?", "a": "Oferujemy plany Pro z rabatem dla studentów, edukatorów i zarejestrowanych organizacji non-profit. Napisz na contact@kalit.ai z adresu instytucjonalnego." },
-      { "q": "Gdzie są przechowywane moje dane?", "a": "Kalit AI prowadzi Merkle Tech Labs LTD. (Malta). Dane przetwarzane są w regionach UE. Zobacz nasze strony Polityki Prywatności i Bezpieczeństwa, aby zobaczyć pełny obraz, w tym podprocesorów i szyfrowanie." },
-      { "q": "Czy mogę uruchamiać Pentest na dowolnej stronie?", "a": "Nie. Pentest jest tylko dla celów, które posiadasz lub do których masz jednoznaczną autoryzację. Przeczytaj naszą stronę Odpowiedzialne Użycie przed uruchomieniem skanu." }
+      {
+        "q": "Czym jest jeden kredyt?",
+        "a": "Kredyty są bazową jednostką zużycia. W przybliżeniu: ~1 kredyt za generację strony w Flow, ~10–15 kredytów za build MVP, ~5 kredytów za skan Pentest. Dokładne koszty zależą od wielkości projektu i zaangażowanych agentów specjalistycznych. Zawsze widzisz koszt w kredytach przed startem przebiegu."
+      },
+      {
+        "q": "Czy mogę anulować w dowolnym momencie?",
+        "a": "Tak. Anuluj w panelu, bez pytań. Twój plan pozostaje aktywny do końca bieżącego okresu rozliczeniowego, a potem przechodzi w Free."
+      },
+      {
+        "q": "Czy niewykorzystane kredyty się przenoszą?",
+        "a": "Miesięczne kredyty z subskrypcji nie przenoszą się — resetują się przy każdym odnowieniu. Jednorazowe pakiety kredytów kupowane dodatkowo zostają na koncie, aż je zużyjesz."
+      },
+      {
+        "q": "Czy Pentest jest dostępny w Pro?",
+        "a": "Pentest jest wliczony w Enterprise. Wdrażamy go w wersji beta w Pro — zapisz się na listę oczekujących Pentest w panelu lub skontaktuj się z nami w sprawie wczesnego dostępu."
+      },
+      {
+        "q": "Czy oferujecie ceny agencyjne lub wolumenowe?",
+        "a": "Tak. Jeśli realizujesz prace klienckie, potrzebujesz ponad 10 miejsc lub niestandardowej alokacji kredytów, skontaktuj się z nami — mamy plan partnera agencyjnego."
+      },
+      {
+        "q": "A zniżki dla edukacji lub organizacji non-profit?",
+        "a": "Oferujemy plany Pro z rabatem dla studentów, edukatorów i zarejestrowanych organizacji non-profit. Napisz na contact@kalit.ai z adresu instytucjonalnego."
+      },
+      {
+        "q": "Gdzie są przechowywane moje dane?",
+        "a": "Kalit AI prowadzi Merkle Tech Labs LTD. (Malta). Dane przetwarzane są w regionach UE. Zobacz nasze strony Polityki Prywatności i Bezpieczeństwa, aby zobaczyć pełny obraz, w tym podprocesorów i szyfrowanie."
+      },
+      {
+        "q": "Czy mogę uruchamiać Pentest na dowolnej stronie?",
+        "a": "Nie. Pentest jest tylko dla celów, które posiadasz lub do których masz jednoznaczną autoryzację. Przeczytaj naszą stronę Odpowiedzialne Użycie przed uruchomieniem skanu."
+      }
     ]
   },
   "security": {
@@ -359,26 +383,74 @@
     "severityMedium": "ŚR",
     "severityLow": "NIS",
     "agents": [
-      { "name": "SQL Injection Hunter", "targets": "Error-based, UNION, blind (time / boolean), out-of-band." },
-      { "name": "XSS Specialist", "targets": "Reflected, stored, DOM-based z kontekstową mutacją payloadu." },
-      { "name": "SSRF Specialist", "targets": "Metadane chmury (AWS / GCP / Azure), DNS rebinding, bypass kodowania IP." },
-      { "name": "Command Injection", "targets": "Bezpośredni i blind (DNS, time, HTTP callback)." },
-      { "name": "Deserialization", "targets": "Łańcuchy gadżetów Java, PHP, Python, .NET, Ruby." },
-      { "name": "Auth Bypass", "targets": "Fiksacja sesji, błędy JWT, eskalacja uprawnień." },
-      { "name": "IDOR Tester", "targets": "Manipulacja referencjami obiektów między endpointami." },
-      { "name": "Credential Spray", "targets": "Testy ponownego użycia wobec odkrytych powierzchni." },
-      { "name": "Subdomain Takeover", "targets": "Fingerprinting CNAME wobec 15+ usług chmurowych." },
-      { "name": "Cloud Auditor", "targets": "Otwarte buckety (S3 / GCS / Blob), eksponowane endpointy serverless." },
-      { "name": "WebSocket Security", "targets": "CSWSH, bypass auth, manipulacja wiadomościami." },
-      { "name": "GraphQL Security", "targets": "Introspection, ataki głębokości i złożoności, autoryzacja pól." }
+      {
+        "name": "SQL Injection Hunter",
+        "targets": "Error-based, UNION, blind (time / boolean), out-of-band."
+      },
+      {
+        "name": "XSS Specialist",
+        "targets": "Reflected, stored, DOM-based z kontekstową mutacją payloadu."
+      },
+      {
+        "name": "SSRF Specialist",
+        "targets": "Metadane chmury (AWS / GCP / Azure), DNS rebinding, bypass kodowania IP."
+      },
+      {
+        "name": "Command Injection",
+        "targets": "Bezpośredni i blind (DNS, time, HTTP callback)."
+      },
+      {
+        "name": "Deserialization",
+        "targets": "Łańcuchy gadżetów Java, PHP, Python, .NET, Ruby."
+      },
+      {
+        "name": "Auth Bypass",
+        "targets": "Fiksacja sesji, błędy JWT, eskalacja uprawnień."
+      },
+      {
+        "name": "IDOR Tester",
+        "targets": "Manipulacja referencjami obiektów między endpointami."
+      },
+      {
+        "name": "Credential Spray",
+        "targets": "Testy ponownego użycia wobec odkrytych powierzchni."
+      },
+      {
+        "name": "Subdomain Takeover",
+        "targets": "Fingerprinting CNAME wobec 15+ usług chmurowych."
+      },
+      {
+        "name": "Cloud Auditor",
+        "targets": "Otwarte buckety (S3 / GCS / Blob), eksponowane endpointy serverless."
+      },
+      {
+        "name": "WebSocket Security",
+        "targets": "CSWSH, bypass auth, manipulacja wiadomościami."
+      },
+      {
+        "name": "GraphQL Security",
+        "targets": "Introspection, ataki głębokości i złożoności, autoryzacja pól."
+      }
     ],
     "sampleFindings": [
-      { "title": "SQLi — /api/auth/login" },
-      { "title": "SSRF — /api/avatar?url=…" },
-      { "title": "Stored XSS — /comments" },
-      { "title": "IDOR — /api/orders/:id" },
-      { "title": "Otwarty bucket S3 — assets-prod" },
-      { "title": "Brakujące nagłówki bezpieczeństwa" }
+      {
+        "title": "SQLi — /api/auth/login"
+      },
+      {
+        "title": "SSRF — /api/avatar?url=…"
+      },
+      {
+        "title": "Stored XSS — /comments"
+      },
+      {
+        "title": "IDOR — /api/orders/:id"
+      },
+      {
+        "title": "Otwarty bucket S3 — assets-prod"
+      },
+      {
+        "title": "Brakujące nagłówki bezpieczeństwa"
+      }
     ]
   },
   "blog": {
@@ -395,5 +467,86 @@
     "shareLinkedIn": "Udostępnij na LinkedIn",
     "shareHN": "Udostępnij na Hacker News",
     "empty": "Brak postów. Zajrzyj wkrótce."
+  },
+  "suitePlans": {
+    "perMonth": "miesięcznie",
+    "toStart": "na start",
+    "launchPick": "Wybór na launch",
+    "flow": {
+      "starter": {
+        "name": "Starter",
+        "tagline": "Aby przetestować Flow i wydać pierwszą stronę.",
+        "features": [
+          "Dostęp do Kalit Flow",
+          "75 kredytów / miesiąc",
+          "Landing page generowane przez AI",
+          "Podgląd na żywo",
+          "Wsparcie własnych domen"
+        ],
+        "buttonText": "Zacznij z Flow"
+      },
+      "launch": {
+        "name": "Launch",
+        "tagline": "Dla founderów przygotowujących publiczny launch.",
+        "features": [
+          "Flow + Kalit Studio",
+          "350 kredytów / miesiąc",
+          "Deploy i redeploy stron",
+          "Pliki projektu i eksporty",
+          "Wsparcie priorytetowe"
+        ],
+        "buttonText": "Zbuduj moją stronę launchu"
+      },
+      "launchPro": {
+        "name": "Launch Pro",
+        "tagline": "Dla zespołów chcących stron launchu plus przegląd bezpieczeństwa.",
+        "features": [
+          "Dostęp do Flow + Pentest",
+          "1 200 kredytów / miesiąc",
+          "Skan bezpieczeństwa przed launchem",
+          "Eksport raportu",
+          "Niestandardowy onboarding"
+        ],
+        "buttonText": "Wystartuj ze skanem"
+      }
+    },
+    "pentest": {
+      "preview": {
+        "name": "Preview",
+        "tagline": "Do przeglądu workflow i przykładowych raportów.",
+        "features": [
+          "Przykładowy raport findings",
+          "Podgląd workspace",
+          "Planowanie zakresu w Studio",
+          "Rejestracja autoryzowanych celów",
+          "Upgrade gdy gotowy do skanu"
+        ],
+        "buttonText": "Preview Pentest"
+      },
+      "prelaunchScan": {
+        "name": "Skan przed launchem",
+        "tagline": "Dla jednej aplikacji, API lub celu staging przed launchem.",
+        "features": [
+          "Profile szybkiego lub standardowego skanu",
+          "Strumień faz na żywo",
+          "Findings z dowodami",
+          "Eksport raportu PDF/HTML",
+          "Wskazówki naprawcze"
+        ],
+        "buttonText": "Rozpocznij skan"
+      },
+      "securityPro": {
+        "name": "Security Pro",
+        "tagline": "Do głębszych skanów, retestów i zespołów launchowych.",
+        "features": [
+          "Profile głębokiego i celowanego skanu",
+          "Wiele workspace'ów",
+          "Retesty findings",
+          "Sesje doradcze",
+          "Wsparcie priorytetowe"
+        ],
+        "buttonText": "Zabezpiecz mój launch"
+      }
+    }
   }
 }

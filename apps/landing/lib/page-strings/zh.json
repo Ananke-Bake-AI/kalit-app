@@ -37,14 +37,38 @@
       "SLA 和优先支持"
     ],
     "faqs": [
-      { "q": "什么是一个积分?", "a": "积分是底层使用单位。粗略来说:Flow 中每页生成 ~1 个积分,MVP 构建运行 ~10–15 个积分,Pentest 扫描 ~5 个积分。具体成本取决于项目规模和涉及的专家代理。在运行启动之前,你将始终看到积分成本。" },
-      { "q": "我可以随时取消吗?", "a": "可以。从仪表板取消,无需提问。你的计划在当前计费周期结束之前保持活跃,然后转为 Free。" },
-      { "q": "未使用的积分会结转吗?", "a": "月度订阅积分不会结转 — 它们在每次续订时重置。在订阅之上购买的一次性积分包将保留在你的帐户中,直到使用完为止。" },
-      { "q": "Pentest 在 Pro 中可用吗?", "a": "Pentest 包含在 Enterprise 中。我们正在向 Pro 推出测试版 — 从你的仪表板加入 Pentest 等候名单,或联系我们获得早期访问。" },
-      { "q": "你们提供机构或批量定价吗?", "a": "是的。如果你交付客户工作、需要超过 10 个席位或自定义积分分配,请联系我们 — 我们有机构合作计划。" },
-      { "q": "教育或非营利折扣呢?", "a": "我们为学生、教育工作者和注册非营利组织提供折扣 Pro 计划。从你的机构地址发送电子邮件到 contact@kalit.ai。" },
-      { "q": "我的数据存储在哪里?", "a": "Kalit AI 由 Merkle Tech Labs LTD.(马耳他)运营。数据在欧盟地区处理。请参阅我们的隐私政策和安全页面,了解完整图景,包括子处理商和加密。" },
-      { "q": "我可以在任何站点上运行 Pentest 吗?", "a": "不。Pentest 仅适用于你拥有或被明确授权测试的目标。在运行扫描之前,请阅读我们的负责任使用页面。" }
+      {
+        "q": "什么是一个积分?",
+        "a": "积分是底层使用单位。粗略来说:Flow 中每页生成 ~1 个积分,MVP 构建运行 ~10–15 个积分,Pentest 扫描 ~5 个积分。具体成本取决于项目规模和涉及的专家代理。在运行启动之前,你将始终看到积分成本。"
+      },
+      {
+        "q": "我可以随时取消吗?",
+        "a": "可以。从仪表板取消,无需提问。你的计划在当前计费周期结束之前保持活跃,然后转为 Free。"
+      },
+      {
+        "q": "未使用的积分会结转吗?",
+        "a": "月度订阅积分不会结转 — 它们在每次续订时重置。在订阅之上购买的一次性积分包将保留在你的帐户中,直到使用完为止。"
+      },
+      {
+        "q": "Pentest 在 Pro 中可用吗?",
+        "a": "Pentest 包含在 Enterprise 中。我们正在向 Pro 推出测试版 — 从你的仪表板加入 Pentest 等候名单,或联系我们获得早期访问。"
+      },
+      {
+        "q": "你们提供机构或批量定价吗?",
+        "a": "是的。如果你交付客户工作、需要超过 10 个席位或自定义积分分配,请联系我们 — 我们有机构合作计划。"
+      },
+      {
+        "q": "教育或非营利折扣呢?",
+        "a": "我们为学生、教育工作者和注册非营利组织提供折扣 Pro 计划。从你的机构地址发送电子邮件到 contact@kalit.ai。"
+      },
+      {
+        "q": "我的数据存储在哪里?",
+        "a": "Kalit AI 由 Merkle Tech Labs LTD.(马耳他)运营。数据在欧盟地区处理。请参阅我们的隐私政策和安全页面,了解完整图景,包括子处理商和加密。"
+      },
+      {
+        "q": "我可以在任何站点上运行 Pentest 吗?",
+        "a": "不。Pentest 仅适用于你拥有或被明确授权测试的目标。在运行扫描之前,请阅读我们的负责任使用页面。"
+      }
     ]
   },
   "security": {
@@ -359,26 +383,74 @@
     "severityMedium": "中",
     "severityLow": "低",
     "agents": [
-      { "name": "SQL Injection Hunter", "targets": "基于错误、UNION、盲注(时间 / 布尔)、带外。" },
-      { "name": "XSS Specialist", "targets": "反射、存储、基于 DOM,具有上下文感知的有效负载变异。" },
-      { "name": "SSRF Specialist", "targets": "云元数据(AWS / GCP / Azure)、DNS 重绑、IP 编码绕过。" },
-      { "name": "Command Injection", "targets": "直接和盲注(DNS、时间、HTTP 回调)。" },
-      { "name": "Deserialization", "targets": "Java、PHP、Python、.NET、Ruby 小工具链。" },
-      { "name": "Auth Bypass", "targets": "会话固定、JWT 缺陷、权限提升。" },
-      { "name": "IDOR Tester", "targets": "跨端点的对象引用操纵。" },
-      { "name": "Credential Spray", "targets": "针对发现的表面进行重用测试。" },
-      { "name": "Subdomain Takeover", "targets": "针对 15+ 云服务的 CNAME 指纹识别。" },
-      { "name": "Cloud Auditor", "targets": "开放的存储桶(S3 / GCS / Blob)、暴露的无服务器端点。" },
-      { "name": "WebSocket Security", "targets": "CSWSH、auth bypass、消息篡改。" },
-      { "name": "GraphQL Security", "targets": "Introspection、深度和复杂性攻击、字段授权。" }
+      {
+        "name": "SQL Injection Hunter",
+        "targets": "基于错误、UNION、盲注(时间 / 布尔)、带外。"
+      },
+      {
+        "name": "XSS Specialist",
+        "targets": "反射、存储、基于 DOM,具有上下文感知的有效负载变异。"
+      },
+      {
+        "name": "SSRF Specialist",
+        "targets": "云元数据(AWS / GCP / Azure)、DNS 重绑、IP 编码绕过。"
+      },
+      {
+        "name": "Command Injection",
+        "targets": "直接和盲注(DNS、时间、HTTP 回调)。"
+      },
+      {
+        "name": "Deserialization",
+        "targets": "Java、PHP、Python、.NET、Ruby 小工具链。"
+      },
+      {
+        "name": "Auth Bypass",
+        "targets": "会话固定、JWT 缺陷、权限提升。"
+      },
+      {
+        "name": "IDOR Tester",
+        "targets": "跨端点的对象引用操纵。"
+      },
+      {
+        "name": "Credential Spray",
+        "targets": "针对发现的表面进行重用测试。"
+      },
+      {
+        "name": "Subdomain Takeover",
+        "targets": "针对 15+ 云服务的 CNAME 指纹识别。"
+      },
+      {
+        "name": "Cloud Auditor",
+        "targets": "开放的存储桶(S3 / GCS / Blob)、暴露的无服务器端点。"
+      },
+      {
+        "name": "WebSocket Security",
+        "targets": "CSWSH、auth bypass、消息篡改。"
+      },
+      {
+        "name": "GraphQL Security",
+        "targets": "Introspection、深度和复杂性攻击、字段授权。"
+      }
     ],
     "sampleFindings": [
-      { "title": "SQLi — /api/auth/login" },
-      { "title": "SSRF — /api/avatar?url=…" },
-      { "title": "Stored XSS — /comments" },
-      { "title": "IDOR — /api/orders/:id" },
-      { "title": "开放 S3 存储桶 — assets-prod" },
-      { "title": "缺少安全标头" }
+      {
+        "title": "SQLi — /api/auth/login"
+      },
+      {
+        "title": "SSRF — /api/avatar?url=…"
+      },
+      {
+        "title": "Stored XSS — /comments"
+      },
+      {
+        "title": "IDOR — /api/orders/:id"
+      },
+      {
+        "title": "开放 S3 存储桶 — assets-prod"
+      },
+      {
+        "title": "缺少安全标头"
+      }
     ]
   },
   "blog": {
@@ -395,5 +467,86 @@
     "shareLinkedIn": "分享到 LinkedIn",
     "shareHN": "分享到 Hacker News",
     "empty": "还没有帖子。请尽快回来。"
+  },
+  "suitePlans": {
+    "perMonth": "每月",
+    "toStart": "开始",
+    "launchPick": "发布之选",
+    "flow": {
+      "starter": {
+        "name": "Starter",
+        "tagline": "用于测试 Flow 并发布第一个页面。",
+        "features": [
+          "Kalit Flow 访问",
+          "每月 75 积分",
+          "AI 生成的着陆页",
+          "实时预览",
+          "自定义域名支持"
+        ],
+        "buttonText": "用 Flow 开始"
+      },
+      "launch": {
+        "name": "Launch",
+        "tagline": "为准备公开发布的创始人。",
+        "features": [
+          "Flow + Kalit Studio",
+          "每月 350 积分",
+          "部署和重新部署页面",
+          "项目文件和导出",
+          "优先支持"
+        ],
+        "buttonText": "构建我的发布站点"
+      },
+      "launchPro": {
+        "name": "Launch Pro",
+        "tagline": "为想要发布页面加安全审查的团队。",
+        "features": [
+          "Flow + Pentest 访问",
+          "每月 1,200 积分",
+          "发布前安全扫描",
+          "报告导出",
+          "自定义入门培训"
+        ],
+        "buttonText": "扫描后发布"
+      }
+    },
+    "pentest": {
+      "preview": {
+        "name": "Preview",
+        "tagline": "用于查看工作流和示例报告。",
+        "features": [
+          "示例发现报告",
+          "工作空间预览",
+          "Studio 中的范围规划",
+          "授权目标录入",
+          "准备好扫描时升级"
+        ],
+        "buttonText": "Preview Pentest"
+      },
+      "prelaunchScan": {
+        "name": "发布前扫描",
+        "tagline": "用于发布前一个应用、API 或暂存目标。",
+        "features": [
+          "快速或标准扫描配置",
+          "实时阶段流",
+          "带证据的发现",
+          "PDF/HTML 报告导出",
+          "修复指导"
+        ],
+        "buttonText": "开始扫描"
+      },
+      "securityPro": {
+        "name": "Security Pro",
+        "tagline": "用于更深入的扫描、重新测试和发布团队。",
+        "features": [
+          "深度和针对性扫描配置",
+          "多个工作空间",
+          "发现的重新测试",
+          "咨询运行",
+          "优先支持"
+        ],
+        "buttonText": "保护我的发布"
+      }
+    }
   }
 }

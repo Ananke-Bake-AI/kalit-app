@@ -37,14 +37,38 @@
       "SLAと優先サポート"
     ],
     "faqs": [
-      { "q": "1クレジットとは何ですか?", "a": "クレジットは基礎となる利用単位です。目安として: Flowのページ生成で約1クレジット、MVPビルド実行で約10〜15クレジット、Pentestスキャンで約5クレジット。正確なコストはプロジェクトのサイズと関与する専門エージェントによります。実行開始前に常にクレジットコストが表示されます。" },
-      { "q": "いつでもキャンセルできますか?", "a": "はい。ダッシュボードから質問なしでキャンセルできます。現在の請求期間の終わりまでプランは有効で、その後Freeに切り替わります。" },
-      { "q": "未使用のクレジットは繰り越されますか?", "a": "月額サブスクリプションのクレジットは繰り越されず、更新ごとにリセットされます。サブスクリプションの上で購入した1回限りのクレジットパックは、使い切るまでアカウントに残ります。" },
-      { "q": "PentestはProで利用できますか?", "a": "PentestはEnterpriseに含まれます。Proにベータ版で展開中です — ダッシュボードからPentestのウェイトリストに参加するか、早期アクセスのためにお問い合わせください。" },
-      { "q": "エージェンシーまたはボリューム価格はありますか?", "a": "はい。クライアント業務の納品、10シート以上、またはカスタムクレジット割り当てが必要な場合はご連絡ください — エージェンシーパートナープランがあります。" },
-      { "q": "教育や非営利の割引は?", "a": "学生、教育者、登録済み非営利団体向けに割引Proプランを提供しています。機関のアドレスからcontact@kalit.aiにメールしてください。" },
-      { "q": "私のデータはどこに保存されますか?", "a": "Kalit AIはMerkle Tech Labs LTD.(マルタ)が運営しています。データはEU地域で処理されます。サブプロセッサと暗号化を含む全体像については、プライバシーポリシーとセキュリティページをご覧ください。" },
-      { "q": "Pentestは任意のサイトで実行できますか?", "a": "いいえ。Pentestは所有しているか、明示的にテストを認可されたターゲットのみです。スキャン実行前に責任ある使用のページを読んでください。" }
+      {
+        "q": "1クレジットとは何ですか?",
+        "a": "クレジットは基礎となる利用単位です。目安として: Flowのページ生成で約1クレジット、MVPビルド実行で約10〜15クレジット、Pentestスキャンで約5クレジット。正確なコストはプロジェクトのサイズと関与する専門エージェントによります。実行開始前に常にクレジットコストが表示されます。"
+      },
+      {
+        "q": "いつでもキャンセルできますか?",
+        "a": "はい。ダッシュボードから質問なしでキャンセルできます。現在の請求期間の終わりまでプランは有効で、その後Freeに切り替わります。"
+      },
+      {
+        "q": "未使用のクレジットは繰り越されますか?",
+        "a": "月額サブスクリプションのクレジットは繰り越されず、更新ごとにリセットされます。サブスクリプションの上で購入した1回限りのクレジットパックは、使い切るまでアカウントに残ります。"
+      },
+      {
+        "q": "PentestはProで利用できますか?",
+        "a": "PentestはEnterpriseに含まれます。Proにベータ版で展開中です — ダッシュボードからPentestのウェイトリストに参加するか、早期アクセスのためにお問い合わせください。"
+      },
+      {
+        "q": "エージェンシーまたはボリューム価格はありますか?",
+        "a": "はい。クライアント業務の納品、10シート以上、またはカスタムクレジット割り当てが必要な場合はご連絡ください — エージェンシーパートナープランがあります。"
+      },
+      {
+        "q": "教育や非営利の割引は?",
+        "a": "学生、教育者、登録済み非営利団体向けに割引Proプランを提供しています。機関のアドレスからcontact@kalit.aiにメールしてください。"
+      },
+      {
+        "q": "私のデータはどこに保存されますか?",
+        "a": "Kalit AIはMerkle Tech Labs LTD.(マルタ)が運営しています。データはEU地域で処理されます。サブプロセッサと暗号化を含む全体像については、プライバシーポリシーとセキュリティページをご覧ください。"
+      },
+      {
+        "q": "Pentestは任意のサイトで実行できますか?",
+        "a": "いいえ。Pentestは所有しているか、明示的にテストを認可されたターゲットのみです。スキャン実行前に責任ある使用のページを読んでください。"
+      }
     ]
   },
   "security": {
@@ -359,26 +383,74 @@
     "severityMedium": "中",
     "severityLow": "低",
     "agents": [
-      { "name": "SQL Injection Hunter", "targets": "Error-based、UNION、blind(time / boolean)、out-of-band。" },
-      { "name": "XSS Specialist", "targets": "Reflected、stored、DOM-based、コンテキスト認識ペイロードミューテーション付き。" },
-      { "name": "SSRF Specialist", "targets": "クラウドメタデータ(AWS / GCP / Azure)、DNSリバインディング、IPエンコーディングバイパス。" },
-      { "name": "Command Injection", "targets": "直接およびblind(DNS、時間、HTTPコールバック)。" },
-      { "name": "Deserialization", "targets": "Java、PHP、Python、.NET、Rubyのガジェットチェーン。" },
-      { "name": "Auth Bypass", "targets": "セッション固定、JWTの欠陥、特権昇格。" },
-      { "name": "IDOR Tester", "targets": "エンドポイント間のオブジェクト参照操作。" },
-      { "name": "Credential Spray", "targets": "発見された表面に対する再利用テスト。" },
-      { "name": "Subdomain Takeover", "targets": "15以上のクラウドサービスに対するCNAMEフィンガープリンティング。" },
-      { "name": "Cloud Auditor", "targets": "オープンバケット(S3 / GCS / Blob)、公開されたサーバーレスエンドポイント。" },
-      { "name": "WebSocket Security", "targets": "CSWSH、auth bypass、メッセージ改ざん。" },
-      { "name": "GraphQL Security", "targets": "イントロスペクション、深さと複雑さの攻撃、フィールド認証。" }
+      {
+        "name": "SQL Injection Hunter",
+        "targets": "Error-based、UNION、blind(time / boolean)、out-of-band。"
+      },
+      {
+        "name": "XSS Specialist",
+        "targets": "Reflected、stored、DOM-based、コンテキスト認識ペイロードミューテーション付き。"
+      },
+      {
+        "name": "SSRF Specialist",
+        "targets": "クラウドメタデータ(AWS / GCP / Azure)、DNSリバインディング、IPエンコーディングバイパス。"
+      },
+      {
+        "name": "Command Injection",
+        "targets": "直接およびblind(DNS、時間、HTTPコールバック)。"
+      },
+      {
+        "name": "Deserialization",
+        "targets": "Java、PHP、Python、.NET、Rubyのガジェットチェーン。"
+      },
+      {
+        "name": "Auth Bypass",
+        "targets": "セッション固定、JWTの欠陥、特権昇格。"
+      },
+      {
+        "name": "IDOR Tester",
+        "targets": "エンドポイント間のオブジェクト参照操作。"
+      },
+      {
+        "name": "Credential Spray",
+        "targets": "発見された表面に対する再利用テスト。"
+      },
+      {
+        "name": "Subdomain Takeover",
+        "targets": "15以上のクラウドサービスに対するCNAMEフィンガープリンティング。"
+      },
+      {
+        "name": "Cloud Auditor",
+        "targets": "オープンバケット(S3 / GCS / Blob)、公開されたサーバーレスエンドポイント。"
+      },
+      {
+        "name": "WebSocket Security",
+        "targets": "CSWSH、auth bypass、メッセージ改ざん。"
+      },
+      {
+        "name": "GraphQL Security",
+        "targets": "イントロスペクション、深さと複雑さの攻撃、フィールド認証。"
+      }
     ],
     "sampleFindings": [
-      { "title": "SQLi — /api/auth/login" },
-      { "title": "SSRF — /api/avatar?url=…" },
-      { "title": "Stored XSS — /comments" },
-      { "title": "IDOR — /api/orders/:id" },
-      { "title": "オープンS3バケット — assets-prod" },
-      { "title": "セキュリティヘッダー欠如" }
+      {
+        "title": "SQLi — /api/auth/login"
+      },
+      {
+        "title": "SSRF — /api/avatar?url=…"
+      },
+      {
+        "title": "Stored XSS — /comments"
+      },
+      {
+        "title": "IDOR — /api/orders/:id"
+      },
+      {
+        "title": "オープンS3バケット — assets-prod"
+      },
+      {
+        "title": "セキュリティヘッダー欠如"
+      }
     ]
   },
   "blog": {
@@ -395,5 +467,86 @@
     "shareLinkedIn": "LinkedInで共有",
     "shareHN": "Hacker Newsで共有",
     "empty": "まだ投稿はありません。すぐに戻ってきてください。"
+  },
+  "suitePlans": {
+    "perMonth": "月額",
+    "toStart": "開始",
+    "launchPick": "ローンチ向き",
+    "flow": {
+      "starter": {
+        "name": "Starter",
+        "tagline": "Flowを試して、最初のページを公開するための料金。",
+        "features": [
+          "Kalit Flowへのアクセス",
+          "75クレジット / 月",
+          "AI生成のランディングページ",
+          "ライブプレビュー",
+          "カスタムドメインサポート"
+        ],
+        "buttonText": "Flowを始める"
+      },
+      "launch": {
+        "name": "Launch",
+        "tagline": "公開ローンチを準備するファウンダー向け。",
+        "features": [
+          "Flow + Kalit Studio",
+          "350クレジット / 月",
+          "ページのデプロイと再デプロイ",
+          "プロジェクトファイルとエクスポート",
+          "優先サポート"
+        ],
+        "buttonText": "ローンチサイトを構築"
+      },
+      "launchPro": {
+        "name": "Launch Pro",
+        "tagline": "ローンチページとセキュリティレビューを望むチーム向け。",
+        "features": [
+          "Flow + Pentestアクセス",
+          "1,200クレジット / 月",
+          "ローンチ前セキュリティスキャン",
+          "レポートのエクスポート",
+          "カスタムオンボーディング"
+        ],
+        "buttonText": "スキャン付きローンチ"
+      }
+    },
+    "pentest": {
+      "preview": {
+        "name": "Preview",
+        "tagline": "ワークフローとサンプルレポートをレビューするため。",
+        "features": [
+          "サンプル発見事項レポート",
+          "ワークスペースプレビュー",
+          "Studio内でのスコープ計画",
+          "認可された対象の登録",
+          "スキャン準備ができたらアップグレード"
+        ],
+        "buttonText": "Preview Pentest"
+      },
+      "prelaunchScan": {
+        "name": "ローンチ前スキャン",
+        "tagline": "ローンチ前の1つのアプリ、API、ステージング対象のため。",
+        "features": [
+          "クイックまたは標準スキャンプロファイル",
+          "ライブフェーズフィード",
+          "証拠付き発見事項",
+          "PDF/HTMLレポートエクスポート",
+          "修復ガイダンス"
+        ],
+        "buttonText": "スキャン開始"
+      },
+      "securityPro": {
+        "name": "Security Pro",
+        "tagline": "より深いスキャン、再テスト、ローンチチームのため。",
+        "features": [
+          "ディープおよびターゲットスキャンプロファイル",
+          "複数のワークスペース",
+          "発見事項の再テスト",
+          "アドバイザリーラン",
+          "優先サポート"
+        ],
+        "buttonText": "ローンチを保護"
+      }
+    }
   }
 }

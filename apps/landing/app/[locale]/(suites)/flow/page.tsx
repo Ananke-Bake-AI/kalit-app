@@ -8,10 +8,11 @@ import {
 } from "@/components/suite-landing"
 import { Underline } from "@/components/underline"
 import { isValidLocale, type Locale } from "@/lib/i18n"
-import { getServerTranslation, getTranslationForLocale } from "@/lib/i18n-server"
+import { getServerLocale, getServerTranslation, getTranslationForLocale } from "@/lib/i18n-server"
 import { MetadataSeo } from "@/lib/metadata"
+import { getPageStrings } from "@/lib/page-strings"
 import { getSuiteById } from "@/lib/suites"
-import { flowGradientColors, flowHowLine, flowMarketingPath, flowPlans } from "./landing-data"
+import { flowGradientColors, flowHowLine, flowMarketingPath } from "./landing-data"
 
 export const viewport = {
   themeColor: "#12BCFF"
@@ -35,6 +36,37 @@ export default async function FlowPage() {
   const flowSuite = getSuiteById("flow")
   const suiteAppUrl = flowSuite?.appUrl ?? ""
   const { t } = await getServerTranslation()
+  const locale = await getServerLocale()
+  const sp = (await getPageStrings(locale)).suitePlans
+
+  const flowPlans = [
+    {
+      name: sp.flow.starter.name,
+      tagline: sp.flow.starter.tagline,
+      price: "$29",
+      priceSuffix: sp.perMonth,
+      features: sp.flow.starter.features,
+      buttonText: sp.flow.starter.buttonText
+    },
+    {
+      name: sp.flow.launch.name,
+      tagline: sp.flow.launch.tagline,
+      recommended: true,
+      titleBadge: sp.launchPick,
+      price: "$99",
+      priceSuffix: sp.perMonth,
+      features: sp.flow.launch.features,
+      buttonText: sp.flow.launch.buttonText
+    },
+    {
+      name: sp.flow.launchPro.name,
+      tagline: sp.flow.launchPro.tagline,
+      price: "$299",
+      priceSuffix: sp.perMonth,
+      features: sp.flow.launchPro.features,
+      buttonText: sp.flow.launchPro.buttonText
+    }
+  ]
 
   const featTitle = t("suiteLanding.flow.featuresTitle").split("\n")
   const howTitle = t("suiteLanding.flow.howTitle").split("\n")

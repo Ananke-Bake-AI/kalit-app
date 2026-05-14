@@ -1,4 +1,3 @@
-import type { PlanProps } from "@/components/plan"
 import type { SuiteLandingFeatureCard } from "@/components/suite-landing"
 import { FLOW_MARKETING_PATH } from "@/lib/flow-suite-entry"
 
@@ -51,49 +50,5 @@ export const flowFeatureCards: SuiteLandingFeatureCard[] = [
   }
 ]
 
-export const flowPlans: Omit<PlanProps, "action">[] = [
-  {
-    name: "Starter",
-    tagline: "For testing Flow and shipping a first page.",
-    price: "$29",
-    priceSuffix: "per month",
-    features: [
-      "Kalit Flow access",
-      "75 credits / month",
-      "AI-generated landing pages",
-      "Live previews",
-      "Custom domain support",
-    ],
-    buttonText: "Start with Flow",
-  },
-  {
-    name: "Launch",
-    tagline: "For founders preparing a public launch.",
-    recommended: true,
-    titleBadge: "Launch pick",
-    price: "$99",
-    priceSuffix: "per month",
-    features: [
-      "Flow + Kalit Studio",
-      "350 credits / month",
-      "Deploy and redeploy pages",
-      "Project files and exports",
-      "Priority support",
-    ],
-    buttonText: "Build my launch site",
-  },
-  {
-    name: "Launch Pro",
-    tagline: "For teams that want launch pages plus security review.",
-    price: "$299",
-    priceSuffix: "per month",
-    features: [
-      "Flow + Pentest access",
-      "1,200 credits / month",
-      "Pre-launch security scan",
-      "Report export",
-      "Custom onboarding",
-    ],
-    buttonText: "Launch with scan",
-  },
-]
+// flowPlans removed: text moved to lib/page-strings, price + recommended
+// flag built inline in flow/page.tsx so plan rows translate per locale.

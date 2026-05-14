@@ -37,14 +37,38 @@
       "SLA & prioriteitsondersteuning"
     ],
     "faqs": [
-      { "q": "Wat is één credit?", "a": "Credits zijn de onderliggende gebruikseenheid. Als ruwe richtlijn: ~1 credit per paginageneratie in Flow, ~10–15 credits voor een MVP-build, ~5 credits per Pentest-scan. Exacte kosten hangen af van de projectgrootte en de betrokken specialistagenten. Je ziet de creditkosten altijd voor een run start." },
-      { "q": "Kan ik altijd opzeggen?", "a": "Ja. Zeg op vanuit het dashboard, zonder vragen. Je plan blijft actief tot het einde van de huidige factureringsperiode en valt daarna terug naar Free." },
-      { "q": "Rollen ongebruikte credits door?", "a": "Maandelijkse abonnementscredits rollen niet door — ze resetten bij elke verlenging. Eenmalige creditpakketten die je bovenop een abonnement koopt, blijven op je account tot ze zijn opgebruikt." },
-      { "q": "Is Pentest beschikbaar op Pro?", "a": "Pentest is inbegrepen bij Enterprise. We rollen het in beta uit naar Pro — sluit je aan bij de Pentest-wachtlijst in je dashboard of neem contact op voor vroege toegang." },
-      { "q": "Bieden jullie prijzen voor bureaus of volume?", "a": "Ja. Als je klantwerk levert, meer dan 10 zetels nodig hebt, of een aangepaste credittoewijzing wilt, neem contact op — we hebben een bureaupartnerplan." },
-      { "q": "Wat met kortingen voor onderwijs of non-profit?", "a": "We bieden kortingsplannen Pro voor studenten, docenten en geregistreerde non-profits. Mail contact@kalit.ai vanaf je institutionele adres." },
-      { "q": "Waar worden mijn gegevens opgeslagen?", "a": "Kalit AI wordt beheerd door Merkle Tech Labs LTD. (Malta). Data wordt verwerkt in EU-regio's. Zie onze Privacy- en Beveiligingspagina's voor het volledige beeld, inclusief subverwerkers en versleuteling." },
-      { "q": "Kan ik Pentest op elke site uitvoeren?", "a": "Nee. Pentest is alleen voor doelen die je bezit of waarvoor je expliciete toestemming hebt om te testen. Lees onze pagina Verantwoord Gebruik voor je een scan start." }
+      {
+        "q": "Wat is één credit?",
+        "a": "Credits zijn de onderliggende gebruikseenheid. Als ruwe richtlijn: ~1 credit per paginageneratie in Flow, ~10–15 credits voor een MVP-build, ~5 credits per Pentest-scan. Exacte kosten hangen af van de projectgrootte en de betrokken specialistagenten. Je ziet de creditkosten altijd voor een run start."
+      },
+      {
+        "q": "Kan ik altijd opzeggen?",
+        "a": "Ja. Zeg op vanuit het dashboard, zonder vragen. Je plan blijft actief tot het einde van de huidige factureringsperiode en valt daarna terug naar Free."
+      },
+      {
+        "q": "Rollen ongebruikte credits door?",
+        "a": "Maandelijkse abonnementscredits rollen niet door — ze resetten bij elke verlenging. Eenmalige creditpakketten die je bovenop een abonnement koopt, blijven op je account tot ze zijn opgebruikt."
+      },
+      {
+        "q": "Is Pentest beschikbaar op Pro?",
+        "a": "Pentest is inbegrepen bij Enterprise. We rollen het in beta uit naar Pro — sluit je aan bij de Pentest-wachtlijst in je dashboard of neem contact op voor vroege toegang."
+      },
+      {
+        "q": "Bieden jullie prijzen voor bureaus of volume?",
+        "a": "Ja. Als je klantwerk levert, meer dan 10 zetels nodig hebt, of een aangepaste credittoewijzing wilt, neem contact op — we hebben een bureaupartnerplan."
+      },
+      {
+        "q": "Wat met kortingen voor onderwijs of non-profit?",
+        "a": "We bieden kortingsplannen Pro voor studenten, docenten en geregistreerde non-profits. Mail contact@kalit.ai vanaf je institutionele adres."
+      },
+      {
+        "q": "Waar worden mijn gegevens opgeslagen?",
+        "a": "Kalit AI wordt beheerd door Merkle Tech Labs LTD. (Malta). Data wordt verwerkt in EU-regio's. Zie onze Privacy- en Beveiligingspagina's voor het volledige beeld, inclusief subverwerkers en versleuteling."
+      },
+      {
+        "q": "Kan ik Pentest op elke site uitvoeren?",
+        "a": "Nee. Pentest is alleen voor doelen die je bezit of waarvoor je expliciete toestemming hebt om te testen. Lees onze pagina Verantwoord Gebruik voor je een scan start."
+      }
     ]
   },
   "security": {
@@ -359,26 +383,74 @@
     "severityMedium": "GEM",
     "severityLow": "LAAG",
     "agents": [
-      { "name": "SQL Injection Hunter", "targets": "Error-based, UNION, blind (time / boolean), out-of-band." },
-      { "name": "XSS Specialist", "targets": "Reflected, stored, DOM-based met contextbewuste payload-mutatie." },
-      { "name": "SSRF Specialist", "targets": "Cloud-metadata (AWS / GCP / Azure), DNS rebinding, IP-encoding-bypasses." },
-      { "name": "Command Injection", "targets": "Direct en blind (DNS, time, HTTP-callback)." },
-      { "name": "Deserialization", "targets": "Java-, PHP-, Python-, .NET-, Ruby-gadget chains." },
-      { "name": "Auth Bypass", "targets": "Sessiefixatie, JWT-zwaktes, privilege escalation." },
-      { "name": "IDOR Tester", "targets": "Manipulatie van objectreferenties over endpoints." },
-      { "name": "Credential Spray", "targets": "Hergebruikstests tegen ontdekte oppervlakken." },
-      { "name": "Subdomain Takeover", "targets": "CNAME-fingerprinting tegen 15+ clouddiensten." },
-      { "name": "Cloud Auditor", "targets": "Open buckets (S3 / GCS / Blob), blootgestelde serverless endpoints." },
-      { "name": "WebSocket Security", "targets": "CSWSH, auth bypass, message tampering." },
-      { "name": "GraphQL Security", "targets": "Introspection, diepte- en complexiteitsaanvallen, field auth." }
+      {
+        "name": "SQL Injection Hunter",
+        "targets": "Error-based, UNION, blind (time / boolean), out-of-band."
+      },
+      {
+        "name": "XSS Specialist",
+        "targets": "Reflected, stored, DOM-based met contextbewuste payload-mutatie."
+      },
+      {
+        "name": "SSRF Specialist",
+        "targets": "Cloud-metadata (AWS / GCP / Azure), DNS rebinding, IP-encoding-bypasses."
+      },
+      {
+        "name": "Command Injection",
+        "targets": "Direct en blind (DNS, time, HTTP-callback)."
+      },
+      {
+        "name": "Deserialization",
+        "targets": "Java-, PHP-, Python-, .NET-, Ruby-gadget chains."
+      },
+      {
+        "name": "Auth Bypass",
+        "targets": "Sessiefixatie, JWT-zwaktes, privilege escalation."
+      },
+      {
+        "name": "IDOR Tester",
+        "targets": "Manipulatie van objectreferenties over endpoints."
+      },
+      {
+        "name": "Credential Spray",
+        "targets": "Hergebruikstests tegen ontdekte oppervlakken."
+      },
+      {
+        "name": "Subdomain Takeover",
+        "targets": "CNAME-fingerprinting tegen 15+ clouddiensten."
+      },
+      {
+        "name": "Cloud Auditor",
+        "targets": "Open buckets (S3 / GCS / Blob), blootgestelde serverless endpoints."
+      },
+      {
+        "name": "WebSocket Security",
+        "targets": "CSWSH, auth bypass, message tampering."
+      },
+      {
+        "name": "GraphQL Security",
+        "targets": "Introspection, diepte- en complexiteitsaanvallen, field auth."
+      }
     ],
     "sampleFindings": [
-      { "title": "SQLi — /api/auth/login" },
-      { "title": "SSRF — /api/avatar?url=…" },
-      { "title": "Stored XSS — /comments" },
-      { "title": "IDOR — /api/orders/:id" },
-      { "title": "Open S3-bucket — assets-prod" },
-      { "title": "Ontbrekende security headers" }
+      {
+        "title": "SQLi — /api/auth/login"
+      },
+      {
+        "title": "SSRF — /api/avatar?url=…"
+      },
+      {
+        "title": "Stored XSS — /comments"
+      },
+      {
+        "title": "IDOR — /api/orders/:id"
+      },
+      {
+        "title": "Open S3-bucket — assets-prod"
+      },
+      {
+        "title": "Ontbrekende security headers"
+      }
     ]
   },
   "blog": {
@@ -395,5 +467,86 @@
     "shareLinkedIn": "Deel op LinkedIn",
     "shareHN": "Deel op Hacker News",
     "empty": "Nog geen posts. Kom snel terug."
+  },
+  "suitePlans": {
+    "perMonth": "per maand",
+    "toStart": "om te beginnen",
+    "launchPick": "Launch-keuze",
+    "flow": {
+      "starter": {
+        "name": "Starter",
+        "tagline": "Om Flow te testen en een eerste pagina live te zetten.",
+        "features": [
+          "Toegang tot Kalit Flow",
+          "75 credits / maand",
+          "AI-gegenereerde landingspagina's",
+          "Live previews",
+          "Ondersteuning voor eigen domeinen"
+        ],
+        "buttonText": "Start met Flow"
+      },
+      "launch": {
+        "name": "Launch",
+        "tagline": "Voor founders die een publieke launch voorbereiden.",
+        "features": [
+          "Flow + Kalit Studio",
+          "350 credits / maand",
+          "Pagina's deployen en opnieuw deployen",
+          "Projectbestanden en exports",
+          "Priority-ondersteuning"
+        ],
+        "buttonText": "Bouw mijn launch-site"
+      },
+      "launchPro": {
+        "name": "Launch Pro",
+        "tagline": "Voor teams die launchpagina's plus security-review willen.",
+        "features": [
+          "Flow + Pentest-toegang",
+          "1.200 credits / maand",
+          "Pre-launch security-scan",
+          "Rapportexport",
+          "Aangepaste onboarding"
+        ],
+        "buttonText": "Launch met scan"
+      }
+    },
+    "pentest": {
+      "preview": {
+        "name": "Preview",
+        "tagline": "Om de workflow en voorbeeldrapporten te bekijken.",
+        "features": [
+          "Voorbeeldrapport van findings",
+          "Workspace-preview",
+          "Scope-planning in Studio",
+          "Geautoriseerde-doelen intake",
+          "Upgraden zodra je klaar bent om te scannen"
+        ],
+        "buttonText": "Preview Pentest"
+      },
+      "prelaunchScan": {
+        "name": "Pre-launch scan",
+        "tagline": "Voor één app, API of staging-doel vóór de launch.",
+        "features": [
+          "Quick- of standaard-scanprofielen",
+          "Live fase-feed",
+          "Findings met bewijs",
+          "PDF/HTML-rapportexport",
+          "Remediation-richtlijnen"
+        ],
+        "buttonText": "Start scan"
+      },
+      "securityPro": {
+        "name": "Security Pro",
+        "tagline": "Voor diepere scans, retests en launch-teams.",
+        "features": [
+          "Diepe en doelgerichte scanprofielen",
+          "Meerdere workspaces",
+          "Retests van findings",
+          "Advisory-runs",
+          "Priority-ondersteuning"
+        ],
+        "buttonText": "Beveilig mijn launch"
+      }
+    }
   }
 }

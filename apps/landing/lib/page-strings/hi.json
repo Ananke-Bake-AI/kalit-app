@@ -37,14 +37,38 @@
       "SLA और प्राथमिकता सपोर्ट"
     ],
     "faqs": [
-      { "q": "एक क्रेडिट क्या है?", "a": "क्रेडिट उपयोग की मूल इकाई हैं। एक मोटा दिशानिर्देश: Flow में पेज जनरेशन प्रति ~1 क्रेडिट, MVP बिल्ड रन के लिए ~10–15 क्रेडिट, प्रति Pentest स्कैन ~5 क्रेडिट। सटीक लागत प्रोजेक्ट के आकार और शामिल विशेषज्ञ एजेंट्स पर निर्भर करती है। आप हमेशा रन शुरू होने से पहले क्रेडिट लागत देखेंगे।" },
-      { "q": "क्या मैं कभी भी रद्द कर सकता हूँ?", "a": "हाँ। डैशबोर्ड से बिना सवाल के रद्द करें। आपका प्लान वर्तमान बिलिंग अवधि के अंत तक सक्रिय रहेगा, फिर Free में चला जाएगा।" },
-      { "q": "क्या अनुपयोगी क्रेडिट आगे बढ़ते हैं?", "a": "मासिक सब्सक्रिप्शन क्रेडिट आगे नहीं बढ़ते — हर नवीनीकरण पर रीसेट होते हैं। सब्सक्रिप्शन के ऊपर खरीदे गए एक-बारगी क्रेडिट पैक उपयोग होने तक आपके अकाउंट में रहते हैं।" },
-      { "q": "क्या Pentest Pro में उपलब्ध है?", "a": "Pentest Enterprise में शामिल है। हम इसे Pro में बीटा के रूप में रोल आउट कर रहे हैं — डैशबोर्ड से Pentest वेटलिस्ट में शामिल हों या प्रारंभिक एक्सेस के लिए हमसे संपर्क करें।" },
-      { "q": "क्या आप एजेंसी या वॉल्यूम प्राइसिंग देते हैं?", "a": "हाँ। यदि आप क्लाइंट काम पहुंचाते हैं, 10 से अधिक सीट्स की ज़रूरत है, या कस्टम क्रेडिट आवंटन चाहते हैं, हमसे संपर्क करें — हमारे पास एजेंसी पार्टनर प्लान है।" },
-      { "q": "शिक्षा या गैर-लाभकारी छूट के बारे में क्या?", "a": "हम छात्रों, शिक्षकों और पंजीकृत गैर-लाभकारी संस्थाओं के लिए छूट वाले Pro प्लान देते हैं। अपने संस्थागत पते से contact@kalit.ai पर ईमेल करें।" },
-      { "q": "मेरा डेटा कहाँ संग्रहीत है?", "a": "Kalit AI Merkle Tech Labs LTD. (माल्टा) द्वारा संचालित है। डेटा EU क्षेत्रों में प्रोसेस होता है। उप-प्रोसेसर और एन्क्रिप्शन सहित पूरी तस्वीर के लिए हमारी गोपनीयता और सुरक्षा पेज देखें।" },
-      { "q": "क्या मैं किसी भी साइट पर Pentest चला सकता हूँ?", "a": "नहीं। Pentest केवल उन लक्ष्यों के लिए है जिनके आप मालिक हैं या जिन्हें परीक्षण करने के लिए स्पष्ट रूप से अधिकृत हैं। स्कैन चलाने से पहले हमारी जिम्मेदार उपयोग पेज पढ़ें।" }
+      {
+        "q": "एक क्रेडिट क्या है?",
+        "a": "क्रेडिट उपयोग की मूल इकाई हैं। एक मोटा दिशानिर्देश: Flow में पेज जनरेशन प्रति ~1 क्रेडिट, MVP बिल्ड रन के लिए ~10–15 क्रेडिट, प्रति Pentest स्कैन ~5 क्रेडिट। सटीक लागत प्रोजेक्ट के आकार और शामिल विशेषज्ञ एजेंट्स पर निर्भर करती है। आप हमेशा रन शुरू होने से पहले क्रेडिट लागत देखेंगे।"
+      },
+      {
+        "q": "क्या मैं कभी भी रद्द कर सकता हूँ?",
+        "a": "हाँ। डैशबोर्ड से बिना सवाल के रद्द करें। आपका प्लान वर्तमान बिलिंग अवधि के अंत तक सक्रिय रहेगा, फिर Free में चला जाएगा।"
+      },
+      {
+        "q": "क्या अनुपयोगी क्रेडिट आगे बढ़ते हैं?",
+        "a": "मासिक सब्सक्रिप्शन क्रेडिट आगे नहीं बढ़ते — हर नवीनीकरण पर रीसेट होते हैं। सब्सक्रिप्शन के ऊपर खरीदे गए एक-बारगी क्रेडिट पैक उपयोग होने तक आपके अकाउंट में रहते हैं।"
+      },
+      {
+        "q": "क्या Pentest Pro में उपलब्ध है?",
+        "a": "Pentest Enterprise में शामिल है। हम इसे Pro में बीटा के रूप में रोल आउट कर रहे हैं — डैशबोर्ड से Pentest वेटलिस्ट में शामिल हों या प्रारंभिक एक्सेस के लिए हमसे संपर्क करें।"
+      },
+      {
+        "q": "क्या आप एजेंसी या वॉल्यूम प्राइसिंग देते हैं?",
+        "a": "हाँ। यदि आप क्लाइंट काम पहुंचाते हैं, 10 से अधिक सीट्स की ज़रूरत है, या कस्टम क्रेडिट आवंटन चाहते हैं, हमसे संपर्क करें — हमारे पास एजेंसी पार्टनर प्लान है।"
+      },
+      {
+        "q": "शिक्षा या गैर-लाभकारी छूट के बारे में क्या?",
+        "a": "हम छात्रों, शिक्षकों और पंजीकृत गैर-लाभकारी संस्थाओं के लिए छूट वाले Pro प्लान देते हैं। अपने संस्थागत पते से contact@kalit.ai पर ईमेल करें।"
+      },
+      {
+        "q": "मेरा डेटा कहाँ संग्रहीत है?",
+        "a": "Kalit AI Merkle Tech Labs LTD. (माल्टा) द्वारा संचालित है। डेटा EU क्षेत्रों में प्रोसेस होता है। उप-प्रोसेसर और एन्क्रिप्शन सहित पूरी तस्वीर के लिए हमारी गोपनीयता और सुरक्षा पेज देखें।"
+      },
+      {
+        "q": "क्या मैं किसी भी साइट पर Pentest चला सकता हूँ?",
+        "a": "नहीं। Pentest केवल उन लक्ष्यों के लिए है जिनके आप मालिक हैं या जिन्हें परीक्षण करने के लिए स्पष्ट रूप से अधिकृत हैं। स्कैन चलाने से पहले हमारी जिम्मेदार उपयोग पेज पढ़ें।"
+      }
     ]
   },
   "security": {
@@ -359,26 +383,74 @@
     "severityMedium": "मध्यम",
     "severityLow": "कम",
     "agents": [
-      { "name": "SQL Injection Hunter", "targets": "Error-based, UNION, blind (time / boolean), out-of-band।" },
-      { "name": "XSS Specialist", "targets": "Reflected, stored, DOM-based, context-aware payload mutation के साथ।" },
-      { "name": "SSRF Specialist", "targets": "Cloud metadata (AWS / GCP / Azure), DNS rebinding, IP encoding bypasses।" },
-      { "name": "Command Injection", "targets": "प्रत्यक्ष और blind (DNS, time, HTTP callback)।" },
-      { "name": "Deserialization", "targets": "Java, PHP, Python, .NET, Ruby gadget chains।" },
-      { "name": "Auth Bypass", "targets": "Session fixation, JWT कमज़ोरियाँ, privilege escalation।" },
-      { "name": "IDOR Tester", "targets": "Endpoints में object reference manipulation।" },
-      { "name": "Credential Spray", "targets": "खोजी गई सतहों के विरुद्ध reuse testing।" },
-      { "name": "Subdomain Takeover", "targets": "15+ क्लाउड सेवाओं के विरुद्ध CNAME fingerprinting।" },
-      { "name": "Cloud Auditor", "targets": "खुले buckets (S3 / GCS / Blob), उजागर serverless endpoints।" },
-      { "name": "WebSocket Security", "targets": "CSWSH, auth bypass, message tampering।" },
-      { "name": "GraphQL Security", "targets": "Introspection, depth और complexity हमले, field auth।" }
+      {
+        "name": "SQL Injection Hunter",
+        "targets": "Error-based, UNION, blind (time / boolean), out-of-band।"
+      },
+      {
+        "name": "XSS Specialist",
+        "targets": "Reflected, stored, DOM-based, context-aware payload mutation के साथ।"
+      },
+      {
+        "name": "SSRF Specialist",
+        "targets": "Cloud metadata (AWS / GCP / Azure), DNS rebinding, IP encoding bypasses।"
+      },
+      {
+        "name": "Command Injection",
+        "targets": "प्रत्यक्ष और blind (DNS, time, HTTP callback)।"
+      },
+      {
+        "name": "Deserialization",
+        "targets": "Java, PHP, Python, .NET, Ruby gadget chains।"
+      },
+      {
+        "name": "Auth Bypass",
+        "targets": "Session fixation, JWT कमज़ोरियाँ, privilege escalation।"
+      },
+      {
+        "name": "IDOR Tester",
+        "targets": "Endpoints में object reference manipulation।"
+      },
+      {
+        "name": "Credential Spray",
+        "targets": "खोजी गई सतहों के विरुद्ध reuse testing।"
+      },
+      {
+        "name": "Subdomain Takeover",
+        "targets": "15+ क्लाउड सेवाओं के विरुद्ध CNAME fingerprinting।"
+      },
+      {
+        "name": "Cloud Auditor",
+        "targets": "खुले buckets (S3 / GCS / Blob), उजागर serverless endpoints।"
+      },
+      {
+        "name": "WebSocket Security",
+        "targets": "CSWSH, auth bypass, message tampering।"
+      },
+      {
+        "name": "GraphQL Security",
+        "targets": "Introspection, depth और complexity हमले, field auth।"
+      }
     ],
     "sampleFindings": [
-      { "title": "SQLi — /api/auth/login" },
-      { "title": "SSRF — /api/avatar?url=…" },
-      { "title": "Stored XSS — /comments" },
-      { "title": "IDOR — /api/orders/:id" },
-      { "title": "खुला S3 bucket — assets-prod" },
-      { "title": "गायब सुरक्षा headers" }
+      {
+        "title": "SQLi — /api/auth/login"
+      },
+      {
+        "title": "SSRF — /api/avatar?url=…"
+      },
+      {
+        "title": "Stored XSS — /comments"
+      },
+      {
+        "title": "IDOR — /api/orders/:id"
+      },
+      {
+        "title": "खुला S3 bucket — assets-prod"
+      },
+      {
+        "title": "गायब सुरक्षा headers"
+      }
     ]
   },
   "blog": {
@@ -395,5 +467,86 @@
     "shareLinkedIn": "LinkedIn पर साझा करें",
     "shareHN": "Hacker News पर साझा करें",
     "empty": "अभी कोई पोस्ट नहीं। जल्द ही वापस जांचें।"
+  },
+  "suitePlans": {
+    "perMonth": "प्रति माह",
+    "toStart": "शुरू करने के लिए",
+    "launchPick": "लॉन्च की पसंद",
+    "flow": {
+      "starter": {
+        "name": "Starter",
+        "tagline": "Flow का परीक्षण करने और पहला पेज शिप करने के लिए।",
+        "features": [
+          "Kalit Flow एक्सेस",
+          "75 क्रेडिट / महीना",
+          "AI-जनरेटेड लैंडिंग पेज",
+          "लाइव प्रीव्यू",
+          "कस्टम डोमेन सपोर्ट"
+        ],
+        "buttonText": "Flow के साथ शुरू करें"
+      },
+      "launch": {
+        "name": "Launch",
+        "tagline": "सार्वजनिक लॉन्च की तैयारी करने वाले फ़ाउंडर्स के लिए।",
+        "features": [
+          "Flow + Kalit Studio",
+          "350 क्रेडिट / महीना",
+          "पेज डिप्लॉय और रीडिप्लॉय",
+          "प्रोजेक्ट फ़ाइलें और एक्सपोर्ट",
+          "प्राथमिकता सपोर्ट"
+        ],
+        "buttonText": "मेरी लॉन्च साइट बनाएं"
+      },
+      "launchPro": {
+        "name": "Launch Pro",
+        "tagline": "लॉन्च पेज प्लस सुरक्षा समीक्षा चाहने वाली टीमों के लिए।",
+        "features": [
+          "Flow + Pentest एक्सेस",
+          "1,200 क्रेडिट / महीना",
+          "लॉन्च से पहले सुरक्षा स्कैन",
+          "रिपोर्ट एक्सपोर्ट",
+          "कस्टम ऑनबोर्डिंग"
+        ],
+        "buttonText": "स्कैन के साथ लॉन्च करें"
+      }
+    },
+    "pentest": {
+      "preview": {
+        "name": "Preview",
+        "tagline": "वर्कफ़्लो और नमूना रिपोर्ट की समीक्षा के लिए।",
+        "features": [
+          "नमूना findings रिपोर्ट",
+          "वर्कस्पेस प्रीव्यू",
+          "Studio में स्कोप प्लानिंग",
+          "अधिकृत लक्ष्य इनटेक",
+          "स्कैन के लिए तैयार होने पर अपग्रेड"
+        ],
+        "buttonText": "Preview Pentest"
+      },
+      "prelaunchScan": {
+        "name": "लॉन्च से पहले स्कैन",
+        "tagline": "लॉन्च से पहले एक ऐप, API या स्टेजिंग लक्ष्य के लिए।",
+        "features": [
+          "त्वरित या मानक स्कैन प्रोफ़ाइल",
+          "लाइव चरण फ़ीड",
+          "साक्ष्य के साथ findings",
+          "PDF/HTML रिपोर्ट एक्सपोर्ट",
+          "उपचार मार्गदर्शन"
+        ],
+        "buttonText": "स्कैन शुरू करें"
+      },
+      "securityPro": {
+        "name": "Security Pro",
+        "tagline": "गहरे स्कैन, पुनःपरीक्षण और लॉन्च टीमों के लिए।",
+        "features": [
+          "गहरे और लक्षित स्कैन प्रोफ़ाइल",
+          "कई वर्कस्पेस",
+          "findings के पुनःपरीक्षण",
+          "सलाहकार रन",
+          "प्राथमिकता सपोर्ट"
+        ],
+        "buttonText": "मेरा लॉन्च सुरक्षित करें"
+      }
+    }
   }
 }

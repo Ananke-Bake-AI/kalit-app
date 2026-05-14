@@ -467,5 +467,86 @@
     "shareLinkedIn": "Compartir en LinkedIn",
     "shareHN": "Compartir en Hacker News",
     "empty": "No hay posts todavía. Vuelve pronto."
+  },
+  "suitePlans": {
+    "perMonth": "por mes",
+    "toStart": "para empezar",
+    "launchPick": "Elección de lanzamiento",
+    "flow": {
+      "starter": {
+        "name": "Starter",
+        "tagline": "Para probar Flow y publicar una primera página.",
+        "features": [
+          "Acceso a Kalit Flow",
+          "75 créditos / mes",
+          "Landing pages generadas por IA",
+          "Vistas previas en vivo",
+          "Soporte de dominio personalizado"
+        ],
+        "buttonText": "Empezar con Flow"
+      },
+      "launch": {
+        "name": "Launch",
+        "tagline": "Para fundadores que preparan un lanzamiento público.",
+        "features": [
+          "Flow + Kalit Studio",
+          "350 créditos / mes",
+          "Despliegue y redespliegue de páginas",
+          "Archivos de proyecto y exportaciones",
+          "Soporte prioritario"
+        ],
+        "buttonText": "Construir mi sitio de lanzamiento"
+      },
+      "launchPro": {
+        "name": "Launch Pro",
+        "tagline": "Para equipos que quieren landing pages más revisión de seguridad.",
+        "features": [
+          "Acceso a Flow + Pentest",
+          "1.200 créditos / mes",
+          "Escaneo de seguridad pre-lanzamiento",
+          "Exportación de informe",
+          "Onboarding personalizado"
+        ],
+        "buttonText": "Lanzar con escaneo"
+      }
+    },
+    "pentest": {
+      "preview": {
+        "name": "Preview",
+        "tagline": "Para revisar el flujo de trabajo e informes de muestra.",
+        "features": [
+          "Informe de hallazgos de muestra",
+          "Vista previa del workspace",
+          "Planificación de scope en Studio",
+          "Captura de objetivos autorizados",
+          "Actualizar cuando esté listo para escanear"
+        ],
+        "buttonText": "Preview Pentest"
+      },
+      "prelaunchScan": {
+        "name": "Escaneo pre-lanzamiento",
+        "tagline": "Para una app, API u objetivo de staging antes del lanzamiento.",
+        "features": [
+          "Perfiles de escaneo rápido o estándar",
+          "Flujo de fases en vivo",
+          "Hallazgos con evidencia",
+          "Exportación de informe PDF/HTML",
+          "Guía de remediación"
+        ],
+        "buttonText": "Iniciar escaneo"
+      },
+      "securityPro": {
+        "name": "Security Pro",
+        "tagline": "Para escaneos más profundos, retests y equipos de lanzamiento.",
+        "features": [
+          "Perfiles de escaneo profundo y dirigido",
+          "Múltiples workspaces",
+          "Retests de hallazgos",
+          "Sesiones de asesoría",
+          "Soporte prioritario"
+        ],
+        "buttonText": "Asegurar mi lanzamiento"
+      }
+    }
   }
 }

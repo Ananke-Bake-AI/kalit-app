@@ -37,14 +37,38 @@
       "SLA & öncelikli destek"
     ],
     "faqs": [
-      { "q": "Bir kredi nedir?", "a": "Krediler temel kullanım birimidir. Kabaca: Flow'da sayfa üretimi başına ~1 kredi, MVP build çalıştırması için ~10–15 kredi, Pentest taraması başına ~5 kredi. Tam maliyetler proje boyutuna ve dahil olan uzman ajanlara bağlıdır. Bir çalıştırma başlamadan önce kredi maliyetini her zaman görürsün." },
-      { "q": "İstediğim zaman iptal edebilir miyim?", "a": "Evet. Panelden iptal et, soru sormadan. Planın mevcut faturalandırma dönemi sonuna kadar aktif kalır, sonra Free'ye düşer." },
-      { "q": "Kullanılmayan krediler devrediyor mu?", "a": "Aylık abonelik kredileri devretmez — her yenilemede sıfırlanır. Aboneliğin üzerine satın aldığın tek seferlik kredi paketleri kullanılana kadar hesabında kalır." },
-      { "q": "Pentest Pro'da mevcut mu?", "a": "Pentest Enterprise'a dahildir. Pro'ya beta olarak açıyoruz — panelden Pentest bekleme listesine katıl veya erken erişim için bize ulaş." },
-      { "q": "Ajans veya hacim fiyatlandırması var mı?", "a": "Evet. Müşteri işi teslim ediyorsan, 10'dan fazla koltuğa ihtiyacın varsa veya özel kredi tahsisi gerekiyorsa bize ulaş — bir ajans ortak planımız var." },
-      { "q": "Eğitim veya kar amacı gütmeyen indirimler?", "a": "Öğrenciler, eğitmenler ve kayıtlı kar amacı gütmeyen kuruluşlar için indirimli Pro planları sunuyoruz. Kurumsal adresinden contact@kalit.ai'ye e-posta gönder." },
-      { "q": "Verim nerede saklanıyor?", "a": "Kalit AI, Merkle Tech Labs LTD. (Malta) tarafından işletilir. Veriler AB bölgelerinde işlenir. Alt işleyiciler ve şifreleme dahil tüm detaylar için Gizlilik ve Güvenlik sayfalarımıza bak." },
-      { "q": "Herhangi bir sitede Pentest çalıştırabilir miyim?", "a": "Hayır. Pentest yalnızca sahip olduğun veya açıkça test etmeye yetkili olduğun hedefler içindir. Bir tarama çalıştırmadan önce Sorumlu Kullanım sayfamızı oku." }
+      {
+        "q": "Bir kredi nedir?",
+        "a": "Krediler temel kullanım birimidir. Kabaca: Flow'da sayfa üretimi başına ~1 kredi, MVP build çalıştırması için ~10–15 kredi, Pentest taraması başına ~5 kredi. Tam maliyetler proje boyutuna ve dahil olan uzman ajanlara bağlıdır. Bir çalıştırma başlamadan önce kredi maliyetini her zaman görürsün."
+      },
+      {
+        "q": "İstediğim zaman iptal edebilir miyim?",
+        "a": "Evet. Panelden iptal et, soru sormadan. Planın mevcut faturalandırma dönemi sonuna kadar aktif kalır, sonra Free'ye düşer."
+      },
+      {
+        "q": "Kullanılmayan krediler devrediyor mu?",
+        "a": "Aylık abonelik kredileri devretmez — her yenilemede sıfırlanır. Aboneliğin üzerine satın aldığın tek seferlik kredi paketleri kullanılana kadar hesabında kalır."
+      },
+      {
+        "q": "Pentest Pro'da mevcut mu?",
+        "a": "Pentest Enterprise'a dahildir. Pro'ya beta olarak açıyoruz — panelden Pentest bekleme listesine katıl veya erken erişim için bize ulaş."
+      },
+      {
+        "q": "Ajans veya hacim fiyatlandırması var mı?",
+        "a": "Evet. Müşteri işi teslim ediyorsan, 10'dan fazla koltuğa ihtiyacın varsa veya özel kredi tahsisi gerekiyorsa bize ulaş — bir ajans ortak planımız var."
+      },
+      {
+        "q": "Eğitim veya kar amacı gütmeyen indirimler?",
+        "a": "Öğrenciler, eğitmenler ve kayıtlı kar amacı gütmeyen kuruluşlar için indirimli Pro planları sunuyoruz. Kurumsal adresinden contact@kalit.ai'ye e-posta gönder."
+      },
+      {
+        "q": "Verim nerede saklanıyor?",
+        "a": "Kalit AI, Merkle Tech Labs LTD. (Malta) tarafından işletilir. Veriler AB bölgelerinde işlenir. Alt işleyiciler ve şifreleme dahil tüm detaylar için Gizlilik ve Güvenlik sayfalarımıza bak."
+      },
+      {
+        "q": "Herhangi bir sitede Pentest çalıştırabilir miyim?",
+        "a": "Hayır. Pentest yalnızca sahip olduğun veya açıkça test etmeye yetkili olduğun hedefler içindir. Bir tarama çalıştırmadan önce Sorumlu Kullanım sayfamızı oku."
+      }
     ]
   },
   "security": {
@@ -359,26 +383,74 @@
     "severityMedium": "ORT",
     "severityLow": "DÜŞ",
     "agents": [
-      { "name": "SQL Injection Hunter", "targets": "Error-based, UNION, blind (time / boolean), out-of-band." },
-      { "name": "XSS Specialist", "targets": "Reflected, stored, DOM-based, bağlama duyarlı payload mutasyonu ile." },
-      { "name": "SSRF Specialist", "targets": "Bulut metadata (AWS / GCP / Azure), DNS rebinding, IP encoding bypass'ları." },
-      { "name": "Command Injection", "targets": "Doğrudan ve blind (DNS, time, HTTP callback)." },
-      { "name": "Deserialization", "targets": "Java, PHP, Python, .NET, Ruby gadget zincirleri." },
-      { "name": "Auth Bypass", "targets": "Oturum fiksasyonu, JWT zaafları, ayrıcalık yükseltme." },
-      { "name": "IDOR Tester", "targets": "Endpoint'ler arası nesne referans manipülasyonu." },
-      { "name": "Credential Spray", "targets": "Keşfedilen yüzeylere karşı yeniden kullanım testleri." },
-      { "name": "Subdomain Takeover", "targets": "15+ bulut hizmetine karşı CNAME fingerprinting." },
-      { "name": "Cloud Auditor", "targets": "Açık bucket'lar (S3 / GCS / Blob), açığa çıkmış serverless endpoint'ler." },
-      { "name": "WebSocket Security", "targets": "CSWSH, auth bypass, mesaj kurcalama." },
-      { "name": "GraphQL Security", "targets": "Introspection, derinlik ve karmaşıklık saldırıları, field auth." }
+      {
+        "name": "SQL Injection Hunter",
+        "targets": "Error-based, UNION, blind (time / boolean), out-of-band."
+      },
+      {
+        "name": "XSS Specialist",
+        "targets": "Reflected, stored, DOM-based, bağlama duyarlı payload mutasyonu ile."
+      },
+      {
+        "name": "SSRF Specialist",
+        "targets": "Bulut metadata (AWS / GCP / Azure), DNS rebinding, IP encoding bypass'ları."
+      },
+      {
+        "name": "Command Injection",
+        "targets": "Doğrudan ve blind (DNS, time, HTTP callback)."
+      },
+      {
+        "name": "Deserialization",
+        "targets": "Java, PHP, Python, .NET, Ruby gadget zincirleri."
+      },
+      {
+        "name": "Auth Bypass",
+        "targets": "Oturum fiksasyonu, JWT zaafları, ayrıcalık yükseltme."
+      },
+      {
+        "name": "IDOR Tester",
+        "targets": "Endpoint'ler arası nesne referans manipülasyonu."
+      },
+      {
+        "name": "Credential Spray",
+        "targets": "Keşfedilen yüzeylere karşı yeniden kullanım testleri."
+      },
+      {
+        "name": "Subdomain Takeover",
+        "targets": "15+ bulut hizmetine karşı CNAME fingerprinting."
+      },
+      {
+        "name": "Cloud Auditor",
+        "targets": "Açık bucket'lar (S3 / GCS / Blob), açığa çıkmış serverless endpoint'ler."
+      },
+      {
+        "name": "WebSocket Security",
+        "targets": "CSWSH, auth bypass, mesaj kurcalama."
+      },
+      {
+        "name": "GraphQL Security",
+        "targets": "Introspection, derinlik ve karmaşıklık saldırıları, field auth."
+      }
     ],
     "sampleFindings": [
-      { "title": "SQLi — /api/auth/login" },
-      { "title": "SSRF — /api/avatar?url=…" },
-      { "title": "Stored XSS — /comments" },
-      { "title": "IDOR — /api/orders/:id" },
-      { "title": "Açık S3 bucket — assets-prod" },
-      { "title": "Eksik güvenlik header'ları" }
+      {
+        "title": "SQLi — /api/auth/login"
+      },
+      {
+        "title": "SSRF — /api/avatar?url=…"
+      },
+      {
+        "title": "Stored XSS — /comments"
+      },
+      {
+        "title": "IDOR — /api/orders/:id"
+      },
+      {
+        "title": "Açık S3 bucket — assets-prod"
+      },
+      {
+        "title": "Eksik güvenlik header'ları"
+      }
     ]
   },
   "blog": {
@@ -395,5 +467,86 @@
     "shareLinkedIn": "LinkedIn'de paylaş",
     "shareHN": "Hacker News'de paylaş",
     "empty": "Henüz yazı yok. Yakında tekrar bak."
+  },
+  "suitePlans": {
+    "perMonth": "aylık",
+    "toStart": "başlamak için",
+    "launchPick": "Lansman seçimi",
+    "flow": {
+      "starter": {
+        "name": "Starter",
+        "tagline": "Flow'u test etmek ve ilk sayfayı yayınlamak için.",
+        "features": [
+          "Kalit Flow erişimi",
+          "75 kredi / ay",
+          "AI tarafından üretilmiş landing sayfaları",
+          "Canlı önizlemeler",
+          "Özel alan adı desteği"
+        ],
+        "buttonText": "Flow ile başla"
+      },
+      "launch": {
+        "name": "Launch",
+        "tagline": "Halka açık lansman hazırlayan founder'lar için.",
+        "features": [
+          "Flow + Kalit Studio",
+          "350 kredi / ay",
+          "Sayfaları deploy et ve yeniden deploy et",
+          "Proje dosyaları ve dışa aktarımlar",
+          "Öncelikli destek"
+        ],
+        "buttonText": "Lansman sitemi inşa et"
+      },
+      "launchPro": {
+        "name": "Launch Pro",
+        "tagline": "Lansman sayfaları artı güvenlik incelemesi isteyen ekipler için.",
+        "features": [
+          "Flow + Pentest erişimi",
+          "1.200 kredi / ay",
+          "Lansman öncesi güvenlik taraması",
+          "Rapor dışa aktarımı",
+          "Özel onboarding"
+        ],
+        "buttonText": "Taramayla lanse et"
+      }
+    },
+    "pentest": {
+      "preview": {
+        "name": "Preview",
+        "tagline": "İş akışını ve örnek raporları incelemek için.",
+        "features": [
+          "Örnek bulgu raporu",
+          "Workspace önizlemesi",
+          "Studio'da kapsam planlaması",
+          "Yetkili hedef girişi",
+          "Tarama hazır olduğunda yükselt"
+        ],
+        "buttonText": "Preview Pentest"
+      },
+      "prelaunchScan": {
+        "name": "Lansman öncesi tarama",
+        "tagline": "Lansmandan önce tek uygulama, API veya staging hedefi için.",
+        "features": [
+          "Hızlı veya standart tarama profilleri",
+          "Canlı faz akışı",
+          "Kanıtlarla bulgular",
+          "PDF/HTML rapor dışa aktarımı",
+          "İyileştirme rehberi"
+        ],
+        "buttonText": "Taramayı başlat"
+      },
+      "securityPro": {
+        "name": "Security Pro",
+        "tagline": "Daha derin taramalar, yeniden testler ve lansman ekipleri için.",
+        "features": [
+          "Derin ve hedeflenmiş tarama profilleri",
+          "Birden fazla workspace",
+          "Bulgu yeniden testleri",
+          "Danışmanlık koşumları",
+          "Öncelikli destek"
+        ],
+        "buttonText": "Lansmanımı güvenle"
+      }
+    }
   }
 }

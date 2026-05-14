@@ -37,14 +37,38 @@
       "SLA & prioriterad support"
     ],
     "faqs": [
-      { "q": "Vad är en kredit?", "a": "Krediter är den underliggande användningsenheten. Som riktlinje: ~1 kredit per sidgenerering i Flow, ~10–15 krediter för en MVP-build, ~5 krediter per Pentest-scan. Exakta kostnader beror på projektets storlek och de specialistagenter som ingår. Du ser alltid kreditkostnaden innan en körning startar." },
-      { "q": "Kan jag avsluta när som helst?", "a": "Ja. Avsluta från instrumentpanelen, utan frågor. Din plan är aktiv tills slutet av aktuell faktureringsperiod och växlar sedan till Free." },
-      { "q": "Förs oanvända krediter över?", "a": "Månatliga prenumerationskrediter förs inte över — de återställs vid varje förnyelse. Engångskreditpaket du köper utöver prenumerationen ligger kvar på kontot tills de används." },
-      { "q": "Finns Pentest i Pro?", "a": "Pentest ingår i Enterprise. Vi rullar ut det i beta för Pro — gå med i Pentest-väntelistan från instrumentpanelen eller kontakta oss för tidig åtkomst." },
-      { "q": "Erbjuder ni byrå- eller volympriser?", "a": "Ja. Om du levererar kundarbete, behöver fler än 10 platser eller en skräddarsydd kreditallokering, kontakta oss — vi har en byråpartnerplan." },
-      { "q": "Finns det utbildnings- eller ideell rabatt?", "a": "Vi erbjuder rabatterade Pro-planer för studenter, lärare och registrerade ideella organisationer. Mejla contact@kalit.ai från din institutionsadress." },
-      { "q": "Var lagras mina data?", "a": "Kalit AI drivs av Merkle Tech Labs LTD. (Malta). Data behandlas i EU-regioner. Se våra sidor för Integritetspolicy och Säkerhet för helheten, inklusive underbiträden och kryptering." },
-      { "q": "Kan jag köra Pentest mot vilken sajt som helst?", "a": "Nej. Pentest är endast för mål du äger eller uttryckligen är behörig att testa. Läs vår sida för Ansvarsfull användning innan du startar en scan." }
+      {
+        "q": "Vad är en kredit?",
+        "a": "Krediter är den underliggande användningsenheten. Som riktlinje: ~1 kredit per sidgenerering i Flow, ~10–15 krediter för en MVP-build, ~5 krediter per Pentest-scan. Exakta kostnader beror på projektets storlek och de specialistagenter som ingår. Du ser alltid kreditkostnaden innan en körning startar."
+      },
+      {
+        "q": "Kan jag avsluta när som helst?",
+        "a": "Ja. Avsluta från instrumentpanelen, utan frågor. Din plan är aktiv tills slutet av aktuell faktureringsperiod och växlar sedan till Free."
+      },
+      {
+        "q": "Förs oanvända krediter över?",
+        "a": "Månatliga prenumerationskrediter förs inte över — de återställs vid varje förnyelse. Engångskreditpaket du köper utöver prenumerationen ligger kvar på kontot tills de används."
+      },
+      {
+        "q": "Finns Pentest i Pro?",
+        "a": "Pentest ingår i Enterprise. Vi rullar ut det i beta för Pro — gå med i Pentest-väntelistan från instrumentpanelen eller kontakta oss för tidig åtkomst."
+      },
+      {
+        "q": "Erbjuder ni byrå- eller volympriser?",
+        "a": "Ja. Om du levererar kundarbete, behöver fler än 10 platser eller en skräddarsydd kreditallokering, kontakta oss — vi har en byråpartnerplan."
+      },
+      {
+        "q": "Finns det utbildnings- eller ideell rabatt?",
+        "a": "Vi erbjuder rabatterade Pro-planer för studenter, lärare och registrerade ideella organisationer. Mejla contact@kalit.ai från din institutionsadress."
+      },
+      {
+        "q": "Var lagras mina data?",
+        "a": "Kalit AI drivs av Merkle Tech Labs LTD. (Malta). Data behandlas i EU-regioner. Se våra sidor för Integritetspolicy och Säkerhet för helheten, inklusive underbiträden och kryptering."
+      },
+      {
+        "q": "Kan jag köra Pentest mot vilken sajt som helst?",
+        "a": "Nej. Pentest är endast för mål du äger eller uttryckligen är behörig att testa. Läs vår sida för Ansvarsfull användning innan du startar en scan."
+      }
     ]
   },
   "security": {
@@ -359,26 +383,74 @@
     "severityMedium": "MED",
     "severityLow": "LÅG",
     "agents": [
-      { "name": "SQL Injection Hunter", "targets": "Error-based, UNION, blind (time / boolean), out-of-band." },
-      { "name": "XSS Specialist", "targets": "Reflected, stored, DOM-based med kontextkänslig payload-mutation." },
-      { "name": "SSRF Specialist", "targets": "Cloud-metadata (AWS / GCP / Azure), DNS rebinding, IP-encoding-bypasses." },
-      { "name": "Command Injection", "targets": "Direkt och blind (DNS, time, HTTP callback)." },
-      { "name": "Deserialization", "targets": "Java-, PHP-, Python-, .NET-, Ruby-gadget-kedjor." },
-      { "name": "Auth Bypass", "targets": "Sessionfixation, JWT-brister, privilege escalation." },
-      { "name": "IDOR Tester", "targets": "Manipulation av objektreferenser över endpoints." },
-      { "name": "Credential Spray", "targets": "Återanvändningstester mot upptäckta ytor." },
-      { "name": "Subdomain Takeover", "targets": "CNAME-fingerprinting mot 15+ molntjänster." },
-      { "name": "Cloud Auditor", "targets": "Öppna buckets (S3 / GCS / Blob), exponerade serverless-endpoints." },
-      { "name": "WebSocket Security", "targets": "CSWSH, auth bypass, meddelandemanipulation." },
-      { "name": "GraphQL Security", "targets": "Introspection, djup- och komplexitetsattacker, field auth." }
+      {
+        "name": "SQL Injection Hunter",
+        "targets": "Error-based, UNION, blind (time / boolean), out-of-band."
+      },
+      {
+        "name": "XSS Specialist",
+        "targets": "Reflected, stored, DOM-based med kontextkänslig payload-mutation."
+      },
+      {
+        "name": "SSRF Specialist",
+        "targets": "Cloud-metadata (AWS / GCP / Azure), DNS rebinding, IP-encoding-bypasses."
+      },
+      {
+        "name": "Command Injection",
+        "targets": "Direkt och blind (DNS, time, HTTP callback)."
+      },
+      {
+        "name": "Deserialization",
+        "targets": "Java-, PHP-, Python-, .NET-, Ruby-gadget-kedjor."
+      },
+      {
+        "name": "Auth Bypass",
+        "targets": "Sessionfixation, JWT-brister, privilege escalation."
+      },
+      {
+        "name": "IDOR Tester",
+        "targets": "Manipulation av objektreferenser över endpoints."
+      },
+      {
+        "name": "Credential Spray",
+        "targets": "Återanvändningstester mot upptäckta ytor."
+      },
+      {
+        "name": "Subdomain Takeover",
+        "targets": "CNAME-fingerprinting mot 15+ molntjänster."
+      },
+      {
+        "name": "Cloud Auditor",
+        "targets": "Öppna buckets (S3 / GCS / Blob), exponerade serverless-endpoints."
+      },
+      {
+        "name": "WebSocket Security",
+        "targets": "CSWSH, auth bypass, meddelandemanipulation."
+      },
+      {
+        "name": "GraphQL Security",
+        "targets": "Introspection, djup- och komplexitetsattacker, field auth."
+      }
     ],
     "sampleFindings": [
-      { "title": "SQLi — /api/auth/login" },
-      { "title": "SSRF — /api/avatar?url=…" },
-      { "title": "Stored XSS — /comments" },
-      { "title": "IDOR — /api/orders/:id" },
-      { "title": "Öppen S3-bucket — assets-prod" },
-      { "title": "Saknade säkerhetsheaders" }
+      {
+        "title": "SQLi — /api/auth/login"
+      },
+      {
+        "title": "SSRF — /api/avatar?url=…"
+      },
+      {
+        "title": "Stored XSS — /comments"
+      },
+      {
+        "title": "IDOR — /api/orders/:id"
+      },
+      {
+        "title": "Öppen S3-bucket — assets-prod"
+      },
+      {
+        "title": "Saknade säkerhetsheaders"
+      }
     ]
   },
   "blog": {
@@ -395,5 +467,86 @@
     "shareLinkedIn": "Dela på LinkedIn",
     "shareHN": "Dela på Hacker News",
     "empty": "Inga inlägg än. Kom snart tillbaka."
+  },
+  "suitePlans": {
+    "perMonth": "per månad",
+    "toStart": "för att börja",
+    "launchPick": "Launch-val",
+    "flow": {
+      "starter": {
+        "name": "Starter",
+        "tagline": "För att testa Flow och släppa en första sida.",
+        "features": [
+          "Åtkomst till Kalit Flow",
+          "75 krediter / månad",
+          "AI-genererade landningssidor",
+          "Live-förhandsvisningar",
+          "Stöd för anpassade domäner"
+        ],
+        "buttonText": "Börja med Flow"
+      },
+      "launch": {
+        "name": "Launch",
+        "tagline": "För founders som förbereder en offentlig lansering.",
+        "features": [
+          "Flow + Kalit Studio",
+          "350 krediter / månad",
+          "Distribuera och omdistribuera sidor",
+          "Projektfiler och exporter",
+          "Prioriterad support"
+        ],
+        "buttonText": "Bygg min lanseringssida"
+      },
+      "launchPro": {
+        "name": "Launch Pro",
+        "tagline": "För team som vill ha lanseringssidor plus säkerhetsgranskning.",
+        "features": [
+          "Flow + Pentest-åtkomst",
+          "1 200 krediter / månad",
+          "Säkerhetsscan före lansering",
+          "Rapportexport",
+          "Anpassad onboarding"
+        ],
+        "buttonText": "Lansera med scan"
+      }
+    },
+    "pentest": {
+      "preview": {
+        "name": "Preview",
+        "tagline": "För att granska arbetsflödet och exempelrapporter.",
+        "features": [
+          "Exempelrapport för fynd",
+          "Workspace-förhandsvisning",
+          "Scope-planering i Studio",
+          "Intag av auktoriserade mål",
+          "Uppgradera när du är redo att scanna"
+        ],
+        "buttonText": "Preview Pentest"
+      },
+      "prelaunchScan": {
+        "name": "Pre-launch-scan",
+        "tagline": "För en app, API eller staging-mål före lansering.",
+        "features": [
+          "Snabb- eller standardscan-profiler",
+          "Live fas-flöde",
+          "Fynd med bevis",
+          "PDF/HTML-rapportexport",
+          "Åtgärdsvägledning"
+        ],
+        "buttonText": "Starta scan"
+      },
+      "securityPro": {
+        "name": "Security Pro",
+        "tagline": "För djupare scanningar, omtester och lanseringsteam.",
+        "features": [
+          "Djupa och riktade scan-profiler",
+          "Flera workspaces",
+          "Omtester av fynd",
+          "Advisory-körningar",
+          "Prioriterad support"
+        ],
+        "buttonText": "Säkra min lansering"
+      }
+    }
   }
 }

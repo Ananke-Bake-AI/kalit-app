@@ -467,5 +467,86 @@
     "shareLinkedIn": "Partager sur LinkedIn",
     "shareHN": "Partager sur Hacker News",
     "empty": "Aucun article pour le moment. Revenez bientôt."
+  },
+  "suitePlans": {
+    "perMonth": "par mois",
+    "toStart": "pour commencer",
+    "launchPick": "Choix lancement",
+    "flow": {
+      "starter": {
+        "name": "Starter",
+        "tagline": "Pour tester Flow et publier une première page.",
+        "features": [
+          "Accès à Kalit Flow",
+          "75 crédits / mois",
+          "Landing pages générées par IA",
+          "Aperçus en direct",
+          "Support de domaine personnalisé"
+        ],
+        "buttonText": "Commencer avec Flow"
+      },
+      "launch": {
+        "name": "Launch",
+        "tagline": "Pour les fondateurs qui préparent un lancement public.",
+        "features": [
+          "Flow + Kalit Studio",
+          "350 crédits / mois",
+          "Déploiement et redéploiement de pages",
+          "Fichiers de projet et exports",
+          "Support prioritaire"
+        ],
+        "buttonText": "Construire mon site de lancement"
+      },
+      "launchPro": {
+        "name": "Launch Pro",
+        "tagline": "Pour les équipes qui veulent landing pages + revue de sécurité.",
+        "features": [
+          "Flow + accès Pentest",
+          "1 200 crédits / mois",
+          "Scan de sécurité pré-lancement",
+          "Export de rapport",
+          "Onboarding personnalisé"
+        ],
+        "buttonText": "Lancer avec scan"
+      }
+    },
+    "pentest": {
+      "preview": {
+        "name": "Preview",
+        "tagline": "Pour examiner le workflow et des rapports d'exemple.",
+        "features": [
+          "Rapport d'exemple de vulnérabilités",
+          "Aperçu du workspace",
+          "Planification de scope dans Studio",
+          "Saisie de cibles autorisées",
+          "Mise à niveau quand prêt à scanner"
+        ],
+        "buttonText": "Preview Pentest"
+      },
+      "prelaunchScan": {
+        "name": "Scan pré-lancement",
+        "tagline": "Pour une app, API ou cible staging avant le lancement.",
+        "features": [
+          "Profils de scan rapide ou standard",
+          "Flux des phases en direct",
+          "Vulnérabilités avec preuves",
+          "Export de rapport PDF/HTML",
+          "Recommandations de remédiation"
+        ],
+        "buttonText": "Démarrer le scan"
+      },
+      "securityPro": {
+        "name": "Security Pro",
+        "tagline": "Pour scans approfondis, retests et équipes de lancement.",
+        "features": [
+          "Profils de scan approfondi et ciblé",
+          "Plusieurs workspaces",
+          "Retest des vulnérabilités",
+          "Sessions de conseil",
+          "Support prioritaire"
+        ],
+        "buttonText": "Sécuriser mon lancement"
+      }
+    }
   }
 }
