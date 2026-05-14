@@ -534,6 +534,11 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
             prunedAssistantRef.current.delete(sid)
           }
           setSessionIsStreaming(sid, true)
+          // The broker confirmed the room is open — the
+          // handleSend window is over, session_idle is no longer
+          // racing the streamHub setup. Drop the in-flight claim
+          // so future session_idle frames can act normally.
+          inflightSendsRef.current.delete(sid)
           break
         }
         case "session_idle": {
@@ -550,21 +555,24 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
           break
         }
         case "session_stream_closed": {
-          // Run wrapped up for `sid`. Refetch its canonical messages,
-          // refresh the sidebar (title/usage), refresh quota. All per
-          // sid — the active-session selector picks it up if we're
-          // looking, otherwise the slot revalidates quietly.
+          // Run wrapped up for `sid` — this is the AUTHORITATIVE
+          // signal that the broker is done. Everything that used to
+          // live in handleSend's finally block lives here now,
+          // because Vercel's 60 s streaming-function ceiling means
+          // the POST connection often dies long before the agent
+          // actually finishes.
           if (!sid) break
-          // Order matters: await the messages refresh BEFORE clearing
-          // streamSegments so the live stream stays visible until the
-          // persisted assistant bubble is in the list, otherwise the
-          // user sees a one-frame gap.
+          // Refetch the canonical messages first, then clear segments
+          // — keeps the live stream visible until the persisted bubble
+          // lands so the user doesn't see a one-frame gap.
           void fetchMessages(sid).finally(() => {
             setSessionStreamSegments(sid, [])
             setSessionActiveWidgets(sid, [])
           })
           setSessionIsStreaming(sid, false)
           setSessionStreamThinking(sid, "")
+          markSessionProcessing(sid, false)
+          inflightSendsRef.current.delete(sid)
           // Sidebar / quota are global — no sid filter needed.
           fetchSessions()
           fetchQuota()
@@ -823,12 +831,13 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
             setError(data.error || `Error ${res.status}`)
           }
         }
-        // Always roll back this session's slot, even if the user
-        // navigated elsewhere — otherwise the temp bubble and the
-        // "streaming" flag persist forever on whichever session
-        // they came from.
+        // No run started (auth / credit gate / 400) — roll back the
+        // session's optimistic state. session_stream_closed will NOT
+        // fire because the broker never opened a room.
         setSessionIsStreaming(sessionId, false)
         removeSessionMessage(sessionId, tempId)
+        markSessionProcessing(sessionId, false)
+        inflightSendsRef.current.delete(sessionId)
         return
       }
 
@@ -1040,37 +1049,23 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
         }
       }
     } finally {
+      // CRITICAL: this block must NOT touch bySession[sessionId].
+      // The POST/SSE stream closing does not mean the agent run is
+      // over — Vercel kills streaming functions at ~60 s, and the
+      // run can keep going on the broker for minutes (Taskforce
+      // builds, long find_assets_search batches, wait_for_completion
+      // polling). The authoritative "run finished" signal is the
+      // WS frame `session_stream_closed`, which already does all
+      // the per-session cleanup (fetchMessages, drop reducer, flip
+      // isStreaming off, clear segments/thinking, refresh sidebar
+      // + quota). Calling those mutators here while the agent is
+      // still working is exactly what produced the user-visible
+      // "no thinking indicator" bug after a 60 s Taskforce build.
+      //
+      // We do clear local refs that are scoped to this handler.
       if (watchdog) clearInterval(watchdog)
-      // ALL cleanup is now per-sid via `sessionId` (captured at
-      // send time) — we don't gate on activeSessionRef.current
-      // anymore. The originating session's slot is the one we
-      // started; finishing it cleanly is correct whether the
-      // user is still looking or not.
-      if (sessionId) {
-        setSessionActiveWidgets(sessionId, [])
-        try { await fetchMessages(sessionId) } catch { /* silent */ }
-        // Guarantee the optimistic temp is gone.
-        removeSessionMessage(sessionId, tempId)
-        fetchSessions()
-        fetchQuota()
-        // Mirror broker-side UnlockSession in the sessions list.
-        markSessionProcessing(sessionId, false)
-        inflightSendsRef.current.delete(sessionId)
-        // Drop the live flags + clear streamSegments for THIS
-        // session. The persisted assistant message is now in
-        // bySession[sid].messages from fetchMessages above; the
-        // segments view served us during the stream, time to
-        // hand off to the persisted view.
-        setSessionIsStreaming(sessionId, false)
-        setSessionStreamThinking(sessionId, "")
-        setSessionStreamSegments(sessionId, [])
-      }
       abortRef.current = null
       sendingRef.current = false
-      // Only flash the title for the visible session. Background
-      // sessions completing in the background shouldn't steal
-      // attention from whatever the user is doing.
-      if (isStill()) notify()
     }
   }, [
     activeSessionId, isStreaming, locale, progressMode,
@@ -1104,6 +1099,7 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
       setSessionStreamSegments(activeSessionId, [])
       setSessionStreamThinking(activeSessionId, "")
       markSessionProcessing(activeSessionId, false)
+      inflightSendsRef.current.delete(activeSessionId)
 
       brokerFetch(`/api/broker/cancel/${activeSessionId}`, { method: "POST" }).catch(() => {})
 

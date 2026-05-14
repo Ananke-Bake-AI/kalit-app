@@ -291,6 +291,15 @@ export const useStudioStore = create<StudioStore>((set, get) => ({
     set((s) => {
       if (!sid) return s
       const prev = s.bySession[sid] ?? EMPTY_SESSION_STATE
+      // Hard guard: refuse to overwrite a populated chat with an empty
+      // list. Empty payloads always come from transient hiccups
+      // (broker GET error fallthrough, partial session_context after
+      // a fresh WS subscribe, DB read that errored and returned []).
+      // The next authoritative refresh will fill it; this protects
+      // the painted chat from being wiped between two valid frames.
+      // For a legitimately empty session, prev.messages is also empty
+      // so mergeMessages produces [] either way — no-op.
+      if (messages.length === 0 && prev.messages.length > 0) return s
       const merged = mergeMessages(prev.messages, messages)
       return {
         bySession: {
