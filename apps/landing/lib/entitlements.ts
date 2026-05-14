@@ -106,8 +106,27 @@ export interface CreditBreakdown {
 }
 
 export async function getCreditBreakdown(orgId: string): Promise<CreditBreakdown> {
+  // Backward-compatible wrapper — most callers don't pre-resolve
+  // entitlements, so we keep the original signature. Hot paths that
+  // ALREADY have entitlements in scope (the studio layout's
+  // getBillingSummary) should call getCreditBreakdownWithEntitlements
+  // directly to skip the second resolve round-trip.
   const entitlements = await resolveEntitlements(orgId)
+  return getCreditBreakdownWithEntitlements(orgId, entitlements)
+}
 
+/**
+ * Same math as `getCreditBreakdown` but accepts a pre-resolved
+ * `entitlements` object. Used by `getBillingSummary` so we don't fan
+ * out a duplicate Subscription + Entitlement read on every /studio
+ * navigation. With the prior code path the studio layout was issuing
+ * ~6 Prisma reads against a transatlantic Neon (Vercel iad1 → Neon
+ * eu-central-1 ≈ 120 ms each) on every request; this drops it to 4.
+ */
+export async function getCreditBreakdownWithEntitlements(
+  orgId: string,
+  entitlements: ResolvedEntitlements,
+): Promise<CreditBreakdown> {
   const now = new Date()
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
 

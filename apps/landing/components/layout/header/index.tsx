@@ -7,7 +7,7 @@ import { Icon } from "@/components/icon"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { Link } from "@/components/link"
 import { Logotype } from "@/components/logotype"
-import type { BillingSummary } from "@/lib/billing-summary"
+import { useBillingSummary } from "@/lib/use-billing-summary"
 import { SUITES, type AppPageState, type SuiteId } from "@/lib/suites"
 import { useAppStore } from "@/stores/app"
 import { useTranslation } from "@/stores/i18n"
@@ -24,14 +24,19 @@ const SUITE_LABEL_EXIT_MS = 620
 
 interface HeaderProps {
   initialSession?: Session | null
-  billingSummary?: BillingSummary | null
 }
 
-export const Header = ({ initialSession = null, billingSummary = null }: HeaderProps) => {
+// Billing summary now arrives via the BillingSummaryProvider that
+// wraps <StudioShell> (and other dashboard layouts). When the Header
+// renders outside that provider (e.g. on public marketing pages
+// before sign-in) the hook simply returns `summary: null` and the
+// badge collapses gracefully.
+export const Header = ({ initialSession = null }: HeaderProps) => {
   const { nav, setNav, page } = useAppStore()
   const { data: session, status } = useSession()
   const { darkMode, toggleTheme } = useTheme()
   const t = useTranslation()
+  const { summary: billingSummary } = useBillingSummary()
   const [menuOpen, setMenuOpen] = useState(false)
   const headerRef = useRef<HTMLElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)

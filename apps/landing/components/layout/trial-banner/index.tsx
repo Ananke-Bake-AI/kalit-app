@@ -2,7 +2,7 @@
 
 import { Icon } from "@/components/icon"
 import { Link } from "@/components/link"
-import type { BillingSummary } from "@/lib/billing-summary"
+import { useBillingSummary } from "@/lib/use-billing-summary"
 import { useTranslation } from "@/stores/i18n"
 import { useState } from "react"
 import s from "./trial-banner.module.scss"
@@ -21,13 +21,15 @@ import s from "./trial-banner.module.scss"
  * keep dismissal state in component-local React state — it pops back
  * after a full refresh, which is the right behavior for a CTA we
  * actually want noticed).
+ *
+ * Reads `summary` from `BillingSummaryProvider` instead of a SSR
+ * prop — the studio layout no longer blocks on the billing fetch.
+ * If the provider hasn't loaded yet (first 100-300 ms), `summary`
+ * is null and the banner stays hidden until data arrives.
  */
-interface TrialBannerProps {
-  summary: BillingSummary | null
-}
-
-export function TrialBanner({ summary }: TrialBannerProps) {
+export function TrialBanner() {
   const t = useTranslation()
+  const { summary } = useBillingSummary()
   const [dismissed, setDismissed] = useState(false)
 
   if (!summary) return null

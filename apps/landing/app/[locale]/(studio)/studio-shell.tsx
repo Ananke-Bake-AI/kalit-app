@@ -14,7 +14,7 @@ import { Toast } from "@/components/layout/toast"
 import { EmailBanner } from "@/components/layout/email-banner"
 import { TrialBanner } from "@/components/layout/trial-banner"
 import { DiscordFAB } from "@/components/layout/discord-fab"
-import type { BillingSummary } from "@/lib/billing-summary"
+import { BillingSummaryProvider } from "@/lib/use-billing-summary"
 import "@/lib/broker-direct"
 import { StudioFocusProvider, useStudioFocus } from "./studio-focus-context"
 import s from "./studio-shell.module.scss"
@@ -22,12 +22,11 @@ import s from "./studio-shell.module.scss"
 interface StudioShellProps {
   children: ReactNode
   session?: Session | null
-  billingSummary?: BillingSummary | null
 }
 
 const FOCUS_STORAGE_KEY = "studio-focus-mode"
 
-function StudioShellInner({ children, session, billingSummary }: { children: ReactNode; session: Session | null; billingSummary: BillingSummary | null }) {
+function StudioShellInner({ children, session }: { children: ReactNode; session: Session | null }) {
   const { focusMode } = useStudioFocus()
   const pathname = usePathname() || ""
 
@@ -39,7 +38,6 @@ function StudioShellInner({ children, session, billingSummary }: { children: Rea
   // /studio entirely for unverified users so this is mostly defense
   // in depth, but cheap.
   const emailVerified = !!session?.user?.emailVerified
-  const billingForHeader = emailVerified ? billingSummary : null
 
   return (
     <div className={s.root} data-focus={hideSiteChrome || undefined}>
@@ -51,9 +49,9 @@ function StudioShellInner({ children, session, billingSummary }: { children: Rea
           the editor renders its own fullscreen shell. */}
       {!hideSiteChrome && (
         <>
-          <Header initialSession={session} billingSummary={billingForHeader} />
+          <Header initialSession={session} />
           <EmailBanner initialSession={session} />
-          {emailVerified ? <TrialBanner summary={billingSummary} /> : null}
+          {emailVerified ? <TrialBanner /> : null}
         </>
       )}
       <main className={s.main}>{children}</main>
@@ -68,7 +66,7 @@ function StudioShellInner({ children, session, billingSummary }: { children: Rea
   )
 }
 
-export const StudioShell = ({ children, session = null, billingSummary = null }: StudioShellProps) => {
+export const StudioShell = ({ children, session = null }: StudioShellProps) => {
   const [initialFocus, setInitialFocus] = useState<boolean>(false)
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -95,11 +93,20 @@ export const StudioShell = ({ children, session = null, billingSummary = null }:
     [session, router, searchParams]
   )
 
+  // Wrap the entire studio in BillingSummaryProvider so the Header
+  // credit badge + TrialBanner can pull the summary via hook instead
+  // of receiving it as a SSR-resolved prop. Skipping the fetch when
+  // there's no orgId (mid-setup users) keeps `/api/billing/summary`
+  // from returning 401 on every nav.
+  const billingEnabled = !!(session?.user as { orgId?: string } | undefined)?.orgId
+
   return (
     <StudioHostProvider value={hostValue}>
-      <StudioFocusProvider initial={initialFocus} storageKey={FOCUS_STORAGE_KEY}>
-        <StudioShellInner session={session} billingSummary={billingSummary}>{children}</StudioShellInner>
-      </StudioFocusProvider>
+      <BillingSummaryProvider enabled={billingEnabled}>
+        <StudioFocusProvider initial={initialFocus} storageKey={FOCUS_STORAGE_KEY}>
+          <StudioShellInner session={session}>{children}</StudioShellInner>
+        </StudioFocusProvider>
+      </BillingSummaryProvider>
     </StudioHostProvider>
   )
 }
