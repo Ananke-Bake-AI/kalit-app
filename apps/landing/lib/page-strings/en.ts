@@ -26,6 +26,7 @@ export const EN_PAGE_STRINGS = {
     packsTitle: "Top up with credit packs",
     packsNote: "One-time packs sit on top of your subscription. Useful for a busy launch week or a single Pentest scan.",
     oneTimeLabel: "one-time",
+    fxDisclaimer: "Approximate local price. The exact amount in your card's currency is shown at checkout.",
     faqTitle: "Pricing FAQ",
     planOutcomes: {
       free: "Try Kalit Flow with 3 generations. No card required.",

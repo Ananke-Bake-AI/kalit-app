@@ -1,6 +1,7 @@
 import { Container } from "@/components/container"
 import { PageHeader } from "@/components/page-header"
 import { PageSection } from "@/components/page-section"
+import { formatLocalizedPrices } from "@/lib/currency"
 import { isValidLocale, type Locale } from "@/lib/i18n"
 import { MetadataSeo } from "@/lib/metadata"
 import { getPageStrings } from "@/lib/page-strings"
