@@ -77,6 +77,19 @@ type FxMap = Record<string, number>
 
 const FX_ENDPOINT = "https://api.frankfurter.app/latest?from=USD"
 
+// Currencies where the merchant has set explicit equal-numeric pricing
+// in Stripe (e.g. €29 / €99 / €299, matching the USD ladder 1:1). For
+// these, we MUST display the USD numeric verbatim with the local
+// symbol — applying FX (which would round $29 to ~€27) would diverge
+// from what Stripe actually charges, and the landing would mislead.
+//
+// Other currencies still use the daily FX rate (Stripe converts via
+// Adaptive Pricing using its own rates — close enough to ECB for
+// marketing copy).
+const FIXED_PARITY_USD: Record<string, boolean> = {
+  EUR: true
+}
+
 async function fetchFxRates(): Promise<FxMap> {
   try {
     const res = await fetch(FX_ENDPOINT, {
@@ -212,6 +225,17 @@ export async function formatLocalizedPrice(
       amount: usdAmount
     }
   }
+  // Fixed-parity currencies (EUR today): display the same numeric value
+  // as USD, just with the local symbol. Bypass FX entirely so €29 stays
+  // €29.
+  if (FIXED_PARITY_USD[currency]) {
+    return {
+      display: formatAmount(usdAmount, currency, opts.locale ?? localeForCurrency(currency)),
+      currency,
+      converted: false,
+      amount: usdAmount
+    }
+  }
   const rates = await fetchFxRates()
   const rate = rates[currency]
   if (!rate) {
@@ -259,6 +283,19 @@ export async function formatLocalizedPrices(
       return {
         display: formatAmount(usdAmount, "USD", opts.locale ?? "en-US"),
         currency: "USD",
+        converted: false,
+        amount: usdAmount
+      }
+    })
+  }
+  // Fixed-parity (EUR): display same numeric value with local symbol.
+  if (FIXED_PARITY_USD[currency]) {
+    const locale = opts.locale ?? localeForCurrency(currency)
+    return usdCentsList.map((cents) => {
+      const usdAmount = cents / 100
+      return {
+        display: formatAmount(usdAmount, currency, locale),
+        currency,
         converted: false,
         amount: usdAmount
       }
