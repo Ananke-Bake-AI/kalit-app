@@ -21,18 +21,17 @@ interface ResourceLink {
 }
 
 const RESOURCE_LINKS: ResourceLink[] = [
-  // Real semantic icons for each Resources item — generic notebook /
-  // rocket / list / arrows didn't convey what the entry actually
-  // links to.
-  //   Blog          → open book (reading long-form posts)
-  //   Changelog     → tag (release/version tags)
-  //   Compare       → balance scale (side-by-side comparison)
-  //   Alternatives  → exchange arrows (switching tools)
-  //   Customers     → building (companies / teams shipping with Kalit)
-  { href: "/blog", title: "Blog", desc: "Build notes and deep dives.", icon: "hugeicons:book-open-01" },
-  { href: "/changelog", title: "Changelog", desc: "What we ship, when.", icon: "hugeicons:tag-01" },
-  { href: "/compare", title: "Compare", desc: "Kalit vs other AI builders.", icon: "hugeicons:scales-01" },
-  { href: "/alternatives", title: "Alternatives", desc: "Switching from another tool?", icon: "hugeicons:exchange-01" }
+  // Pick icons that are (a) semantic, (b) verified to exist in the
+  // hugeicons set — `scales-01` was invalid which rendered Compare as
+  // an empty circle on the live site.
+  //   Blog          → pen-tool-03  (writing long-form posts)
+  //   Changelog     → new-releases (we ship things)
+  //   Compare       → git-compare  (side-by-side comparison)
+  //   Alternatives  → arrow-left-right (switching tools)
+  { href: "/blog", title: "Blog", desc: "Build notes and deep dives.", icon: "hugeicons:pen-tool-03" },
+  { href: "/changelog", title: "Changelog", desc: "What we ship, when.", icon: "hugeicons:new-releases" },
+  { href: "/compare", title: "Compare", desc: "Kalit vs other AI builders.", icon: "hugeicons:git-compare" },
+  { href: "/alternatives", title: "Alternatives", desc: "Switching from another tool?", icon: "hugeicons:arrow-left-right" }
 ]
 
 export const Nav = () => {

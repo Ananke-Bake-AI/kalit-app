@@ -158,12 +158,21 @@
   margin-block: 2rem;
 
   a {
+    // Match the site-wide primary button (dark bg + light text)
+    // instead of the previous low-contrast purple-on-black combo.
+    // Purple comes back as a soft outer ring so the CTA still feels
+    // branded without losing legibility.
     display: inline-flex;
     padding: 0.8rem 1.4rem;
     border-radius: 0.7rem;
-    background: var(--color-4);
-    color: var(--bg);
+    background: var(--btn-bg);
+    color: var(--btn-color);
     font-weight: 600;
     text-decoration: none;
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--color-4) 55%, transparent),
+      0 6px 22px -10px color-mix(in srgb, var(--color-4) 55%, transparent);
+    transition: transform 0.1s ease;
+    &:hover { transform: translateY(-1px); }
   }
 }

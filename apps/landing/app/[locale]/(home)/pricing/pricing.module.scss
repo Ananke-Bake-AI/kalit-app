@@ -199,16 +199,23 @@
 }
 
 .cta {
+  // Primary CTA — match the site-wide button treatment (dark bg with
+  // light text). The previous purple-on-black combo had ~2.7:1
+  // contrast which fails WCAG AA and looked muddy in light theme.
+  // Purple stays available as a subtle outline accent on the popular
+  // card's CTA (see .planCard.popular .cta below).
   margin-top: auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0.7rem 1rem;
   border-radius: 0.7rem;
-  background: var(--color-4);
-  color: var(--bg);
+  background: var(--btn-bg);
+  color: var(--btn-color);
   font-weight: 600;
   text-decoration: none;
+  border: 1px solid transparent;
+  transition: transform 0.1s ease, box-shadow 0.15s ease, background 0.15s ease;
 
   @include is-hover {
     transform: translateY(-1px);
@@ -219,6 +226,15 @@
     color: var(--text);
     border: 1px solid color-mix(in srgb, var(--text) 25%, transparent);
   }
+}
+
+// Popular plan CTA gets a soft purple ring so the recommended tier
+// still pops, without bringing back the low-contrast all-purple
+// button.
+.planCard.popular .cta:not(.secondary) {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-4) 65%, transparent),
+    0 6px 22px -10px color-mix(in srgb, var(--color-4) 60%, transparent);
 }
 
 .packsRow {
