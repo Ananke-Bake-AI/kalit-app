@@ -4,7 +4,7 @@ import { PageSection } from "@/components/page-section"
 import { isValidLocale, type Locale } from "@/lib/i18n"
 import { MetadataSeo } from "@/lib/metadata"
 import { getPageStrings } from "@/lib/page-strings"
-import s from "./changelog.module.scss"
+import { ChangelogClient, type ChangelogEntry } from "./changelog-client"
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: raw } = await params
@@ -26,11 +26,10 @@ interface Entry {
   bullets: string[]
 }
 
-// Entries are dated build notes — the dates themselves don't translate, and the
-// title/bullets are kept in EN for the v1 changelog (they reference specific
-// commit messages). Only the chrome (page title, tag pills, header) gets
-// localized. If/when we want full multilingual changelog, move these into
-// EN_PAGE_STRINGS too.
+// Entries are dated build notes — date strings stay in EN month-name form so
+// they parse with Date(); the human-rendered month grouping uses the locale's
+// own month names via Intl. Title/bullets reference specific commit messages
+// and stay in EN for v1.
 const ENTRIES: Entry[] = [
   {
     date: "May 12, 2026",
@@ -132,6 +131,28 @@ const ENTRIES: Entry[] = [
   }
 ]
 
+// Short "All" filter label per locale — kept here (not in EN_PAGE_STRINGS) so
+// we don't need to re-run the translator pass for one word. The translator
+// run already populated tagFeature/tagFix/tagChore, so we lean on those.
+const ALL_LABEL: Record<string, string> = {
+  en: "All",
+  fr: "Tout",
+  es: "Todo",
+  de: "Alle",
+  pt: "Tudo",
+  it: "Tutto",
+  nl: "Alles",
+  sv: "Alla",
+  pl: "Wszystko",
+  tr: "Tümü",
+  ja: "すべて",
+  ko: "전체",
+  zh: "全部",
+  ru: "Все",
+  ar: "الكل",
+  hi: "सभी"
+}
+
 export default async function ChangelogPage({
   params
 }: {
@@ -141,32 +162,28 @@ export default async function ChangelogPage({
   const locale = isValidLocale(raw) ? (raw as Locale) : "en"
   const c = (await getPageStrings(locale)).changelog
 
-  const tagLabel = (tag: Tag) =>
-    tag === "feature" ? c.tagFeature : tag === "fix" ? c.tagFix : c.tagChore
+  // Pre-parse dates on the server so the client doesn't have to deal with
+  // English-locale Date.parse quirks across all 16 locale runtimes.
+  const entries: ChangelogEntry[] = ENTRIES.map((e) => ({
+    ...e,
+    parsedDate: Date.parse(e.date)
+  }))
 
   return (
     <PageSection>
       <Container>
         <PageHeader title={c.title} description={c.subtitle} />
-
-        <div className={s.list}>
-          {ENTRIES.map((entry, i) => (
-            <article key={i} className={s.entry}>
-              <div className={s.head}>
-                <h2 className={s.title}>{entry.title}</h2>
-                <div className={s.meta}>
-                  <span className={`${s.tag} ${s[entry.tag]}`}>{tagLabel(entry.tag)}</span>
-                  <time>{entry.date}</time>
-                </div>
-              </div>
-              <ul className={s.bullets}>
-                {entry.bullets.map((b, j) => (
-                  <li key={j}>{b}</li>
-                ))}
-              </ul>
-            </article>
-          ))}
-        </div>
+        <ChangelogClient
+          entries={entries}
+          locale={locale}
+          labels={{
+            all: ALL_LABEL[locale] ?? ALL_LABEL.en,
+            feature: c.tagFeature,
+            fix: c.tagFix,
+            chore: c.tagChore,
+            empty: "—"
+          }}
+        />
       </Container>
     </PageSection>
   )

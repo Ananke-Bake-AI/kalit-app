@@ -18,6 +18,7 @@
   max-width: 52rem;
   margin-inline: auto;
   overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--text) 7%, transparent);
 }
 
 .table {
@@ -26,27 +27,81 @@
   font-size: 0.92rem;
 
   th, td {
-    padding: 0.8rem 1rem;
+    padding: 0.85rem 1rem;
     text-align: left;
-    border-bottom: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--text) 6%, transparent);
   }
 
   thead th {
     font-family: var(--font-heading);
     color: var(--text);
     font-weight: 600;
-    background: color-mix(in srgb, var(--color-4) 8%, transparent);
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+    background: color-mix(in srgb, var(--color-4) 10%, transparent);
+    text-align: center;
+
+    &:first-child {
+      text-align: left;
+      background: color-mix(in srgb, var(--text) 4%, transparent);
+    }
   }
 
-  tbody tr:last-child td { border-bottom: none; }
+  tbody tr {
+    transition: background-color 0.12s ease;
+    &:hover { background: color-mix(in srgb, var(--text) 3%, transparent); }
+    &:last-child td { border-bottom: none; }
+  }
+
   tbody td:first-child {
-    color: var(--text-secondary);
+    color: var(--text);
     width: 55%;
+    font-weight: 500;
   }
+  tbody td:not(:first-child) {
+    text-align: center;
+    font-size: 0.85rem;
+  }
+}
 
-  .cellYes { color: var(--color-4); font-weight: 600; }
-  .cellPartial { color: #f59e0b; font-weight: 600; }
-  .cellNo { color: color-mix(in srgb, var(--text) 40%, transparent); }
+/* Capability cell — icon + label */
+.cellIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  font-size: 0.9rem;
+}
+
+.cellYes {
+  color: var(--color-4);
+  font-weight: 600;
+
+  .cellIcon {
+    background: color-mix(in srgb, var(--color-4) 18%, transparent);
+    color: var(--color-4);
+  }
+}
+
+.cellPartial {
+  color: #f59e0b;
+  font-weight: 600;
+
+  .cellIcon {
+    background: color-mix(in srgb, #f59e0b 20%, transparent);
+    color: #f59e0b;
+  }
+}
+
+.cellNo {
+  color: color-mix(in srgb, var(--text) 35%, transparent);
+
+  .cellIcon {
+    background: color-mix(in srgb, var(--text) 8%, transparent);
+    color: color-mix(in srgb, var(--text) 40%, transparent);
+  }
 }
 
 .whenGrid {

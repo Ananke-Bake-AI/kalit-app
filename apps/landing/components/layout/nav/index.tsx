@@ -32,8 +32,7 @@ const RESOURCE_LINKS: ResourceLink[] = [
   { href: "/blog", title: "Blog", desc: "Build notes and deep dives.", icon: "hugeicons:book-open-01" },
   { href: "/changelog", title: "Changelog", desc: "What we ship, when.", icon: "hugeicons:tag-01" },
   { href: "/compare", title: "Compare", desc: "Kalit vs other AI builders.", icon: "hugeicons:scales-01" },
-  { href: "/alternatives", title: "Alternatives", desc: "Switching from another tool?", icon: "hugeicons:exchange-01" },
-  { href: "/customers", title: "Customers", desc: "Teams shipping with Kalit.", icon: "hugeicons:building-06" }
+  { href: "/alternatives", title: "Alternatives", desc: "Switching from another tool?", icon: "hugeicons:exchange-01" }
 ]
 
 export const Nav = () => {

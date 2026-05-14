@@ -1,4 +1,5 @@
 import { Container } from "@/components/container"
+import { Icon } from "@/components/icon"
 import { Link } from "@/components/link"
 import { PageHeader } from "@/components/page-header"
 import { PageSection } from "@/components/page-section"
@@ -46,6 +47,12 @@ const CELL_CLS: Record<CapValue, string> = {
   no: "cellNo"
 }
 
+const CELL_ICON: Record<CapValue, string> = {
+  yes: "hugeicons:checkmark-circle-02",
+  partial: "hugeicons:minus-sign-circle",
+  no: "hugeicons:cancel-circle"
+}
+
 export default async function ComparePage({
   params
 }: {
@@ -87,8 +94,16 @@ export default async function ComparePage({
                 return (
                   <tr key={i}>
                     <td>{label}</td>
-                    <td className={s[CELL_CLS[row.kalit]]}>{cellLabel(row.kalit)}</td>
-                    <td className={s[CELL_CLS[row.competitor]]}>{cellLabel(row.competitor)}</td>
+                    <td className={s[CELL_CLS[row.kalit]]}>
+                      <span className={s.cellIcon} title={cellLabel(row.kalit)}>
+                        <Icon icon={CELL_ICON[row.kalit]} />
+                      </span>
+                    </td>
+                    <td className={s[CELL_CLS[row.competitor]]}>
+                      <span className={s.cellIcon} title={cellLabel(row.competitor)}>
+                        <Icon icon={CELL_ICON[row.competitor]} />
+                      </span>
+                    </td>
                   </tr>
                 )
               })}

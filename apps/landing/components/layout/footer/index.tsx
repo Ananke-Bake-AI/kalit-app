@@ -36,7 +36,6 @@ export const Footer = () => {
       title: t("footer.company"),
       links: [
         { title: t("footer.aboutUs"), href: "/about" },
-        { title: "Customers", href: "/customers" },
         { title: t("footer.careers"), href: "/jobs" },
         { title: t("footer.contactUs"), href: "/contact-us" }
       ]

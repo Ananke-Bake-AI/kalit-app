@@ -1,0 +1,321 @@
+@use "@/styles/app-glass" as *;
+@use "@/styles/mixins" as *;
+
+/* ─── Header ──────────────────────────────────── */
+
+.head {
+  width: 100%;
+  max-width: 60rem;
+  margin-inline: auto;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--text) 10%, transparent);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-4);
+  background: color-mix(in srgb, var(--color-4) 12%, transparent);
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.4rem;
+  margin-bottom: 0.8rem;
+  font-weight: 600;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  line-height: 1.05;
+  color: var(--text);
+  margin-bottom: 0.6rem;
+}
+
+.lede {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.55;
+  max-width: 44rem;
+}
+
+.metaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem 1.4rem;
+  margin-top: 1rem;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+
+  a { color: var(--color-4); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+}
+
+/* ─── Trust strip (security page only) ────────── */
+
+.trustStrip {
+  width: 100%;
+  max-width: 60rem;
+  margin-inline: auto;
+  margin-bottom: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 0.6rem;
+}
+
+.trustCard {
+  @include glass-panel(0.9rem);
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  border: 1px solid color-mix(in srgb, var(--color-4) 25%, transparent);
+
+  .label {
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-4);
+    font-weight: 600;
+  }
+
+  .value {
+    color: var(--text);
+    font-size: 0.92rem;
+    font-weight: 500;
+  }
+}
+
+/* ─── Body layout ─────────────────────────────── */
+
+.body {
+  display: grid;
+  grid-template-columns: minmax(0, 44rem) 14rem;
+  gap: 2.5rem;
+  width: 100%;
+  max-width: 60rem;
+  margin-inline: auto;
+
+  @include max(960px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ─── Section card ────────────────────────────── */
+
+.section {
+  @include glass-panel(1.2rem);
+  padding: 1.5rem 1.6rem;
+  scroll-margin-top: 5rem;
+  border: 1px solid color-mix(in srgb, var(--text) 7%, transparent);
+}
+
+.sectionHead {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 1rem;
+}
+
+.sectionIcon {
+  width: 2.2rem;
+  height: 2.2rem;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 0.55rem;
+  background: color-mix(in srgb, var(--color-4) 16%, transparent);
+  color: var(--color-4);
+  font-size: 1.15rem;
+}
+
+.sectionTitle {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  color: var(--text);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.sectionNumber {
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  margin-bottom: 0.15rem;
+}
+
+.content {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.7;
+
+  > * { margin-block: 0.7rem; }
+  > *:first-child { margin-top: 0; }
+  > *:last-child { margin-bottom: 0; }
+
+  strong { color: var(--text); font-weight: 600; }
+
+  a {
+    color: var(--color-4);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    li {
+      padding-left: 1.4rem;
+      position: relative;
+      line-height: 1.55;
+
+      &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0.55em;
+        width: 0.4rem;
+        height: 0.4rem;
+        border-radius: 50%;
+        background: var(--color-4);
+      }
+    }
+  }
+}
+
+/* Warning callout — used for the Pentest authorized-targets rule */
+.callout {
+  margin-block: 1rem;
+  padding: 1rem 1.2rem;
+  border-radius: 0.7rem;
+  background: color-mix(in srgb, #f59e0b 12%, transparent);
+  border-left: 3px solid #f59e0b;
+  color: var(--text);
+
+  &.danger {
+    background: color-mix(in srgb, #ef4444 12%, transparent);
+    border-left-color: #ef4444;
+  }
+
+  strong {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.95rem;
+  }
+
+  p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+}
+
+/* ─── Sticky TOC ─────────────────────────────── */
+
+.toc {
+  position: sticky;
+  top: 5rem;
+  align-self: start;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  border-left: 1px solid color-mix(in srgb, var(--text) 10%, transparent);
+  padding-left: 1rem;
+  max-height: calc(100vh - 6rem);
+  overflow-y: auto;
+
+  @include max(960px) {
+    display: none;
+  }
+}
+
+.tocTitle {
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 0.7rem;
+}
+
+.tocList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    margin-block: 0.35rem;
+    counter-increment: tocCount;
+  }
+
+  a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    display: block;
+    padding: 0.15rem 0;
+    transition: color 0.15s ease;
+
+    &:hover { color: var(--text); }
+    &.active { color: var(--color-4); font-weight: 500; }
+  }
+}
+
+/* ─── Bottom contact card ────────────────────── */
+
+.contactCard {
+  @include glass-panel(1.2rem);
+  padding: 1.4rem 1.5rem;
+  margin-top: 1rem;
+  border: 1px solid color-mix(in srgb, var(--color-4) 30%, transparent);
+  background: linear-gradient(
+    100deg,
+    color-mix(in srgb, var(--color-4) 6%, transparent),
+    transparent 60%
+  );
+
+  h3 {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    margin-bottom: 0.4rem;
+  }
+
+  a {
+    color: var(--color-4);
+    text-decoration: none;
+    font-weight: 500;
+    &:hover { text-decoration: underline; }
+  }
+
+  .contactLine {
+    margin-block: 0.3rem;
+  }
+}
