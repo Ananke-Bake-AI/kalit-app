@@ -2,7 +2,13 @@
 
 import { useCallback, useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
-import { useStudioChat, useStudioStore } from "@kalit/studio-ui"
+import {
+  useActiveIsStreaming,
+  useActiveMessages,
+  useActiveMessagesLoading,
+  useStudioChat,
+  useStudioStore,
+} from "@kalit/studio-ui"
 import { useI18n } from "@/stores/i18n"
 import { useAppStore } from "@/stores/app"
 import { Icon } from "@/components/icon"
@@ -39,18 +45,14 @@ export function StudioClient() {
     rightPanelOpen,
     setRightPanelOpen,
   } = useStudioStore()
-  // Active-session selectors. Switching activeSessionId re-routes
-  // these to the new session's slot atomically; no reset, no
-  // clearMessages, no re-fetch, no flicker on return.
-  const messages = useStudioStore((s) =>
-    s.activeSessionId ? s.bySession[s.activeSessionId]?.messages ?? [] : [],
-  )
-  const isStreaming = useStudioStore((s) =>
-    s.activeSessionId ? s.bySession[s.activeSessionId]?.isStreaming ?? false : false,
-  )
-  const messagesLoading = useStudioStore((s) =>
-    s.activeSessionId ? s.bySession[s.activeSessionId]?.messagesLoading ?? false : false,
-  )
+  // Active-session selectors. Use the bound hooks from studio-ui so
+  // the empty fallback is a stable sentinel — an inline `?? []` here
+  // would allocate a fresh array on every render, Zustand would see
+  // a new reference each time and re-render forever (caught by the
+  // page error boundary as "Something went wrong").
+  const messages = useActiveMessages()
+  const isStreaming = useActiveIsStreaming()
+  const messagesLoading = useActiveMessagesLoading()
 
   // Bug report modal state. Lives in the studio client because the
   // modal needs to read the active session + recent messages from the

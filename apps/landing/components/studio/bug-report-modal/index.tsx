@@ -3,7 +3,7 @@
 import { useEffect, useState, useTransition } from "react"
 import { createPortal } from "react-dom"
 import { toast } from "sonner"
-import { useStudioStore } from "@kalit/studio-ui"
+import { useActiveMessages, useStudioStore } from "@kalit/studio-ui"
 import { submitBugReport } from "@/server/actions/bug-report"
 import { useI18n } from "@/stores/i18n"
 import { Icon } from "@/components/icon"
@@ -17,9 +17,10 @@ interface BugReportModalProps {
 export function BugReportModal({ open, onClose }: BugReportModalProps) {
   const { t } = useI18n()
   const activeSessionId = useStudioStore((s) => s.activeSessionId)
-  const messages = useStudioStore((s) =>
-    s.activeSessionId ? s.bySession[s.activeSessionId]?.messages ?? [] : [],
-  )
+  // Use the bound selector for a stable empty-array sentinel.
+  // Inline `?? []` here would allocate a new array per render and
+  // Zustand would treat each as a state change → re-render loop.
+  const messages = useActiveMessages()
   const [description, setDescription] = useState("")
   const [pending, startTransition] = useTransition()
   const [submitted, setSubmitted] = useState(false)

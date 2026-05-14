@@ -18,7 +18,17 @@ export {
 } from "./host"
 export type { StudioUser, StudioHostValue, LandingFetchConfig } from "./host"
 
-export { useStudioStore } from "./store"
+export {
+  useStudioStore,
+  useActiveSessionState,
+  useActiveMessages,
+  useActiveMessagesLoading,
+  useActiveStreamSegments,
+  useActiveStreamThinking,
+  useActiveIsStreaming,
+  useActiveWidgets,
+} from "./store"
+export type { SessionUIState } from "./store"
 export type * from "./types"
 
 // Chat surface + widgets
