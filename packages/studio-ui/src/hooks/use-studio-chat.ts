@@ -295,18 +295,24 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
     const isSwitch = prev !== null && prev !== activeSessionId
 
     // Per-session cache hit → render INSTANTLY from the cached
-    // snapshot. Switching back to a recently-visited session
-    // skips the fetch round-trip and the loader flash entirely;
-    // the WS still revalidates the cached view in the background
-    // via `session_context`.
+    // snapshot. mergeMessages atomically drops the previous
+    // session's non-temp rows (they aren't in `cached`) without a
+    // clearMessages flash. The WS still revalidates in the
+    // background via `session_context`.
     //
     // Cache miss → set loader; the upcoming fetchMessages / WS
     // session_context will fill it. mergeMessages preserves the
     // user's optimistic temp during the loader window so they see
     // their just-typed bubble immediately on a fresh chat.
+    //
+    // NOTE: we intentionally do NOT clearMessages() between
+    // sessions when a cache exists — handleSessionSelect already
+    // chose the right paint path synchronously, and an extra
+    // clear+set in this effect produced a visible empty frame
+    // every other switch (user-reported, see comment in
+    // handleSessionSelect).
     const cached = useStudioStore.getState().getCachedSessionMessages(activeSessionId)
     if (cached && cached.length > 0) {
-      if (isSwitch) clearMessages()
       setMessages(cached)
       setMessagesLoading(false)
     } else {
@@ -521,6 +527,18 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
           }
           const fresh = (Array.isArray(ctx.messages) ? ctx.messages : []) as never as ChatMessage[]
           if (sid) {
+            // Guard: an empty `messages` arriving while we already
+            // have rows for this session is almost certainly a
+            // transient broker hiccup (DB read error path falls
+            // through to `[]`, see buildSessionContext) — DON'T
+            // overwrite the painted chat with nothing. The next
+            // session_context (revalidate, reconnect) will be
+            // authoritative and we still cache the empty result
+            // only if our cache is empty too.
+            const haveCached = (useStudioStore.getState().getCachedSessionMessages(sid)?.length ?? 0) > 0
+            if (fresh.length === 0 && haveCached) {
+              break
+            }
             useStudioStore.getState().cacheSessionMessages(sid, fresh)
             if (sid === activeSessionRef.current) {
               setMessages(fresh)
@@ -711,17 +729,28 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
     // Wipe any error banner from the previous session — without this the
     // user sees a stale error pinned over a brand-new conversation.
     setError(null)
-    // Clear messages synchronously here, before setActiveSessionId. The
-    // activeSessionId effect will also clear+refetch, but it runs
-    // post-render — so without this call there's a one-render-cycle
-    // gap where activeSessionId points to B but messages[] still holds
-    // A's content. Users perceived this as "A's messages flash inside
-    // B" right before the loader takes over. Doing it synchronously
-    // here collapses the flash into a single loader-then-data
-    // transition. Also set messagesLoading=true so the message list
-    // shows the loader immediately instead of an empty list.
-    clearMessages()
-    setMessagesLoading(true)
+    // Synchronously paint the target session's content RIGHT NOW so we
+    // never leave the user staring at an empty chat between sessions.
+    // Two paths:
+    //   - cache hit  → setMessages(cached) atomically swaps via
+    //                  mergeMessages (drops the previous session's
+    //                  non-temp rows in one render, no clearMessages
+    //                  flash). User reported "ça supprime tout les
+    //                  messages puis ça revient" when switching between
+    //                  active sessions — the wipe-then-refetch dance
+    //                  was the clear() in this branch.
+    //   - cache miss → clear + loader, unavoidable (we have nothing to
+    //                  show until fetchMessages comes back).
+    // Either way the activeSessionId effect runs next and re-confirms /
+    // revalidates via fetch + WS session_context.
+    const targetCached = useStudioStore.getState().getCachedSessionMessages(id)
+    if (targetCached && targetCached.length > 0) {
+      setMessages(targetCached)
+      setMessagesLoading(false)
+    } else {
+      clearMessages()
+      setMessagesLoading(true)
+    }
 
     // Optimistic streaming flip: if the target session is flagged as
     // currently processing on the broker side (we have `isProcessing`
