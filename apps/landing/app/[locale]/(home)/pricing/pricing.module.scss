@@ -303,6 +303,18 @@
   margin-block: 2.5rem 0.5rem;
 }
 
+// "Approximate local price — exact amount at checkout" — only
+// rendered when at least one displayed price is FX-converted away
+// from USD. Tiny, secondary, sits flush under the price grids so we
+// never display a converted amount without explaining it.
+.fxDisclaimer {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin: 0.5rem 0 0;
+  text-align: center;
+  opacity: 0.7;
+}
+
 .creditsNote {
   color: var(--text-secondary);
   font-size: 0.85rem;

@@ -21,8 +21,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   })
 }
 
-const dollars = (cents: number) => `$${(cents / 100).toFixed(0)}`
-
 const ALL_PLANS = [FREE_PLAN, ...PLANS]
 
 type PlanKey = "free" | "starter" | "pro" | "enterprise" | "custom"
@@ -43,6 +41,14 @@ export default async function PricingPage({
   const { locale: raw } = await params
   const locale = isValidLocale(raw) ? (raw as Locale) : "en"
   const p = (await getPageStrings(locale)).pricing
+
+  // Localize all plan + credit-pack prices in one detection pass so we
+  // don't re-detect / re-fetch FX rates for each card. The first slot
+  // (FREE) is $0 — it formats to "$0" / "0,00 €" but we render "$0"
+  // verbatim anyway for that card.
+  const planPrices = await formatLocalizedPrices(ALL_PLANS.map((p) => p.monthlyPrice))
+  const packPrices = await formatLocalizedPrices(CREDIT_PACKS.map((c) => c.priceCents))
+  const showFxDisclaimer = planPrices.some((p) => p.converted)
 
   const offers = ALL_PLANS.map((plan) => ({
     "@type": "Offer",
@@ -75,7 +81,7 @@ export default async function PricingPage({
         <PageHeader title={p.title} description={p.description} />
 
         <div className={s.plansGrid}>
-          {ALL_PLANS.map((plan) => {
+          {ALL_PLANS.map((plan, i) => {
             const key = plan.key as PlanKey
             return (
               <div
@@ -85,7 +91,7 @@ export default async function PricingPage({
                 {plan.popular && <span className={s.popularBadge}>{p.popularBadge}</span>}
                 <h2 className={s.planName}>{plan.name}</h2>
                 <div className={s.priceRow}>
-                  <span className={s.price}>{dollars(plan.monthlyPrice)}</span>
+                  <span className={s.price}>{planPrices[i].display}</span>
                   <span className={s.interval}>{p.intervalMonth}</span>
                 </div>
                 <p className={s.outcome}>{p.planOutcomes[key]}</p>
@@ -131,16 +137,20 @@ export default async function PricingPage({
           />
         </aside>
 
+        {showFxDisclaimer && (
+          <p className={s.fxDisclaimer}>{p.fxDisclaimer}</p>
+        )}
+
         <h2 className={s.sectionTitle}>{p.packsTitle}</h2>
         <p className={s.creditsNote}>{p.packsNote}</p>
         <div className={s.packsRow}>
-          {CREDIT_PACKS.map((pack) => (
+          {CREDIT_PACKS.map((pack, i) => (
             <div key={pack.key} className={`${s.packCard} ${pack.popular ? s.popular : ""}`}>
               <span className={s.packCredits}>
                 {pack.credits} {p.creditsLabel}
               </span>
               <span className={s.packPrice}>
-                {dollars(pack.priceCents)} {p.oneTimeLabel}
+                {packPrices[i].display} {p.oneTimeLabel}
               </span>
               <PricingPackCta packKey={pack.key} credits={pack.credits} className={s.packCta} />
             </div>

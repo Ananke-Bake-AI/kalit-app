@@ -4,6 +4,7 @@ import planStyles from "@/components/plan/plan.module.scss"
 import info from "@/components/settings-info-rows/settings-info-rows.module.scss"
 import { SurfacePanel } from "@/components/surface-panel"
 import { auth } from "@/lib/auth"
+import { formatLocalizedPrices } from "@/lib/currency"
 import { getServerTranslation, localeHref } from "@/lib/i18n-server"
 import { getCreditBreakdown } from "@/lib/entitlements"
 import { CREDIT_PACKS, FREE_PLAN, getPlan, PLANS } from "@/lib/plans"
@@ -49,6 +50,10 @@ export default async function BillingPage() {
   const planPct = planMonthly > 0 ? Math.min(100, Math.round((planUsed / planMonthly) * 100)) : 0
   const bonusPct = bonus > 0 ? Math.min(100, Math.round((bonusUsed / bonus) * 100)) : 0
   const bonusRemaining = Math.max(0, bonus - bonusUsed)
+
+  // Localize the "All plans" grid + credit-pack prices in one pass.
+  const planPrices = await formatLocalizedPrices(PLANS.map((p) => p.monthlyPrice))
+  const packPrices = await formatLocalizedPrices(CREDIT_PACKS.map((c) => c.priceCents))
 
   const formatMembers = (limit: number) =>
     limit === -1 ? t("settingsPages.unlimitedMembers") : t("settingsPages.memberCountPlural", { count: limit })
@@ -135,10 +140,10 @@ export default async function BillingPage() {
         <>
           <h2 className={s.sectionHeading}>{t("settingsPages.buyExtraCredits")}</h2>
           <div className={s.packGrid}>
-            {CREDIT_PACKS.map((pack) => (
+            {CREDIT_PACKS.map((pack, i) => (
               <div key={pack.key} className={`${s.packCard} ${pack.popular ? s.popular : ""}`}>
                 <span className={s.packCredits}>+{pack.credits} {t("settingsPages.credits")}</span>
-                <span className={s.packPrice}>${(pack.priceCents / 100).toFixed(0)} {t("settingsPages.oneTime")}</span>
+                <span className={s.packPrice}>{packPrices[i].display} {t("settingsPages.oneTime")}</span>
                 <div className={s.packCta}>
                   <BuyCreditsButton
                     packKey={pack.key}
@@ -154,7 +159,7 @@ export default async function BillingPage() {
 
       <h2 className={s.sectionHeading}>{t("settingsPages.allPlans")}</h2>
       <div className={s.planGrid}>
-        {PLANS.map((plan) => {
+        {PLANS.map((plan, i) => {
           const isCurrent = subscription?.planKey === plan.key
           const tagline = `${t("settingsPages.creditsPerMonth", { count: plan.creditsPerMonth })}, ${formatMembers(plan.maxMembers)}.`
           const showBadges = plan.popular || isCurrent
@@ -168,7 +173,7 @@ export default async function BillingPage() {
               features={plan.features}
               recommended={Boolean(plan.popular)}
               titleBadge={plan.popular ? null : undefined}
-              price={`$${(plan.monthlyPrice / 100).toFixed(0)}`}
+              price={planPrices[i].display}
               priceSuffix="per month"
               badges={
                 showBadges ? (

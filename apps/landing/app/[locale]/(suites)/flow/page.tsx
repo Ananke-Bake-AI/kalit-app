@@ -7,6 +7,7 @@ import {
   SuiteLandingPlans
 } from "@/components/suite-landing"
 import { Underline } from "@/components/underline"
+import { formatLocalizedPrices } from "@/lib/currency"
 import { isValidLocale, type Locale } from "@/lib/i18n"
 import { getServerLocale, getServerTranslation, getTranslationForLocale } from "@/lib/i18n-server"
 import { MetadataSeo } from "@/lib/metadata"
@@ -39,11 +40,17 @@ export default async function FlowPage() {
   const locale = await getServerLocale()
   const sp = (await getPageStrings(locale)).suitePlans
 
+  const [starterPrice, launchPrice, launchProPrice] = await formatLocalizedPrices([
+    2900,
+    9900,
+    29900
+  ])
+
   const flowPlans = [
     {
       name: sp.flow.starter.name,
       tagline: sp.flow.starter.tagline,
-      price: "$29",
+      price: starterPrice.display,
       priceSuffix: sp.perMonth,
       features: sp.flow.starter.features,
       buttonText: sp.flow.starter.buttonText
@@ -53,7 +60,7 @@ export default async function FlowPage() {
       tagline: sp.flow.launch.tagline,
       recommended: true,
       titleBadge: sp.launchPick,
-      price: "$99",
+      price: launchPrice.display,
       priceSuffix: sp.perMonth,
       features: sp.flow.launch.features,
       buttonText: sp.flow.launch.buttonText
@@ -61,7 +68,7 @@ export default async function FlowPage() {
     {
       name: sp.flow.launchPro.name,
       tagline: sp.flow.launchPro.tagline,
-      price: "$299",
+      price: launchProPrice.display,
       priceSuffix: sp.perMonth,
       features: sp.flow.launchPro.features,
       buttonText: sp.flow.launchPro.buttonText

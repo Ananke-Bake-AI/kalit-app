@@ -1,5 +1,6 @@
 import { Icon } from "@/components/icon"
 import { Link } from "@/components/link"
+import { formatLocalizedPrices } from "@/lib/currency"
 import { PLANS } from "@/lib/plans"
 import { getServerTranslation } from "@/lib/i18n-server"
 import s from "./upgrade-pitch.module.scss"
@@ -16,6 +17,7 @@ import s from "./upgrade-pitch.module.scss"
  */
 export async function UpgradePitch() {
   const { t } = await getServerTranslation()
+  const tilePrices = await formatLocalizedPrices(PLANS.map((p) => p.monthlyPrice))
 
   return (
     <section className={s.pitch}>
@@ -34,7 +36,7 @@ export async function UpgradePitch() {
         </Link>
       </div>
       <div className={s.tiles}>
-        {PLANS.map((plan) => (
+        {PLANS.map((plan, i) => (
           <Link
             key={plan.key}
             href="/settings/billing"
@@ -42,7 +44,7 @@ export async function UpgradePitch() {
           >
             <span className={s.tileName}>{plan.name}</span>
             <span className={s.tilePrice}>
-              <span className={s.tilePriceAmount}>${(plan.monthlyPrice / 100).toFixed(0)}</span>
+              <span className={s.tilePriceAmount}>{tilePrices[i].display}</span>
               <span className={s.tilePriceSuffix}>/mo</span>
             </span>
             <span className={s.tileCredits}>
