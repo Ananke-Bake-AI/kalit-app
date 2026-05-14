@@ -64,10 +64,14 @@ export function ChatInput({ onSend, disabled, prefill, onEnsureSession }: ChatIn
     isUploading,
     setIsUploading,
     activeSessionId,
-    isStreaming,
     importedRepo,
     quota,
   } = useStudioStore()
+  // Active-session selector: chat-input cares only about whether
+  // the CURRENT session is streaming.
+  const isStreaming = useStudioStore((s) =>
+    s.activeSessionId ? s.bySession[s.activeSessionId]?.isStreaming ?? false : false,
+  )
 
   // Org has run out of credits → block the input entirely and surface
   // the upgrade CTA inline. The broker also enforces this server-side

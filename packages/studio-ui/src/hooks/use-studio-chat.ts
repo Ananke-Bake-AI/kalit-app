@@ -96,23 +96,10 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
     setSessions,
     activeSessionId,
     setActiveSessionId,
-    messagesLoading,
-    setMessages,
-    clearMessages,
-    setMessagesLoading,
     setPreferredLang,
-    isStreaming,
     addSession,
     markSessionProcessing,
-    setIsStreaming,
-    setStreamSegments,
-    setStreamThinking,
     setLastRouting,
-    resetStream,
-    addMessage,
-    removeMessage,
-    setActiveWidgets,
-    addActiveWidget,
     setError,
     setQuota,
     progressMode,
@@ -125,7 +112,32 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
     addConsoleLog,
     setConsoleSummary,
     setConsoleOpen,
+    // Per-session UI state mutators. Every chat / streaming write
+    // targets a specific sessionId so background runs never leak
+    // into the visible chat and a session-switch never has to
+    // clear/restore the rendered state.
+    setSessionMessages,
+    setSessionMessagesLoading,
+    addSessionMessage,
+    removeSessionMessage,
+    setSessionIsStreaming,
+    setSessionStreamSegments,
+    setSessionStreamThinking,
+    setSessionActiveWidgets,
+    addSessionActiveWidget,
+    dropSession,
   } = useStudioStore()
+  // Active-session view selectors. Re-render the consumer only when
+  // the active session's own state changes — flipping activeSessionId
+  // and / or mutating background-session state is silent here.
+  const isStreaming = useStudioStore((s) =>
+    s.activeSessionId ? s.bySession[s.activeSessionId]?.isStreaming ?? false : false,
+  )
+  const messagesLoading = useStudioStore((s) =>
+    s.activeSessionId
+      ? s.bySession[s.activeSessionId]?.messagesLoading ?? false
+      : false,
+  )
 
   const [ready, setReady] = useState(false)
   const [connectionError, setConnectionError] = useState<string | null>(null)
@@ -210,19 +222,17 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
       if (res.ok) {
         const data = await res.json()
         const fresh = data.messages || []
-        // Always populate the cross-session cache, even if the
-        // active session changed during the fetch. A user that
-        // swaps A→B→A within 2 seconds gets A's messages cached
-        // when the original fetch lands, ready for the re-entry.
-        useStudioStore.getState().cacheSessionMessages(sessionId, fresh)
-        if (activeSessionRef.current === sessionId) {
-          setMessages(fresh)
-        }
+        // Write straight into this session's slot in bySession. The
+        // active-session selectors pick it up automatically; if the
+        // user is currently looking at a different session, their
+        // view is untouched and ours gets revealed the moment they
+        // switch back — no cache layer, no race, no flash.
+        setSessionMessages(sessionId, fresh)
       }
     } catch {
       // silent
     }
-  }, [setMessages])
+  }, [setSessionMessages])
 
   const fetchSessions = useCallback(async () => {
     try {
@@ -273,75 +283,43 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
   }, [ready])
 
   // ── Fetch messages when active session changes ──────────
-
-  // Track the previous activeSessionId to distinguish "switched
-  // sessions" (A → B, need hard-clear to drop A's stale temps) from
-  // "session just got activated" (null → new from ensureSession, which
-  // means handleSend already added the user temp for this very
-  // session — we must NOT clearMessages or the user's just-typed bubble
-  // disappears for the entire first turn).
-  const prevActiveSessionRef = useRef<string | null>(null)
+  //
+  // Critical: this effect does NOT touch the previously-active
+  // session's bySession[sid] entry. Switching A → B leaves A's
+  // messages, segments, thinking, isStreaming, widgets exactly
+  // where they were — and switching back to A re-reveals that
+  // state byte-for-byte via the active-session selectors, with
+  // no clear/re-fetch/re-mount in between. The visible chat is
+  // a pure projection of bySession[activeSessionId].
+  //
+  // Two things still need to happen here:
+  //  1. Optimistically flip B's isStreaming flag if the cached
+  //     sessions row says it's busy, so the dots show in the
+  //     same frame as the click (instead of waiting 200-500 ms
+  //     for the WS session_attached). The WS layer can override
+  //     either way once it has a real signal.
+  //  2. Kick off a background fetchMessages(B) so we always have
+  //     fresh persisted state, even if the WS session_context
+  //     hasn't landed yet. The fetch writes straight into
+  //     bySession[B].messages — no visible flash because there's
+  //     no prior step that emptied the slot.
   useEffect(() => {
-    const prev = prevActiveSessionRef.current
-    prevActiveSessionRef.current = activeSessionId
-
-    if (!activeSessionId) {
-      clearMessages()
-      return
-    }
-    // True session switch: was on some other session, now on a new
-    // one. Drop the prior session's optimistic temps before painting
-    // the new one's cached/fetched view.
-    const isSwitch = prev !== null && prev !== activeSessionId
-
-    // Per-session cache hit → render INSTANTLY from the cached
-    // snapshot. mergeMessages atomically drops the previous
-    // session's non-temp rows (they aren't in `cached`) without a
-    // clearMessages flash. The WS still revalidates in the
-    // background via `session_context`.
-    //
-    // Cache miss → set loader; the upcoming fetchMessages / WS
-    // session_context will fill it. mergeMessages preserves the
-    // user's optimistic temp during the loader window so they see
-    // their just-typed bubble immediately on a fresh chat.
-    //
-    // NOTE: we intentionally do NOT clearMessages() between
-    // sessions when a cache exists — handleSessionSelect already
-    // chose the right paint path synchronously, and an extra
-    // clear+set in this effect produced a visible empty frame
-    // every other switch (user-reported, see comment in
-    // handleSessionSelect).
-    const cached = useStudioStore.getState().getCachedSessionMessages(activeSessionId)
-    if (cached && cached.length > 0) {
-      setMessages(cached)
-      setMessagesLoading(false)
-    } else {
-      if (isSwitch) clearMessages()
-      setMessagesLoading(true)
-    }
-
-    // Optimistic streaming flip on session activation. Covers ALL
-    // entry paths to a session: sidebar click (handleSessionSelect
-    // already flips this, but this is the safety net for the click),
-    // page reload on /studio?session=<id>, and shared-link nav. The
-    // follow-stream useEffect that fires below keeps `isStreaming=true`
-    // when it `onAttached`s; if `onIdle` fires (the broker has no live
-    // room — DB flag was stale), it resets the flag itself. Without
-    // this flip, returning to an actively-processing session showed
-    // the chat with no thinking dots until /api/broker/.../stream
-    // attached (200-500 ms), and the user thought the agent had
-    // stopped.
+    if (!activeSessionId) return
     const targetSession = useStudioStore.getState().sessions.find((s) => s.id === activeSessionId)
     if (targetSession?.isProcessing) {
-      setIsStreaming(true)
+      setSessionIsStreaming(activeSessionId, true)
     }
-
-    fetchMessages(activeSessionId).finally(() => {
-      if (activeSessionRef.current === activeSessionId) {
-        setMessagesLoading(false)
-      }
+    // Only show the loader when we have nothing painted yet.
+    // Re-entries to a session we already have rows for stay
+    // visible during revalidation.
+    const existing = useStudioStore.getState().bySession[activeSessionId]
+    if (!existing || existing.messages.length === 0) {
+      setSessionMessagesLoading(activeSessionId, true)
+    }
+    void fetchMessages(activeSessionId).finally(() => {
+      setSessionMessagesLoading(activeSessionId, false)
     })
-  }, [activeSessionId, clearMessages, setMessages, setMessagesLoading, setIsStreaming, fetchMessages])
+  }, [activeSessionId, setSessionIsStreaming, setSessionMessagesLoading, fetchMessages])
 
   // ── Hydrate imported repo state for the active session ──
 
@@ -515,97 +493,82 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
       const sid = (frame.sessionId as string) || ""
       switch (frame.type) {
         case "session_context": {
-          // session_context replaces our REST GET /messages: the
-          // server sent persisted messages + repo state + cursor.
-          // We ALWAYS cache the result (lets background sessions
-          // pre-populate their entries when the WS attaches a fresh
-          // subscription), and only paint the visible chat when the
-          // sid matches activeSession.
+          // session_context replaces our REST GET /messages and tells us
+          // whether a live agent run is in flight. EVERYTHING here writes
+          // straight into bySession[sid] — no "if sid === active" gate
+          // because the active-session selectors already pick out only
+          // the visible session. A session_context arriving for a
+          // background tab fills its slot silently; the user sees no
+          // change until they click into it.
+          if (!sid) break
           const ctx = frame as unknown as {
             messages?: Array<Record<string, unknown>>
             isLive?: boolean
           }
           const fresh = (Array.isArray(ctx.messages) ? ctx.messages : []) as never as ChatMessage[]
-          if (sid) {
-            useStudioStore.getState().cacheSessionMessages(sid, fresh)
-            if (sid === activeSessionRef.current) {
-              setMessages(fresh)
-              // Capture the partial assistant for pruning when the
-              // following `session_attached` fires. Used to live in the
-              // subscribe useEffect but local messages was empty at
-              // that point (handleSessionSelect had just cleared it),
-              // so the capture caught nothing and the persisted partial
-              // double-rendered alongside the live reducer segments.
-              for (let i = fresh.length - 1; i >= 0; i--) {
-                if (fresh[i].role === "assistant") {
-                  prunedAssistantRef.current.set(sid, fresh[i].id)
-                  break
-                }
-                if (fresh[i].role === "user") break
-              }
-              // Optimistic streaming flip the moment the broker tells
-              // us a live room exists. Without this, the dots / partial
-              // segments don't show until the first session_event
-              // arrives (which can lag several hundred ms behind
-              // session_context when the broker is busy), and the user
-              // perceives the chat as "frozen" right after switching
-              // into an active session.
-              if (ctx.isLive) {
-                setIsStreaming(true)
-              }
+          setSessionMessages(sid, fresh)
+          // Capture the partial assistant for pruning when the
+          // following `session_attached` fires — keyed per sid so
+          // concurrent background sessions don't trample each other.
+          for (let i = fresh.length - 1; i >= 0; i--) {
+            if (fresh[i].role === "assistant") {
+              prunedAssistantRef.current.set(sid, fresh[i].id)
+              break
             }
+            if (fresh[i].role === "user") break
+          }
+          if (ctx.isLive) {
+            setSessionIsStreaming(sid, true)
           }
           break
         }
         case "session_attached": {
-          // Room is live — commit the optimistic streaming UI now
-          // and prune the persisted partial assistant message so the
-          // replayed segments don't double-render.
-          if (sid === activeSessionRef.current) {
-            const pid = prunedAssistantRef.current.get(sid)
-            if (pid) {
-              removeMessage(pid)
-              prunedAssistantRef.current.delete(sid)
-            }
-            setIsStreaming(true)
+          // Room is live for `sid` — prune its persisted partial
+          // assistant message and flip its streaming flag on. Both are
+          // per-sid: if the user is on a different session, only the
+          // background slot updates.
+          if (!sid) break
+          const pid = prunedAssistantRef.current.get(sid)
+          if (pid) {
+            removeSessionMessage(sid, pid)
+            prunedAssistantRef.current.delete(sid)
           }
+          setSessionIsStreaming(sid, true)
           break
         }
         case "session_idle": {
-          // Broker has no live room — clear any optimistic
-          // isStreaming we set in handleSessionSelect.
-          // EXCEPT: if a local handleSend is currently driving this
-          // session's POST, the broker just hasn't called Open yet and
-          // session_idle is racing the streamHub setup. Trusting it
-          // would flip the dots off for the entire first-message
-          // window. Let handleSend own the flag for in-flight sends.
-          if (sid === activeSessionRef.current && !inflightSendsRef.current.has(sid)) {
-            setIsStreaming(false)
-            setStreamThinking("")
+          // Broker has no live room for `sid`. Clear that session's
+          // streaming flag + thinking text — unless a local handleSend
+          // is currently driving its POST (broker just hasn't called
+          // Open yet; session_idle is racing the streamHub setup).
+          if (!sid) break
+          if (!inflightSendsRef.current.has(sid)) {
+            setSessionIsStreaming(sid, false)
+            setSessionStreamThinking(sid, "")
             prunedAssistantRef.current.delete(sid)
           }
           break
         }
         case "session_stream_closed": {
-          // Run wrapped up. Refetch the canonical messages list +
-          // sessions list (for title/usage updates) + quota.
+          // Run wrapped up for `sid`. Refetch its canonical messages,
+          // refresh the sidebar (title/usage), refresh quota. All per
+          // sid — the active-session selector picks it up if we're
+          // looking, otherwise the slot revalidates quietly.
+          if (!sid) break
+          // Order matters: await the messages refresh BEFORE clearing
+          // streamSegments so the live stream stays visible until the
+          // persisted assistant bubble is in the list, otherwise the
+          // user sees a one-frame gap.
+          void fetchMessages(sid).finally(() => {
+            setSessionStreamSegments(sid, [])
+            setSessionActiveWidgets(sid, [])
+          })
+          setSessionIsStreaming(sid, false)
+          setSessionStreamThinking(sid, "")
+          // Sidebar / quota are global — no sid filter needed.
+          fetchSessions()
+          fetchQuota()
           if (sid === activeSessionRef.current) {
-            setActiveWidgets([])
-            // Order matters: await the messages refresh BEFORE clearing
-            // streamSegments. Otherwise the live stream view disappears
-            // before the persisted assistant bubble is in the list and
-            // the user sees a blank gap. The typewriter used to handle
-            // this swap via its onCaughtUp callback — without it, the
-            // parent has to sequence the handoff manually.
-            void fetchMessages(sid).finally(() => {
-              if (sid === activeSessionRef.current) {
-                setStreamSegments([])
-              }
-            })
-            fetchSessions()
-            fetchQuota()
-            setIsStreaming(false)
-            setStreamThinking("")
             notify()
           }
           // Drop the reducer; a fresh subscribe later will create a
@@ -616,31 +579,26 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
         case "session_event": {
           const ev = (frame.data ?? {}) as Record<string, unknown>
           if (!ev || typeof ev !== "object") break
-          // Any inbound event is proof of life — promote isStreaming
-          // back to true in case an earlier session_idle (race against
-          // streamHub.Open on a brand-new session) left it false.
-          // Cheap idempotent setter; the store no-ops a same-value
-          // write.
-          if (sid === activeSessionRef.current) {
-            setIsStreaming(true)
-          }
-          // Get-or-create the reducer for this session, with handlers
-          // that ONLY commit to the global UI state when the event
-          // belongs to the currently-active session. Events from
-          // background sessions (other tabs of the multiplex) still
-          // advance their local reducer's segments cache, but don't
-          // affect the visible chat.
+          if (!sid) break
+          // Any inbound event is proof of life — flip this session's
+          // streaming flag back on (idempotent if already true).
+          setSessionIsStreaming(sid, true)
+          // Get-or-create the reducer for this session. Its callbacks
+          // write to bySession[sid] unconditionally — background-
+          // session events fill their own slots, the active-session
+          // selectors pick up exactly the visible session and ignore
+          // the rest.
           let reducer = reducersRef.current.get(sid)
           if (!reducer) {
             reducer = new AgentStreamReducer({
               onSegmentsChanged: (segs) => {
-                if (sid === activeSessionRef.current) setStreamSegments(segs)
+                setSessionStreamSegments(sid, segs)
               },
               onThinkingChanged: (th) => {
-                if (sid === activeSessionRef.current) setStreamThinking(th)
+                setSessionStreamThinking(sid, th)
               },
               onWidget: ({ type, id }) => {
-                if (sid === activeSessionRef.current) addActiveWidget({ type, id })
+                addSessionActiveWidget(sid, { type, id })
               },
               onSuiteSelected: (payload) => {
                 if (sid !== activeSessionRef.current) return
@@ -679,12 +637,6 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
     return off
   }, [
     socket,
-    setMessages,
-    setStreamSegments,
-    setStreamThinking,
-    setIsStreaming,
-    setActiveWidgets,
-    addActiveWidget,
     setLastRouting,
     onSuiteChange,
     setError,
@@ -692,7 +644,13 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
     fetchSessions,
     fetchQuota,
     notify,
-    removeMessage,
+    setSessionMessages,
+    removeSessionMessage,
+    setSessionIsStreaming,
+    setSessionStreamSegments,
+    setSessionStreamThinking,
+    setSessionActiveWidgets,
+    addSessionActiveWidget,
   ])
 
   // SSE follow-stream removed (P8): the per-user WS multiplex is the
@@ -707,68 +665,20 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
 
   const handleSessionSelect = useCallback((id: string) => {
     if (id === activeSessionRef.current) return
-    // Clear residual stream UI from the previous session before switching.
-    // Without this, segments / thinking text / live widgets from the old
-    // session's in-flight agent stream remain visible on top of the new
-    // session's chat until its own follow-stream useEffect kicks in.
-    resetStream()
-    setActiveWidgets([])
+    // The whole point of the per-session UI state model is that this
+    // function does the LEAST possible work — no resetStream, no
+    // clearMessages, no setStreamSegments([]). Each session owns its
+    // own messages / segments / thinking / isStreaming / widgets
+    // inside bySession[sid]; switching activeSessionId is enough to
+    // re-reveal the previous session's exact state on return. The
+    // active-session selectors swap their backing slot atomically.
     selectedSuiteRef.current = null
-    // Wipe any error banner from the previous session — without this the
-    // user sees a stale error pinned over a brand-new conversation.
+    // Wipe the GLOBAL error banner so it doesn't pin to a different
+    // chat. (Errors aren't per-session in this store today.)
     setError(null)
-    // Synchronously paint the target session's content RIGHT NOW so we
-    // never leave the user staring at an empty chat between sessions.
-    // Two paths:
-    //   - cache hit  → setMessages(cached) atomically swaps via
-    //                  mergeMessages (drops the previous session's
-    //                  non-temp rows in one render, no clearMessages
-    //                  flash). User reported "ça supprime tout les
-    //                  messages puis ça revient" when switching between
-    //                  active sessions — the wipe-then-refetch dance
-    //                  was the clear() in this branch.
-    //   - cache miss → clear + loader, unavoidable (we have nothing to
-    //                  show until fetchMessages comes back).
-    // Either way the activeSessionId effect runs next and re-confirms /
-    // revalidates via fetch + WS session_context.
-    const targetCached = useStudioStore.getState().getCachedSessionMessages(id)
-    if (targetCached && targetCached.length > 0) {
-      setMessages(targetCached)
-      setMessagesLoading(false)
-    } else {
-      clearMessages()
-      setMessagesLoading(true)
-    }
-
-    // Optimistic streaming flip: if the target session is flagged as
-    // currently processing on the broker side (we have `isProcessing`
-    // from /api/broker/sessions cached in the store), set `isStreaming`
-    // true RIGHT NOW so the dots/thinking indicator renders in the
-    // same frame as the session switch. Without this the user clicked
-    // a busy session, saw "no thinking icon" for the 200-500 ms the
-    // follow-stream effect needed to fetch + connect + `onAttached`,
-    // and felt the UI was unresponsive. The follow-stream useEffect
-    // keeps `isStreaming=true` when it `onAttached`s (no flicker), and
-    // resets it via `onIdle` if it turns out the broker has no live
-    // room (rare race where the DB flag is stale).
-    const targetSession = useStudioStore.getState().sessions.find((s) => s.id === id)
-    if (targetSession?.isProcessing) {
-      setIsStreaming(true)
-    }
-
-    // Abort the SSE follow-subscription only. We DO NOT abort the
-    // in-flight POST /messages (abortRef): doing so triggers the
-    // broker's defer to UnlockSession, which flips is_processing back
-    // to false locally on completion — and the follow-stream effect
-    // then skips the reconnect when the user comes back to the still-
-    // working session. Better to let the POST run to completion in the
-    // background; isStill() guards inside handleSend prevent its
-    // events from leaking into the new session's UI.
-    followRef.current?.abort()
-    followRef.current = null
     setActiveSessionId(id)
     onSessionActivated?.(id, { clearPrompt: true, clearSuite: true })
-  }, [resetStream, setActiveWidgets, setError, clearMessages, setMessagesLoading, setIsStreaming, setActiveSessionId, onSessionActivated])
+  }, [setError, setActiveSessionId, onSessionActivated])
 
   // ── Welcome prompt click ────────────────────────────────
 
@@ -799,7 +709,8 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
       const session: ChatSession = createData.session
       addSession(session)
       setActiveSessionId(session.id)
-      setMessages([])
+      // No need to seed messages — bySession[session.id] starts at
+      // the EMPTY_SESSION_STATE sentinel via the selector default.
       activeSessionRef.current = session.id
       onSessionActivated?.(session.id, { clearPrompt: true })
       return session.id
@@ -807,7 +718,7 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
       setError(t("studio.connectionError"))
       return null
     }
-  }, [addSession, setActiveSessionId, setMessages, setError, t, onSessionActivated])
+  }, [addSession, setActiveSessionId, setError, t, onSessionActivated])
 
   // ── Send message with full SSE streaming ────────────────
 
@@ -842,17 +753,18 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
     lastEventIdRef.current = 0
 
     setError(null)
-    setIsStreaming(true)
-    setStreamSegments([])
-    setStreamThinking("")
+    // Per-sid streaming/segments init. We OWN sessionId for this
+    // send, so we target its slot directly — even if the user has
+    // since clicked another session, we still update bySession[
+    // sessionId] correctly. The active-session selectors pick up
+    // only the visible one.
+    setSessionIsStreaming(sessionId, true)
+    setSessionStreamSegments(sessionId, [])
+    setSessionStreamThinking(sessionId, "")
 
     // Mirror the broker-side TryLockSession into the local sessions
     // cache so a later session-switch+return correctly identifies this
-    // session as in-flight. Without this, `sessions.find(id).isProcessing`
-    // is read from a stale snapshot taken at page-load (false), and the
-    // follow-stream useEffect's `if (!session?.isProcessing) return`
-    // guard kills the reconnect — that's why thinking icons disappeared
-    // when the user switched away mid-stream and came back.
+    // session as in-flight.
     markSessionProcessing(sessionId, true)
     // Claim this session as "locally sending" so the WS session_idle
     // handler doesn't race us and flip isStreaming back to false
@@ -863,7 +775,7 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
     abortRef.current = controller
 
     const tempId = `temp-${Date.now()}`
-    addMessage({
+    addSessionMessage(sessionId, {
       id: tempId,
       role: "user",
       content: message,
@@ -900,9 +812,7 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
         }
         if (isStill()) {
           // 402 = broker credit gate. Snap the local quota to 0 so the
-          // input flips to its disabled-with-banner state immediately,
-          // surface a localized error rather than the raw "Error 402"
-          // we'd otherwise get from the fallback branch.
+          // input flips to its disabled-with-banner state immediately.
           if (res.status === 402) {
             const current = useStudioStore.getState().quota
             if (current) {
@@ -912,9 +822,13 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
           } else {
             setError(data.error || `Error ${res.status}`)
           }
-          setIsStreaming(false)
-          removeMessage(tempId)
         }
+        // Always roll back this session's slot, even if the user
+        // navigated elsewhere — otherwise the temp bubble and the
+        // "streaming" flag persist forever on whichever session
+        // they came from.
+        setSessionIsStreaming(sessionId, false)
+        removeSessionMessage(sessionId, tempId)
         return
       }
 
@@ -1127,54 +1041,44 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
       }
     } finally {
       if (watchdog) clearInterval(watchdog)
-      // Cleanup is gated on isStill — if the user switched away mid-stream,
-      // the new session owns the UI and we must NOT touch its widgets,
-      // streaming flags, or trigger a setIsStreaming(false) that would
-      // disable a still-active stream in the new session.
-      const stillActive = isStill()
-      if (stillActive && sessionId) {
-        setActiveWidgets([])
+      // ALL cleanup is now per-sid via `sessionId` (captured at
+      // send time) — we don't gate on activeSessionRef.current
+      // anymore. The originating session's slot is the one we
+      // started; finishing it cleanly is correct whether the
+      // user is still looking or not.
+      if (sessionId) {
+        setSessionActiveWidgets(sessionId, [])
         try { await fetchMessages(sessionId) } catch { /* silent */ }
-        // Guarantee the optimistic temp is gone. mergeMessages drops temps that
-        // match a server message, but if content normalization still diverges
-        // (attachments, whitespace edge cases) the temp could linger as a
-        // duplicate bubble. Force-remove by id as a final safety net.
-        removeMessage(tempId)
+        // Guarantee the optimistic temp is gone.
+        removeSessionMessage(sessionId, tempId)
         fetchSessions()
         fetchQuota()
+        // Mirror broker-side UnlockSession in the sessions list.
+        markSessionProcessing(sessionId, false)
+        inflightSendsRef.current.delete(sessionId)
+        // Drop the live flags + clear streamSegments for THIS
+        // session. The persisted assistant message is now in
+        // bySession[sid].messages from fetchMessages above; the
+        // segments view served us during the stream, time to
+        // hand off to the persisted view.
+        setSessionIsStreaming(sessionId, false)
+        setSessionStreamThinking(sessionId, "")
+        setSessionStreamSegments(sessionId, [])
       }
-      // Mirror the broker-side UnlockSession in the local cache so the
-      // session no longer reports as processing once the stream is done.
-      // Safe to call regardless of which session is active — it keys on
-      // the originating sessionId, not the current view.
-      if (sessionId) markSessionProcessing(sessionId, false)
-      // Release the in-flight claim — from here on, session_idle from
-      // the WS is authoritative again (e.g., we're back to background
-      // observer mode for this session).
-      if (sessionId) inflightSendsRef.current.delete(sessionId)
-      // Drop the live flags AND clear streamSegments now that the
-      // persisted message is in the list (fetchMessages above filled
-      // it in). The typewriter used to call onCaughtUp to do this
-      // handoff; without it, we just sequence the swap here so the
-      // user sees the persisted bubble (with grouped tools, click-to-
-      // expand etc) instead of the minimal live view forever.
-      if (stillActive) {
-        setIsStreaming(false)
-        setStreamThinking("")
-        setStreamSegments([])
-      }
-      // abortRef/sendingRef are non-render flags scoped to the in-flight
-      // send — clear them unconditionally so we don't get stuck.
       abortRef.current = null
       sendingRef.current = false
-      if (stillActive) notify()
+      // Only flash the title for the visible session. Background
+      // sessions completing in the background shouldn't steal
+      // attention from whatever the user is doing.
+      if (isStill()) notify()
     }
   }, [
-    activeSessionId, isStreaming, locale, progressMode, addMessage, removeMessage,
-    ensureSession, setError, setIsStreaming, setStreamSegments, setStreamThinking,
-    resetStream, setActiveWidgets, addActiveWidget, fetchMessages, fetchSessions,
+    activeSessionId, isStreaming, locale, progressMode,
+    ensureSession, setError, fetchMessages, fetchSessions,
     fetchQuota, notify, addConsoleLog, setConsoleSummary, setConsoleOpen, markSessionProcessing,
-    setLastRouting, onSuiteChange, t, enableAdminConsole,
+    setLastRouting, onSuiteChange, t, enableAdminConsole, setQuota,
+    setSessionIsStreaming, setSessionStreamSegments, setSessionStreamThinking,
+    setSessionActiveWidgets, addSessionActiveWidget, addSessionMessage, removeSessionMessage,
   ])
 
   // Keep the ref pointing at the latest handleSend so auto-send effects above
@@ -1186,27 +1090,25 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
   // ── Stop streaming ──────────────────────────────────────
 
   const handleStop = useCallback(() => {
-    // Abort the client-side fetch + follow-stream subscription regardless
-    // of whether the broker cancel succeeds.
     abortRef.current?.abort()
     followRef.current?.abort()
     abortRef.current = null
     followRef.current = null
 
-    // Force-reset the local streaming state IMMEDIATELY. Previously we
-    // only reset in handleSend's finally block — if the broker cancel
-    // failed silently (.catch noop) and no SSE error came back, the UI
-    // stayed pinned at isStreaming=true forever and the user couldn't
-    // send a new message (the `if (isStreaming) return` guard at the top
-    // of handleSend rejected every attempt). The audit's lacuna #12.
-    resetStream()
+    // Force-reset the ACTIVE session's streaming state immediately
+    // so the UI doesn't stay pinned at isStreaming=true forever
+    // if the broker cancel silently fails.
     sendingRef.current = false
     if (activeSessionId) {
+      setSessionIsStreaming(activeSessionId, false)
+      setSessionStreamSegments(activeSessionId, [])
+      setSessionStreamThinking(activeSessionId, "")
       markSessionProcessing(activeSessionId, false)
 
       brokerFetch(`/api/broker/cancel/${activeSessionId}`, { method: "POST" }).catch(() => {})
 
-      const widgets = useStudioStore.getState().activeWidgets
+      const widgets =
+        useStudioStore.getState().bySession[activeSessionId]?.activeWidgets ?? []
       for (const w of widgets) {
         if (w.type === "task" || w.type === "sub-agent") {
           brokerFetch(`/api/broker/task/${w.id}/cancel`, { method: "POST" }).catch(() => {})
@@ -1219,37 +1121,23 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
         }
       }
     }
-  }, [activeSessionId, resetStream, markSessionProcessing])
+  }, [activeSessionId, setSessionIsStreaming, setSessionStreamSegments, setSessionStreamThinking, markSessionProcessing])
 
   // ── New chat ───────────────────────────────────────────
 
   const handleNewChat = useCallback(async () => {
-    // Lazy session creation. Previously this fired POST /sessions
-    // unconditionally, creating an empty session in the DB even when
-    // the user had typed nothing — every "New Chat" click left a
-    // ghost session in the sidebar. Now we just reset the UI to the
-    // welcome state. The actual session is created on the first
-    // outgoing action (handleSend → ensureSession, or uploadFiles →
-    // ensureSession).
-    //
-    // Cleanup of the previous session's residual stream UI mirrors
-    // handleSessionSelect — without it, clicking New Chat while a
-    // session is mid-stream leaves segments / thinking / widgets /
-    // error visible on the empty welcome screen.
-    resetStream()
-    setActiveWidgets([])
+    // Lazy session creation: drop activeSessionId to null. The
+    // welcome screen renders because there's no active session;
+    // bySession entries for OTHER sessions stay intact, so when
+    // the user clicks back to a running session their state is
+    // exactly where they left it. No global reset, no clearing.
     selectedSuiteRef.current = null
     setError(null)
     followRef.current?.abort()
     followRef.current = null
-    clearMessages()
-    setMessagesLoading(false)
     setActiveSessionId(null)
     onSessionActivated?.("", { clearPrompt: true, clearSuite: true })
-  }, [
-    setActiveSessionId, onSessionActivated,
-    resetStream, setActiveWidgets, setError, clearMessages, setMessagesLoading,
-  ])
+  }, [setActiveSessionId, onSessionActivated, setError])
 
   // ── Global keyboard shortcuts ───────────────────────────
 

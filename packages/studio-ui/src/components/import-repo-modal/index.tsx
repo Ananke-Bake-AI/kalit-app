@@ -43,7 +43,7 @@ type Tab = "github" | "manual"
 export function ImportRepoModal({ sessionId, onClose, onEnsureSession }: ImportRepoModalProps) {
   const { t } = useI18n()
   const setImportedRepo = useStudioStore((st) => st.setImportedRepo)
-  const addMessage = useStudioStore((st) => st.addMessage)
+  const addSessionMessage = useStudioStore((st) => st.addSessionMessage)
   const existing = useStudioStore((st) => st.importedRepo)
 
   const [tab, setTab] = useState<Tab>("github")
@@ -55,14 +55,15 @@ export function ImportRepoModal({ sessionId, onClose, onEnsureSession }: ImportR
   // drops it on the next fetchMessages — the notice is one-shot and would
   // otherwise get re-appended at the bottom after every server refresh.
   const pushRepoLinkedNotice = useCallback((repoName: string) => {
+    if (!sessionId) return
     const content = t("studio.repoLinkedChat").replace("{repo}", repoName)
-    addMessage({
+    addSessionMessage(sessionId, {
       id: `local-notice-repolinked-${Date.now()}`,
       role: "assistant",
       content,
       createdAt: new Date().toISOString(),
     })
-  }, [addMessage, t])
+  }, [addSessionMessage, sessionId, t])
 
   const handleAttached = useCallback((r: ImportedRepoState) => {
     setImportedRepo(r)

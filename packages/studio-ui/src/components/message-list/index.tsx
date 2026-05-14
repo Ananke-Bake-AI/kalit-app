@@ -1,7 +1,13 @@
 "use client"
 
 import { Fragment, useCallback, useEffect, useRef } from "react"
-import { useStudioStore } from "../../store"
+import {
+  useActiveIsStreaming,
+  useActiveMessages,
+  useActiveStreamSegments,
+  useActiveStreamThinking,
+  useStudioStore,
+} from "../../store"
 import { useI18n } from "@kalit/i18n/react"
 import { MessageBubble } from "../message-bubble"
 import { StreamSegments } from "../stream-segments"
@@ -16,10 +22,13 @@ interface MessageListProps {
 
 export function MessageList({ onStop, onPreviewFile, onRefreshMessages }: MessageListProps) {
   const { locale } = useI18n()
-  const messages = useStudioStore((s) => s.messages)
-  const isStreaming = useStudioStore((s) => s.isStreaming)
-  const streamSegments = useStudioStore((s) => s.streamSegments)
-  const streamThinking = useStudioStore((s) => s.streamThinking)
+  // Bind to the active session's slice of bySession. Switching
+  // active session reroutes these selectors atomically; no clear,
+  // no flicker, no manual swap.
+  const messages = useActiveMessages()
+  const isStreaming = useActiveIsStreaming()
+  const streamSegments = useActiveStreamSegments()
+  const streamThinking = useActiveStreamThinking()
   const showToolBadges = useStudioStore((s) => s.showToolBadges)
   const error = useStudioStore((s) => s.error)
 
@@ -101,7 +110,7 @@ export function MessageList({ onStop, onPreviewFile, onRefreshMessages }: Messag
     })
   }, [lastMessageId, lastMessageRole])
 
-  const setStreamSegments = useStudioStore((s) => s.setStreamSegments)
+  const setSessionStreamSegments = useStudioStore((s) => s.setSessionStreamSegments)
   const visibleAll = messages.filter((m) => m.role !== "system" && m.role !== "widget")
   // While the typewriter is still revealing the live response (streamSegments
   // populated, even after the broker stream ended), hide the persisted last
@@ -141,12 +150,14 @@ export function MessageList({ onStop, onPreviewFile, onRefreshMessages }: Messag
         {streamSegments.length > 0 && (
           <div className={s.streamRow}>
             <StreamSegments
-              segments={streamSegments}
+              segments={[...streamSegments]}
               thinking={streamThinking}
               onStop={isStreaming ? onStop : undefined}
               onPreviewFile={onPreviewFile}
               live={isStreaming}
-              onCaughtUp={() => setStreamSegments([])}
+              onCaughtUp={() => {
+                if (activeSessionId) setSessionStreamSegments(activeSessionId, [])
+              }}
             />
           </div>
         )}

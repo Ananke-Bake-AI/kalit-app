@@ -16,7 +16,10 @@ interface BugReportModalProps {
 
 export function BugReportModal({ open, onClose }: BugReportModalProps) {
   const { t } = useI18n()
-  const { activeSessionId, messages } = useStudioStore()
+  const activeSessionId = useStudioStore((s) => s.activeSessionId)
+  const messages = useStudioStore((s) =>
+    s.activeSessionId ? s.bySession[s.activeSessionId]?.messages ?? [] : [],
+  )
   const [description, setDescription] = useState("")
   const [pending, startTransition] = useTransition()
   const [submitted, setSubmitted] = useState(false)

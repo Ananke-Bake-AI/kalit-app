@@ -66,7 +66,7 @@ export function SessionSidebar({ onSessionSelect, onNewChat }: SessionSidebarPro
     setDeleteConfirm,
     removeSession,
     setActiveSessionId,
-    setMessages,
+    dropSession,
     updateSessionTitle,
     quota,
     progressMode,
@@ -217,9 +217,9 @@ export function SessionSidebar({ onSessionSelect, onNewChat }: SessionSidebarPro
         const res = await brokerFetch(url, { method: "DELETE" })
         if (res.ok) {
           removeSession(id)
+          dropSession(id)
           if (activeSessionId === id) {
             setActiveSessionId(null)
-            setMessages([])
           }
         }
       } catch {
@@ -233,7 +233,7 @@ export function SessionSidebar({ onSessionSelect, onNewChat }: SessionSidebarPro
         return next
       })
     },
-    [activeSessionId, removeSession, setActiveSessionId, setMessages, setDeleteConfirm],
+    [activeSessionId, removeSession, dropSession, setActiveSessionId, setDeleteConfirm],
   )
 
   // ── Select ─────────────────────────────────────────────

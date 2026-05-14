@@ -1,4 +1,5 @@
 import { create } from "zustand"
+import { shallow } from "zustand/shallow"
 
 import type {
   AtMenuState,
@@ -13,6 +14,45 @@ import type {
 
 export type TaskforceStandard = "anthropic" | "openai"
 
+// ─────────────────────────────────────────────────────────────
+// Session-scoped UI state.
+//
+// Every piece of chat state that depends on which session is
+// currently being viewed lives in `bySession[sid]`. Switching
+// sessions is JUST flipping `activeSessionId` — no clearing, no
+// resetting, no re-fetching. When the user navigates away and
+// comes back, the rendered state is byte-identical to what they
+// left behind, because the underlying state was never touched.
+//
+// Mutations target a specific `sid`. WS events naturally carry
+// their session id, so the reducer can update background-session
+// state without ever bleeding into the visible chat.
+// ─────────────────────────────────────────────────────────────
+
+export interface SessionUIState {
+  messages: ChatMessage[]
+  messagesLoading: boolean
+  streamSegments: StreamSegment[]
+  streamThinking: string
+  isStreaming: boolean
+  activeWidgets: WidgetPayload[]
+}
+
+const EMPTY_SESSION_STATE: SessionUIState = {
+  messages: [],
+  messagesLoading: false,
+  streamSegments: [],
+  streamThinking: "",
+  isStreaming: false,
+  activeWidgets: [],
+}
+
+// Frozen sentinel returned from selectors when there's no active
+// session. Stable reference → Zustand subscribers don't churn.
+const EMPTY_MESSAGES: readonly ChatMessage[] = Object.freeze([])
+const EMPTY_SEGMENTS: readonly StreamSegment[] = Object.freeze([])
+const EMPTY_WIDGETS: readonly WidgetPayload[] = Object.freeze([])
+
 interface StudioStore {
   // Sessions
   sessions: ChatSession[]
@@ -24,52 +64,49 @@ interface StudioStore {
   updateSessionTitle: (id: string, title: string) => void
   markSessionProcessing: (id: string, isProcessing: boolean) => void
 
-  // Messages
-  messages: ChatMessage[]
-  messagesLoading: boolean
-  setMessages: (messages: ChatMessage[]) => void
-  // Hard-clear: bypasses mergeMessages so optimistic temps from a
-  // previous session don't carry over on session switch. Use whenever
-  // the messages array represents a different session entirely.
-  clearMessages: () => void
-  setMessagesLoading: (loading: boolean) => void
-  addMessage: (message: ChatMessage) => void
-  removeMessage: (id: string) => void
-  // Per-session cache. Populated when the active session changes
-  // (immediate hand-off → no fetch flash) and refreshed whenever
-  // the WS delivers an authoritative session_context or the SSE
-  // fallback wraps up a run. Keyed by sessionId. Switching back to
-  // a previously-visited session renders instantly from here,
-  // while the WS revalidates in the background.
-  messagesBySession: Map<string, ChatMessage[]>
-  cacheSessionMessages: (sessionId: string, messages: ChatMessage[]) => void
-  getCachedSessionMessages: (sessionId: string) => ChatMessage[] | undefined
-  clearCachedSessionMessages: (sessionId: string) => void
+  // ──────────────────────────────────────────────────────────
+  // Per-session UI state (chat messages + live streaming view).
+  // Indexed by sessionId. Components read via the bound selectors
+  // (useActiveSessionState, useSessionMessages, …) which key on
+  // activeSessionId; mutations always target a specific sid.
+  // ──────────────────────────────────────────────────────────
+  bySession: Record<string, SessionUIState>
+  patchSession: (sid: string, patch: Partial<SessionUIState>) => void
+  // Drop a session's entire UI state. Used when the user deletes
+  // the session so we don't keep its messages alive in memory.
+  dropSession: (sid: string) => void
 
-  // Streaming
-  isStreaming: boolean
-  streamSegments: StreamSegment[]
-  streamThinking: string
-  setIsStreaming: (streaming: boolean) => void
-  setStreamSegments: (segments: StreamSegment[]) => void
-  appendStreamSegment: (segment: StreamSegment) => void
-  setStreamThinking: (thinking: string) => void
-  resetStream: () => void
+  // Per-session message mutations. Reads use the SessionUIState
+  // selectors below; only writes need explicit setters.
+  setSessionMessages: (sid: string, messages: ChatMessage[]) => void
+  addSessionMessage: (sid: string, message: ChatMessage) => void
+  removeSessionMessage: (sid: string, id: string) => void
+  setSessionMessagesLoading: (sid: string, loading: boolean) => void
 
-  // Active widgets (injected by SSE, persisted across message refreshes)
-  activeWidgets: WidgetPayload[]
-  setActiveWidgets: (widgets: WidgetPayload[]) => void
-  addActiveWidget: (widget: WidgetPayload) => void
+  // Per-session live-streaming state. The WS reducer writes here as
+  // events arrive — for the active session AND for any background
+  // sessions the user has visited. Switching back to a session
+  // shows its accumulated stream state immediately.
+  setSessionStreamSegments: (sid: string, segments: StreamSegment[]) => void
+  setSessionStreamThinking: (sid: string, thinking: string) => void
+  setSessionIsStreaming: (sid: string, streaming: boolean) => void
+  setSessionActiveWidgets: (sid: string, widgets: WidgetPayload[]) => void
+  addSessionActiveWidget: (sid: string, widget: WidgetPayload) => void
 
-  // File attachments
+  // ──────────────────────────────────────────────────────────
+  // Global UI state (not session-scoped).
+  // ──────────────────────────────────────────────────────────
+
+  // File attachments (active session only; user can't switch sessions
+  // mid-upload anyway, the chat-input clears them on send).
   attachedFiles: UploadedFile[]
   setAttachedFiles: (files: UploadedFile[]) => void
   isUploading: boolean
   setIsUploading: (uploading: boolean) => void
 
   // Imported git repo for the active session (populated from broker).
-  // `url` is always safe to display; the token itself is never surfaced
-  // back to the client — `hasToken` is just a flag.
+  // Re-fetched on session activation; not session-scoped because only
+  // the visible session needs it.
   importedRepo: ImportedRepoState | null
   setImportedRepo: (repo: ImportedRepoState | null) => void
 
@@ -117,8 +154,7 @@ interface StudioStore {
   deleteConfirm: string | null
   setDeleteConfirm: (id: string | null) => void
 
-  // Routing debug (admin-only panel) — latest suite_selected event payload.
-  // Populated by studio-client's SSE handler on every outgoing message.
+  // Routing debug (admin-only panel)
   lastRouting: RoutingDebug | null
   setLastRouting: (routing: RoutingDebug | null) => void
 
@@ -144,8 +180,8 @@ export interface RoutingDebug {
 export interface ConsoleLogEntry {
   id: string
   ts: number
-  type: string     // route | tool | text | think | done | error | progress | widget | file | system | cmd | cost
-  tag: string      // short label (e.g. "ROUTE", "TOOL", ">")
+  type: string
+  tag: string
   message: string
 }
 
@@ -184,19 +220,13 @@ const sameContent = (a: ChatMessage, b: ChatMessage): boolean =>
 // (same role+content). Server messages are the source of truth; only temps
 // that have NO server counterpart yet are kept (e.g. POST in-flight).
 //
-// The returned list is sorted by `createdAt` ASC so a surviving temp (rare:
-// dedup miss when the server normalized whitespace / dropped attachments
-// while the temp kept them) lands in chronological position instead of
-// after newer server messages. Without the sort the chat showed older
-// duplicates appearing AFTER more recent assistant replies.
-function mergeMessages(prev: ChatMessage[], next: ChatMessage[]): ChatMessage[] {
+// The returned list is sorted by `createdAt` ASC so a surviving temp lands
+// in chronological position instead of after newer server messages.
+function mergeMessages(prev: readonly ChatMessage[], next: readonly ChatMessage[]): ChatMessage[] {
   const carriedTemps = prev.filter(
     (m) => isTempId(m.id) && !next.some((n) => sameContent(n, m)),
   )
   const merged = [...next, ...carriedTemps]
-  // Stable sort by createdAt. Temps emitted in handleSend always include
-  // a fresh ISO timestamp, so they collate next to whatever server message
-  // shares the same second.
   merged.sort((a, b) => {
     const ta = new Date(a.createdAt).getTime()
     const tb = new Date(b.createdAt).getTime()
@@ -208,22 +238,24 @@ function mergeMessages(prev: ChatMessage[], next: ChatMessage[]): ChatMessage[] 
 
 // Skip an optimistic add when the same id is already present, or when the
 // most recent message has the same role+content (rapid double-Enter, or the
-// server copy already landed). Non-adjacent matches are allowed so a user
-// can legitimately send the same prompt twice later in the conversation.
-function shouldSkipAdd(prev: ChatMessage[], msg: ChatMessage): boolean {
+// server copy already landed).
+function shouldSkipAdd(prev: readonly ChatMessage[], msg: ChatMessage): boolean {
   if (prev.some((m) => m.id === msg.id)) return true
   const last = prev[prev.length - 1]
   return !!last && sameContent(last, msg)
 }
 
 export const useStudioStore = create<StudioStore>((set, get) => ({
-  // Sessions
+  // ── Sessions ──
   sessions: [],
   activeSessionId: null,
   setSessions: (sessions) => set({ sessions }),
   setActiveSessionId: (activeSessionId) => set({ activeSessionId }),
   addSession: (session) => set((s) => ({ sessions: [session, ...s.sessions] })),
-  removeSession: (id) => set((s) => ({ sessions: s.sessions.filter((sess) => sess.id !== id) })),
+  removeSession: (id) =>
+    set((s) => ({
+      sessions: s.sessions.filter((sess) => sess.id !== id),
+    })),
   updateSessionTitle: (id, title) =>
     set((s) => ({
       sessions: s.sessions.map((sess) => (sess.id === id ? { ...sess, title } : sess)),
@@ -235,97 +267,159 @@ export const useStudioStore = create<StudioStore>((set, get) => ({
       ),
     })),
 
-  // Messages
-  messages: [],
-  messagesLoading: false,
-  setMessages: (messages) => set((s) => ({ messages: mergeMessages(s.messages, messages) })),
-  // Hard-clear is intentional: on session switch, mergeMessages would
-  // carry over the previous session's optimistic temps (e.g. the user
-  // just typed "ca va?" then switched). The temp would then float into
-  // the new session's view because it has no server counterpart yet.
-  clearMessages: () => set({ messages: [] }),
-  setMessagesLoading: (messagesLoading) => set({ messagesLoading }),
-  addMessage: (message) =>
-    set((s) => (shouldSkipAdd(s.messages, message) ? s : { messages: [...s.messages, message] })),
-  removeMessage: (id) =>
-    set((s) => ({ messages: s.messages.filter((m) => m.id !== id) })),
-
-  // Per-session cache. Map is referentially stable across set() calls
-  // (we mutate in place) which is fine because consumers always read
-  // through the getter, not as a memoized selector. If a renderer
-  // ever needs reactivity on a specific session's entry, swap to a
-  // record-style object — for now zustand subscribers only care
-  // about `messages` changing, not the cache map.
-  messagesBySession: new Map<string, ChatMessage[]>(),
-  cacheSessionMessages: (sessionId, messages) =>
+  // ── Per-session UI state ──
+  bySession: {},
+  patchSession: (sid, patch) =>
     set((s) => {
-      s.messagesBySession.set(sessionId, messages)
-      // Return the same reference — we mutated in place. zustand
-      // won't re-render anything that subscribes to messagesBySession
-      // (intentional), but consumers reading via getCachedSessionMessages
-      // see the fresh value.
-      return s
+      if (!sid) return s
+      const prev = s.bySession[sid] ?? EMPTY_SESSION_STATE
+      return {
+        bySession: {
+          ...s.bySession,
+          [sid]: { ...prev, ...patch },
+        },
+      }
     }),
-  getCachedSessionMessages: (sessionId) => {
-    return get().messagesBySession.get(sessionId)
-  },
-  clearCachedSessionMessages: (sessionId) =>
+  dropSession: (sid) =>
     set((s) => {
-      s.messagesBySession.delete(sessionId)
-      return s
+      if (!sid || !s.bySession[sid]) return s
+      const { [sid]: _drop, ...rest } = s.bySession
+      return { bySession: rest }
     }),
 
-  // Streaming
-  isStreaming: false,
-  streamSegments: [],
-  streamThinking: "",
-  setIsStreaming: (isStreaming) => set({ isStreaming }),
-  setStreamSegments: (streamSegments) => set({ streamSegments }),
-  appendStreamSegment: (segment) =>
-    set((s) => ({ streamSegments: [...s.streamSegments, segment] })),
-  setStreamThinking: (streamThinking) => set({ streamThinking }),
-  resetStream: () => set({ isStreaming: false, streamSegments: [], streamThinking: "" }),
-
-  // Active widgets
-  activeWidgets: [],
-  setActiveWidgets: (activeWidgets) => set({ activeWidgets }),
-  addActiveWidget: (widget) =>
+  setSessionMessages: (sid, messages) =>
     set((s) => {
-      if (s.activeWidgets.some((w) => w.id === widget.id && w.type === widget.type)) {
+      if (!sid) return s
+      const prev = s.bySession[sid] ?? EMPTY_SESSION_STATE
+      const merged = mergeMessages(prev.messages, messages)
+      return {
+        bySession: {
+          ...s.bySession,
+          [sid]: { ...prev, messages: merged },
+        },
+      }
+    }),
+  addSessionMessage: (sid, message) =>
+    set((s) => {
+      if (!sid) return s
+      const prev = s.bySession[sid] ?? EMPTY_SESSION_STATE
+      if (shouldSkipAdd(prev.messages, message)) return s
+      return {
+        bySession: {
+          ...s.bySession,
+          [sid]: { ...prev, messages: [...prev.messages, message] },
+        },
+      }
+    }),
+  removeSessionMessage: (sid, id) =>
+    set((s) => {
+      if (!sid) return s
+      const prev = s.bySession[sid]
+      if (!prev) return s
+      return {
+        bySession: {
+          ...s.bySession,
+          [sid]: { ...prev, messages: prev.messages.filter((m) => m.id !== id) },
+        },
+      }
+    }),
+  setSessionMessagesLoading: (sid, loading) =>
+    set((s) => {
+      if (!sid) return s
+      const prev = s.bySession[sid] ?? EMPTY_SESSION_STATE
+      if (prev.messagesLoading === loading) return s
+      return {
+        bySession: {
+          ...s.bySession,
+          [sid]: { ...prev, messagesLoading: loading },
+        },
+      }
+    }),
+
+  setSessionStreamSegments: (sid, streamSegments) =>
+    set((s) => {
+      if (!sid) return s
+      const prev = s.bySession[sid] ?? EMPTY_SESSION_STATE
+      return {
+        bySession: {
+          ...s.bySession,
+          [sid]: { ...prev, streamSegments },
+        },
+      }
+    }),
+  setSessionStreamThinking: (sid, streamThinking) =>
+    set((s) => {
+      if (!sid) return s
+      const prev = s.bySession[sid] ?? EMPTY_SESSION_STATE
+      if (prev.streamThinking === streamThinking) return s
+      return {
+        bySession: {
+          ...s.bySession,
+          [sid]: { ...prev, streamThinking },
+        },
+      }
+    }),
+  setSessionIsStreaming: (sid, isStreaming) =>
+    set((s) => {
+      if (!sid) return s
+      const prev = s.bySession[sid] ?? EMPTY_SESSION_STATE
+      if (prev.isStreaming === isStreaming) return s
+      return {
+        bySession: {
+          ...s.bySession,
+          [sid]: { ...prev, isStreaming },
+        },
+      }
+    }),
+  setSessionActiveWidgets: (sid, widgets) =>
+    set((s) => {
+      if (!sid) return s
+      const prev = s.bySession[sid] ?? EMPTY_SESSION_STATE
+      return {
+        bySession: {
+          ...s.bySession,
+          [sid]: { ...prev, activeWidgets: widgets },
+        },
+      }
+    }),
+  addSessionActiveWidget: (sid, widget) =>
+    set((s) => {
+      if (!sid) return s
+      const prev = s.bySession[sid] ?? EMPTY_SESSION_STATE
+      if (prev.activeWidgets.some((w) => w.id === widget.id && w.type === widget.type)) {
         return s
       }
-      return { activeWidgets: [...s.activeWidgets, widget] }
+      return {
+        bySession: {
+          ...s.bySession,
+          [sid]: { ...prev, activeWidgets: [...prev.activeWidgets, widget] },
+        },
+      }
     }),
 
-  // File attachments
+  // ── Global non-session-scoped state ──
   attachedFiles: [],
   setAttachedFiles: (attachedFiles) => set({ attachedFiles }),
   isUploading: false,
   setIsUploading: (isUploading) => set({ isUploading }),
 
-  // Imported repo
   importedRepo: null,
   setImportedRepo: (importedRepo) => set({ importedRepo }),
 
-  // UI state
   sidebarOpen: false,
   rightPanelOpen: true,
   setSidebarOpen: (sidebarOpen) => set({ sidebarOpen }),
   setRightPanelOpen: (rightPanelOpen) => set({ rightPanelOpen }),
 
-  // @ command menu
   atMenu: null,
   setAtMenu: (atMenu) => set({ atMenu }),
 
-  // Preview
   previewFile: null,
   setPreviewFile: (previewFile) => set({ previewFile }),
 
-  // Quota
   quota: null,
   setQuota: (quota) => set({ quota }),
 
-  // Preferences
   progressMode: "default",
   setProgressMode: (progressMode) => set({ progressMode }),
   showToolBadges: false,
@@ -337,25 +431,20 @@ export const useStudioStore = create<StudioStore>((set, get) => ({
   setNotifyTitle: (notifyTitle) => set({ notifyTitle }),
   setNotifySound: (notifySound) => set({ notifySound }),
 
-  // Admin model override
   selectedModel: "anthropic:claude-haiku-4-5-20251001",
   setSelectedModel: (selectedModel) => set({ selectedModel }),
   taskforceStandard: "anthropic",
   setTaskforceStandard: (taskforceStandard) => set({ taskforceStandard }),
 
-  // Error
   error: null,
   setError: (error) => set({ error }),
 
-  // Delete confirmation
   deleteConfirm: null,
   setDeleteConfirm: (deleteConfirm) => set({ deleteConfirm }),
 
-  // Routing debug
   lastRouting: null,
   setLastRouting: (lastRouting) => set({ lastRouting }),
 
-  // Debug console
   consoleOpen: false,
   setConsoleOpen: (consoleOpen) => set({ consoleOpen }),
   consoleLogs: [],
@@ -365,3 +454,64 @@ export const useStudioStore = create<StudioStore>((set, get) => ({
   consoleSummary: null,
   setConsoleSummary: (consoleSummary) => set({ consoleSummary }),
 }))
+
+// ─────────────────────────────────────────────────────────────
+// Selectors bound to the active session.
+//
+// Components use these instead of reading `messages` /
+// `isStreaming` / etc. directly. They auto-subscribe to changes
+// of the active session's state and ignore mutations on other
+// sessions — so a background agent run in session B doesn't
+// re-render the chat for session A.
+// ─────────────────────────────────────────────────────────────
+
+export function useActiveSessionState(): SessionUIState {
+  return useStudioStore((s) => {
+    if (!s.activeSessionId) return EMPTY_SESSION_STATE
+    return s.bySession[s.activeSessionId] ?? EMPTY_SESSION_STATE
+  })
+}
+
+export function useActiveMessages(): readonly ChatMessage[] {
+  return useStudioStore((s) =>
+    s.activeSessionId ? s.bySession[s.activeSessionId]?.messages ?? EMPTY_MESSAGES : EMPTY_MESSAGES,
+  )
+}
+
+export function useActiveMessagesLoading(): boolean {
+  return useStudioStore((s) =>
+    s.activeSessionId ? s.bySession[s.activeSessionId]?.messagesLoading ?? false : false,
+  )
+}
+
+export function useActiveStreamSegments(): readonly StreamSegment[] {
+  return useStudioStore((s) =>
+    s.activeSessionId
+      ? s.bySession[s.activeSessionId]?.streamSegments ?? EMPTY_SEGMENTS
+      : EMPTY_SEGMENTS,
+  )
+}
+
+export function useActiveStreamThinking(): string {
+  return useStudioStore((s) =>
+    s.activeSessionId ? s.bySession[s.activeSessionId]?.streamThinking ?? "" : "",
+  )
+}
+
+export function useActiveIsStreaming(): boolean {
+  return useStudioStore((s) =>
+    s.activeSessionId ? s.bySession[s.activeSessionId]?.isStreaming ?? false : false,
+  )
+}
+
+export function useActiveWidgets(): readonly WidgetPayload[] {
+  return useStudioStore((s) =>
+    s.activeSessionId
+      ? s.bySession[s.activeSessionId]?.activeWidgets ?? EMPTY_WIDGETS
+      : EMPTY_WIDGETS,
+  )
+}
+
+// Re-export shallow for consumers that want to opt into shallow
+// comparison on multi-field selectors.
+export { shallow }

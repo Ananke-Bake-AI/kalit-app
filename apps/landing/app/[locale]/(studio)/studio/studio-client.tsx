@@ -33,15 +33,24 @@ export function StudioClient() {
   const {
     sessions,
     activeSessionId,
-    messages,
-    isStreaming,
-    messagesLoading,
     setSidebarOpen,
     previewFile,
     setPreviewFile,
     rightPanelOpen,
     setRightPanelOpen,
   } = useStudioStore()
+  // Active-session selectors. Switching activeSessionId re-routes
+  // these to the new session's slot atomically; no reset, no
+  // clearMessages, no re-fetch, no flicker on return.
+  const messages = useStudioStore((s) =>
+    s.activeSessionId ? s.bySession[s.activeSessionId]?.messages ?? [] : [],
+  )
+  const isStreaming = useStudioStore((s) =>
+    s.activeSessionId ? s.bySession[s.activeSessionId]?.isStreaming ?? false : false,
+  )
+  const messagesLoading = useStudioStore((s) =>
+    s.activeSessionId ? s.bySession[s.activeSessionId]?.messagesLoading ?? false : false,
+  )
 
   // Bug report modal state. Lives in the studio client because the
   // modal needs to read the active session + recent messages from the
