@@ -527,18 +527,6 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
           }
           const fresh = (Array.isArray(ctx.messages) ? ctx.messages : []) as never as ChatMessage[]
           if (sid) {
-            // Guard: an empty `messages` arriving while we already
-            // have rows for this session is almost certainly a
-            // transient broker hiccup (DB read error path falls
-            // through to `[]`, see buildSessionContext) — DON'T
-            // overwrite the painted chat with nothing. The next
-            // session_context (revalidate, reconnect) will be
-            // authoritative and we still cache the empty result
-            // only if our cache is empty too.
-            const haveCached = (useStudioStore.getState().getCachedSessionMessages(sid)?.length ?? 0) > 0
-            if (fresh.length === 0 && haveCached) {
-              break
-            }
             useStudioStore.getState().cacheSessionMessages(sid, fresh)
             if (sid === activeSessionRef.current) {
               setMessages(fresh)
