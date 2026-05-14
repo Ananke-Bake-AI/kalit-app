@@ -183,11 +183,27 @@ const sameContent = (a: ChatMessage, b: ChatMessage): boolean =>
 // Drop a temp message when the incoming server list already covers it
 // (same role+content). Server messages are the source of truth; only temps
 // that have NO server counterpart yet are kept (e.g. POST in-flight).
+//
+// The returned list is sorted by `createdAt` ASC so a surviving temp (rare:
+// dedup miss when the server normalized whitespace / dropped attachments
+// while the temp kept them) lands in chronological position instead of
+// after newer server messages. Without the sort the chat showed older
+// duplicates appearing AFTER more recent assistant replies.
 function mergeMessages(prev: ChatMessage[], next: ChatMessage[]): ChatMessage[] {
   const carriedTemps = prev.filter(
     (m) => isTempId(m.id) && !next.some((n) => sameContent(n, m)),
   )
-  return [...next, ...carriedTemps]
+  const merged = [...next, ...carriedTemps]
+  // Stable sort by createdAt. Temps emitted in handleSend always include
+  // a fresh ISO timestamp, so they collate next to whatever server message
+  // shares the same second.
+  merged.sort((a, b) => {
+    const ta = new Date(a.createdAt).getTime()
+    const tb = new Date(b.createdAt).getTime()
+    if (Number.isNaN(ta) || Number.isNaN(tb)) return 0
+    return ta - tb
+  })
+  return merged
 }
 
 // Skip an optimistic add when the same id is already present, or when the
