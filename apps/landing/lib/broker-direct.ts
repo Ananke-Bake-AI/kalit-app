@@ -24,12 +24,16 @@ async function fetchBrokerToken(): Promise<string | null> {
 }
 
 // WebSocket can't transit Next.js's HTTP rewrites — connectWebSocket
-// dials the broker origin directly. NEXT_PUBLIC_BROKER_URL must be
-// exposed at build time (set in apps/landing/.env or .env.production)
-// pointing at the public broker host (e.g. https://broker-api.kalit.ai).
-// Falls back to relative same-origin in dev where the broker proxy
-// upgrade is wired through nginx + a /api/flow/user-ws location block.
-const wsBaseUrl = process.env.NEXT_PUBLIC_BROKER_URL || ""
+// dials the broker origin directly. NEXT_PUBLIC_BROKER_URL is read at
+// build time (set in apps/landing/.env, .env.production, or Vercel env);
+// when missing we fall back to the prod broker host so the studio still
+// works after a deploy that forgot the env var. (Visible failure on
+// 2026-05-14 Vercel deploy: NEXT_PUBLIC_BROKER_URL wasn't propagated,
+// the bundle baked in `wsBaseUrl=""`, and the client built
+// `wss://kalit.ai/api/flow/user-ws` — Vercel only rewrites /api/broker/*
+// and WS upgrades can't transit the rewrite anyway. No user
+// successfully registered on user_ws for hours.)
+const wsBaseUrl = process.env.NEXT_PUBLIC_BROKER_URL || "https://broker-api.kalit.ai"
 
 const client = createBrokerClient({
   baseUrl: "",
