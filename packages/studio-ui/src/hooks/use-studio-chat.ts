@@ -552,29 +552,38 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
           break
         }
         case "session_idle": {
-          // Broker has no live room for `sid`. Two scenarios where
-          // this isn't actually idle and we must NOT flip
-          // isStreaming off:
-          //   1. A local handleSend is mid-POST and the broker just
-          //      hasn't called streamHub.Open yet (the original
-          //      race this case was written for).
-          //   2. The sessions list says is_processing=true. That
-          //      means the broker DB lock is held for this session;
-          //      we're between turns (LLM rate-limit sleep, async
-          //      tool, idle window between two runner.Run calls
-          //      that share the same outer turn) and the stream room
-          //      is closed for a few seconds before re-opening.
-          //      Flipping isStreaming off here is what produced the
-          //      "thinking flickers and only comes back when a new
-          //      event lands" complaint when navigating between two
-          //      active sessions.
+          // Broker has no live room for `sid` RIGHT NOW. The frame is
+          // unreliable because the broker emits it any time
+          // streamHub.Get(sid) returns nil — which includes legitimate
+          // mid-run gaps (LLM rate-limit sleep, hand-off between
+          // runner.Run calls inside the same outer turn, the few
+          // seconds wait_for_completion holds before the next tool
+          // opens a new room). Flipping isStreaming off on every
+          // session_idle made the stop-button / thinking indicator
+          // blink off then back on with each gap — visible regression
+          // reported as "stop SVG appears for one frame, disappears,
+          // comes back when the next event lands".
+          //
+          // Suppress the off-flip under any of these signals:
+          //   1. handleSend is mid-POST — broker just hasn't opened
+          //      the room yet (the original race).
+          //   2. Local sessions cache says is_processing=true.
+          //   3. We're already rendering live stream content (segments
+          //      or thinking populated) — by definition the agent has
+          //      been emitting events and the gap is transient.
+          // Only when ALL three signals say "really idle" do we
+          // believe session_idle and clean up. session_stream_closed
+          // remains the AUTHORITATIVE end-of-run signal — that path
+          // always clears state.
           if (!sid) break
           if (inflightSendsRef.current.has(sid)) break
-          const sessionRow = useStudioStore.getState().sessions.find((s) => s.id === sid)
-          if (sessionRow?.isProcessing) {
-            // Trust the DB flag over a transient room-absence — the
-            // next session_event / session_attached will rebind us
-            // to the live room without the UI ever blinking.
+          const state = useStudioStore.getState()
+          const sessionRow = state.sessions.find((s) => s.id === sid)
+          if (sessionRow?.isProcessing) break
+          const slot = state.bySession[sid]
+          if (slot && (slot.streamSegments.length > 0 || slot.streamThinking !== "")) {
+            // We're actively rendering live content — the gap is just
+            // a wait, the next event will land and confirm.
             break
           }
           setSessionIsStreaming(sid, false)
