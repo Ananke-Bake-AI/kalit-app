@@ -542,16 +542,34 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
           break
         }
         case "session_idle": {
-          // Broker has no live room for `sid`. Clear that session's
-          // streaming flag + thinking text — unless a local handleSend
-          // is currently driving its POST (broker just hasn't called
-          // Open yet; session_idle is racing the streamHub setup).
+          // Broker has no live room for `sid`. Two scenarios where
+          // this isn't actually idle and we must NOT flip
+          // isStreaming off:
+          //   1. A local handleSend is mid-POST and the broker just
+          //      hasn't called streamHub.Open yet (the original
+          //      race this case was written for).
+          //   2. The sessions list says is_processing=true. That
+          //      means the broker DB lock is held for this session;
+          //      we're between turns (LLM rate-limit sleep, async
+          //      tool, idle window between two runner.Run calls
+          //      that share the same outer turn) and the stream room
+          //      is closed for a few seconds before re-opening.
+          //      Flipping isStreaming off here is what produced the
+          //      "thinking flickers and only comes back when a new
+          //      event lands" complaint when navigating between two
+          //      active sessions.
           if (!sid) break
-          if (!inflightSendsRef.current.has(sid)) {
-            setSessionIsStreaming(sid, false)
-            setSessionStreamThinking(sid, "")
-            prunedAssistantRef.current.delete(sid)
+          if (inflightSendsRef.current.has(sid)) break
+          const sessionRow = useStudioStore.getState().sessions.find((s) => s.id === sid)
+          if (sessionRow?.isProcessing) {
+            // Trust the DB flag over a transient room-absence — the
+            // next session_event / session_attached will rebind us
+            // to the live room without the UI ever blinking.
+            break
           }
+          setSessionIsStreaming(sid, false)
+          setSessionStreamThinking(sid, "")
+          prunedAssistantRef.current.delete(sid)
           break
         }
         case "session_stream_closed": {
