@@ -69,7 +69,8 @@
         "q": "Kann ich Pentest auf jeder Seite ausführen?",
         "a": "Nein. Pentest ist nur für Ziele, die dir gehören oder bei denen du ausdrücklich zum Testen autorisiert bist. Lies unsere Richtlinie zur verantwortungsvollen Nutzung, bevor du einen Scan startest."
       }
-    ]
+    ],
+    "fxDisclaimer": "Ungefährer lokaler Preis. Der genaue Betrag in der Währung deiner Karte wird beim Checkout angezeigt."
   },
   "security": {
     "metaTitle": "Sicherheit - Kalit AI",

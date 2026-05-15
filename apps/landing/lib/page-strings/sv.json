@@ -69,7 +69,8 @@
         "q": "Kan jag köra Pentest mot vilken sajt som helst?",
         "a": "Nej. Pentest är endast för mål du äger eller uttryckligen är behörig att testa. Läs vår sida för Ansvarsfull användning innan du startar en scan."
       }
-    ]
+    ],
+    "fxDisclaimer": "Ungefärligt lokalt pris. Det exakta beloppet i ditt korts valuta visas vid checkout."
   },
   "security": {
     "metaTitle": "Säkerhet - Kalit AI",

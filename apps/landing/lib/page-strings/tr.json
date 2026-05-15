@@ -69,7 +69,8 @@
         "q": "Herhangi bir sitede Pentest çalıştırabilir miyim?",
         "a": "Hayır. Pentest yalnızca sahip olduğun veya açıkça test etmeye yetkili olduğun hedefler içindir. Bir tarama çalıştırmadan önce Sorumlu Kullanım sayfamızı oku."
       }
-    ]
+    ],
+    "fxDisclaimer": "Yaklaşık yerel fiyat. Kartınızın para birimindeki tam tutar ödeme sırasında gösterilir."
   },
   "security": {
     "metaTitle": "Güvenlik - Kalit AI",

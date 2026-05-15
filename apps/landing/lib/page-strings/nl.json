@@ -69,7 +69,8 @@
         "q": "Kan ik Pentest op elke site uitvoeren?",
         "a": "Nee. Pentest is alleen voor doelen die je bezit of waarvoor je expliciete toestemming hebt om te testen. Lees onze pagina Verantwoord Gebruik voor je een scan start."
       }
-    ]
+    ],
+    "fxDisclaimer": "Geschatte lokale prijs. Het exacte bedrag in de valuta van je kaart wordt bij de checkout getoond."
   },
   "security": {
     "metaTitle": "Beveiliging - Kalit AI",

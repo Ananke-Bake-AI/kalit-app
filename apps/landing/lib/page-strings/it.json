@@ -69,7 +69,8 @@
         "q": "Posso eseguire Pentest su qualsiasi sito?",
         "a": "No. Pentest è solo per target che possiedi o sei esplicitamente autorizzato a testare. Leggi la nostra pagina Uso Responsabile prima di eseguire uno scan."
       }
-    ]
+    ],
+    "fxDisclaimer": "Prezzo locale approssimativo. L'importo esatto nella valuta della tua carta è mostrato al checkout."
   },
   "security": {
     "metaTitle": "Sicurezza - Kalit AI",

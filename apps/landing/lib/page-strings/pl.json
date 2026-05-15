@@ -69,7 +69,8 @@
         "q": "Czy mogę uruchamiać Pentest na dowolnej stronie?",
         "a": "Nie. Pentest jest tylko dla celów, które posiadasz lub do których masz jednoznaczną autoryzację. Przeczytaj naszą stronę Odpowiedzialne Użycie przed uruchomieniem skanu."
       }
-    ]
+    ],
+    "fxDisclaimer": "Przybliżona cena lokalna. Dokładna kwota w walucie Twojej karty zostanie pokazana przy płatności."
   },
   "security": {
     "metaTitle": "Bezpieczeństwo - Kalit AI",
