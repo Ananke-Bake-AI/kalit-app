@@ -519,6 +519,11 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
           }
           if (ctx.isLive) {
             setSessionIsStreaming(sid, true)
+            // Bootstrap from session_context tells us the broker has
+            // a live room — mirror that into the sessions cache so
+            // a stale isProcessing=false from page-load can't make
+            // the session_idle handler kill the indicator.
+            markSessionProcessing(sid, true)
           }
           break
         }
@@ -534,6 +539,11 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
             prunedAssistantRef.current.delete(sid)
           }
           setSessionIsStreaming(sid, true)
+          // Keep the local sessions cache in sync with the broker's
+          // reality: an attached room means the agent is actively
+          // processing on the backend. The session_idle handler relies
+          // on this flag to ignore transient room-absence frames.
+          markSessionProcessing(sid, true)
           // The broker confirmed the room is open — the
           // handleSend window is over, session_idle is no longer
           // racing the streamHub setup. Drop the in-flight claim
@@ -607,8 +617,13 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
           if (!ev || typeof ev !== "object") break
           if (!sid) break
           // Any inbound event is proof of life — flip this session's
-          // streaming flag back on (idempotent if already true).
+          // streaming flag back on (idempotent if already true). Also
+          // refresh the local sessions cache so session_idle race
+          // protections (which read sessions[sid].isProcessing) can
+          // see the truth even if /api/broker/sessions hasn't been
+          // re-fetched since this run started.
           setSessionIsStreaming(sid, true)
+          markSessionProcessing(sid, true)
           // Get-or-create the reducer for this session. Its callbacks
           // write to bySession[sid] unconditionally — background-
           // session events fill their own slots, the active-session
