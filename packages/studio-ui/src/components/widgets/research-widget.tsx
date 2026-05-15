@@ -172,12 +172,45 @@ export function ResearchWidget({ researchId, onCompleted, onPreviewFile }: Resea
     return () => clearInterval(timer)
   }, [data?.status])
 
-  // Skeleton
+  // ── Render helpers ──
+  //
+  // Every phase of the widget renders the SAME 3-row layout so the
+  // card never resizes between transitions:
+  //   row 1 — status header (pulse / spinner / check + label)
+  //   row 2 — prompt blurb (skeleton bar while we don't have it yet)
+  //   row 3 — asset grid (placeholder thumbs while waiting, real
+  //           thumbs once the search finishes)
+  // Without this the widget grew ~80 px when results landed and the
+  // chat scrolled out from under the user's cursor on every search
+  // resolution.
+
+  const PLACEHOLDER_THUMB_COUNT = 3
+
+  function renderThumbPlaceholders(count: number) {
+    return (
+      <div className={s.assetGrid}>
+        {Array.from({ length: count }).map((_, i) => (
+          <div key={`ph-${i}`} className={s.assetThumbSkeleton} />
+        ))}
+      </div>
+    )
+  }
+
+  // Skeleton — same shape as running, just no data yet.
   if (!data && !error) {
     return (
-      <div className={s.skeleton}>
-        <div className={s.skeletonLine} style={{ width: "66%" }} />
-        <div className={s.skeletonLine} style={{ width: "40%" }} />
+      <div className={s.card}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--size-2)" }}>
+          <div className={s.header}>
+            <span className={s.dotInfo}>
+              <span className={s.dotPulse} style={{ background: "var(--color-2)" }} />
+            </span>
+            <span style={{ fontSize: "0.78rem", color: "var(--text)" }}>{t("studio.searchingAssets")}</span>
+          </div>
+          <span style={{ fontSize: "0.65rem", color: "var(--text-secondary)" }}>—</span>
+        </div>
+        <div className={s.skeletonLine} style={{ width: "66%", marginLeft: 26 }} />
+        {renderThumbPlaceholders(PLACEHOLDER_THUMB_COUNT)}
       </div>
     )
   }
@@ -203,6 +236,12 @@ export function ResearchWidget({ researchId, onCompleted, onPreviewFile }: Resea
       onPreviewFile?.(file, imageItems)
     }
 
+    // Match the running phase's row layout exactly: header, prompt
+    // line, asset grid. If the search legitimately returned 0
+    // assets we still render an empty grid row of placeholder size
+    // so the card doesn't pop shorter than its running view.
+    const hasAnyAssets = images.length > 0 || audios.length > 0 || others.length > 0
+
     return (
       <div className={s.cardSuccess}>
         <div className={s.header}>
@@ -211,6 +250,10 @@ export function ResearchWidget({ researchId, onCompleted, onPreviewFile }: Resea
             {data.assetCount !== 1 ? t("studio.foundAssetsPlural").replace("{count}", String(data.assetCount)) : t("studio.foundAssets").replace("{count}", String(data.assetCount))}
           </span>
         </div>
+
+        {data.prompt && (
+          <p className={s.desc} style={{ paddingLeft: 26 }}>{data.prompt}</p>
+        )}
 
         {images.length > 0 && (
           <div className={s.assetGrid}>
@@ -229,6 +272,8 @@ export function ResearchWidget({ researchId, onCompleted, onPreviewFile }: Resea
             {others.map((a, i) => <AssetPreview key={i} asset={a} />)}
           </div>
         )}
+
+        {!hasAnyAssets && renderThumbPlaceholders(1)}
       </div>
     )
   }
@@ -247,6 +292,11 @@ export function ResearchWidget({ researchId, onCompleted, onPreviewFile }: Resea
 
   // ── Running ──
   void now
+  // If partial assets have already streamed in, pad with placeholder
+  // thumbs up to PLACEHOLDER_THUMB_COUNT so the row stays the same
+  // height as it'll be at finish.
+  const runningAssets = data.assets ?? []
+  const padCount = Math.max(0, PLACEHOLDER_THUMB_COUNT - runningAssets.length)
   return (
     <div className={s.card}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--size-2)" }}>
@@ -258,9 +308,17 @@ export function ResearchWidget({ researchId, onCompleted, onPreviewFile }: Resea
         </div>
         <span style={{ fontSize: "0.65rem", color: "var(--text-secondary)" }}>{formatElapsed(data.startedAt)}</span>
       </div>
-      {data.prompt && (
+      {data.prompt ? (
         <p className={s.desc} style={{ paddingLeft: 26 }}>{data.prompt}</p>
+      ) : (
+        <div className={s.skeletonLine} style={{ width: "66%", marginLeft: 26 }} />
       )}
+      <div className={s.assetGrid}>
+        {runningAssets.map((a, i) => <AssetPreview key={`a-${i}`} asset={a} />)}
+        {Array.from({ length: padCount }).map((_, i) => (
+          <div key={`ph-${i}`} className={s.assetThumbSkeleton} />
+        ))}
+      </div>
     </div>
   )
 }
