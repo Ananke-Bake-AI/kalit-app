@@ -68,10 +68,19 @@ export function ProjectTaskWidget({ projectId, kind = "hotfix", onCompleted }: P
       if (!json.success) return
 
       const tf = json.data
+      // Taskforce's project/status returns `status` in {running, done,
+      // idle, error, cancelled} — NEVER "completed", that's our internal
+      // widget-table label. Before this fix the widget UI checked
+      // status==="completed", missed the actual "done" string, and
+      // relied entirely on phase==="done" — which is the LAST phase
+      // (after init/planning/working/testing) and isn't always set
+      // when the run shortcuts (e.g. hotfix solo path), so the widget
+      // stayed at "Applying hotfix..." forever even after the run was
+      // fully done on the broker side.
       const status: TaskStatus =
-        tf.status === "completed" || tf.phase === "done" ? "done" :
-        tf.status === "failed" || tf.phase === "error" ? "error" :
-        tf.status === "cancelled" ? "idle" : "running"
+        tf.status === "done" || tf.status === "completed" || tf.phase === "done" ? "done" :
+        tf.status === "error" || tf.status === "failed" || tf.phase === "error" ? "error" :
+        tf.status === "cancelled" || tf.status === "aborted" ? "idle" : "running"
 
       setData({ status, phase: tf.phase || null, stats: tf.tasks || null })
 
