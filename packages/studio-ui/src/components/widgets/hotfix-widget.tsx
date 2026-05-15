@@ -126,6 +126,25 @@ export function ProjectTaskWidget({ projectId, kind = "hotfix", onCompleted }: P
     )
   }
 
+  // Cancelled / superseded — broker tells us the project's gone or the
+  // build was aborted. Don't keep pulsing a spinner; flash an inert
+  // chip so the user knows the widget is stale. Without this branch
+  // the widget fell through to the running render with the loader
+  // icon forever (visible on session
+  // ed3cd023-740c-4bbd-9ee7-32ea3b7e6a50 where /project/status
+  // returned {status:"cancelled",superseded:true} after a schema
+  // mismatch in the broker SQL — the spinner kept turning on a
+  // completed hotfix because the response wasn't recognised as
+  // terminal here).
+  if (data?.status === "idle") {
+    return (
+      <div className={s.inlineWidget} style={{ background: "oklch(from var(--text) l c h / 0.04)", border: "1px solid oklch(from var(--text) l c h / 0.08)", color: "var(--text-secondary)" }}>
+        <Icon icon="hugeicons:minus-sign-circle" />
+        {t(labels.done)}
+      </div>
+    )
+  }
+
   const phaseKey = data?.phase ? `studio.${labels.phasePrefix}${capitalize(data.phase)}` : null
   const phaseLabel = phaseKey ? t(phaseKey) : t(labels.running)
   const hasStats = data?.stats && data.stats.total > 0
