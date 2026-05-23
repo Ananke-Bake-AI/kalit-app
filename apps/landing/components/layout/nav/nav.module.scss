@@ -23,30 +23,38 @@
       opacity var(--transition-sub),
       visibility var(--transition-sub),
       top var(--transition-sub);
-    position: absolute;
-    width: 100%;
+    // Fixed (not absolute) + viewport-anchored. The header's `.content`
+    // wrapper caps width at ~700px on this breakpoint, which used to
+    // squish the dropdown to the center of the viewport with empty
+    // strips on either side. `position: fixed` + `left:0; right:0`
+    // breaks out of that container and gives the menu the full screen
+    // width to work with.
+    position: fixed;
     top: 60px;
+    left: 0;
+    right: 0;
+    width: 100vw;
     margin-inline: 0;
-    left: 50%;
-    transform: translateX(-50%);
+    transform: none;
     opacity: 0;
     visibility: hidden;
     // Strong frosted backdrop so the hero/page content underneath
     // (especially the homepage prompt) doesn't bleed through and
-    // muddle the menu. Previously the nav had no background of its
-    // own — each card had glass, but the gaps between cards stayed
-    // see-through. --glass-75 is the most opaque token available
+    // muddle the menu. --glass-75 is the most opaque token available
     // (0.75 light / 0.85 dark) — combined with backdrop-filter blur
     // it's enough to keep underlying text from competing visually.
     @include glass($bg: var(--glass-75), $blur: true);
+    // Long menus (Suites + Pricing + Resources + 3 anchor links) can
+    // overflow on small phones — scroll the menu, not the page.
+    max-height: calc(100vh - 60px);
+    overflow-y: auto;
 
     & > ul {
       width: 100%;
       flex-direction: column;
       font-size: calc(18px + 4 * (100vw - 320px) / 1080);
-      // Symmetric horizontal padding so the sub-dropdown cards (which
-      // now wrap to multiple rows instead of horizontally scrolling
-      // past the edge) line up with the rest of the nav items.
+      // Symmetric horizontal padding so the sub-dropdown cards line up
+      // with the rest of the nav items.
       padding: var(--size-4) var(--size-5) var(--size-6);
 
       & > li {
@@ -161,23 +169,27 @@
 
   @include max($responsiveNav) {
     // Was a 100vw horizontal-scroll strip of fixed-200px cards — the
-    // second card got clipped at the viewport edge with no scroll
-    // affordance, so users thought the menu was broken. Wrap to rows
-    // instead and let cards share the available width.
+    // last card got clipped at the viewport edge with no scroll
+    // affordance, so users thought the menu was broken. Even the
+    // wrap-with-flex attempt failed because flex-shrink let all
+    // three cards squeeze onto one row.
+    //
+    // CSS Grid is deterministic here: exactly 2 columns, cards wrap
+    // to a second row when there's a third (currently Flow + Pentest
+    // + Search → 2-on-row-1, Search alone on row 2).
     position: relative;
     text-align: left;
     width: 100%;
     left: auto;
     transform: none;
     padding-inline: 0;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     overflow: visible;
     gap: var(--sub-padding);
     margin-top: 0;
 
     & > li {
-      flex: 1 1 calc(50% - (var(--sub-padding) / 2));
       min-width: 0;
       @include glass($bg: var(--glass-75));
       @include cornerShape(var(--radius-2));
@@ -300,13 +312,10 @@
   // Mobile: full-width single column. Text cards don't read well at
   // 50% width — the description gets squashed under the icon and the
   // 2-column grid for the suite-logo cards isn't the right layout
-  // here.
+  // here. Override the grid-template-columns from `.sub` so the
+  // Resources dropdown stacks as a single column.
   @include max($responsiveNav) {
-    flex-direction: column;
-
-    & > li {
-      flex: 1 1 100%;
-    }
+    grid-template-columns: 1fr;
   }
 
   li {
