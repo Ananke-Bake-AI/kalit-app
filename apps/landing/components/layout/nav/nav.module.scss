@@ -23,19 +23,27 @@
       opacity var(--transition-sub),
       visibility var(--transition-sub),
       top var(--transition-sub);
-    // Fixed (not absolute) + viewport-anchored. The header's `.content`
-    // wrapper caps width at ~700px on this breakpoint, which used to
-    // squish the dropdown to the center of the viewport with empty
-    // strips on either side. `position: fixed` + `left:0; right:0`
-    // breaks out of that container and gives the menu the full screen
-    // width to work with.
-    position: fixed;
-    top: 60px;
-    left: 0;
-    right: 0;
+    // Absolute (NOT fixed) so the nav anchors to the header's `.content`
+    // box, which naturally lives below the trial banner. An earlier
+    // pass used `position: fixed; top: 60px` and that overlapped the
+    // top of the header card on viewports that also had the trial
+    // banner — `60px` was relative to the viewport top, not the
+    // bottom of the header.
+    //
+    // `top: 100%` parks us right under `.content`. To still span the
+    // full viewport width (the header's `.content` is clamped to
+    // ~500–700px on this breakpoint), we set `width: 100vw` and use
+    // the classic left:50% / translateX(-50%) trick. Because
+    // `.content` is itself horizontally centered by the parent
+    // `.header { justify-content: center }`, its center matches the
+    // viewport center — so the 100vw nav lands flush with the
+    // viewport edges.
+    position: absolute;
+    top: 100%;
     width: 100vw;
+    left: 50%;
+    transform: translateX(-50%);
     margin-inline: 0;
-    transform: none;
     opacity: 0;
     visibility: hidden;
     // Strong frosted backdrop so the hero/page content underneath
