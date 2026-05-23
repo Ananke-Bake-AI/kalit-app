@@ -42,7 +42,6 @@
     top: 100%;
     width: 100vw;
     left: 50%;
-    transform: translateX(-50%);
     margin-inline: 0;
     opacity: 0;
     visibility: hidden;
@@ -52,6 +51,15 @@
     // (0.75 light / 0.85 dark) — combined with backdrop-filter blur
     // it's enough to keep underlying text from competing visually.
     @include glass($bg: var(--glass-75), $blur: true);
+    // CRITICAL: this transform must come AFTER @include glass —
+    // that mixin emits `transform: translate(0,0)` as a GPU-layer
+    // promotion hack for backdrop-filter perf. If our centering
+    // transform is declared first, the mixin clobbers it and the
+    // menu's left edge sits at viewport-center (left:50%) with no
+    // offset, dumping the entire menu into the right half of the
+    // viewport. Putting it last keeps the centering AND still
+    // composites on its own layer (translate is enough on its own).
+    transform: translateX(-50%);
     // Long menus (Suites + Pricing + Resources + 3 anchor links) can
     // overflow on small phones — scroll the menu, not the page.
     max-height: calc(100vh - 60px);
