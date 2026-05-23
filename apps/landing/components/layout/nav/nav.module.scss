@@ -31,13 +31,23 @@
     transform: translateX(-50%);
     opacity: 0;
     visibility: hidden;
+    // Strong frosted backdrop so the hero/page content underneath
+    // (especially the homepage prompt) doesn't bleed through and
+    // muddle the menu. Previously the nav had no background of its
+    // own — each card had glass, but the gaps between cards stayed
+    // see-through. --glass-75 is the most opaque token available
+    // (0.75 light / 0.85 dark) — combined with backdrop-filter blur
+    // it's enough to keep underlying text from competing visually.
+    @include glass($bg: var(--glass-75), $blur: true);
 
     & > ul {
       width: 100%;
       flex-direction: column;
       font-size: calc(18px + 4 * (100vw - 320px) / 1080);
-      padding: var(--size-6);
-      padding-top: 0;
+      // Symmetric horizontal padding so the sub-dropdown cards (which
+      // now wrap to multiple rows instead of horizontally scrolling
+      // past the edge) line up with the rest of the nav items.
+      padding: var(--size-4) var(--size-5) var(--size-6);
 
       & > li {
         width: 100%;
@@ -150,21 +160,25 @@
   }
 
   @include max($responsiveNav) {
+    // Was a 100vw horizontal-scroll strip of fixed-200px cards — the
+    // second card got clipped at the viewport edge with no scroll
+    // affordance, so users thought the menu was broken. Wrap to rows
+    // instead and let cards share the available width.
     position: relative;
     text-align: left;
-    width: 100vw;
-    left: 50%;
-    transform: translateX(-50%);
-    padding-inline: var(--size-12);
+    width: 100%;
+    left: auto;
+    transform: none;
+    padding-inline: 0;
     display: flex;
-    overflow-x: scroll;
-    @include no-scrollbar;
+    flex-wrap: wrap;
+    overflow: visible;
     gap: var(--sub-padding);
     margin-top: 0;
 
     & > li {
-      width: 200px;
-      min-width: 200px;
+      flex: 1 1 calc(50% - (var(--sub-padding) / 2));
+      min-width: 0;
       @include glass($bg: var(--glass-75));
       @include cornerShape(var(--radius-2));
     }
@@ -270,7 +284,7 @@
   }
 }
 
-/* Text-only Resources dropdown (Blog / Changelog / Compare / Alternatives / Customers). */
+/* Text-only Resources dropdown (Blog / Changelog / Compare / Alternatives). */
 .subText {
   @include min($responsiveNav) {
     --sub-padding: var(--size-2);
@@ -281,6 +295,18 @@
     transform: translateX(-50%);
     flex-direction: column;
     gap: 0.15em;
+  }
+
+  // Mobile: full-width single column. Text cards don't read well at
+  // 50% width — the description gets squashed under the icon and the
+  // 2-column grid for the suite-logo cards isn't the right layout
+  // here.
+  @include max($responsiveNav) {
+    flex-direction: column;
+
+    & > li {
+      flex: 1 1 100%;
+    }
   }
 
   li {
