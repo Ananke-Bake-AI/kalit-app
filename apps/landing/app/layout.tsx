@@ -45,8 +45,32 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             `
           }}
         />
+        {/* Google Tag Manager — container GTM-WNSM869M, sits next to
+            the direct gtag.js snippet above. GTM and direct gtag can
+            coexist (they share the same `dataLayer` global). Tags
+            wired up inside GTM (third-party pixels, custom events,
+            etc.) fire from here. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-WNSM869M');`
+          }}
+        />
       </head>
       <body className={fonts}>
+        {/* Google Tag Manager (noscript) fallback. Required by GTM's
+            install — fires the tags for visitors who block JS. */}
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-WNSM869M"
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          />
+        </noscript>
         {children}
         <Toaster position="top-right" theme="system" richColors closeButton />
         {/* Fires page_view to GA4 on every Next.js SPA navigation —
