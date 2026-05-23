@@ -64,6 +64,20 @@ type RawEvent = {
   mimeType?: string
   url?: string
   lastSeen?: number
+  // ask_choice (QCM) payload — broker sends nested under `choice`. Inline
+  // fields (question, options, etc.) appear when the persisted segment is
+  // replayed via /stream (the broker copies them to top level for legacy
+  // schema compatibility).
+  choice?: {
+    question?: string
+    options?: { label?: string; description?: string }[]
+    multi_select?: boolean
+    freeform?: boolean
+  } | null
+  question?: string
+  options?: { label?: string; description?: string }[]
+  multi_select?: boolean
+  freeform?: boolean
 }
 
 /**
@@ -223,6 +237,30 @@ export class AgentStreamReducer {
         })
         this.emit()
         return "continue"
+
+      case "choice": {
+        // ask_choice tool output. Payload may arrive nested under `choice`
+        // (live SSE from /messages) or inlined at the top level (replay
+        // from /stream where the broker hydrates persisted segments).
+        const src = event.choice ?? event
+        const question = src.question
+        const rawOptions = src.options ?? []
+        if (!question || rawOptions.length < 2) return "continue"
+        const options = rawOptions
+          .map((o) => ({ label: (o.label ?? "").trim(), description: (o.description ?? "").trim() || undefined }))
+          .filter((o) => o.label.length > 0)
+        if (options.length < 2) return "continue"
+        this.flushPendingText()
+        this.segments.push({
+          type: "choice",
+          question,
+          options,
+          multi_select: !!src.multi_select,
+          freeform: src.freeform !== false, // default true
+        })
+        this.emit()
+        return "continue"
+      }
 
       case "error":
         this.flushPendingText()

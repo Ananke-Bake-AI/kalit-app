@@ -18,9 +18,16 @@ interface MessageListProps {
   onStop?: () => void
   onPreviewFile?: (file: { url: string; name: string }, images?: { url: string; name: string }[]) => void
   onRefreshMessages?: () => void
+  /** Called when the user picks an ask_choice option. The string is the
+   * synthesized user message text (e.g. "Sleek minimal") that the host
+   * should send via its normal chat input pipeline. */
+  onChoiceSubmit?: (text: string) => void
+  /** Called when the user clicks "Something else…" on a QCM — host should
+   * focus the chat input. */
+  onChoiceFreeform?: () => void
 }
 
-export function MessageList({ onStop, onPreviewFile, onRefreshMessages }: MessageListProps) {
+export function MessageList({ onStop, onPreviewFile, onRefreshMessages, onChoiceSubmit, onChoiceFreeform }: MessageListProps) {
   const { locale } = useI18n()
   // Bind to the active session's slice of bySession. Switching
   // active session reroutes these selectors atomically; no clear,
@@ -158,6 +165,8 @@ export function MessageList({ onStop, onPreviewFile, onRefreshMessages }: Messag
               onCaughtUp={() => {
                 if (activeSessionId) setSessionStreamSegments(activeSessionId, [])
               }}
+              onChoiceSubmit={onChoiceSubmit}
+              onChoiceFreeform={onChoiceFreeform}
             />
           </div>
         )}

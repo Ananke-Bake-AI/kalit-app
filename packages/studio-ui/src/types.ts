@@ -32,12 +32,18 @@ export interface ChatMessage {
 }
 
 // SSE stream segment types
+export interface QcmOption {
+  label: string
+  description?: string
+}
+
 export type StreamSegment =
   | { type: "text"; content: string }
   | { type: "tool"; name: string; input: unknown; done: boolean }
   | { type: "widget"; widgetType: string; widgetId: string; status?: string; assets?: string[]; count?: number }
   | { type: "file"; name: string; mimeType: string; url: string }
   | { type: "progress"; messages: string[] }
+  | { type: "choice"; question: string; options: QcmOption[]; multi_select?: boolean; freeform?: boolean; answered?: boolean }
 
 export interface WidgetPayload {
   type: string

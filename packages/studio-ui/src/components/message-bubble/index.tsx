@@ -7,6 +7,7 @@ import { Icon } from "../../primitives/icon"
 import { useI18n } from "@kalit/i18n/react"
 import { MarkdownLink } from "../markdown-link"
 import { WidgetRenderer } from "../widget-renderer"
+import { QcmChoice } from "../qcm-choice"
 import { formatTime } from "../../lib/format-date"
 import { toClientFileUrl } from "../../host"
 import type { ChatMessage } from "../../types"
@@ -42,6 +43,11 @@ interface ParsedSegment {
   mimeType?: string
   url?: string
   messages?: string[]
+  // ask_choice (QCM) persisted segment fields
+  question?: string
+  options?: { label: string; description?: string }[]
+  multi_select?: boolean
+  freeform?: boolean
 }
 
 function parseSegments(content: string): ParsedSegment[] | null {
@@ -321,6 +327,26 @@ export const MessageBubble = memo(function MessageBubble({ message, showToolBadg
                     <Icon icon="hugeicons:file-02" />
                     <span>{seg.name}</span>
                   </div>
+                )
+                i++
+                continue
+              }
+              if (seg.type === "choice" && seg.question && Array.isArray(seg.options)) {
+                // Persisted ask_choice — render in answered/disabled state.
+                // The model has already moved on by the time the user sees
+                // this in the persisted bubble, so submitting again would
+                // confuse the conversation history. The interactive copy
+                // lives in the live streaming pass (see stream-segments).
+                rendered.push(
+                  <QcmChoice
+                    key={i}
+                    question={seg.question}
+                    options={seg.options}
+                    multiSelect={!!seg.multi_select}
+                    freeform={false}
+                    answered
+                    onSubmit={() => {}}
+                  />
                 )
                 i++
                 continue

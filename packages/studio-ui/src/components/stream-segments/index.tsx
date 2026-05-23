@@ -6,6 +6,7 @@ import remarkGfm from "remark-gfm"
 import { Icon } from "../../primitives/icon"
 import { MarkdownLink } from "../markdown-link"
 import { WidgetRenderer } from "../widget-renderer"
+import { QcmChoice } from "../qcm-choice"
 import { useI18n } from "@kalit/i18n/react"
 import type { StreamSegment } from "../../types"
 import s from "./stream-segments.module.scss"
@@ -73,6 +74,13 @@ interface StreamSegmentsProps {
   /** Called once the live tail has been fully revealed and the parent can
    * swap the persisted message bubble in. */
   onCaughtUp?: () => void
+  /** Called when the user picks a QCM option. Receives the synthesized user
+   * message text the chat should submit (e.g. "Sleek minimal" or "Pricing,
+   * Testimonials, FAQ"). */
+  onChoiceSubmit?: (text: string) => void
+  /** Called when the user clicks "Something else…" on a QCM. Should focus
+   * the chat input so they can type a custom answer. */
+  onChoiceFreeform?: () => void
 }
 
 export const StreamSegments = memo(function StreamSegments({
@@ -82,6 +90,8 @@ export const StreamSegments = memo(function StreamSegments({
   onPreviewFile,
   live,
   onCaughtUp,
+  onChoiceSubmit,
+  onChoiceFreeform,
 }: StreamSegmentsProps) {
   const { t } = useI18n()
 
@@ -169,6 +179,35 @@ export const StreamSegments = memo(function StreamSegments({
                 <Icon icon="hugeicons:file-02" />
                 <span>{seg.name}</span>
               </div>
+            )
+            i++
+            continue
+          }
+
+          if (seg.type === "choice") {
+            // ask_choice from broker — render as buttons / checkboxes.
+            // Disable interaction (`answered`) when the user has already
+            // submitted ANY user message after this segment was created
+            // (we approximate that by checking if a "choice" segment is
+            // followed by a text segment that came later — handled by
+            // the parent via the `answered` field when it's set on the
+            // persisted message bubble). Here, default to interactive.
+            rendered.push(
+              <QcmChoice
+                key={i}
+                question={seg.question}
+                options={seg.options}
+                multiSelect={seg.multi_select}
+                freeform={seg.freeform}
+                answered={seg.answered}
+                onSubmit={(labels) => {
+                  if (!onChoiceSubmit) return
+                  // Synthesize a clean user message. Multi-select: comma-
+                  // separated. Single-select: just the picked label.
+                  onChoiceSubmit(labels.join(", "))
+                }}
+                onRequestFreeform={onChoiceFreeform}
+              />
             )
             i++
             continue

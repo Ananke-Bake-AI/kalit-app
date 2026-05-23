@@ -259,6 +259,7 @@ export function StudioClient() {
                 onStop={handleStop}
                 onPreviewFile={handlePreviewFile}
                 onRefreshMessages={() => activeSessionId && fetchMessages(activeSessionId)}
+                onChoiceSubmit={(text) => handleSend(text)}
               />
             )}
           </div>
