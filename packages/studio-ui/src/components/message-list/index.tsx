@@ -136,6 +136,15 @@ export function MessageList({ onStop, onPreviewFile, onRefreshMessages, onChoice
         {visible.map((msg, i) => {
           const prev = visible[i - 1]
           const showSeparator = !prev || !isSameDay(prev.createdAt, msg.createdAt)
+          // Collect all USER message contents posted AFTER this bubble.
+          // Each embedded QCM uses this list to detect if any of its option
+          // labels was already picked — answered QCMs lock, the rest stay
+          // interactive. Solves the multi-QCM-per-bubble case where
+          // answering one used to lock every QCM in the same bubble.
+          const subsequentUserMessages =
+            msg.role === "assistant"
+              ? visible.slice(i + 1).filter((m) => m.role === "user").map((m) => m.content)
+              : undefined
           return (
             <Fragment key={msg.id}>
               {showSeparator && (
@@ -148,6 +157,8 @@ export function MessageList({ onStop, onPreviewFile, onRefreshMessages, onChoice
                 showToolBadges={showToolBadges}
                 onPreviewFile={onPreviewFile}
                 onRefreshMessages={onRefreshMessages}
+                subsequentUserMessages={subsequentUserMessages}
+                onChoiceSubmit={onChoiceSubmit}
               />
             </Fragment>
           )

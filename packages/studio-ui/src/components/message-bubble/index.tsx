@@ -7,7 +7,7 @@ import { Icon } from "../../primitives/icon"
 import { useI18n } from "@kalit/i18n/react"
 import { MarkdownLink } from "../markdown-link"
 import { WidgetRenderer } from "../widget-renderer"
-import { QcmChoice } from "../qcm-choice"
+import { QcmGroup, type QcmQuestion } from "../qcm-choice/qcm-group"
 import { formatTime } from "../../lib/format-date"
 import { toClientFileUrl } from "../../host"
 import type { ChatMessage } from "../../types"
@@ -79,9 +79,19 @@ interface MessageBubbleProps {
   showToolBadges?: boolean
   onRefreshMessages?: () => void
   onPreviewFile?: (file: { url: string; name: string }, images?: { url: string; name: string }[]) => void
+  /** All user-message texts posted AFTER this assistant bubble in the
+   * thread, oldest-first. Each embedded QCM checks if any of its option
+   * labels appears verbatim in this list — that QCM is then considered
+   * answered and renders disabled. Other QCMs in the same bubble whose
+   * options haven't been picked yet stay interactive. This is what makes
+   * multi-QCM-per-bubble work: answering one doesn't lock the rest. */
+  subsequentUserMessages?: string[]
+  /** Called when the user picks a QCM option in this bubble. Receives the
+   * synthesized user-message text. */
+  onChoiceSubmit?: (text: string) => void
 }
 
-export const MessageBubble = memo(function MessageBubble({ message, showToolBadges, onRefreshMessages, onPreviewFile }: MessageBubbleProps) {
+export const MessageBubble = memo(function MessageBubble({ message, showToolBadges, onRefreshMessages, onPreviewFile, subsequentUserMessages, onChoiceSubmit }: MessageBubbleProps) {
   const { t, locale } = useI18n()
   const [thinkingOpen, setThinkingOpen] = useState(false)
   const timeLabel = formatTime(message.createdAt, locale)
@@ -332,23 +342,53 @@ export const MessageBubble = memo(function MessageBubble({ message, showToolBadg
                 continue
               }
               if (seg.type === "choice" && seg.question && Array.isArray(seg.options)) {
-                // Persisted ask_choice — render in answered/disabled state.
-                // The model has already moved on by the time the user sees
-                // this in the persisted bubble, so submitting again would
-                // confuse the conversation history. The interactive copy
-                // lives in the live streaming pass (see stream-segments).
+                // Group consecutive `choice` segments — when the agent fires
+                // 2-3 ask_choice in the same turn, render them as ONE form
+                // with a single Send button. Single isolated choices keep
+                // the auto-submit-on-click behaviour.
+                const group: QcmQuestion[] = []
+                let j = i
+                while (j < segments.length && segments[j].type === "choice") {
+                  const q = segments[j]
+                  if (!q.question || !Array.isArray(q.options)) break
+                  group.push({
+                    question: q.question,
+                    options: q.options,
+                    multiSelect: !!q.multi_select,
+                    freeform: q.freeform !== false,
+                  })
+                  j++
+                }
+
+                // Per-question answered detection — scan subsequent user
+                // messages for the option labels of THIS specific question.
+                const replies = subsequentUserMessages ?? []
+                const perQuestionAnswers: Record<number, string[]> = {}
+                let anyAnswered = false
+                group.forEach((q, qIdx) => {
+                  const picked: string[] = []
+                  for (const reply of replies) {
+                    for (const opt of q.options) {
+                      if (reply.includes(opt.label)) picked.push(opt.label)
+                    }
+                  }
+                  if (picked.length > 0) {
+                    perQuestionAnswers[qIdx] = [...new Set(picked)]
+                    anyAnswered = true
+                  }
+                })
+
                 rendered.push(
-                  <QcmChoice
+                  <QcmGroup
                     key={i}
-                    question={seg.question}
-                    options={seg.options}
-                    multiSelect={!!seg.multi_select}
-                    freeform={false}
-                    answered
-                    onSubmit={() => {}}
+                    questions={group}
+                    answers={anyAnswered ? perQuestionAnswers : undefined}
+                    onSubmit={(text) => {
+                      if (!anyAnswered && onChoiceSubmit) onChoiceSubmit(text)
+                    }}
                   />
                 )
-                i++
+                i = j
                 continue
               }
               i++

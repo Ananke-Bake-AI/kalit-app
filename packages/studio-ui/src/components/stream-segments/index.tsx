@@ -6,7 +6,7 @@ import remarkGfm from "remark-gfm"
 import { Icon } from "../../primitives/icon"
 import { MarkdownLink } from "../markdown-link"
 import { WidgetRenderer } from "../widget-renderer"
-import { QcmChoice } from "../qcm-choice"
+import { QcmGroup, type QcmQuestion } from "../qcm-choice/qcm-group"
 import { useI18n } from "@kalit/i18n/react"
 import type { StreamSegment } from "../../types"
 import s from "./stream-segments.module.scss"
@@ -185,31 +185,31 @@ export const StreamSegments = memo(function StreamSegments({
           }
 
           if (seg.type === "choice") {
-            // ask_choice from broker — render as buttons / checkboxes.
-            // Disable interaction (`answered`) when the user has already
-            // submitted ANY user message after this segment was created
-            // (we approximate that by checking if a "choice" segment is
-            // followed by a text segment that came later — handled by
-            // the parent via the `answered` field when it's set on the
-            // persisted message bubble). Here, default to interactive.
+            // Live stream — group consecutive choice segments into one
+            // QcmGroup so 2-3 ask_choice in the same turn share a single
+            // Send button. (See message-bubble for the persisted variant.)
+            const group: QcmQuestion[] = []
+            let j = i
+            while (j < segments.length && segments[j].type === "choice") {
+              const q = segments[j] as { type: "choice"; question: string; options: { label: string; description?: string }[]; multi_select?: boolean; freeform?: boolean }
+              if (!q.question || !Array.isArray(q.options)) break
+              group.push({
+                question: q.question,
+                options: q.options,
+                multiSelect: !!q.multi_select,
+                freeform: q.freeform !== false,
+              })
+              j++
+            }
             rendered.push(
-              <QcmChoice
+              <QcmGroup
                 key={i}
-                question={seg.question}
-                options={seg.options}
-                multiSelect={seg.multi_select}
-                freeform={seg.freeform}
-                answered={seg.answered}
-                onSubmit={(labels) => {
-                  if (!onChoiceSubmit) return
-                  // Synthesize a clean user message. Multi-select: comma-
-                  // separated. Single-select: just the picked label.
-                  onChoiceSubmit(labels.join(", "))
-                }}
+                questions={group}
+                onSubmit={(text) => onChoiceSubmit?.(text)}
                 onRequestFreeform={onChoiceFreeform}
               />
             )
-            i++
+            i = j
             continue
           }
 
