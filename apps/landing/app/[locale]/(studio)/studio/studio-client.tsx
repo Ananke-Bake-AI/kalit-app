@@ -88,6 +88,7 @@ export function StudioClient() {
     ready,
     connectionError,
     chatPrefill,
+    setChatPrefill,
     notifyMode,
     handleSend,
     handleStop,
@@ -260,10 +261,16 @@ export function StudioClient() {
                 onPreviewFile={handlePreviewFile}
                 onRefreshMessages={() => activeSessionId && fetchMessages(activeSessionId)}
                 onChoiceSubmit={(text) => handleSend(text)}
-                onChoiceFreeform={() => {
-                  // Focus the chat input so the user can type a freeform
-                  // answer when no QCM option fits. Best-effort: the
-                  // ChatInput exposes a textarea by ARIA role.
+                onChoiceFreeform={(question) => {
+                  // Prefill an attributable answer (`<question>: `) so a custom
+                  // reply stays tied to the question it answers — several QCMs
+                  // can be stacked in one bubble. ChatInput fills, focuses and
+                  // lands the cursor at the end when prefill changes.
+                  if (question) {
+                    setChatPrefill({ text: `${question}: `, nonce: Date.now() })
+                    return
+                  }
+                  // Fallback (no question — legacy single QCM): just focus.
                   const textarea = document.querySelector<HTMLTextAreaElement>(
                     "textarea[aria-label], textarea[placeholder]",
                   )

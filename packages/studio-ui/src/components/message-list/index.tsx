@@ -23,8 +23,9 @@ interface MessageListProps {
    * should send via its normal chat input pipeline. */
   onChoiceSubmit?: (text: string) => void
   /** Called when the user clicks "Something else…" on a QCM — host should
-   * focus the chat input. */
-  onChoiceFreeform?: () => void
+   * focus the chat input, optionally prefilling an attributable answer for
+   * the given question. */
+  onChoiceFreeform?: (question?: string) => void
 }
 
 export function MessageList({ onStop, onPreviewFile, onRefreshMessages, onChoiceSubmit, onChoiceFreeform }: MessageListProps) {

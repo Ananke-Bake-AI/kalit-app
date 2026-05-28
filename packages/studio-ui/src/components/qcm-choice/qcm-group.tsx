@@ -26,8 +26,10 @@ export interface QcmGroupProps {
   /** Synthesizes the user-message text from picks and submits. */
   onSubmit?: (text: string) => void
   /** "Aucune ne convient" / "Something else" — focuses the chat input so
-   * the user can type a freeform answer. */
-  onRequestFreeform?: () => void
+   * the user can type a freeform answer. Receives the specific question the
+   * link sits under, so the host can prefill an attributable answer
+   * (`For "<question>": `) when several questions are stacked. */
+  onRequestFreeform?: (question?: string) => void
   /** True while the agent is still streaming. The form stays interactive
    * (the host queues the synthesized message), and the Send button shows
    * a "queued" affordance. */
@@ -200,10 +202,13 @@ export function QcmGroup({
     })
   }
 
-  // ready when at least one option is picked per question.
+  // Ready as soon as ANY question has a pick. The user shouldn't be forced
+  // to answer every stacked clarifier to send — synthesizeMessage already
+  // drops the unanswered ones, so a partial reply is well-formed and the
+  // agent can re-ask or proceed with what it got.
   const ready = useMemo(() => {
     if (!groupMode) return false
-    return questions.every((_, i) => (picks[i]?.length ?? 0) > 0)
+    return questions.some((_, i) => (picks[i]?.length ?? 0) > 0)
   }, [groupMode, picks, questions])
 
   const handleSubmit = (picksToSend: Record<number, string[]>) => {
@@ -269,34 +274,32 @@ export function QcmGroup({
                   )
                 })}
               </div>
+              {!isAnswered && q.freeform !== false && onRequestFreeform && (
+                <button
+                  type="button"
+                  className={s.freeformLink}
+                  onClick={() => onRequestFreeform(q.question)}
+                >
+                  {freeformLabel}
+                </button>
+              )}
             </div>
           )
         })}
       </div>
 
-      {!isAnswered && (
+      {!isAnswered && groupMode && (
         <div className={s.actions}>
-          {groupMode && (
-            <button
-              type="button"
-              className={s.confirmBtn}
-              onClick={submitAll}
-              disabled={!ready || queued}
-              data-queued={queued ? "true" : "false"}
-            >
-              {queued && <Icon icon="hugeicons:tick-02" aria-hidden />}
-              <span>{sendLabel}</span>
-            </button>
-          )}
-          {onRequestFreeform && (
-            <button
-              type="button"
-              className={s.freeformLink}
-              onClick={onRequestFreeform}
-            >
-              {freeformLabel}
-            </button>
-          )}
+          <button
+            type="button"
+            className={s.confirmBtn}
+            onClick={submitAll}
+            disabled={!ready || queued}
+            data-queued={queued ? "true" : "false"}
+          >
+            {queued && <Icon icon="hugeicons:tick-02" aria-hidden />}
+            <span>{sendLabel}</span>
+          </button>
         </div>
       )}
     </div>

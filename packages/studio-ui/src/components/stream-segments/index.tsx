@@ -79,8 +79,9 @@ interface StreamSegmentsProps {
    * Testimonials, FAQ"). */
   onChoiceSubmit?: (text: string) => void
   /** Called when the user clicks "Something else…" on a QCM. Should focus
-   * the chat input so they can type a custom answer. */
-  onChoiceFreeform?: () => void
+   * the chat input so they can type a custom answer. Receives the question
+   * the link sits under so the host can prefill an attributable answer. */
+  onChoiceFreeform?: (question?: string) => void
 }
 
 export const StreamSegments = memo(function StreamSegments({

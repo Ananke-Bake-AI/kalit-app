@@ -90,8 +90,9 @@ interface MessageBubbleProps {
    * synthesized user-message text. */
   onChoiceSubmit?: (text: string) => void
   /** "Aucune ne convient" — focuses the chat input so the user can type
-   * a freeform answer. */
-  onChoiceFreeform?: () => void
+   * a freeform answer. Receives the question the link sits under so the host
+   * can prefill an attributable answer. */
+  onChoiceFreeform?: (question?: string) => void
   /** Whether the agent is currently streaming. Passed through to embedded
    * QCMs so the Send button can show a "queued" state. */
   isStreaming?: boolean
