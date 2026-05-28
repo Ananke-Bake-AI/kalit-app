@@ -366,23 +366,40 @@ export const MessageBubble = memo(function MessageBubble({ message, showToolBadg
                   j++
                 }
 
-                // Per-question answered detection — scan subsequent user
-                // messages for the option labels of THIS specific question.
+                // Answered detection. The QCM reply is synthesized as one
+                // line per question: `- <question>: <Label> (<desc>), <Label2>`
+                // (see synthesizeMessage in qcm-group). Match on that exact
+                // question-prefixed line, NOT a loose label substring across
+                // the whole message. The old substring scan had two failure
+                // modes: (a) it retroactively locked an old QCM whenever an
+                // unrelated later message happened to contain an option label,
+                // and (b) it never locked a QCM the user answered via the
+                // "Something else" freeform path. The question text is verbatim
+                // and unique per QCM, so the line prefix is a safe anchor.
                 const replies = subsequentUserMessages ?? []
                 const perQuestionAnswers: Record<number, string[]> = {}
                 let anyAnswered = false
                 group.forEach((q, qIdx) => {
-                  const picked: string[] = []
+                  const prefix = `- ${q.question}:`
                   for (const reply of replies) {
-                    for (const opt of q.options) {
-                      if (reply.includes(opt.label)) picked.push(opt.label)
-                    }
-                  }
-                  if (picked.length > 0) {
-                    perQuestionAnswers[qIdx] = [...new Set(picked)]
+                    const line = reply.split("\n").find((l) => l.trim().startsWith(prefix))
+                    if (!line) continue
+                    const after = line.slice(line.indexOf(prefix) + prefix.length)
+                    const picked = q.options
+                      .filter((opt) => after.includes(opt.label))
+                      .map((opt) => opt.label)
+                    if (picked.length > 0) perQuestionAnswers[qIdx] = [...new Set(picked)]
                     anyAnswered = true
+                    break
                   }
                 })
+                // Freeform / skipped: the user replied to this clarifier round
+                // without the buttons (typed a custom answer, or edited the
+                // synthesized text). Once ANY user message follows this bubble
+                // the round is historical — lock the group so a stale
+                // interactive QCM never dangles above a moved-on conversation.
+                // No labels are highlighted in that case.
+                if (!anyAnswered && replies.length > 0) anyAnswered = true
 
                 // Same draftKey shape as the live-stream variant so picks
                 // made before the bubble swap carry over.

@@ -1,0 +1,696 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - link "Kalit — Product Family kalit pentest flow marketing project search" [ref=e6] [cursor=pointer]:
+          - /url: /fr
+          - generic [ref=e7]:
+            - img "Kalit — Product Family" [ref=e8]
+            - generic [ref=e15]: kalit
+          - generic:
+            - generic: pentest
+            - generic: flow
+            - generic: marketing
+            - generic: project
+            - generic: search
+        - navigation [ref=e16]:
+          - list [ref=e17]:
+            - listitem [ref=e18]:
+              - generic [ref=e19] [cursor=pointer]:
+                - text: Suites
+                - img [ref=e20]
+            - listitem [ref=e22]:
+              - link "Comment ça marche" [ref=e23] [cursor=pointer]:
+                - /url: /fr
+            - listitem [ref=e24]:
+              - link "Essayer" [ref=e25] [cursor=pointer]:
+                - /url: /fr
+            - listitem [ref=e26]:
+              - link "Pourquoi Kalit ?" [ref=e27] [cursor=pointer]:
+                - /url: /fr
+        - button "Change language" [ref=e29] [cursor=pointer]:
+          - generic [ref=e30]: 🇫🇷
+          - generic [ref=e31]: FR
+        - button "Mode sombre" [ref=e32] [cursor=pointer]:
+          - img [ref=e33]
+        - link "Studio" [ref=e35] [cursor=pointer]:
+          - /url: /fr/studio
+          - generic [ref=e36]: Studio
+        - button "User menu" [ref=e38] [cursor=pointer]:
+          - generic [ref=e41]: Frederick
+          - img [ref=e44]
+    - main [ref=e47]:
+      - generic [ref=e53]:
+        - complementary [ref=e54]:
+          - generic [ref=e55]:
+            - generic [ref=e56]:
+              - button "Nouvelle discussion ⌘⇧O" [ref=e57] [cursor=pointer]:
+                - img [ref=e58]
+                - generic [ref=e61]: Nouvelle discussion
+                - generic [ref=e62]: ⌘⇧O
+              - generic [ref=e63]:
+                - img [ref=e64]
+                - textbox "Rechercher une conversation" [ref=e66]
+                - generic [ref=e67]: ⌘K
+            - generic [ref=e68]:
+              - generic [ref=e69]:
+                - generic [ref=e70]: Aujourd'hui
+                - generic [ref=e71]:
+                  - button "I want you to scan kalit.ai and find vulnerabilities il y a 3 minutes claude-haiku-4-5-20251001" [ref=e72] [cursor=pointer]:
+                    - generic [ref=e73]:
+                      - generic [ref=e74]: I want you to scan kalit.ai and find vulnerabilities
+                      - generic [ref=e75]:
+                        - generic "23/04/2026 01:56:33" [ref=e76]: il y a 3 minutes
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e77]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e79] [cursor=pointer]:
+                    - img [ref=e80]
+                - generic [ref=e84]:
+                  - button "Fais-moi un fansite One Piece centré sur Zoro, thème la... il y a 7 minutes claude-haiku-4-5-20251001" [ref=e85] [cursor=pointer]:
+                    - generic [ref=e86]:
+                      - generic [ref=e87]: Fais-moi un fansite One Piece centré sur Zoro, thème la...
+                      - generic [ref=e88]:
+                        - generic "23/04/2026 01:52:41" [ref=e89]: il y a 7 minutes
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e90]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e92] [cursor=pointer]:
+                    - img [ref=e93]
+                - generic [ref=e97]:
+                  - button "I want you to scan kalit.ai and find vulnerabilities il y a 40 minutes claude-haiku-4-5-20251001" [ref=e98] [cursor=pointer]:
+                    - generic [ref=e99]:
+                      - generic [ref=e100]: I want you to scan kalit.ai and find vulnerabilities
+                      - generic [ref=e101]:
+                        - generic "23/04/2026 01:19:00" [ref=e102]: il y a 40 minutes
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e103]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e105] [cursor=pointer]:
+                    - img [ref=e106]
+                - generic [ref=e110]:
+                  - button "Fais-moi un fansite Dofus centré sur le Iop, palette feu... il y a 49 minutes claude-haiku-4-5-20251001" [ref=e111] [cursor=pointer]:
+                    - generic [ref=e112]:
+                      - generic [ref=e113]: Fais-moi un fansite Dofus centré sur le Iop, palette feu...
+                      - generic [ref=e114]:
+                        - generic "23/04/2026 01:09:53" [ref=e115]: il y a 49 minutes
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e116]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e118] [cursor=pointer]:
+                    - img [ref=e119]
+              - generic [ref=e123]:
+                - generic [ref=e124]: Hier
+                - generic [ref=e125]:
+                  - button "I want you to scan kalit.ai and find vulnerabilities hier claude-haiku-4-5-20251001" [ref=e126] [cursor=pointer]:
+                    - generic [ref=e127]:
+                      - generic [ref=e128]: I want you to scan kalit.ai and find vulnerabilities
+                      - generic [ref=e129]:
+                        - generic "22/04/2026 02:26:25" [ref=e130]: hier
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e131]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e133] [cursor=pointer]:
+                    - img [ref=e134]
+              - generic [ref=e138]:
+                - generic [ref=e139]: 7 derniers jours
+                - generic [ref=e140]:
+                  - button "Build a simple todo list app with a Node.js Express backe... il y a 3 jours claude-haiku-4-5-20251001" [ref=e141] [cursor=pointer]:
+                    - generic [ref=e142]:
+                      - generic [ref=e143]: Build a simple todo list app with a Node.js Express backe...
+                      - generic [ref=e144]:
+                        - generic "20/04/2026 08:44:03" [ref=e145]: il y a 3 jours
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e146]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e148] [cursor=pointer]:
+                    - img [ref=e149]
+                - generic [ref=e153]:
+                  - button "Build a weather dashboard webapp. Vite+React frontend sho... il y a 3 jours claude-haiku-4-5-20251001" [ref=e154] [cursor=pointer]:
+                    - generic [ref=e155]:
+                      - generic [ref=e156]: Build a weather dashboard webapp. Vite+React frontend sho...
+                      - generic [ref=e157]:
+                        - generic "20/04/2026 05:59:17" [ref=e158]: il y a 3 jours
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e159]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e161] [cursor=pointer]:
+                    - img [ref=e162]
+                - generic [ref=e166]:
+                  - button "Build a simple URL shortener as a webapp. Vite+React fron... il y a 3 jours claude-haiku-4-5-20251001" [ref=e167] [cursor=pointer]:
+                    - generic [ref=e168]:
+                      - generic [ref=e169]: Build a simple URL shortener as a webapp. Vite+React fron...
+                      - generic [ref=e170]:
+                        - generic "20/04/2026 05:54:51" [ref=e171]: il y a 3 jours
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e172]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e174] [cursor=pointer]:
+                    - img [ref=e175]
+                - generic [ref=e179]:
+                  - button "Nouvelle conversation il y a 3 jours claude-haiku-4-5-20251001" [ref=e180] [cursor=pointer]:
+                    - generic [ref=e181]:
+                      - generic [ref=e182]: Nouvelle conversation
+                      - generic [ref=e183]:
+                        - generic "20/04/2026 05:42:11" [ref=e184]: il y a 3 jours
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e185]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e187] [cursor=pointer]:
+                    - img [ref=e188]
+                - generic [ref=e192]:
+                  - button "Je veux un fansite de Naruto, spécialisée sur l'histoir... il y a 3 jours claude-haiku-4-5-20251001" [ref=e193] [cursor=pointer]:
+                    - generic [ref=e194]:
+                      - generic [ref=e195]: Je veux un fansite de Naruto, spécialisée sur l'histoir...
+                      - generic [ref=e196]:
+                        - generic "20/04/2026 05:16:25" [ref=e197]: il y a 3 jours
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e198]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e200] [cursor=pointer]:
+                    - img [ref=e201]
+                - generic [ref=e205]:
+                  - button "Build a simple landing page for \"Synthwave Coffee Roaster... il y a 3 jours claude-haiku-4-5-20251001" [ref=e206] [cursor=pointer]:
+                    - generic [ref=e207]:
+                      - generic [ref=e208]: Build a simple landing page for "Synthwave Coffee Roaster...
+                      - generic [ref=e209]:
+                        - generic "20/04/2026 05:02:00" [ref=e210]: il y a 3 jours
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e211]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e213] [cursor=pointer]:
+                    - img [ref=e214]
+                - generic [ref=e218]:
+                  - button "Build a simple web app called NoteNest — a note-taking ... il y a 3 jours claude-haiku-4-5-20251001" [ref=e219] [cursor=pointer]:
+                    - generic [ref=e220]:
+                      - generic [ref=e221]: Build a simple web app called NoteNest — a note-taking ...
+                      - generic [ref=e222]:
+                        - generic "20/04/2026 04:46:00" [ref=e223]: il y a 3 jours
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e224]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e226] [cursor=pointer]:
+                    - img [ref=e227]
+                - generic [ref=e231]:
+                  - button "Create a simple one-page landing for a bike rental shop c... il y a 3 jours claude-haiku-4-5-20251001" [ref=e232] [cursor=pointer]:
+                    - generic [ref=e233]:
+                      - generic [ref=e234]: Create a simple one-page landing for a bike rental shop c...
+                      - generic [ref=e235]:
+                        - generic "20/04/2026 04:13:37" [ref=e236]: il y a 3 jours
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e237]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e239] [cursor=pointer]:
+                    - img [ref=e240]
+                - generic [ref=e244]:
+                  - button "Create a landing page for BrewCraft, an artisan coffee su... il y a 3 jours claude-haiku-4-5-20251001" [ref=e245] [cursor=pointer]:
+                    - generic [ref=e246]:
+                      - generic [ref=e247]: Create a landing page for BrewCraft, an artisan coffee su...
+                      - generic [ref=e248]:
+                        - generic "20/04/2026 03:20:14" [ref=e249]: il y a 3 jours
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e250]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e252] [cursor=pointer]:
+                    - img [ref=e253]
+                - generic [ref=e257]:
+                  - button "Build a simple todo list web app called KeepTasks. React ... il y a 3 jours claude-haiku-4-5-20251001" [ref=e258] [cursor=pointer]:
+                    - generic [ref=e259]:
+                      - generic [ref=e260]: Build a simple todo list web app called KeepTasks. React ...
+                      - generic [ref=e261]:
+                        - generic "20/04/2026 03:19:19" [ref=e262]: il y a 3 jours
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e263]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e265] [cursor=pointer]:
+                    - img [ref=e266]
+                - generic [ref=e270]:
+                  - button "Create a landing for StackKit, a SaaS developer toolkit. ... il y a 3 jours claude-haiku-4-5-20251001" [ref=e271] [cursor=pointer]:
+                    - generic [ref=e272]:
+                      - generic [ref=e273]: Create a landing for StackKit, a SaaS developer toolkit. ...
+                      - generic [ref=e274]:
+                        - generic "20/04/2026 03:17:03" [ref=e275]: il y a 3 jours
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e276]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e278] [cursor=pointer]:
+                    - img [ref=e279]
+                - generic [ref=e283]:
+                  - button "Build a landing page for ZenYoga, an online yoga studio. ... il y a 3 jours claude-haiku-4-5-20251001" [ref=e284] [cursor=pointer]:
+                    - generic [ref=e285]:
+                      - generic [ref=e286]: Build a landing page for ZenYoga, an online yoga studio. ...
+                      - generic [ref=e287]:
+                        - generic "20/04/2026 03:16:40" [ref=e288]: il y a 3 jours
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e289]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e291] [cursor=pointer]:
+                    - img [ref=e292]
+                - generic [ref=e296]:
+                  - button "Create a simple one-page landing for a dog-walking servic... il y a 3 jours claude-haiku-4-5-20251001" [ref=e297] [cursor=pointer]:
+                    - generic [ref=e298]:
+                      - generic [ref=e299]: Create a simple one-page landing for a dog-walking servic...
+                      - generic [ref=e300]:
+                        - generic "20/04/2026 03:00:46" [ref=e301]: il y a 3 jours
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e302]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e304] [cursor=pointer]:
+                    - img [ref=e305]
+                - generic [ref=e309]:
+                  - button "Nouvelle conversation il y a 3 jours claude-haiku-4-5-20251001" [ref=e310] [cursor=pointer]:
+                    - generic [ref=e311]:
+                      - generic [ref=e312]: Nouvelle conversation
+                      - generic [ref=e313]:
+                        - generic "20/04/2026 00:33:53" [ref=e314]: il y a 3 jours
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e315]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e317] [cursor=pointer]:
+                    - img [ref=e318]
+                - generic [ref=e322]:
+                  - button "Nouvelle conversation il y a 3 jours claude-haiku-4-5-20251001" [ref=e323] [cursor=pointer]:
+                    - generic [ref=e324]:
+                      - generic [ref=e325]: Nouvelle conversation
+                      - generic [ref=e326]:
+                        - generic "19/04/2026 23:13:35" [ref=e327]: il y a 3 jours
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e328]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e330] [cursor=pointer]:
+                    - img [ref=e331]
+                - generic [ref=e335]:
+                  - button "Nouvelle conversation il y a 3 jours claude-haiku-4-5-20251001" [ref=e336] [cursor=pointer]:
+                    - generic [ref=e337]:
+                      - generic [ref=e338]: Nouvelle conversation
+                      - generic [ref=e339]:
+                        - generic "19/04/2026 23:11:47" [ref=e340]: il y a 3 jours
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e341]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e343] [cursor=pointer]:
+                    - img [ref=e344]
+                - generic [ref=e348]:
+                  - button "Hey what can u do for me il y a 3 jours claude-haiku-4-5-20251001" [ref=e349] [cursor=pointer]:
+                    - generic [ref=e350]:
+                      - generic [ref=e351]: Hey what can u do for me
+                      - generic [ref=e352]:
+                        - generic "19/04/2026 19:13:01" [ref=e353]: il y a 3 jours
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e354]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e356] [cursor=pointer]:
+                    - img [ref=e357]
+                - generic [ref=e361]:
+                  - button "Hello, how are you? il y a 3 jours claude-haiku-4-5-20251001" [ref=e362] [cursor=pointer]:
+                    - generic [ref=e363]:
+                      - generic [ref=e364]: Hello, how are you?
+                      - generic [ref=e365]:
+                        - generic "19/04/2026 16:11:59" [ref=e366]: il y a 3 jours
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e367]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e369] [cursor=pointer]:
+                    - img [ref=e370]
+                - generic [ref=e374]:
+                  - button "Crée-moi une landing page simple pour une boulangerie ap... il y a 4 jours claude-haiku-4-5-20251001" [ref=e375] [cursor=pointer]:
+                    - generic [ref=e376]:
+                      - generic [ref=e377]: Crée-moi une landing page simple pour une boulangerie ap...
+                      - generic [ref=e378]:
+                        - generic "19/04/2026 07:20:24" [ref=e379]: il y a 4 jours
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e380]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e382] [cursor=pointer]:
+                    - img [ref=e383]
+                - generic [ref=e387]:
+                  - button "tu peux me mettre sur kalit project? il y a 4 jours claude-haiku-4-5-20251001" [ref=e388] [cursor=pointer]:
+                    - generic [ref=e389]:
+                      - generic [ref=e390]: tu peux me mettre sur kalit project?
+                      - generic [ref=e391]:
+                        - generic "19/04/2026 04:48:45" [ref=e392]: il y a 4 jours
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e393]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e395] [cursor=pointer]:
+                    - img [ref=e396]
+                - generic [ref=e400]:
+                  - button "Tu peux me faire un site sur le theme de Naruto, avec l'e... il y a 4 jours claude-haiku-4-5-20251001" [ref=e401] [cursor=pointer]:
+                    - generic [ref=e402]:
+                      - generic [ref=e403]: Tu peux me faire un site sur le theme de Naruto, avec l'e...
+                      - generic [ref=e404]:
+                        - generic "19/04/2026 04:47:55" [ref=e405]: il y a 4 jours
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e406]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e408] [cursor=pointer]:
+                    - img [ref=e409]
+                - generic [ref=e413]:
+                  - button "Fais-moi un site Pokémon centré sur Pikachu, gère il y a 4 jours cloud" [ref=e414] [cursor=pointer]:
+                    - generic [ref=e415]:
+                      - generic [ref=e416]: Fais-moi un site Pokémon centré sur Pikachu, gère
+                      - generic [ref=e417]:
+                        - generic "19/04/2026 02:05:28" [ref=e418]: il y a 4 jours
+                        - generic "ollama:kimi-k2.5:cloud" [ref=e419]: cloud
+                  - button "Plus d'actions" [ref=e421] [cursor=pointer]:
+                    - img [ref=e422]
+                - generic [ref=e426]:
+                  - button "Fais-moi un site Pokémon centré sur Pikachu, gère il y a 4 jours claude-haiku-4-5-20251001" [ref=e427] [cursor=pointer]:
+                    - generic [ref=e428]:
+                      - generic [ref=e429]: Fais-moi un site Pokémon centré sur Pikachu, gère
+                      - generic [ref=e430]:
+                        - generic "18/04/2026 19:55:30" [ref=e431]: il y a 4 jours
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e432]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e434] [cursor=pointer]:
+                    - img [ref=e435]
+                - generic [ref=e439]:
+                  - button "Fais-moi un site Pokémon centré sur Pikachu, gère il y a 4 jours claude-sonnet-4-6" [ref=e440] [cursor=pointer]:
+                    - generic [ref=e441]:
+                      - generic [ref=e442]: Fais-moi un site Pokémon centré sur Pikachu, gère
+                      - generic [ref=e443]:
+                        - generic "18/04/2026 19:38:27" [ref=e444]: il y a 4 jours
+                        - generic "anthropic:claude-sonnet-4-6" [ref=e445]: claude-sonnet-4-6
+                  - button "Plus d'actions" [ref=e447] [cursor=pointer]:
+                    - img [ref=e448]
+                - generic [ref=e452]:
+                  - button "Fais-moi un site Pokémon centré sur Pikachu, gère il y a 4 jours o4-mini" [ref=e453] [cursor=pointer]:
+                    - generic [ref=e454]:
+                      - generic [ref=e455]: Fais-moi un site Pokémon centré sur Pikachu, gère
+                      - generic [ref=e456]:
+                        - generic "18/04/2026 19:34:50" [ref=e457]: il y a 4 jours
+                        - generic "openai:o4-mini" [ref=e458]: o4-mini
+                  - button "Plus d'actions" [ref=e460] [cursor=pointer]:
+                    - img [ref=e461]
+                - generic [ref=e465]:
+                  - button "Fais-moi un site Pokémon centré sur Pikachu, gère il y a 4 jours cloud" [ref=e466] [cursor=pointer]:
+                    - generic [ref=e467]:
+                      - generic [ref=e468]: Fais-moi un site Pokémon centré sur Pikachu, gère
+                      - generic [ref=e469]:
+                        - generic "18/04/2026 19:33:58" [ref=e470]: il y a 4 jours
+                        - generic "ollama:glm-5.1:cloud" [ref=e471]: cloud
+                  - button "Plus d'actions" [ref=e473] [cursor=pointer]:
+                    - img [ref=e474]
+                - generic [ref=e478]:
+                  - button "Fais-moi un site Pokémon centré sur Pikachu, gère il y a 4 jours cloud" [ref=e479] [cursor=pointer]:
+                    - generic [ref=e480]:
+                      - generic [ref=e481]: Fais-moi un site Pokémon centré sur Pikachu, gère
+                      - generic [ref=e482]:
+                        - generic "18/04/2026 19:25:18" [ref=e483]: il y a 4 jours
+                        - generic "ollama:minimax-m2.5:cloud" [ref=e484]: cloud
+                  - button "Plus d'actions" [ref=e486] [cursor=pointer]:
+                    - img [ref=e487]
+                - generic [ref=e491]:
+                  - button "Fais-moi un site Pokémon centré sur Pikachu, gère il y a 4 jours mistral-large" [ref=e492] [cursor=pointer]:
+                    - generic [ref=e493]:
+                      - generic [ref=e494]: Fais-moi un site Pokémon centré sur Pikachu, gère
+                      - generic [ref=e495]:
+                        - generic "18/04/2026 19:21:19" [ref=e496]: il y a 4 jours
+                        - generic "mistral:mistral-large-latest" [ref=e497]: mistral-large
+                  - button "Plus d'actions" [ref=e499] [cursor=pointer]:
+                    - img [ref=e500]
+                - generic [ref=e504]:
+                  - button "Fais-moi un site Pokémon centré sur Pikachu, gère il y a 4 jours cloud" [ref=e505] [cursor=pointer]:
+                    - generic [ref=e506]:
+                      - generic [ref=e507]: Fais-moi un site Pokémon centré sur Pikachu, gère
+                      - generic [ref=e508]:
+                        - generic "18/04/2026 19:21:17" [ref=e509]: il y a 4 jours
+                        - generic "ollama:minimax-m2.7:cloud" [ref=e510]: cloud
+                  - button "Plus d'actions" [ref=e512] [cursor=pointer]:
+                    - img [ref=e513]
+                - generic [ref=e517]:
+                  - button "Fais-moi un site Pokémon centré sur Pikachu, gère il y a 4 jours mistral-small" [ref=e518] [cursor=pointer]:
+                    - generic [ref=e519]:
+                      - generic [ref=e520]: Fais-moi un site Pokémon centré sur Pikachu, gère
+                      - generic [ref=e521]:
+                        - generic "18/04/2026 19:09:26" [ref=e522]: il y a 4 jours
+                        - generic "mistral:mistral-small-latest" [ref=e523]: mistral-small
+                  - button "Plus d'actions" [ref=e525] [cursor=pointer]:
+                    - img [ref=e526]
+                - generic [ref=e530]:
+                  - button "Fais-moi un site Pokémon centré sur Pikachu, gère il y a 4 jours cloud" [ref=e531] [cursor=pointer]:
+                    - generic [ref=e532]:
+                      - generic [ref=e533]: Fais-moi un site Pokémon centré sur Pikachu, gère
+                      - generic [ref=e534]:
+                        - generic "18/04/2026 19:08:03" [ref=e535]: il y a 4 jours
+                        - generic "ollama:deepseek-v3.2:cloud" [ref=e536]: cloud
+                  - button "Plus d'actions" [ref=e538] [cursor=pointer]:
+                    - img [ref=e539]
+                - generic [ref=e543]:
+                  - button "Fais-moi un site Pokémon centré sur Pikachu, gère il y a 4 jours gpt-4.1-nano" [ref=e544] [cursor=pointer]:
+                    - generic [ref=e545]:
+                      - generic [ref=e546]: Fais-moi un site Pokémon centré sur Pikachu, gère
+                      - generic [ref=e547]:
+                        - generic "18/04/2026 19:07:25" [ref=e548]: il y a 4 jours
+                        - generic "openai:gpt-4.1-nano" [ref=e549]: gpt-4.1-nano
+                  - button "Plus d'actions" [ref=e551] [cursor=pointer]:
+                    - img [ref=e552]
+                - generic [ref=e556]:
+                  - button "Fais-moi un site Pokémon centré sur Pikachu, gère il y a 4 jours gpt-4.1-mini" [ref=e557] [cursor=pointer]:
+                    - generic [ref=e558]:
+                      - generic [ref=e559]: Fais-moi un site Pokémon centré sur Pikachu, gère
+                      - generic [ref=e560]:
+                        - generic "18/04/2026 19:03:05" [ref=e561]: il y a 4 jours
+                        - generic "openai:gpt-4.1-mini" [ref=e562]: gpt-4.1-mini
+                  - button "Plus d'actions" [ref=e564] [cursor=pointer]:
+                    - img [ref=e565]
+                - generic [ref=e569]:
+                  - button "Fais-moi un site Pokémon centré sur Pikachu, gère il y a 4 jours claude-haiku-4-5-20251001" [ref=e570] [cursor=pointer]:
+                    - generic [ref=e571]:
+                      - generic [ref=e572]: Fais-moi un site Pokémon centré sur Pikachu, gère
+                      - generic [ref=e573]:
+                        - generic "18/04/2026 19:01:33" [ref=e574]: il y a 4 jours
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e575]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e577] [cursor=pointer]:
+                    - img [ref=e578]
+                - generic [ref=e582]:
+                  - button "Fais-moi un site Pokémon centré sur Pikachu il y a 4 jours claude-haiku-4-5-20251001" [ref=e583] [cursor=pointer]:
+                    - generic [ref=e584]:
+                      - generic [ref=e585]: Fais-moi un site Pokémon centré sur Pikachu
+                      - generic [ref=e586]:
+                        - generic "18/04/2026 18:53:55" [ref=e587]: il y a 4 jours
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e588]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e590] [cursor=pointer]:
+                    - img [ref=e591]
+                - generic [ref=e595]:
+                  - button "Nouvelle conversation il y a 4 jours claude-haiku-4-5-20251001" [ref=e596] [cursor=pointer]:
+                    - generic [ref=e597]:
+                      - generic [ref=e598]: Nouvelle conversation
+                      - generic [ref=e599]:
+                        - generic "18/04/2026 18:52:48" [ref=e600]: il y a 4 jours
+                        - generic "anthropic:claude-haiku-4-5-20251001" [ref=e601]: claude-haiku-4-5-20251001
+                  - button "Plus d'actions" [ref=e603] [cursor=pointer]:
+                    - img [ref=e604]
+                - generic [ref=e608]:
+                  - button "Fais moi un site Pokémon focus sur Pikachu principalemen... il y a 4 jours mistral-small" [ref=e609] [cursor=pointer]:
+                    - generic [ref=e610]:
+                      - generic [ref=e611]: Fais moi un site Pokémon focus sur Pikachu principalemen...
+                      - generic [ref=e612]:
+                        - generic "18/04/2026 18:21:51" [ref=e613]: il y a 4 jours
+                        - generic "mistral:mistral-small-latest" [ref=e614]: mistral-small
+                  - button "Plus d'actions" [ref=e616] [cursor=pointer]:
+                    - img [ref=e617]
+                - generic [ref=e621]:
+                  - button "Fais moi un site Pokémon focus sur Pikachu principalemen... il y a 4 jours mistral-small" [ref=e622] [cursor=pointer]:
+                    - generic [ref=e623]:
+                      - generic [ref=e624]: Fais moi un site Pokémon focus sur Pikachu principalemen...
+                      - generic [ref=e625]:
+                        - generic "18/04/2026 18:15:20" [ref=e626]: il y a 4 jours
+                        - generic "mistral:mistral-small-latest" [ref=e627]: mistral-small
+                  - button "Plus d'actions" [ref=e629] [cursor=pointer]:
+                    - img [ref=e630]
+                - generic [ref=e634]:
+                  - button "Fais moi un site Pokémon focus sur Pikachu principalemen... il y a 4 jours mistral-small" [ref=e635] [cursor=pointer]:
+                    - generic [ref=e636]:
+                      - generic [ref=e637]: Fais moi un site Pokémon focus sur Pikachu principalemen...
+                      - generic [ref=e638]:
+                        - generic "18/04/2026 18:09:22" [ref=e639]: il y a 4 jours
+                        - generic "mistral:mistral-small-latest" [ref=e640]: mistral-small
+                  - button "Plus d'actions" [ref=e642] [cursor=pointer]:
+                    - img [ref=e643]
+                - generic [ref=e647]:
+                  - button "tu peux me generer une copie de elagus.fr et me deploy il y a 4 jours mistral-small" [ref=e648] [cursor=pointer]:
+                    - generic [ref=e649]:
+                      - generic [ref=e650]: tu peux me generer une copie de elagus.fr et me deploy
+                      - generic [ref=e651]:
+                        - generic "18/04/2026 17:59:29" [ref=e652]: il y a 4 jours
+                        - generic "mistral:mistral-small-latest" [ref=e653]: mistral-small
+                  - button "Plus d'actions" [ref=e655] [cursor=pointer]:
+                    - img [ref=e656]
+                - generic [ref=e660]:
+                  - button "Nouvelle conversation il y a 4 jours mistral-small" [ref=e661] [cursor=pointer]:
+                    - generic [ref=e662]:
+                      - generic [ref=e663]: Nouvelle conversation
+                      - generic [ref=e664]:
+                        - generic "18/04/2026 17:40:02" [ref=e665]: il y a 4 jours
+                        - generic "mistral:mistral-small-latest" [ref=e666]: mistral-small
+                  - button "Plus d'actions" [ref=e668] [cursor=pointer]:
+                    - img [ref=e669]
+                - generic [ref=e673]:
+                  - button "Find me 3 high-quality free stock images of a golden retr... il y a 6 jours mistral-small" [ref=e674] [cursor=pointer]:
+                    - generic [ref=e675]:
+                      - generic [ref=e676]: Find me 3 high-quality free stock images of a golden retr...
+                      - generic [ref=e677]:
+                        - generic "17/04/2026 07:10:08" [ref=e678]: il y a 6 jours
+                        - generic "mistral:mistral-small-latest" [ref=e679]: mistral-small
+                  - button "Plus d'actions" [ref=e681] [cursor=pointer]:
+                    - img [ref=e682]
+                - generic [ref=e686]:
+                  - button "Usage mechanism e2e verification il y a 6 jours claude-sonnet-4-6" [ref=e687] [cursor=pointer]:
+                    - generic [ref=e688]:
+                      - generic [ref=e689]: Usage mechanism e2e verification
+                      - generic [ref=e690]:
+                        - generic "17/04/2026 07:08:11" [ref=e691]: il y a 6 jours
+                        - generic "claude-sonnet-4-6" [ref=e692]
+                  - button "Plus d'actions" [ref=e694] [cursor=pointer]:
+                    - img [ref=e695]
+                - generic [ref=e699]:
+                  - button "Build a minimal one-page landing called \"TestWidgets\" wit... il y a 6 jours mistral-small" [ref=e700] [cursor=pointer]:
+                    - generic [ref=e701]:
+                      - generic [ref=e702]: Build a minimal one-page landing called "TestWidgets" wit...
+                      - generic [ref=e703]:
+                        - generic "17/04/2026 06:56:46" [ref=e704]: il y a 6 jours
+                        - generic "mistral:mistral-small-latest" [ref=e705]: mistral-small
+                  - button "Plus d'actions" [ref=e707] [cursor=pointer]:
+                    - img [ref=e708]
+                - generic [ref=e712]:
+                  - button "static landing page for an italian ice cream shop called ... il y a 6 jours mistral-small" [ref=e713] [cursor=pointer]:
+                    - generic [ref=e714]:
+                      - generic [ref=e715]: static landing page for an italian ice cream shop called ...
+                      - generic [ref=e716]:
+                        - generic "17/04/2026 06:47:54" [ref=e717]: il y a 6 jours
+                        - generic "mistral:mistral-small-latest" [ref=e718]: mistral-small
+                  - button "Plus d'actions" [ref=e720] [cursor=pointer]:
+                    - img [ref=e721]
+            - button "Mode simple Non technique" [ref=e726] [cursor=pointer]:
+              - generic [ref=e729]:
+                - generic [ref=e730]: Mode simple
+                - generic [ref=e731]: Non technique
+        - generic [ref=e732]:
+          - generic [ref=e733]:
+            - generic [ref=e735]: Kalit Studio
+            - generic [ref=e736]: Fais-moi un fansite One Piece centré sur Zoro, thème la...
+            - generic [ref=e737]:
+              - generic "Tokens consumed this session (broker usage events)" [ref=e738]:
+                - generic [ref=e740]:
+                  - generic [ref=e741]: ↓280,570
+                  - generic [ref=e742]: /
+                  - generic [ref=e743]: ↑20,084
+                - generic [ref=e744]: toks
+              - button "claude-haiku-4.5 ▾" [ref=e746] [cursor=pointer]:
+                - generic [ref=e748]: claude-haiku-4.5
+                - generic [ref=e749]: ▾
+              - button "Toggle notifications" [ref=e750] [cursor=pointer]:
+                - img [ref=e751]
+              - button "Mode sombre" [ref=e755] [cursor=pointer]:
+                - img [ref=e756]
+              - button "Enter focus mode" [ref=e758] [cursor=pointer]:
+                - img [ref=e759]
+              - button "Masquer les fichiers" [ref=e761] [cursor=pointer]:
+                - img [ref=e762]
+          - generic [ref=e769]:
+            - generic [ref=e771]: Aujourd’hui
+            - generic [ref=e773]:
+              - generic [ref=e774]: Fais-moi un fansite One Piece centré sur Zoro, thème lames et ambiance sombre samurai. Lance direct, fais comme tu veux.
+              - generic [ref=e775]:
+                - button "Copier" [ref=e776] [cursor=pointer]:
+                  - img [ref=e777]
+                - generic "23/04/2026 01:52:30" [ref=e781]: 01:52
+            - generic [ref=e783]:
+              - paragraph [ref=e785]: Je lance les recherches pendant qu'on en parle.
+              - generic [ref=e786]:
+                - img [ref=e787]
+                - generic [ref=e789]: find_assets_search
+                - generic [ref=e790]: x6
+              - generic [ref=e791]:
+                - generic [ref=e792]:
+                  - img [ref=e794]
+                  - generic [ref=e796]: 3 ressources trouvées
+                - generic [ref=e797]:
+                  - img "image_010.jpg" [ref=e798] [cursor=pointer]
+                  - img "image_009.jpg" [ref=e799] [cursor=pointer]
+                  - img "image_018.jpg" [ref=e800] [cursor=pointer]
+              - generic [ref=e801]:
+                - generic [ref=e802]:
+                  - img [ref=e804]
+                  - generic [ref=e806]: 2 ressources trouvées
+                - generic [ref=e807]:
+                  - img "samurai-portrait-1.png" [ref=e808] [cursor=pointer]
+                  - img "samurai-portrait-2.png" [ref=e809] [cursor=pointer]
+              - generic [ref=e811]:
+                - img [ref=e813]
+                - generic [ref=e815]: 0 ressources trouvées
+              - generic [ref=e816]:
+                - generic [ref=e817]:
+                  - img [ref=e819]
+                  - generic [ref=e821]: 4 ressources trouvées
+                - generic [ref=e822]:
+                  - img "zoro_asura_hazeelart.png" [ref=e823] [cursor=pointer]
+                  - img "zoro_9sword_style_andrewespino.png" [ref=e824] [cursor=pointer]
+                  - img "zoro_onepiece_aiqoz.png" [ref=e825] [cursor=pointer]
+                  - img "zoro_fanart_zlatanovitch.png" [ref=e826] [cursor=pointer]
+              - generic [ref=e828]:
+                - img [ref=e830]
+                - generic [ref=e832]: 0 ressources trouvées
+              - generic [ref=e833]:
+                - generic [ref=e834]:
+                  - img [ref=e836]
+                  - generic [ref=e838]: 3 ressources trouvées
+                - generic [ref=e839]:
+                  - img "anime-landing-dark.png" [ref=e840] [cursor=pointer]
+                  - img "cyber-ninja-dark.png" [ref=e841] [cursor=pointer]
+                  - img "siwap-nft-dark.png" [ref=e842] [cursor=pointer]
+              - paragraph [ref=e844]: Les recherches sont lancées. Je vais attendre les résultats et créer ton fansite One Piece sur Zoro avec une ambiance sombre de samurai. À très vite!
+              - generic [ref=e845]:
+                - button "Copier" [ref=e846] [cursor=pointer]:
+                  - img [ref=e847]
+                - generic "23/04/2026 01:52:35" [ref=e851]: 01:52
+          - generic [ref=e853]:
+            - button "Joindre un fichier" [ref=e854] [cursor=pointer]:
+              - img [ref=e855]
+            - button "Attacher un dépôt git" [ref=e857] [cursor=pointer]:
+              - img [ref=e858]
+            - textbox "Demandez n'importe quoi..." [ref=e860]
+            - button [disabled] [ref=e861]:
+              - img [ref=e862]
+        - complementary [ref=e864]:
+          - generic [ref=e865]:
+            - generic [ref=e866]:
+              - img [ref=e867]
+              - generic [ref=e869]: Projet
+              - generic [ref=e870]: EN LIGNE
+            - generic [ref=e871]:
+              - generic [ref=e874]: Terminé
+              - generic [ref=e875]:
+                - link "Projet" [ref=e876] [cursor=pointer]:
+                  - /url: /studio/project/18a8d2f856fd391fb79d11b7
+                  - img [ref=e877]
+                  - text: Projet
+                - link "Publier" [ref=e879] [cursor=pointer]:
+                  - /url: /studio/project/18a8d2f856fd391fb79d11b7/publish
+                  - img [ref=e880]
+                  - text: Publier
+            - generic [ref=e885]:
+              - button "Fichiers (12)" [ref=e886] [cursor=pointer]:
+                - text: Fichiers
+                - generic [ref=e887]: (12)
+              - button "Infos" [ref=e888] [cursor=pointer]
+            - generic [ref=e890]:
+              - generic [ref=e891]:
+                - generic [ref=e892] [cursor=pointer]:
+                  - img [ref=e893]
+                  - img [ref=e895]
+                  - generic [ref=e900]: assets
+                  - generic [ref=e901]: "9"
+                - generic "image_018.jpg" [ref=e902]:
+                  - generic [ref=e903]: image_018.jpg
+                  - generic [ref=e904]: 170K
+                  - button "Supprimer" [ref=e905] [cursor=pointer]:
+                    - img [ref=e906]
+                - generic "image_009.jpg" [ref=e908]:
+                  - generic [ref=e909]: image_009.jpg
+                  - generic [ref=e910]: 251K
+                  - button "Supprimer" [ref=e911] [cursor=pointer]:
+                    - img [ref=e912]
+                - generic "image_010.jpg" [ref=e914]:
+                  - generic [ref=e915]: image_010.jpg
+                  - generic [ref=e916]: 835K
+                  - button "Supprimer" [ref=e917] [cursor=pointer]:
+                    - img [ref=e918]
+                - generic "samurai-portrait-2.png" [ref=e920]:
+                  - generic [ref=e921]: samurai-portrait-2.png
+                  - generic [ref=e922]: 1.3M
+                  - button "Supprimer" [ref=e923] [cursor=pointer]:
+                    - img [ref=e924]
+                - generic "samurai-portrait-1.png" [ref=e926]:
+                  - generic [ref=e927]: samurai-portrait-1.png
+                  - generic [ref=e928]: 1.5M
+                  - button "Supprimer" [ref=e929] [cursor=pointer]:
+                    - img [ref=e930]
+                - generic "gallery-combat-zoro_fanart_zlatanovitch.png" [ref=e932]:
+                  - generic [ref=e933]: gallery-combat-zoro_fanart_zlatanovitch.png
+                  - generic [ref=e934]: 6.0M
+                  - button "Supprimer" [ref=e935] [cursor=pointer]:
+                    - img [ref=e936]
+                - generic "gallery-combat-zoro_onepiece_aiqoz.png" [ref=e938]:
+                  - generic [ref=e939]: gallery-combat-zoro_onepiece_aiqoz.png
+                  - generic [ref=e940]: 2.5M
+                  - button "Supprimer" [ref=e941] [cursor=pointer]:
+                    - img [ref=e942]
+                - generic "gallery-combat-zoro_9sword_style_andrewespino.png" [ref=e944]:
+                  - generic [ref=e945]: gallery-combat-zoro_9sword_style_andrewespino.png
+                  - generic [ref=e946]: 746K
+                  - button "Supprimer" [ref=e947] [cursor=pointer]:
+                    - img [ref=e948]
+                - generic "gallery-combat-zoro_asura_hazeelart.png" [ref=e950]:
+                  - generic [ref=e951]: gallery-combat-zoro_asura_hazeelart.png
+                  - generic [ref=e952]: 364K
+                  - button "Supprimer" [ref=e953] [cursor=pointer]:
+                    - img [ref=e954]
+              - generic [ref=e956]:
+                - generic [ref=e957] [cursor=pointer]:
+                  - img [ref=e958]
+                  - img [ref=e960]
+                  - generic [ref=e965]: references
+                  - generic [ref=e966]: "3"
+                - generic "reference-layout-siwap-nft-dark.png" [ref=e967]:
+                  - generic [ref=e968]: reference-layout-siwap-nft-dark.png
+                  - button "Supprimer" [ref=e969] [cursor=pointer]:
+                    - img [ref=e970]
+                - generic "reference-layout-cyber-ninja-dark.png" [ref=e972]:
+                  - generic [ref=e973]: reference-layout-cyber-ninja-dark.png
+                  - button "Supprimer" [ref=e974] [cursor=pointer]:
+                    - img [ref=e975]
+                - generic "reference-layout-anime-landing-dark.png" [ref=e977]:
+                  - generic [ref=e978]: reference-layout-anime-landing-dark.png
+                  - button "Supprimer" [ref=e979] [cursor=pointer]:
+                    - img [ref=e980]
+    - region "Notifications alt+T"
+  - alert [ref=e52]
