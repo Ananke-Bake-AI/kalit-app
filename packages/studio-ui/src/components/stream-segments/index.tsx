@@ -201,12 +201,19 @@ export const StreamSegments = memo(function StreamSegments({
               })
               j++
             }
+            // draftKey ties this group to the same persisted instance in
+            // message-bubble, so picks survive the live→persisted swap.
+            // Hash the first question's text — collisions across messages
+            // are negligible and we don't have a stable message id here.
+            const draftKey = `live:${group[0]?.question ?? ""}:${group.length}`
             rendered.push(
               <QcmGroup
                 key={i}
                 questions={group}
                 onSubmit={(text) => onChoiceSubmit?.(text)}
                 onRequestFreeform={onChoiceFreeform}
+                isStreaming={!!live}
+                draftKey={draftKey}
               />
             )
             i = j

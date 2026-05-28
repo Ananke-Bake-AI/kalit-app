@@ -610,6 +610,26 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
           setSessionStreamThinking(sid, "")
           markSessionProcessing(sid, false)
           inflightSendsRef.current.delete(sid)
+          // Drain any pending sends queued during the stream (e.g. user
+          // picked a QCM option mid-asset-search). Fire them via the
+          // handleSendRef so each queued message goes through the normal
+          // path — the stream that's about to start will queue any
+          // further input behind it, naturally.
+          {
+            const q = pendingSendsRef.current.get(sid)
+            if (q && q.length > 0) {
+              pendingSendsRef.current.set(sid, [])
+              const next = q.shift()
+              if (next) {
+                void handleSendRef.current(next.message, next.files)
+              }
+              // Re-queue the tail so the next session_stream_closed
+              // round drains them in order.
+              if (q.length > 0) {
+                pendingSendsRef.current.set(sid, q)
+              }
+            }
+          }
           // Sidebar / quota are global — no sid filter needed.
           fetchSessions()
           fetchQuota()
@@ -772,8 +792,28 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
 
   // ── Send message with full SSE streaming ────────────────
 
+  // Pending-send queue: when the user submits a QCM (or types another
+  // message) while the agent is still streaming, we don't drop the input
+  // on the floor — we queue it and auto-fire as soon as session_stream_closed
+  // arrives. Each session has its own FIFO queue. Without this, picking
+  // a QCM option mid-asset-search produced a dead click — the user thought
+  // the UI was broken and had to refresh.
+  const pendingSendsRef = useRef<Map<string, Array<{ message: string; files?: UploadedFile[] }>>>(new Map())
+
   const handleSend = useCallback(async (message: string, files?: UploadedFile[]) => {
-    if (isStreaming) return
+    // If a stream is already in flight for the active session, queue this
+    // input — the session_stream_closed handler drains the queue when the
+    // agent's run wraps up. Resolves immediately so callers (chat input,
+    // QCM submit) get a snappy UI.
+    if (isStreaming) {
+      const sid = activeSessionId
+      if (sid) {
+        const q = pendingSendsRef.current.get(sid) ?? []
+        q.push({ message, files })
+        pendingSendsRef.current.set(sid, q)
+      }
+      return
+    }
 
     // Admin command: /console toggles the debug console
     if (enableAdminConsole && message.trim() === "/console") {

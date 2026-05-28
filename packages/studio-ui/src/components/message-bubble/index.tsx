@@ -89,9 +89,15 @@ interface MessageBubbleProps {
   /** Called when the user picks a QCM option in this bubble. Receives the
    * synthesized user-message text. */
   onChoiceSubmit?: (text: string) => void
+  /** "Aucune ne convient" — focuses the chat input so the user can type
+   * a freeform answer. */
+  onChoiceFreeform?: () => void
+  /** Whether the agent is currently streaming. Passed through to embedded
+   * QCMs so the Send button can show a "queued" state. */
+  isStreaming?: boolean
 }
 
-export const MessageBubble = memo(function MessageBubble({ message, showToolBadges, onRefreshMessages, onPreviewFile, subsequentUserMessages, onChoiceSubmit }: MessageBubbleProps) {
+export const MessageBubble = memo(function MessageBubble({ message, showToolBadges, onRefreshMessages, onPreviewFile, subsequentUserMessages, onChoiceSubmit, onChoiceFreeform, isStreaming }: MessageBubbleProps) {
   const { t, locale } = useI18n()
   const [thinkingOpen, setThinkingOpen] = useState(false)
   const timeLabel = formatTime(message.createdAt, locale)
@@ -378,6 +384,9 @@ export const MessageBubble = memo(function MessageBubble({ message, showToolBadg
                   }
                 })
 
+                // Same draftKey shape as the live-stream variant so picks
+                // made before the bubble swap carry over.
+                const draftKey = `live:${group[0]?.question ?? ""}:${group.length}`
                 rendered.push(
                   <QcmGroup
                     key={i}
@@ -386,6 +395,9 @@ export const MessageBubble = memo(function MessageBubble({ message, showToolBadg
                     onSubmit={(text) => {
                       if (!anyAnswered && onChoiceSubmit) onChoiceSubmit(text)
                     }}
+                    onRequestFreeform={onChoiceFreeform}
+                    isStreaming={!!isStreaming}
+                    draftKey={draftKey}
                   />
                 )
                 i = j

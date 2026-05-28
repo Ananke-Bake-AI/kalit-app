@@ -260,6 +260,15 @@ export function StudioClient() {
                 onPreviewFile={handlePreviewFile}
                 onRefreshMessages={() => activeSessionId && fetchMessages(activeSessionId)}
                 onChoiceSubmit={(text) => handleSend(text)}
+                onChoiceFreeform={() => {
+                  // Focus the chat input so the user can type a freeform
+                  // answer when no QCM option fits. Best-effort: the
+                  // ChatInput exposes a textarea by ARIA role.
+                  const textarea = document.querySelector<HTMLTextAreaElement>(
+                    "textarea[aria-label], textarea[placeholder]",
+                  )
+                  textarea?.focus()
+                }}
               />
             )}
           </div>

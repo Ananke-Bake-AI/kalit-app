@@ -159,6 +159,8 @@ export function MessageList({ onStop, onPreviewFile, onRefreshMessages, onChoice
                 onRefreshMessages={onRefreshMessages}
                 subsequentUserMessages={subsequentUserMessages}
                 onChoiceSubmit={onChoiceSubmit}
+                onChoiceFreeform={onChoiceFreeform}
+                isStreaming={isStreaming}
               />
             </Fragment>
           )
