@@ -39,7 +39,16 @@ LOCAL_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # strip disabled) was committed back to main on day 1, so local and
 # server are in sync via git.
 RSYNC_EXCLUDES=(
+  # NEVER ship a local env file. The server owns its own apps/landing/.env
+  # (prod Neon DB, https URLs, Stripe live keys, OAuth) — it's also chattr +i
+  # locked on the box. Local env files are dev/templates with blank or
+  # localhost values; a mis-anchored exclude once let one overwrite prod and
+  # blanked every secret (studio "répondu avec 401" + Google login dead).
+  # Anchored to each rsync source root; covers .env AND .env.prod/.vercel/
+  # .local/.example/etc. The leading `/` is load-bearing — a bare `.env`
+  # pattern does NOT match here because the transfer root is apps/landing/.
   --exclude='/.env'
+  --exclude='/.env.*'
   --exclude='node_modules'
   --exclude='.next'
   --exclude='.turbo'
