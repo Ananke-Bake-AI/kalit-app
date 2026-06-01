@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Icon } from "../../primitives/icon"
 import { useI18n } from "@kalit/i18n/react"
 import s from "./qcm-choice.module.scss"
@@ -107,6 +107,41 @@ function clearDraft(draftKey?: string): void {
   }
 }
 
+// "Sent" marker — set the moment the user submits, persisted per draftKey.
+// The live QCM re-renders on every SSE event while the agent streams; without
+// persisting this, a re-mount would reset the local "submitted" state, the
+// user's pick would look un-registered, and a second click could double-queue
+// the send. Surviving the re-mount keeps the picked option highlighted with a
+// clear "queued / sent" affordance and blocks re-submits.
+const SENT_PREFIX = "kalit-studio-qcm-sent:"
+
+function loadSent(draftKey?: string): boolean {
+  if (!draftKey || typeof window === "undefined") return false
+  try {
+    return window.sessionStorage.getItem(SENT_PREFIX + draftKey) === "1"
+  } catch {
+    return false
+  }
+}
+
+function saveSent(draftKey?: string): void {
+  if (!draftKey || typeof window === "undefined") return
+  try {
+    window.sessionStorage.setItem(SENT_PREFIX + draftKey, "1")
+  } catch {
+    /* noop */
+  }
+}
+
+function clearSent(draftKey?: string): void {
+  if (!draftKey || typeof window === "undefined") return
+  try {
+    window.sessionStorage.removeItem(SENT_PREFIX + draftKey)
+  } catch {
+    /* noop */
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
@@ -158,19 +193,22 @@ export function QcmGroup({
     isAnswered ? {} : loadDraft(draftKey),
   )
 
-  // True after the user clicked Send while streaming — they need feedback
-  // that the click registered even though the network call hasn't gone out.
-  const [queued, setQueued] = useState(false)
+  // True once the user has submitted this QCM (sent immediately, or queued
+  // while the agent is still streaming). Persisted per draftKey so the live
+  // re-render on each SSE event doesn't reset it — keeps the pick highlighted
+  // with a clear affordance and blocks a double-submit.
+  const [submitted, setSubmitted] = useState<boolean>(() =>
+    isAnswered ? false : loadSent(draftKey),
+  )
 
-  // If isStreaming flips off (agent done), reset queued state so the next
-  // click submits normally.
-  const wasStreaming = useRef(isStreaming)
+  // Once the persisted (answered) bubble takes over, drop the live draft +
+  // sent markers so a brand-new QCM with the same draftKey starts clean.
   useEffect(() => {
-    if (wasStreaming.current && !isStreaming) {
-      setQueued(false)
+    if (isAnswered) {
+      clearDraft(draftKey)
+      clearSent(draftKey)
     }
-    wasStreaming.current = isStreaming
-  }, [isStreaming])
+  }, [isAnswered, draftKey])
 
   // Persist picks whenever they change (interactive only).
   useEffect(() => {
@@ -179,13 +217,15 @@ export function QcmGroup({
   }, [draftKey, isAnswered, picks])
 
   const toggle = (qIdx: number, label: string) => {
-    if (isAnswered || queued) return
+    if (isAnswered || submitted) return
     const q = questions[qIdx]
     if (!q) return
     if (!q.multiSelect && !groupMode) {
-      // Single question + single-select → submit immediately, keeping the
-      // legacy fast-path for trivial cases.
-      handleSubmit({ [qIdx]: [label] })
+      // Single-select: record the pick (so it stays highlighted through the
+      // live re-render) AND submit in one tap.
+      const next = { [qIdx]: [label] }
+      setPicks(next)
+      handleSubmit(next)
       return
     }
     setPicks((prev) => {
@@ -212,18 +252,18 @@ export function QcmGroup({
   }, [groupMode, picks, questions])
 
   const handleSubmit = (picksToSend: Record<number, string[]>) => {
-    if (isAnswered) return
+    if (isAnswered || submitted) return
     const text = synthesizeMessage(questions, picksToSend)
     if (!text) return
     onSubmit?.(text)
-    clearDraft(draftKey)
-    if (isStreaming) {
-      setQueued(true)
-    }
+    saveSent(draftKey)
+    setSubmitted(true)
+    // Keep the draft (picks) so the chosen option stays highlighted until the
+    // persisted bubble swaps in — cleared by the isAnswered effect.
   }
 
   const submitAll = () => {
-    if (!ready || queued) return
+    if (!ready || submitted) return
     handleSubmit(picks)
   }
 
@@ -232,37 +272,47 @@ export function QcmGroup({
     return picks[qIdx] ?? []
   }
 
-  const sendLabel = isStreaming || queued ? tx("studio.sendQueued", "Send (queued)") : tx("studio.send", "Send")
+  // While the agent is still streaming a submit is queued (drains when the run
+  // closes); otherwise it sends right away. Either way show the user it landed.
+  const sendLabel = submitted
+    ? isStreaming
+      ? tx("studio.sendQueued", "Queued — sending when ready")
+      : tx("studio.sent", "Sent")
+    : tx("studio.send", "Send")
   const freeformLabel = tx("studio.somethingElse", "Something else…")
+  // Locked = submitted or already-answered: no more interaction, picks shown.
+  const locked = isAnswered || submitted
 
   return (
     <div
       className={s.container}
       data-answered={isAnswered ? "true" : "false"}
       data-group={groupMode ? "true" : "false"}
+      data-locked={locked ? "true" : "false"}
     >
       <div className={s.scrollArea}>
         {questions.map((q, qIdx) => {
           const sel = selectedFor(qIdx)
-          const useChecks = q.multiSelect || groupMode
+          const multi = !!q.multiSelect
           return (
             <div key={qIdx} className={s.questionBlock}>
               <p className={s.question}>{q.question}</p>
-              <div className={useChecks ? s.checkGrid : s.buttonGrid}>
+              <div className={s.optionsGrid}>
                 {q.options.map((opt) => {
                   const isSel = sel.includes(opt.label)
                   return (
                     <button
                       key={opt.label}
                       type="button"
-                      className={useChecks ? s.checkOption : s.buttonOption}
+                      className={s.option}
                       data-selected={isSel ? "true" : "false"}
+                      data-multi={multi ? "true" : "false"}
                       onClick={() => toggle(qIdx, opt.label)}
-                      disabled={isAnswered}
+                      disabled={locked}
                       title={opt.description}
                     >
-                      {useChecks && (
-                        <span className={s.checkBox} aria-hidden>
+                      {multi && (
+                        <span className={s.optionMark} aria-hidden>
                           {isSel ? <Icon icon="hugeicons:tick-02" /> : null}
                         </span>
                       )}
@@ -270,11 +320,16 @@ export function QcmGroup({
                         <span className={s.optionLabel}>{opt.label}</span>
                         {opt.description && <span className={s.optionDescription}>{opt.description}</span>}
                       </span>
+                      {!multi && isSel && (
+                        <span className={s.optionCheck} aria-hidden>
+                          <Icon icon="hugeicons:tick-02" />
+                        </span>
+                      )}
                     </button>
                   )
                 })}
               </div>
-              {!isAnswered && q.freeform !== false && onRequestFreeform && (
+              {!locked && q.freeform !== false && onRequestFreeform && (
                 <button
                   type="button"
                   className={s.freeformLink}
@@ -288,18 +343,28 @@ export function QcmGroup({
         })}
       </div>
 
-      {!isAnswered && groupMode && (
+      {!isAnswered && (
         <div className={s.actions}>
-          <button
-            type="button"
-            className={s.confirmBtn}
-            onClick={submitAll}
-            disabled={!ready || queued}
-            data-queued={queued ? "true" : "false"}
-          >
-            {queued && <Icon icon="hugeicons:tick-02" aria-hidden />}
-            <span>{sendLabel}</span>
-          </button>
+          {groupMode && !submitted && (
+            <button
+              type="button"
+              className={s.confirmBtn}
+              onClick={submitAll}
+              disabled={!ready}
+            >
+              <span>{tx("studio.send", "Send")}</span>
+            </button>
+          )}
+          {submitted && (
+            <span
+              className={s.sentNote}
+              data-streaming={isStreaming ? "true" : "false"}
+              role="status"
+            >
+              <Icon icon="hugeicons:tick-02" aria-hidden />
+              <span>{sendLabel}</span>
+            </span>
+          )}
         </div>
       )}
     </div>
