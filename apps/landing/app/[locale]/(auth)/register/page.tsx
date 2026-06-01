@@ -5,6 +5,7 @@ import { Container } from "@/components/container"
 import { Link } from "@/components/link"
 import { TextField } from "@/components/text-field"
 import { localePath } from "@/lib/i18n"
+import { pushDataLayer } from "@/lib/analytics/data-layer"
 import { register } from "@/server/actions/auth"
 import { useI18n } from "@/stores/i18n"
 import clsx from "clsx"
@@ -40,6 +41,9 @@ export default function RegisterPage() {
       return
     }
 
+    // GTM conversion: account created via email/password.
+    pushDataLayer("sign_up", { method: "credentials" })
+
     const signInResult = await signIn("credentials", {
       email,
       password,
@@ -59,6 +63,8 @@ export default function RegisterPage() {
   }
 
   const handleOAuth = async (provider: string) => {
+    // Best-effort: OAuth does a full-page redirect, so push before navigating.
+    pushDataLayer("sign_up", { method: provider })
     await signIn(provider, { callbackUrl: "/setup" })
   }
 

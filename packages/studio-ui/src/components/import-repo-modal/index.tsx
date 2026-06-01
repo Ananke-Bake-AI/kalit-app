@@ -13,6 +13,7 @@ import { Icon } from "../../primitives/icon"
 import { useI18n } from "@kalit/i18n/react"
 import { brokerFetch, landingFetch } from "../../host"
 import { useStudioStore, type ImportedRepoState } from "../../store"
+import { pushDataLayer } from "../../lib/analytics"
 import s from "./import-repo-modal.module.scss"
 
 interface ImportRepoModalProps {
@@ -67,9 +68,11 @@ export function ImportRepoModal({ sessionId, onClose, onEnsureSession }: ImportR
 
   const handleAttached = useCallback((r: ImportedRepoState) => {
     setImportedRepo(r)
+    // GTM: existing repo successfully imported into a studio session.
+    pushDataLayer("studio_repo_import", { method: tab, has_token: !!r.hasToken })
     pushRepoLinkedNotice(repoDisplayName(r.url))
     onClose()
-  }, [setImportedRepo, pushRepoLinkedNotice, onClose])
+  }, [setImportedRepo, pushRepoLinkedNotice, onClose, tab])
 
   // Escape to close
   useEffect(() => {

@@ -4,6 +4,7 @@ import { Button } from "@/components/button"
 import { SurfacePanel } from "@/components/surface-panel"
 import { TextField } from "@/components/text-field"
 import { useTranslation } from "@/stores/i18n"
+import { pushDataLayer } from "@/lib/analytics/data-layer"
 import { useState } from "react"
 import { toast } from "sonner"
 import s from "./contact.module.scss"
@@ -37,6 +38,8 @@ export function ContactForm() {
       if (!res.ok) {
         toast.error(data.error || "Something went wrong.")
       } else {
+        // GTM lead conversion: contact form submitted successfully.
+        pushDataLayer("generate_lead", { form: "contact", subject: subject || undefined })
         toast.success(t("contact.messageSentToast"))
         setSent(true)
         setName("")

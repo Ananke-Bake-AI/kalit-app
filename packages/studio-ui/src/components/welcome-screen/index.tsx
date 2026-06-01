@@ -6,6 +6,7 @@ import { useI18n } from "@kalit/i18n/react"
 import { useStudioStore } from "../../store"
 import { Icon } from "../../primitives/icon"
 import { ImportRepoModal } from "../import-repo-modal"
+import { pushDataLayer } from "../../lib/analytics"
 import s from "./welcome-screen.module.scss"
 
 // Each entry: short `labelKey` for the card UI + richer `promptKey` that
@@ -117,7 +118,11 @@ export function WelcomeScreen({ onPromptSelect, activeSuite, onEnsureSession }: 
                     key={labelKey}
                     className={s.promptCard}
                     style={{ "--suite-color": config.color } as React.CSSProperties}
-                    onClick={() => onPromptSelect(t(promptKey), suite)}
+                    onClick={() => {
+                      // GTM: quick-prompt card selected on the studio welcome screen.
+                      pushDataLayer("studio_prompt_select", { suite })
+                      onPromptSelect(t(promptKey), suite)
+                    }}
                   >
                     <span>{t(labelKey)}</span>
                     <Icon icon="hugeicons:arrow-right-01" />

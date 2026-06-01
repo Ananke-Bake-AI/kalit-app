@@ -18,6 +18,7 @@ import clsx from "clsx"
 import s from "./chat-input.module.scss"
 import { ImportRepoModal } from "../import-repo-modal"
 import { CreditsModal } from "../credits-modal"
+import { pushDataLayer } from "../../lib/analytics"
 
 // Subscription tiles surfaced in the out-of-credits modal. Kept inline
 // here so the shared studio-ui package stays self-contained — hosts
@@ -112,11 +113,18 @@ export function ChatInput({ onSend, disabled, prefill, onEnsureSession }: ChatIn
   const handleSend = useCallback(() => {
     const trimmed = input.trim()
     if (!trimmed || disabled || isStreaming) return
+    // GTM: studio prompt submitted (the studio's primary engagement form).
+    // Length only, never the prompt text — no PII into the dataLayer.
+    pushDataLayer("studio_prompt_submit", {
+      prompt_length: trimmed.length,
+      attachments: attachedFiles.length,
+      has_repo: !!importedRepo,
+    })
     onSend(trimmed, attachedFiles.length > 0 ? attachedFiles : undefined)
     setInput("")
     setAttachedFiles([])
     setAtMenu(null)
-  }, [input, disabled, isStreaming, onSend, attachedFiles, setAttachedFiles, setAtMenu])
+  }, [input, disabled, isStreaming, onSend, attachedFiles, importedRepo, setAttachedFiles, setAtMenu])
 
   const handleKeyDown = useCallback((e: KeyboardEvent<HTMLTextAreaElement>) => {
     // @ menu navigation

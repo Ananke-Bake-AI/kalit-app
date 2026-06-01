@@ -5,6 +5,7 @@ import { Container } from "@/components/container"
 import { Logo } from "@/components/logo"
 import { TextField } from "@/components/text-field"
 import { SUITES } from "@/lib/suites"
+import { pushDataLayer } from "@/lib/analytics/data-layer"
 import { useTranslation } from "@/stores/i18n"
 import clsx from "clsx"
 import { Link } from "@/components/link"
@@ -55,11 +56,16 @@ function LoginForm() {
       return
     }
 
+    // GTM: successful sign-in.
+    pushDataLayer("login", { method: "credentials" })
+
     toast.success(t("auth.signedIn"))
     window.location.assign(callbackUrl)
   }
 
   const handleOAuth = async (provider: string) => {
+    // Best-effort: OAuth does a full-page redirect, so push before navigating.
+    pushDataLayer("login", { method: provider })
     await signIn(provider, { callbackUrl })
   }
 
