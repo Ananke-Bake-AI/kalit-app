@@ -269,6 +269,34 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
     if (ready) fetchQuota()
   }, [ready, fetchQuota])
 
+  // ── Keep the sidebar credit count converged on the authoritative value.
+  //     The store is otherwise only refreshed at mount + session_stream_closed,
+  //     and that reconcile races the async usage-record write (and the
+  //     optimistic per-turn decrement is skipped when a long run's POST is cut
+  //     by Vercel before debug_summary). Result: the sidebar got stuck near-full
+  //     (e.g. "1200/1200") while the server-rendered header showed the live,
+  //     lower number. Re-fetch on tab focus / visibility and on a short interval
+  //     so the two displays agree within a few seconds of any spend landing.
+  useEffect(() => {
+    if (!ready) return
+    if (typeof window === "undefined") return
+    const refresh = () => {
+      if (typeof document !== "undefined" && document.visibilityState === "hidden") return
+      void fetchQuota()
+    }
+    const onVisible = () => {
+      if (document.visibilityState === "visible") void fetchQuota()
+    }
+    window.addEventListener("focus", refresh)
+    document.addEventListener("visibilitychange", onVisible)
+    const id = window.setInterval(refresh, 45_000)
+    return () => {
+      window.removeEventListener("focus", refresh)
+      document.removeEventListener("visibilitychange", onVisible)
+      window.clearInterval(id)
+    }
+  }, [ready, fetchQuota])
+
   // ── Honor initial `?session=` / `?prompt=` params ───────
 
   useEffect(() => {
