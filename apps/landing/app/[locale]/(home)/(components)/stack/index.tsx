@@ -87,7 +87,7 @@ export const Stack = () => {
                   <Paragraph className={s.paragraph}>
                     <p>{t(`suites.${id}DescLong`) !== `suites.${id}DescLong` ? t(`suites.${id}DescLong`) : t(`suites.${id}Desc`)}</p>
                   </Paragraph>
-                  <Link href="/stack" className={s.link} aria-label={title.charAt(0).toUpperCase() + title.slice(1)}>
+                  <Link href={`/${id}`} className={s.link} aria-label={title.charAt(0).toUpperCase() + title.slice(1)}>
                     <Sprite id="arrow-top-right" viewBox="0 0 20 20" />
                   </Link>
                 </div>
