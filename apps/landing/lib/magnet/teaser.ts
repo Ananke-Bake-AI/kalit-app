@@ -391,18 +391,32 @@ ${RULES}
 // that round-trip times out on the provider side. We absorb the render latency
 // here, with a generous timeout; on failure the caller falls back to text.
 async function fetchImageAsDataUrl(url: string): Promise<string> {
-  const ctrl = new AbortController()
-  const timer = setTimeout(() => ctrl.abort(), 15000)
-  try {
-    const res = await fetch(url, { signal: ctrl.signal })
-    if (!res.ok) throw new Error(`screenshot fetch ${res.status}`)
-    const buf = Buffer.from(await res.arrayBuffer())
-    if (buf.byteLength < 1000) throw new Error("screenshot too small / not ready")
-    const ct = res.headers.get("content-type") || "image/png"
-    return `data:${ct};base64,${buf.toString("base64")}`
-  } finally {
-    clearTimeout(timer)
+  // Cold renders (wait/5 + first capture) can take a while, so be patient and
+  // retry once — vision is the default mode now, so a flaky fetch would
+  // silently degrade every teaser to text.
+  const attempt = async (timeoutMs: number): Promise<string | null> => {
+    const ctrl = new AbortController()
+    const timer = setTimeout(() => ctrl.abort(), timeoutMs)
+    try {
+      const res = await fetch(url, { signal: ctrl.signal })
+      if (!res.ok) return null
+      const buf = Buffer.from(await res.arrayBuffer())
+      if (buf.byteLength < 12000) return null // blank/placeholder
+      const ct = res.headers.get("content-type") || "image/png"
+      return `data:${ct};base64,${buf.toString("base64")}`
+    } catch {
+      return null
+    } finally {
+      clearTimeout(timer)
+    }
   }
+  let out = await attempt(22000)
+  if (!out) {
+    await new Promise((r) => setTimeout(r, 3000))
+    out = await attempt(22000)
+  }
+  if (!out) throw new Error("screenshot not ready")
+  return out
 }
 
 async function critiqueVision(signals: PageSignals, shotUrl: string): Promise<CritiqueResult> {
@@ -436,6 +450,10 @@ export async function runTeaser(
   normalizedUrl: string,
   mode: TeaserMode = "text",
 ): Promise<TeaserResult & { mode: TeaserMode }> {
+  // Kick off the screenshot render in parallel with signal extraction so the
+  // (slow, cold) render overlaps with fetchSignals + the LLM call. For most
+  // sites the normalized URL == the final URL, so this warms the right cache.
+  void fetch(providerShotUrl(normalizedUrl)).catch(() => {})
   const signals = await fetchSignals(normalizedUrl)
   const shot = screenshotUrl(signals.finalUrl) // proxy URL for the <img>
   const providerShot = providerShotUrl(signals.finalUrl) // raw provider, for vision + warm
