@@ -1,0 +1,291 @@
+@use "@/styles/app-glass" as *;
+@use "@/styles/mixins" as *;
+
+// Secondary text token: tracks --foreground (readable in both themes) rather
+// than --body, which is theme-specific and vanishes on the light glass panels.
+$muted: color-mix(in srgb, var(--foreground) 68%, transparent);
+
+.page {
+  padding-block: clamp(2.5rem, 6vw, 5rem) 5rem;
+}
+
+/* ─── Hero / input ─────────────────────────────────────── */
+.hero {
+  max-width: 46rem;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.kicker {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-4);
+  margin-bottom: 1rem;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.9rem, 5vw, 3.1rem);
+  line-height: 1.08;
+  font-weight: 700;
+  color: var(--foreground);
+}
+.titleAccent {
+  color: var(--color-4);
+}
+
+.subtitle {
+  margin-top: 1.1rem;
+  font-size: clamp(1rem, 2.2vw, 1.15rem);
+  color: #{$muted};
+  line-height: 1.6;
+}
+
+.form {
+  margin-top: 2rem;
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.urlField {
+  flex: 1 1 22rem;
+  max-width: 26rem;
+  text-align: left;
+}
+
+.error {
+  margin-top: 1rem;
+  color: #dc2626;
+  font-size: 0.92rem;
+}
+.loadingNote {
+  margin-top: 1rem;
+  color: #{$muted};
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+/* ─── Result ───────────────────────────────────────────── */
+.result {
+  max-width: 64rem;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.resultHead {
+  @include glass-panel(1.2rem);
+  padding: 1.5rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.scoreCard {
+  --c: var(--color-4);
+  flex: 0 0 auto;
+  width: 7.5rem;
+  height: 7.5rem;
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  background: radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--c) 16%, transparent), transparent 70%);
+  border: 3px solid var(--c);
+}
+.scoreNum {
+  font-family: var(--font-heading);
+  font-size: 2.8rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--c);
+}
+.scoreOf {
+  font-size: 0.8rem;
+  color: #{$muted};
+  margin-top: 0.15rem;
+}
+
+.resultHeadText {
+  flex: 1 1 18rem;
+  min-width: 0;
+}
+.resultUrl {
+  font-size: 0.82rem;
+  color: #{$muted};
+  word-break: break-all;
+}
+.verdict {
+  font-family: var(--font-heading);
+  font-size: clamp(1.2rem, 3vw, 1.7rem);
+  font-weight: 700;
+  color: var(--foreground);
+  margin: 0.2rem 0 0.9rem;
+}
+
+.bars {
+  display: grid;
+  gap: 0.4rem;
+}
+.bar {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr 2rem;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.82rem;
+}
+.barLabel {
+  color: #{$muted};
+}
+.barTrack {
+  height: 0.5rem;
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--foreground) 10%, transparent);
+  overflow: hidden;
+}
+.barFill {
+  display: block;
+  height: 100%;
+  border-radius: 1rem;
+  transition: width 0.6s var(--cubic, ease);
+}
+.barVal {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.resultBody {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 1.5rem;
+  @include max(48rem) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.shotWrap {
+  @include glass-panel(1rem);
+  padding: 0.6rem;
+  overflow: hidden;
+  max-height: 30rem;
+}
+.shot {
+  width: 100%;
+  height: auto;
+  border-radius: 0.6rem;
+  display: block;
+}
+
+.problems {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+.problemsTitle {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+.problem {
+  @include glass-panel(0.9rem);
+  padding: 1rem;
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+}
+.problemNum {
+  flex: 0 0 auto;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--color-4);
+}
+.problem[data-sev="high"] .problemNum { background: #dc2626; }
+.problem[data-sev="medium"] .problemNum { background: #d97706; }
+.problem[data-sev="low"] .problemNum { background: #16a34a; }
+
+.problemTitle {
+  font-weight: 700;
+  color: var(--foreground);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.sevTag {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.4rem;
+  font-weight: 700;
+  color: #fff;
+}
+.sevTag[data-sev="high"] { background: #dc2626; }
+.sevTag[data-sev="medium"] { background: #d97706; }
+.sevTag[data-sev="low"] { background: #16a34a; }
+
+.problemDetail {
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
+  color: #{$muted};
+  line-height: 1.5;
+}
+
+/* ─── CTA ──────────────────────────────────────────────── */
+.cta {
+  @include glass-panel(1.2rem);
+  padding: 1.6rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  border-color: color-mix(in srgb, var(--color-4) 45%, transparent);
+}
+.ctaText h3 {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+.ctaText p {
+  margin-top: 0.3rem;
+  font-size: 0.92rem;
+  color: #{$muted};
+  max-width: 32rem;
+}
+.ctaActions {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+.shareBtn,
+.againBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #{$muted};
+  font-weight: 600;
+  &:hover { color: var(--foreground); }
+}
