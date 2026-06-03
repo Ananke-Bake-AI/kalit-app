@@ -164,6 +164,42 @@ export async function sendPasswordResetEmail(email: string, token: string) {
   })
 }
 
+/**
+ * Sent when a Kalit Studio build finishes deploying — so users don't have to
+ * sit and watch a multi-minute build. Includes the live link + next steps.
+ */
+export async function sendBuildReadyEmail(args: {
+  email: string
+  name?: string | null
+  url: string
+  projectName?: string | null
+}) {
+  const { email, name, url, projectName } = args
+  const greeting = name ? `Hi ${name},` : "Hi,"
+  const label = projectName ? `"${projectName}"` : "Your project"
+  await sendEmail({
+    to: email,
+    subject: `${label} is live 🚀`,
+    html: emailLayout(`
+      <h1 style="font-size: 22px; font-weight: 700; color: #1a1a2e; margin: 0 0 8px;">Your build is live</h1>
+      <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin: 0 0 8px;">${greeting}</p>
+      <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin: 0 0 24px;">
+        Kalit finished building and deployed ${label.toLowerCase()}. It's live now — take a look:
+      </p>
+      ${ctaButton(url, "View it live")}
+      <p style="color: #9ca3af; font-size: 13px; margin-top: 16px; word-break: break-all;">
+        <a href="${url}" style="color: #8200DF;">${url}</a>
+      </p>
+      <div style="margin-top: 28px; padding: 16px; background: #f9fafb; border-radius: 8px;">
+        <p style="margin: 0 0 4px; font-size: 13px; font-weight: 600; color: #374151;">Make it yours</p>
+        <p style="margin: 0; font-size: 13px; color: #6b7280; line-height: 1.5;">
+          Connect a custom domain, keep iterating, or import your repo to build on your real codebase — all from Kalit Studio.
+        </p>
+      </div>
+    `),
+  })
+}
+
 export function buildCampaignEmailHtml(subject: string, body: string, unsubscribeUrl?: string) {
   // Convert simple line breaks to paragraphs and support [button:Label|URL] syntax
   const formatted = body
