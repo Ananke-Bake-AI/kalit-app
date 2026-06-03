@@ -13,10 +13,27 @@
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 const GROQ_MODEL = "llama-3.3-70b-versatile"
 
+export type FindingCategory =
+  | "hero"
+  | "cta"
+  | "copy"
+  | "trust"
+  | "design"
+  | "mobile"
+  | "seo"
+  | "performance"
+
 export interface TeaserProblem {
   title: string
+  /** Short "what's wrong" line. */
   detail: string
   severity: "high" | "medium" | "low"
+  /** Which part of the page this is about. */
+  category: FindingCategory
+  /** Why it costs conversions (the stakes). */
+  impact: string
+  /** The concrete fix. */
+  recommendation: string
 }
 
 export interface TeaserResult {
@@ -28,7 +45,12 @@ export interface TeaserResult {
     mobile: number
     trust: number
   }
-  problems: TeaserProblem[] // exactly 3
+  /** Punchy 1-2 sentence verdict, specific to this page. */
+  verdict: string
+  /** 4-6 prioritized findings, each with impact + recommendation. */
+  problems: TeaserProblem[]
+  /** 2-3 things the page already does well (balance = credibility). */
+  wins: string[]
   screenshotUrl: string
   finalUrl: string
   title: string | null
@@ -172,30 +194,59 @@ async function fetchSignals(url: string): Promise<PageSignals> {
 // ─── Screenshot (pluggable provider) ──────────────────────────
 // Default: thum.io (free, no key). Override with MAGNET_SCREENSHOT_BASE for a
 // keyed provider later (the value is prefixed to the encoded target URL).
-export function screenshotUrl(target: string): string {
+// Raw provider URL (thum.io default; override with MAGNET_SCREENSHOT_BASE for
+// a keyed provider — e.g. ScreenshotOne/urlbox — using {url} as the encoded
+// target placeholder). `wait/4` lets the page render before capture; without
+// it, JS-heavy pages capture blank. `maxAge/12` serves a cached render for 12h.
+export function providerShotUrl(target: string): string {
   const base = process.env.MAGNET_SCREENSHOT_BASE
   if (base) return base.replace("{url}", encodeURIComponent(target))
-  return `https://image.thum.io/get/width/1200/crop/1500/noanimate/${target}`
+  // `viewportWidth/1280` forces a desktop viewport — without it thum.io
+  // renders many sites at a tiny viewport and captures blank. `wait/5` lets
+  // the page render; `maxAge/12` serves a cached render for 12h.
+  return `https://image.thum.io/get/viewportWidth/1280/width/1200/crop/1400/wait/5/maxAge/12/noanimate/${target}`
+}
+
+// What the <img> points at: our proxy, which renders via the provider, rejects
+// blank/failed captures (so the UI shows a clean fallback instead of a white
+// box) and caches the result.
+export function screenshotUrl(target: string): string {
+  return `/api/magnet/shot?u=${encodeURIComponent(target)}`
 }
 
 // ─── Groq critique ────────────────────────────────────────────
-const SYSTEM_PROMPT = `You are a blunt, expert landing-page conversion auditor for Kalit AI. Given structured signals about a landing page, you score it and name its 3 biggest problems.
-
-Output ONLY valid JSON (no markdown fences, no prose) with this exact shape:
-{
+const JSON_SHAPE = `{
   "score": <integer 0-100, higher is better>,
+  "verdict": "<2 punchy sentences, specific to THIS page — name the single biggest reason it loses customers>",
   "breakdown": { "clarity": <0-100>, "design": <0-100>, "conversion": <0-100>, "mobile": <0-100>, "trust": <0-100> },
   "problems": [
-    { "title": "<short, punchy, max 8 words>", "detail": "<one concrete sentence, specific to this page>", "severity": "high|medium|low" },
-    { ...exactly 3 total, ordered most-to-least important... }
-  ]
-}
+    {
+      "title": "<short, punchy, max 8 words>",
+      "category": "hero|cta|copy|trust|design|mobile|seo|performance",
+      "severity": "high|medium|low",
+      "detail": "<one concrete sentence naming exactly what's wrong on this page>",
+      "impact": "<one sentence on how this loses conversions / why a visitor bounces>",
+      "recommendation": "<one specific, actionable fix — what to change>"
+    }
+  ],
+  "wins": ["<short positive 1>", "<short positive 2>"]
+}`
 
-Rules:
-- Be specific and honest, like a smart friend roasting their page. No generic filler.
-- Ground problems in the signals (missing/weak H1, no clear CTA, no meta description, not mobile-ready, thin or bloated copy, no social proof/forms, http not https).
-- "score" should roughly reflect the breakdown average. Weak hero or missing CTA should pull conversion down hard.
-- Exactly 3 problems. Never more, never fewer.`
+const RULES = `Rules:
+- Be specific and honest, like an expensive CRO consultant — every line must be actionable, no generic filler.
+- Return 4 to 6 problems, ordered most-to-least important (highest revenue impact first). Cover a spread of categories (hero, cta, copy, trust, design, mobile, seo) where relevant.
+- Each problem MUST have a real "impact" (the cost) and a real "recommendation" (the fix). Never leave them vague.
+- Return 2-3 "wins" — genuine things the page does well — so the audit is balanced and credible.
+- "verdict" is the headline takeaway — punchy, specific, makes them want it fixed.
+- "score" should reflect the breakdown; a weak hero or missing CTA pulls conversion down hard.`
+
+const SYSTEM_PROMPT = `You are a blunt, expert landing-page conversion auditor for Kalit AI. Given structured signals about a landing page, produce a rich conversion audit.
+
+Output ONLY valid JSON (no markdown fences, no prose) with this exact shape:
+${JSON_SHAPE}
+
+${RULES}
+- You're working from extracted HTML signals (not the visual). Ground every point in those signals: hero/H1 strength, CTA presence, meta description, mobile-readiness, copy length, social proof/forms, https.`
 
 function buildUserMessage(s: PageSignals): string {
   return JSON.stringify(
@@ -225,6 +276,21 @@ function clamp(n: unknown, def = 50): number {
   return Math.max(0, Math.min(100, v))
 }
 
+// Models sometimes emit HTML entities (e.g. aujourd&#x27;hui) inside JSON
+// strings. Decode them so the UI shows real punctuation.
+function decodeEntities(str: string): string {
+  return str
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => String.fromCodePoint(parseInt(h, 16)))
+    .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(parseInt(d, 10)))
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&nbsp;/g, " ")
+}
+const dec = (v: unknown, max: number) => decodeEntities(String(v || "")).slice(0, max)
+
 type CritiqueResult = Omit<TeaserResult, "screenshotUrl" | "finalUrl" | "title">
 
 // Vision teaser: judge the actual screenshot, not just HTML signals. Reuses
@@ -242,28 +308,43 @@ function normalizeCritique(parsed: Record<string, unknown>): CritiqueResult {
     mobile: clamp(bd.mobile),
     trust: clamp(bd.trust),
   }
-  let problems = Array.isArray(parsed.problems)
+  const CATS: FindingCategory[] = ["hero", "cta", "copy", "trust", "design", "mobile", "seo", "performance"]
+  let problems: TeaserProblem[] = Array.isArray(parsed.problems)
     ? (parsed.problems as Record<string, unknown>[]).map((p) => ({
-        title: String(p.title || "Issue").slice(0, 80),
-        detail: String(p.detail || "").slice(0, 240),
+        title: dec(p.title || "Issue", 80),
+        detail: dec(p.detail, 240),
         severity: (["high", "medium", "low"].includes(String(p.severity))
           ? p.severity
           : "medium") as TeaserProblem["severity"],
+        category: (CATS.includes(String(p.category) as FindingCategory)
+          ? p.category
+          : "design") as FindingCategory,
+        impact: dec(p.impact, 240),
+        recommendation: dec(p.recommendation, 280),
       }))
     : []
-  problems = problems.slice(0, 3)
-  while (problems.length < 3) {
+  problems = problems.slice(0, 6)
+  while (problems.length < 4) {
     problems.push({
-      title: "Needs a stronger story",
+      title: "Weak value proposition",
       detail: "The page doesn't make its core value obvious above the fold.",
       severity: "medium",
+      category: "hero",
+      impact: "Visitors who can't grasp the offer in a few seconds bounce before scrolling.",
+      recommendation: "Lead with a benefit-driven headline and a one-line subhead that states who it's for and what they get.",
     })
   }
+
+  const wins = Array.isArray(parsed.wins)
+    ? (parsed.wins as unknown[]).map((w) => dec(w, 120)).filter(Boolean).slice(0, 3)
+    : []
+
   const score = clamp(
     parsed.score ??
       (breakdown.clarity + breakdown.design + breakdown.conversion + breakdown.mobile + breakdown.trust) / 5,
   )
-  return { score, breakdown, problems }
+  const verdict = dec(parsed.verdict, 300)
+  return { score, breakdown, verdict, problems, wins }
 }
 
 async function callGroqJson(body: Record<string, unknown>): Promise<Record<string, unknown>> {
@@ -297,16 +378,13 @@ async function critique(signals: PageSignals): Promise<CritiqueResult> {
 }
 
 // ── Vision critique (judges the actual rendered screenshot) ──
-const VISION_SYSTEM_PROMPT = `You are a blunt, expert landing-page conversion auditor for Kalit AI. You are shown a SCREENSHOT of a landing page. Judge what you can actually SEE.
+const VISION_SYSTEM_PROMPT = `You are a blunt, expert landing-page conversion auditor for Kalit AI. You are shown a SCREENSHOT of a landing page. Judge what you can actually SEE and produce a rich conversion audit.
 
 Output ONLY valid JSON (no markdown, no prose) with this exact shape:
-{
-  "score": <integer 0-100, higher is better>,
-  "breakdown": { "clarity": <0-100>, "design": <0-100>, "conversion": <0-100>, "mobile": <0-100>, "trust": <0-100> },
-  "problems": [ { "title": "<max 8 words>", "detail": "<one concrete sentence about what you SEE>", "severity": "high|medium|low" } ]
-}
+${JSON_SHAPE}
 
-Critique the visual reality: hero clarity (does the value land in 3 seconds?), CTA prominence/contrast/placement, visual hierarchy, clutter vs whitespace, trust cues (testimonials, logos, social proof), and how it likely reads on mobile. Reference real elements you see in the image. Exactly 3 problems, most important first.`
+${RULES}
+- Judge the VISUAL reality you see: does the hero communicate the value in 3 seconds? Is the primary CTA prominent (contrast, size, placement, above the fold)? Visual hierarchy, clutter vs whitespace, trust cues (testimonials, logos, social proof, reviews), and how it likely reads on mobile. Reference real elements you actually see in the image.`
 
 // Fetch the screenshot server-side and inline it as a base64 data URL, so the
 // vision model never has to fetch the (slow, on-demand) thum.io URL itself —
@@ -359,12 +437,13 @@ export async function runTeaser(
   mode: TeaserMode = "text",
 ): Promise<TeaserResult & { mode: TeaserMode }> {
   const signals = await fetchSignals(normalizedUrl)
-  const shot = screenshotUrl(signals.finalUrl)
+  const shot = screenshotUrl(signals.finalUrl) // proxy URL for the <img>
+  const providerShot = providerShotUrl(signals.finalUrl) // raw provider, for vision + warm
   let c: CritiqueResult
   let usedMode: TeaserMode = mode
   if (mode === "vision") {
     try {
-      c = await critiqueVision(signals, shot)
+      c = await critiqueVision(signals, providerShot)
     } catch (e) {
       // Never break the tool — fall back to the text teaser.
       console.error("[magnet/teaser] vision failed, falling back to text:", (e as Error).message)
@@ -372,6 +451,9 @@ export async function runTeaser(
       usedMode = "text"
     }
   } else {
+    // Warm the provider render in the background so it overlaps with the LLM
+    // call and the proxy hits a cached image instead of a cold render.
+    void fetch(providerShot).catch(() => {})
     c = await critique(signals)
   }
   return { ...c, screenshotUrl: shot, finalUrl: signals.finalUrl, title: signals.title, mode: usedMode }
