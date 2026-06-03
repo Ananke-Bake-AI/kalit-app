@@ -20,6 +20,14 @@ export type MagnetEvent =
   | "paywall_shown"
   | "upgrade_started"
   | "purchase_completed"
+  // idea-finder magnet
+  | "scout_started"
+  | "ideas_matched"
+  | "idea_opened"
+  | "brief_unlocked"
+  | "flow_upsell_clicked"
+  | "pentest_upsell_clicked"
+  | "search_upsell_clicked"
 
 export interface MagnetContext {
   door?: string

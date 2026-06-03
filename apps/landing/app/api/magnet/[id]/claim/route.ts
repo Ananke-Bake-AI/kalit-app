@@ -15,8 +15,40 @@ import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 import { ensureOrgWithTrial } from "@/lib/magnet/provision"
 import { buildSeedPrompt } from "@/lib/magnet/prompt"
+import { buildIdeaSeedPrompt } from "@/lib/magnet/idea-prompt"
+import { fetchIdea } from "@/lib/magnet/scout"
 
 export const runtime = "nodejs"
+
+// Build the seed prompt for whichever magnet door claimed this session. Roast
+// rebuilds the visitor's own page; idea-finder builds a demo landing for the
+// matched Search idea.
+async function seedPromptFor(m: {
+  door: string
+  input: unknown
+  teaser: unknown
+}): Promise<string> {
+  if (m.door === "idea_finder") {
+    const input = (m.input || {}) as { buildProjectId?: string }
+    const pid = input.buildProjectId
+    if (pid) {
+      const project = await fetchIdea(pid)
+      if (project) return buildIdeaSeedPrompt(project)
+    }
+    // Fallback: describe the top matched idea from the stored teaser.
+    const teaser = (m.teaser || {}) as {
+      ideas?: { name?: string; tagline?: string; demoIdea?: string }[]
+    }
+    const top = teaser.ideas?.[0]
+    if (top?.name) {
+      return `Build a polished, high-converting demo landing page for a startup called "${top.name}". ${top.tagline || ""} ${top.demoIdea || ""}\n\nWrite real, concrete marketing copy (no placeholders): a strong hero with a clear value proposition, core benefits, how it works, credibility cues, and one prominent call to action (waitlist / early access). Then deploy it and give me the live preview URL.`.trim()
+    }
+    return "Build a polished, modern demo landing page with a strong hero, clear value proposition and a single prominent call to action, then deploy it and give me the live preview URL."
+  }
+  const input = (m.input || {}) as { url?: string }
+  const teaser = (m.teaser || {}) as { problems?: { title: string; detail: string }[] }
+  return buildSeedPrompt(input.url || "", teaser.problems || [])
+}
 
 export async function POST(
   _req: NextRequest,
@@ -69,9 +101,7 @@ export async function POST(
     })
   }
 
-  const input = (m.input || {}) as { url?: string }
-  const teaser = (m.teaser || {}) as { problems?: { title: string; detail: string }[] }
-  const prompt = buildSeedPrompt(input.url || "", teaser.problems || [])
+  const prompt = await seedPromptFor(m)
 
   return NextResponse.json({
     prompt,
