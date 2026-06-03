@@ -29,6 +29,17 @@ export async function POST(
   }
   const userId = session.user.id
 
+  // Guard against a stale session whose user.id no longer exists (else the
+  // org/membership provision below fails with an opaque FK 500). Tell the
+  // client to re-authenticate instead.
+  const userRow = await prisma.user.findUnique({ where: { id: userId }, select: { id: true } })
+  if (!userRow) {
+    return NextResponse.json(
+      { error: "Your session expired — please sign in again." },
+      { status: 401 },
+    )
+  }
+
   const m = await prisma.magnetSession.findUnique({ where: { id } })
   if (!m) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
@@ -39,10 +50,17 @@ export async function POST(
 
   const alreadyStarted = m.status !== "teaser" && !!m.studioSessionId
 
-  const { orgId, provisioned } = await ensureOrgWithTrial(
-    userId,
-    session.user.name || (session.user.email ? session.user.email.split("@")[0] : null),
-  )
+  let orgId: string
+  let provisioned: boolean
+  try {
+    ;({ orgId, provisioned } = await ensureOrgWithTrial(
+      userId,
+      session.user.name || (session.user.email ? session.user.email.split("@")[0] : null),
+    ))
+  } catch (e) {
+    console.error("[magnet/claim] provisioning failed:", e)
+    return NextResponse.json({ error: "Could not start the build. Try again." }, { status: 500 })
+  }
 
   if (m.status === "teaser") {
     await prisma.magnetSession.update({

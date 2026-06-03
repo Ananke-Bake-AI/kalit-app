@@ -88,13 +88,20 @@ export const proxy = auth((req) => {
     // This keeps the upgrade funnel from firing on accounts we can't
     // contact and lets us send the trial-countdown / billing CTAs
     // exclusively to verified users.
+    // Lead-magnet entry: a fresh signup arriving at /studio?magnet=<id> is
+    // here to watch their rebuild. Let them in unverified + pre-onboarding —
+    // the studio provisions an org+trial on claim, and we gate verification +
+    // payment at ship/own (billing), not at the wow.
+    const isMagnetEntry =
+      barePath.startsWith("/studio") && req.nextUrl.searchParams.has("magnet")
+
     const emailVerified = !!session?.user?.emailVerified
-    const allowUnverified = barePath === "/settings/profile"
+    const allowUnverified = barePath === "/settings/profile" || isMagnetEntry
     if (!emailVerified && !allowUnverified) {
       return NextResponse.redirect(new URL(localePath("/verify-email", locale), req.url))
     }
 
-    if (!session?.user?.onboardingDone) {
+    if (!session?.user?.onboardingDone && !isMagnetEntry) {
       return NextResponse.redirect(new URL(localePath("/setup", locale), req.url))
     }
 

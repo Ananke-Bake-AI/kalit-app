@@ -5,6 +5,7 @@ import { Container } from "@/components/container"
 import { Icon } from "@/components/icon"
 import { TextField } from "@/components/text-field"
 import { magnetEvent } from "@/lib/magnet/events"
+import { useSession } from "next-auth/react"
 import { useEffect, useMemo, useState } from "react"
 import { toast } from "sonner"
 import s from "./roast.module.scss"
@@ -51,6 +52,7 @@ function scoreVerdict(n: number): string {
 }
 
 export function RoastClient() {
+  const { status } = useSession()
   const [url, setUrl] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -100,8 +102,12 @@ export function RoastClient() {
   const claimHref = useMemo(() => {
     if (!result) return "/register"
     const m = encodeURIComponent(result.magnetSessionId)
-    return `/register?magnet=${m}&callbackUrl=${encodeURIComponent(`/studio?magnet=${m}`)}`
-  }, [result])
+    const studio = `/studio?magnet=${m}`
+    // Already signed in → straight to the build. Otherwise register, then
+    // bounce to the build via callbackUrl.
+    if (status === "authenticated") return studio
+    return `/register?magnet=${m}&callbackUrl=${encodeURIComponent(studio)}`
+  }, [result, status])
 
   const shareUrl = useMemo(() => {
     if (!result || typeof window === "undefined") return ""
