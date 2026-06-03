@@ -308,7 +308,27 @@ Output ONLY valid JSON (no markdown, no prose) with this exact shape:
 
 Critique the visual reality: hero clarity (does the value land in 3 seconds?), CTA prominence/contrast/placement, visual hierarchy, clutter vs whitespace, trust cues (testimonials, logos, social proof), and how it likely reads on mobile. Reference real elements you see in the image. Exactly 3 problems, most important first.`
 
+// Fetch the screenshot server-side and inline it as a base64 data URL, so the
+// vision model never has to fetch the (slow, on-demand) thum.io URL itself —
+// that round-trip times out on the provider side. We absorb the render latency
+// here, with a generous timeout; on failure the caller falls back to text.
+async function fetchImageAsDataUrl(url: string): Promise<string> {
+  const ctrl = new AbortController()
+  const timer = setTimeout(() => ctrl.abort(), 15000)
+  try {
+    const res = await fetch(url, { signal: ctrl.signal })
+    if (!res.ok) throw new Error(`screenshot fetch ${res.status}`)
+    const buf = Buffer.from(await res.arrayBuffer())
+    if (buf.byteLength < 1000) throw new Error("screenshot too small / not ready")
+    const ct = res.headers.get("content-type") || "image/png"
+    return `data:${ct};base64,${buf.toString("base64")}`
+  } finally {
+    clearTimeout(timer)
+  }
+}
+
 async function critiqueVision(signals: PageSignals, shotUrl: string): Promise<CritiqueResult> {
+  const dataUrl = await fetchImageAsDataUrl(shotUrl)
   const parsed = await callGroqJson({
     model: GROQ_VISION_MODEL,
     temperature: 0.4,
@@ -323,7 +343,7 @@ async function critiqueVision(signals: PageSignals, shotUrl: string): Promise<Cr
             type: "text",
             text: `Critique this landing page screenshot. Context signals for facts not visible (https, meta, mobile tag): ${buildUserMessage(signals)}`,
           },
-          { type: "image_url", image_url: { url: shotUrl } },
+          { type: "image_url", image_url: { url: dataUrl } },
         ],
       },
     ],
