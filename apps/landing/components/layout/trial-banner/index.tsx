@@ -4,8 +4,15 @@ import { Icon } from "@/components/icon"
 import { Link } from "@/components/link"
 import { useBillingSummary } from "@/lib/use-billing-summary"
 import { useTranslation } from "@/stores/i18n"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import s from "./trial-banner.module.scss"
+
+// Re-show at most once per day after a dismissal. The persistent header
+// billing pill is the always-on gentle CTA; this top banner is the louder
+// nudge, so once the user closes it we stay quiet for a day instead of
+// popping back on every nav/refresh (the previous behavior felt like harassment).
+const DISMISS_KEY = "kalit-trial-banner-dismissed-at"
+const COOLDOWN_MS = 24 * 60 * 60 * 1000
 
 /**
  * Top-of-page nudge for users without a paid Stripe subscription.
@@ -30,7 +37,27 @@ import s from "./trial-banner.module.scss"
 export function TrialBanner() {
   const t = useTranslation()
   const { summary } = useBillingSummary()
-  const [dismissed, setDismissed] = useState(false)
+  // Start hidden, then reveal only if there's no recent dismissal in storage.
+  // Avoids a flash of the banner before the (client-only) cooldown check.
+  const [dismissed, setDismissed] = useState(true)
+
+  useEffect(() => {
+    try {
+      const at = Number(window.localStorage.getItem(DISMISS_KEY) || 0)
+      setDismissed(Date.now() - at < COOLDOWN_MS)
+    } catch {
+      setDismissed(false)
+    }
+  }, [])
+
+  const dismiss = () => {
+    setDismissed(true)
+    try {
+      window.localStorage.setItem(DISMISS_KEY, String(Date.now()))
+    } catch {
+      /* private mode — best effort */
+    }
+  }
 
   if (!summary) return null
   if (summary.isPaid) return null
@@ -62,7 +89,7 @@ export function TrialBanner() {
       </div>
       <button
         className={s.close}
-        onClick={() => setDismissed(true)}
+        onClick={dismiss}
         aria-label={t("common.dismiss")}
       >
         <Icon icon="hugeicons:cancel-01" />

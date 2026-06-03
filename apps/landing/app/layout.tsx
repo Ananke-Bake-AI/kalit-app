@@ -2,7 +2,7 @@ import { APP_THEME_COLOR } from "@/lib/config"
 import { DEFAULT_LOCALE } from "@/lib/i18n"
 import { headers } from "next/headers"
 import { Suspense } from "react"
-import { Toaster } from "sonner"
+import { Toast } from "@/components/layout/toast"
 import { GARouteTracker } from "@/components/analytics/ga-route-tracker"
 import "@/styles/globals.scss"
 import { fonts } from "./fonts"
@@ -72,7 +72,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           />
         </noscript>
         {children}
-        <Toaster position="top-right" theme="system" richColors closeButton />
+        {/* Single global toaster — the styled <Toast/> is mounted here only.
+            It used to also be rendered in the layout wrapper + studio-shell,
+            so every toast appeared twice (top-right + bottom-right). */}
+        <Toast />
         {/* Fires page_view to GA4 on every Next.js SPA navigation —
             the initial gtag('config', G-…) above only covers first paint.
             Suspense boundary because GARouteTracker reads useSearchParams. */}

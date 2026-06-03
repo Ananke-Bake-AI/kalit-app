@@ -49,7 +49,7 @@ export default {
       if (user) {
         token.userId = user.id
         token.name = user.name
-        token.email = user.email ?? undefined
+        token.email = user.email?.toLowerCase() ?? undefined
         token.picture = user.image
         token.onboardingDone = (user as { onboardingDone?: boolean }).onboardingDone ?? false
         token.orgId = (user as { orgId?: string | null }).orgId ?? null

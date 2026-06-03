@@ -10,7 +10,6 @@ import { StudioHostProvider } from "@kalit/studio-ui"
 import { Header } from "@/components/layout/header"
 import { RealViewport } from "@/components/layout/real-viewport"
 import { SyncAppPageFromRoute } from "@/components/layout/sync-app-page-from-route"
-import { Toast } from "@/components/layout/toast"
 import { EmailBanner } from "@/components/layout/email-banner"
 import { TrialBanner } from "@/components/layout/trial-banner"
 import { DiscordFAB } from "@/components/layout/discord-fab"
@@ -55,7 +54,6 @@ function StudioShellInner({ children, session }: { children: ReactNode; session:
         </>
       )}
       <main className={s.main}>{children}</main>
-      <Toast />
       {/* Discord CTA stays mounted even in focus mode — it sits in the
           bottom-right and respects user-dismiss, so it never crowds the
           chat surface. */}

@@ -5,9 +5,23 @@ import bcrypt from "bcryptjs"
 import authConfig from "./auth.config"
 import { prisma } from "./prisma"
 
+// Normalize emails to lowercase on user creation. Identity checks lowercase
+// the email before lookup (requireAdmin/isAdmin, the jwt backfill below, the
+// credentials authorize), but OAuth providers can return mixed-case emails
+// (e.g. "Karmendra01@gmail.com") — which silently broke admin access (the
+// badge showed in the menu but the /admin page redirected to /dashboard).
+// Lowercasing at the single creation chokepoint keeps stored email consistent
+// across all providers.
+const prismaAdapter = PrismaAdapter(prisma)
+const adapter: typeof prismaAdapter = {
+  ...prismaAdapter,
+  createUser: (data) =>
+    prismaAdapter.createUser!({ ...data, email: data.email.toLowerCase() }),
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
-  adapter: PrismaAdapter(prisma),
+  adapter,
   callbacks: {
     ...authConfig.callbacks,
     async jwt(params) {
@@ -20,7 +34,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (params.user || !token.emailVerified || token.isAdmin === undefined || params.trigger === "update") {
         if (token.email) {
           const dbUser = await prisma.user.findUnique({
-            where: { email: token.email },
+            where: { email: token.email.toLowerCase() },
             select: {
               id: true,
               emailVerified: true,
@@ -72,7 +86,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (!credentials?.email || !credentials?.password) return null
 
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email as string },
+          where: { email: (credentials.email as string).toLowerCase() },
           include: {
             memberships: {
               where: { isCurrent: true },

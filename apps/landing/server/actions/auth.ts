@@ -15,7 +15,11 @@ export async function register(input: RegisterInput) {
     return { error: parsed.error.issues[0].message }
   }
 
-  const { name, email, password } = parsed.data
+  const { name, password } = parsed.data
+  // Store emails lowercase so identity is case-insensitive everywhere (login,
+  // admin checks). Without this, a capital-cased signup (e.g. "Foo@gmail.com")
+  // can't be matched by the lowercased lookups and breaks login + admin.
+  const email = parsed.data.email.toLowerCase()
 
   const existing = await prisma.user.findUnique({ where: { email } })
   if (existing) {

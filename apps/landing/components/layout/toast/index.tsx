@@ -7,6 +7,7 @@ import s from "./toast.module.scss"
 export const Toast = () => {
   return (
     <Toaster
+      position="top-right"
       icons={{
         success: <Icon icon="hugeicons:checkmark-circle-03" />,
         error: <Icon icon="hugeicons:cancel-circle" />,
@@ -14,7 +15,7 @@ export const Toast = () => {
         info: <Icon icon="hugeicons:information-circle" />,
         loading: <Icon icon="svg-spinners:90-ring-with-bg" />
       }}
-      duration={300000}
+      duration={6000}
       toastOptions={{
         unstyled: true,
         closeButton: true,

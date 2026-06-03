@@ -14,7 +14,6 @@ import { GSAP } from "../gsap"
 import { Header } from "../header"
 import { RealViewport } from "../real-viewport"
 import { SyncAppPageFromRoute } from "../sync-app-page-from-route"
-import { Toast } from "../toast"
 import { TrialBanner } from "../trial-banner"
 import { Defs } from "./defs"
 import s from "./wrapper.module.scss"
@@ -53,7 +52,6 @@ export const Wrapper = ({ children, session = null, color4bg = true }: WrapperPr
       <main className={s.main}>{children}</main>
       {color4bg ? <Color4Bg style="blur-gradient" className={s.color4bg} /> : null}
       <Footer />
-      <Toast />
       <DiscordFAB />
       <RealViewport />
       <Defs />
