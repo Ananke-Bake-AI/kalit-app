@@ -391,6 +391,50 @@ model PentestFinding {
   target PentestTarget @relation(fields: [targetId], references: [id], onDelete: Cascade)
 }
 
+// ─── Lead-magnet build engine ─────────────────────────────────
+// One row per lead-magnet run. Funnel: teaser (anonymous) → claimed
+// (account) → building → built (live preview) → shipped (paid). Kept
+// additive & relation-free (userId/orgId/projectId are loose strings)
+// so it never touches the auth/billing tables. `door` distinguishes the
+// front door ("roast_landing" today); the build itself is a normal Flow
+// studio session, just auto-seeded from `input`/`teaser`.
+model MagnetSession {
+  id              String   @id @default(cuid())
+  shareId         String   @unique // public, unguessable; used in /r/[shareId]
+  door            String   @default("roast_landing")
+  slug            String   @default("roast-landing") // CRM/source tag
+  status          String   @default("teaser") // teaser|claimed|building|built|shipped
+
+  input           Json     // { url } for roast_landing
+  teaser          Json?    // { score, breakdown{}, problems[], screenshotUrl }
+
+  // Set as the visitor progresses. Loose strings (no FK) to stay additive.
+  userId          String?
+  orgId           String?
+  studioSessionId String?  // the real Flow session that runs the build
+  projectId       String?  // broker flow_project id
+  previewUrl      String?  // https://<slug>.kalit.ai once deployed
+
+  // Attribution
+  utm             Json?
+  referrer        String?
+  referredByShareId String?
+
+  // Consent (marketing opt-in is separate from delivering the build)
+  consentMarketing  Boolean   @default(false)
+  consentAt         DateTime?
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  claimedAt  DateTime?
+  builtAt    DateTime?
+  shippedAt  DateTime?
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
 // ─── Marketing blog ───────────────────────────────────────────
 // Single row per post. EN is the source-of-truth; other locales live in the
 // `translations` JSON blob keyed by locale code: { fr: { title, description,

@@ -5,7 +5,7 @@ import { FLOW_MARKETING_PATH } from "@/lib/flow-suite-entry"
 import { suiteMarketingLoginHref } from "@/lib/suite-marketing-entry"
 import type { SuiteId } from "@/lib/suites"
 import { useSession } from "next-auth/react"
-import { useState, type ReactNode } from "react"
+import type { ReactNode } from "react"
 
 export interface FlowSuiteCtaButtonProps {
   suiteId: SuiteId
@@ -20,7 +20,6 @@ export interface FlowSuiteCtaButtonProps {
 
 export function FlowSuiteCtaButton({
   suiteId,
-  suiteAppUrl,
   marketingPath = FLOW_MARKETING_PATH,
   className,
   circle,
@@ -28,7 +27,6 @@ export function FlowSuiteCtaButton({
   children
 }: FlowSuiteCtaButtonProps) {
   const { status } = useSession()
-  const [launching, setLaunching] = useState(false)
 
   if (status === "loading") {
     return (
@@ -45,33 +43,13 @@ export function FlowSuiteCtaButton({
         circle={circle}
         variant={variant}
         type="button"
-        disabled={launching}
-        onClick={async () => {
-          setLaunching(true)
-          try {
-            const res = await fetch("/api/suite/token", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ suiteId }),
-            })
-            const data = await res.json()
-            if (!res.ok || !data.redirectUrl) {
-              // Fallback: navigate directly (user will land on login)
-              window.location.assign(suiteAppUrl.replace(/\/$/, ""))
-              return
-            }
-            let url = data.redirectUrl as string
-            if (url.includes("localhost")) {
-              const tokenMatch = url.match(/[?&]token=([^&]+)/)
-              const token = tokenMatch ? tokenMatch[1] : ""
-              url = `/api/suite/redirect?suiteId=${suiteId}&token=${token}`
-            }
-            window.location.href = url
-          } catch {
-            window.location.assign(suiteAppUrl.replace(/\/$/, ""))
-          } finally {
-            setLaunching(false)
-          }
+        onClick={() => {
+          // Synchronous top-level navigation in the click gesture. The server
+          // GET route mints the suite token and 302-redirects into the suite's
+          // SSO callback. The old approach fetched the token then navigated —
+          // mobile Safari blocks navigations after an `await`, so the logged-in
+          // button silently did nothing on mobile.
+          window.location.href = `/api/suite/launch?suiteId=${suiteId}`
         }}
       >
         {children}
