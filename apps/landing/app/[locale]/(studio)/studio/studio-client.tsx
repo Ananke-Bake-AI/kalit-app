@@ -1,7 +1,9 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useSearchParams } from "next/navigation"
+import { useSession } from "next-auth/react"
+import { magnetEvent } from "@/lib/magnet/events"
 import {
   useActiveIsStreaming,
   useActiveMessages,
@@ -36,9 +38,11 @@ export function StudioClient() {
   const { focusMode, toggleFocus } = useStudioFocus()
   const { darkMode, toggleTheme } = useTheme()
 
+  const { update: updateAuthSession } = useSession()
   const {
     sessions,
     activeSessionId,
+    setActiveSessionId,
     setSidebarOpen,
     previewFile,
     setPreviewFile,
@@ -107,6 +111,81 @@ export function StudioClient() {
     enableResearchAutoSend: true,
     enableAdminConsole: true,
   })
+
+  // ── Magnet claim → pre-seeded build handoff ────────────
+  //
+  // Arriving at /studio?magnet=<id> means a lead-magnet visitor just signed
+  // up to watch Kalit rebuild their page. We: (1) reopen if the build already
+  // started, else (2) claim it server-side (provisions a default org + trial
+  // so the build can run without the /setup wall), refresh the auth session so
+  // the new orgId lands in the JWT, create a studio session, record it, and
+  // auto-send the rebuild prompt. The build then streams like any other.
+  const magnetFiredRef = useRef(false)
+  const magnetSessionRef = useRef<string | null>(null)
+  useEffect(() => {
+    if (!ready || magnetFiredRef.current) return
+    const magnetId = searchParams.get("magnet")
+    if (!magnetId) return
+    magnetFiredRef.current = true
+    ;(async () => {
+      try {
+        // Reopen an existing build (e.g. on refresh) instead of rebuilding.
+        const stateRes = await fetch(`/api/magnet/${magnetId}`)
+        if (stateRes.ok) {
+          const st = await stateRes.json()
+          if (st?.studioSessionId) {
+            magnetSessionRef.current = st.studioSessionId
+            setActiveSessionId(st.studioSessionId)
+            return
+          }
+        }
+
+        const res = await fetch(`/api/magnet/${magnetId}/claim`, { method: "POST" })
+        if (!res.ok) return
+        const data = await res.json()
+        magnetEvent("claim_started", { magnetId })
+
+        // New org just provisioned → refresh the JWT so the broker token
+        // carries orgId before we create the session.
+        if (data.provisioned) {
+          try { await updateAuthSession() } catch { /* non-fatal */ }
+        }
+
+        const sid = await ensureSession()
+        if (!sid) return
+        magnetSessionRef.current = sid
+        await fetch(`/api/magnet/${magnetId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ studioSessionId: sid }),
+        }).catch(() => {})
+
+        if (data.prompt) {
+          magnetEvent("build_started", { magnetId })
+          await handleSend(data.prompt)
+        }
+      } catch {
+        /* silent — magnet handoff is best-effort */
+      }
+    })()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, searchParams])
+
+  // Fire build_completed (activation north-star) once, when the magnet build
+  // session finishes its first stream.
+  const buildCompletedRef = useRef(false)
+  const wasStreamingRef = useRef(false)
+  useEffect(() => {
+    const sid = magnetSessionRef.current
+    if (!sid || buildCompletedRef.current) return
+    if (activeSessionId !== sid) return
+    if (isStreaming) {
+      wasStreamingRef.current = true
+    } else if (wasStreamingRef.current) {
+      buildCompletedRef.current = true
+      magnetEvent("build_completed", { magnetId: searchParams.get("magnet") })
+    }
+  }, [isStreaming, activeSessionId, searchParams])
 
   const handleMenuToggle = useCallback(() => {
     setSidebarOpen(!useStudioStore.getState().sidebarOpen)

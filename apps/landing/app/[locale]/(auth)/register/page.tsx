@@ -29,6 +29,16 @@ export default function RegisterPage() {
     { title: t("auth.audienceDevs"), text: t("auth.audienceDevsDesc") }
   ]
 
+  // Honor ?callbackUrl= (e.g. lead-magnet flow → /studio?magnet=…). Falls
+  // back to onboarding. Only same-origin relative paths are allowed.
+  const destUrl = () => {
+    if (typeof window === "undefined") return localePath("/setup", locale)
+    const cb = new URLSearchParams(window.location.search).get("callbackUrl")
+    return cb && cb.startsWith("/") && !cb.startsWith("//")
+      ? cb
+      : localePath("/setup", locale)
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -59,13 +69,13 @@ export default function RegisterPage() {
     }
 
     toast.success(t("auth.welcomeSetup"))
-    window.location.assign(localePath("/setup", locale))
+    window.location.assign(destUrl())
   }
 
   const handleOAuth = async (provider: string) => {
     // Best-effort: OAuth does a full-page redirect, so push before navigating.
     pushDataLayer("sign_up", { method: provider })
-    await signIn(provider, { callbackUrl: "/setup" })
+    await signIn(provider, { callbackUrl: destUrl() })
   }
 
   return (
