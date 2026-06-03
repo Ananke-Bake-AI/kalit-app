@@ -21,6 +21,7 @@ interface Teaser {
   screenshotUrl: string
   finalUrl: string
   title: string | null
+  mode?: "text" | "vision"
 }
 interface RoastResult {
   magnetSessionId: string
@@ -66,13 +67,19 @@ export function RoastClient() {
     setLoading(true)
     setError(null)
     setResult(null)
-    magnetEvent("input_submitted", { target_url: trimmed })
+    // Optional ?mode=vision|text override so we can A/B the two teasers live.
+    const mode =
+      typeof window !== "undefined"
+        ? new URLSearchParams(window.location.search).get("mode") || undefined
+        : undefined
+    magnetEvent("input_submitted", { target_url: trimmed, mode })
     try {
       const res = await fetch("/api/magnet/roast", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           url: trimmed,
+          mode,
           referrer: typeof document !== "undefined" ? document.referrer : undefined,
         }),
       })
@@ -82,7 +89,7 @@ export function RoastClient() {
         return
       }
       setResult(data as RoastResult)
-      magnetEvent("teaser_shown", { score: data.teaser?.score, target_url: trimmed })
+      magnetEvent("teaser_shown", { score: data.teaser?.score, target_url: trimmed, mode: data.teaser?.mode })
     } catch {
       setError("Network error — please try again.")
     } finally {

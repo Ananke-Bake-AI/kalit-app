@@ -11,7 +11,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { randomBytes } from "node:crypto"
 import { prisma } from "@/lib/prisma"
-import { normalizeUrl, runTeaser } from "@/lib/magnet/teaser"
+import { normalizeUrl, runTeaser, type TeaserMode } from "@/lib/magnet/teaser"
 
 export const runtime = "nodejs"
 
@@ -79,9 +79,13 @@ export async function POST(req: NextRequest) {
     )
   }
 
+  // Mode: explicit body.mode (for the ?mode= A/B), else env default, else text.
+  const envMode = process.env.MAGNET_TEASER_MODE === "vision" ? "vision" : "text"
+  const mode: TeaserMode = body.mode === "vision" ? "vision" : body.mode === "text" ? "text" : envMode
+
   let teaser
   try {
-    teaser = await runTeaser(url)
+    teaser = await runTeaser(url, mode)
   } catch (e) {
     console.error("[magnet/roast] teaser failed:", e)
     return NextResponse.json(

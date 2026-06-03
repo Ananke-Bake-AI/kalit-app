@@ -225,35 +225,15 @@ function clamp(n: unknown, def = 50): number {
   return Math.max(0, Math.min(100, v))
 }
 
-async function critique(signals: PageSignals): Promise<Omit<TeaserResult, "screenshotUrl" | "finalUrl" | "title">> {
-  const apiKey = process.env.GROQ_API_KEY
-  if (!apiKey) throw new Error("GROQ_API_KEY not configured")
+type CritiqueResult = Omit<TeaserResult, "screenshotUrl" | "finalUrl" | "title">
 
-  const res = await fetch(GROQ_API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: GROQ_MODEL,
-      temperature: 0.4,
-      max_tokens: 900,
-      response_format: { type: "json_object" },
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: buildUserMessage(signals) },
-      ],
-    }),
-  })
-  if (!res.ok) {
-    throw new Error(`Groq error ${res.status}: ${await res.text()}`)
-  }
-  const data = await res.json()
-  const raw = data.choices?.[0]?.message?.content?.trim() || ""
-  const cleaned = raw.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "")
-  const parsed = JSON.parse(cleaned) as Record<string, unknown>
+// Vision teaser: judge the actual screenshot, not just HTML signals. Reuses
+// the Groq key with a multimodal Llama-4 model by default; point
+// MAGNET_VISION_MODEL at a Claude endpoint later for higher fidelity.
+const GROQ_VISION_MODEL =
+  process.env.MAGNET_VISION_MODEL || "meta-llama/llama-4-scout-17b-16e-instruct"
 
+function normalizeCritique(parsed: Record<string, unknown>): CritiqueResult {
   const bd = (parsed.breakdown || {}) as Record<string, unknown>
   const breakdown = {
     clarity: clamp(bd.clarity),
@@ -279,27 +259,100 @@ async function critique(signals: PageSignals): Promise<Omit<TeaserResult, "scree
       severity: "medium",
     })
   }
-
   const score = clamp(
     parsed.score ??
-      (breakdown.clarity +
-        breakdown.design +
-        breakdown.conversion +
-        breakdown.mobile +
-        breakdown.trust) /
-        5,
+      (breakdown.clarity + breakdown.design + breakdown.conversion + breakdown.mobile + breakdown.trust) / 5,
   )
   return { score, breakdown, problems }
 }
 
+async function callGroqJson(body: Record<string, unknown>): Promise<Record<string, unknown>> {
+  const apiKey = process.env.GROQ_API_KEY
+  if (!apiKey) throw new Error("GROQ_API_KEY not configured")
+  const res = await fetch(GROQ_API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+    body: JSON.stringify(body),
+  })
+  if (!res.ok) throw new Error(`Groq error ${res.status}: ${await res.text()}`)
+  const data = await res.json()
+  const raw = data.choices?.[0]?.message?.content?.trim() || ""
+  const cleaned = raw.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "")
+  return JSON.parse(cleaned) as Record<string, unknown>
+}
+
+// ── Text critique (fast/cheap, judges HTML signals) ──
+async function critique(signals: PageSignals): Promise<CritiqueResult> {
+  const parsed = await callGroqJson({
+    model: GROQ_MODEL,
+    temperature: 0.4,
+    max_tokens: 900,
+    response_format: { type: "json_object" },
+    messages: [
+      { role: "system", content: SYSTEM_PROMPT },
+      { role: "user", content: buildUserMessage(signals) },
+    ],
+  })
+  return normalizeCritique(parsed)
+}
+
+// ── Vision critique (judges the actual rendered screenshot) ──
+const VISION_SYSTEM_PROMPT = `You are a blunt, expert landing-page conversion auditor for Kalit AI. You are shown a SCREENSHOT of a landing page. Judge what you can actually SEE.
+
+Output ONLY valid JSON (no markdown, no prose) with this exact shape:
+{
+  "score": <integer 0-100, higher is better>,
+  "breakdown": { "clarity": <0-100>, "design": <0-100>, "conversion": <0-100>, "mobile": <0-100>, "trust": <0-100> },
+  "problems": [ { "title": "<max 8 words>", "detail": "<one concrete sentence about what you SEE>", "severity": "high|medium|low" } ]
+}
+
+Critique the visual reality: hero clarity (does the value land in 3 seconds?), CTA prominence/contrast/placement, visual hierarchy, clutter vs whitespace, trust cues (testimonials, logos, social proof), and how it likely reads on mobile. Reference real elements you see in the image. Exactly 3 problems, most important first.`
+
+async function critiqueVision(signals: PageSignals, shotUrl: string): Promise<CritiqueResult> {
+  const parsed = await callGroqJson({
+    model: GROQ_VISION_MODEL,
+    temperature: 0.4,
+    max_tokens: 900,
+    response_format: { type: "json_object" },
+    messages: [
+      { role: "system", content: VISION_SYSTEM_PROMPT },
+      {
+        role: "user",
+        content: [
+          {
+            type: "text",
+            text: `Critique this landing page screenshot. Context signals for facts not visible (https, meta, mobile tag): ${buildUserMessage(signals)}`,
+          },
+          { type: "image_url", image_url: { url: shotUrl } },
+        ],
+      },
+    ],
+  })
+  return normalizeCritique(parsed)
+}
+
+export type TeaserMode = "text" | "vision"
+
 // ─── Public entry point ───────────────────────────────────────
-export async function runTeaser(normalizedUrl: string): Promise<TeaserResult> {
+export async function runTeaser(
+  normalizedUrl: string,
+  mode: TeaserMode = "text",
+): Promise<TeaserResult & { mode: TeaserMode }> {
   const signals = await fetchSignals(normalizedUrl)
-  const c = await critique(signals)
-  return {
-    ...c,
-    screenshotUrl: screenshotUrl(signals.finalUrl),
-    finalUrl: signals.finalUrl,
-    title: signals.title,
+  const shot = screenshotUrl(signals.finalUrl)
+  let c: CritiqueResult
+  let usedMode: TeaserMode = mode
+  if (mode === "vision") {
+    try {
+      c = await critiqueVision(signals, shot)
+    } catch (e) {
+      // Never break the tool — fall back to the text teaser.
+      console.error("[magnet/teaser] vision failed, falling back to text:", (e as Error).message)
+      c = await critique(signals)
+      usedMode = "text"
+    }
+  } else {
+    c = await critique(signals)
   }
+  return { ...c, screenshotUrl: shot, finalUrl: signals.finalUrl, title: signals.title, mode: usedMode }
 }
