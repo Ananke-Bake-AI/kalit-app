@@ -17,6 +17,7 @@ import { Icon } from "@/components/icon"
 import { ChatLayout } from "@/components/studio/chat-layout"
 import { SessionSidebar } from "@/components/studio/session-sidebar"
 import { ChatInput } from "@/components/studio/chat-input"
+import { ImportRepoModal } from "@/components/studio/import-repo-modal"
 import { WelcomeScreen } from "@/components/studio/welcome-screen"
 import { MessageList } from "@/components/studio/message-list"
 import { FileExplorer } from "@/components/studio/file-explorer"
@@ -122,6 +123,12 @@ export function StudioClient() {
   // auto-send the rebuild prompt. The build then streams like any other.
   const magnetFiredRef = useRef(false)
   const magnetSessionRef = useRef<string | null>(null)
+  // Post-build upsell: once a magnet rebuild finishes, offer to connect a real
+  // repo — the faithful path for ongoing work / web apps (vs the from-URL
+  // rebuild, which is a fresh better version, not a clone).
+  const [showRepoUpsell, setShowRepoUpsell] = useState(false)
+  const [repoUpsellDismissed, setRepoUpsellDismissed] = useState(false)
+  const [importOpen, setImportOpen] = useState(false)
   useEffect(() => {
     if (!ready || magnetFiredRef.current) return
     const magnetId = searchParams.get("magnet")
@@ -184,6 +191,7 @@ export function StudioClient() {
     } else if (wasStreamingRef.current) {
       buildCompletedRef.current = true
       magnetEvent("build_completed", { magnetId: searchParams.get("magnet") })
+      setShowRepoUpsell(true)
     }
   }, [isStreaming, activeSessionId, searchParams])
 
@@ -360,6 +368,32 @@ export function StudioClient() {
           </div>
         )}
       </div>
+
+      {/* Post-build upsell (magnet flow): connect the real repo for faithful,
+          ongoing work — the right path for web apps. */}
+      {showRepoUpsell && !repoUpsellDismissed && !importOpen && (
+        <div className={s.repoUpsell}>
+          <Icon icon="hugeicons:github-01" />
+          <div className={s.repoUpsellText}>
+            <strong>Want to keep building on your real codebase?</strong>
+            <span>This is a fresh rebuild in your brand. Connect your repo to work on your actual site or app.</span>
+          </div>
+          <button className={s.repoUpsellCta} onClick={() => setImportOpen(true)}>
+            Connect repo
+          </button>
+          <button className={s.repoUpsellClose} onClick={() => setRepoUpsellDismissed(true)} aria-label="Dismiss">
+            <Icon icon="hugeicons:cancel-01" />
+          </button>
+        </div>
+      )}
+
+      {importOpen && (
+        <ImportRepoModal
+          sessionId={activeSessionId}
+          onClose={() => setImportOpen(false)}
+          onEnsureSession={ensureSession}
+        />
+      )}
 
       <ChatInput onSend={handleSend} prefill={chatPrefill} onEnsureSession={ensureSession} />
 

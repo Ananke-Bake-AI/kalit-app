@@ -145,8 +145,8 @@ export default async function SharedRoastPage({ params }: { params: Promise<{ sh
 
           <div className={s.cta}>
             <div className={s.ctaText}>
-              <h3>Want yours roasted — then rebuilt?</h3>
-              <p>Get an in-depth conversion audit of your own landing page, then watch Kalit rebuild it live. Free.</p>
+              <h3>Want yours roasted — then rebuilt better?</h3>
+              <p>Get an in-depth conversion audit of your own landing page, then watch Kalit build a higher-converting version in your brand. Free.</p>
             </div>
             <div className={s.ctaActions}>
               <Link href="/roast-landing" className={s.linkBtn} style={{ fontWeight: 700 }}>

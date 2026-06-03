@@ -212,11 +212,12 @@ export function RoastClient() {
               <h1 className={s.title}>
                 Your landing page is leaking customers.
                 <br />
-                <span className={s.titleAccent}>See exactly why — then watch Kalit rebuild it.</span>
+                <span className={s.titleAccent}>See exactly why — then get a better one, in your brand.</span>
               </h1>
               <p className={s.subtitle}>
                 Paste your URL for an instant, in-depth conversion audit: a score, the issues
-                costing you signups, and how to fix each one. Then watch Kalit rebuild the page, live.
+                costing you signups, and how to fix each one. Then watch Kalit build a higher-converting
+                version — your logo, colours and copy, with every issue fixed — live.
               </p>
               <form onSubmit={handleSubmit} className={s.form}>
                 <TextField
@@ -240,7 +241,7 @@ export function RoastClient() {
               {[
                 { icon: "hugeicons:link-02", t: "Paste your URL", d: "Any landing page or site — no signup, no setup." },
                 { icon: "hugeicons:ai-brain-03", t: "Get your audit", d: "A real conversion teardown: score, issues, impact, and fixes." },
-                { icon: "hugeicons:magic-wand-01", t: "Watch Kalit rebuild it", d: "Sign in free and watch AI rebuild it live, keeping your brand." },
+                { icon: "hugeicons:magic-wand-01", t: "Get a better version", d: "Sign in free and watch Kalit build a higher-converting page in your brand, live." },
               ].map((x, i) => (
                 <div key={i} className={s.step}>
                   <div className={s.stepIcon}><Icon icon={x.icon} /></div>
@@ -351,12 +352,12 @@ export function RoastClient() {
 
             <div className={s.cta}>
               <div className={s.ctaText}>
-                <h3>Stop reading about the fixes — watch Kalit do them.</h3>
-                <p>Kalit rebuilds this page live, keeping your brand and fixing every issue above. Free to build &amp; preview on a kalit.ai link.</p>
+                <h3>Stop reading about the fixes — watch Kalit ship them.</h3>
+                <p>Kalit builds a higher-converting version of this page live — your exact brand (logo, colours, copy, sections), with every issue above fixed. Free to build &amp; preview on a kalit.ai link.</p>
               </div>
               <div className={s.ctaActions}>
                 <Button href={claimHref} icon="hugeicons:magic-wand-01" onClick={() => magnetEvent("claim_started")}>
-                  Rebuild it with Kalit
+                  Build a better version
                 </Button>
                 <button type="button" className={s.linkBtn} onClick={onShare}>
                   <Icon icon="hugeicons:share-08" /> Share
