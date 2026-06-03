@@ -6,6 +6,7 @@ import Link from "next/link"
 import { Icon } from "@/components/icon"
 import { brokerFetch } from "@/lib/broker-direct"
 import { useI18n } from "@/stores/i18n"
+import { pushDataLayer } from "@/lib/analytics/data-layer"
 import s from "./project-publish.module.scss"
 
 // ---------------------------------------------------------------------------
@@ -158,6 +159,7 @@ export function ProjectPublish() {
 
   async function handleDeploy() {
     if (!slug.trim()) return
+    pushDataLayer("ship_clicked", { action: "deploy_subdomain" })
     setDeploying(true)
     setDeployError("")
     setDeploySuccess("")
@@ -227,6 +229,7 @@ export function ProjectPublish() {
 
   async function handleConnectDomain() {
     if (!domainInput.trim()) return
+    pushDataLayer("ship_clicked", { action: "connect_domain" })
     setConnecting(true)
     setDomainError("")
     setDnsRecords(null)
@@ -254,6 +257,7 @@ export function ProjectPublish() {
   }
 
   async function handlePurchaseDomain() {
+    pushDataLayer("ship_clicked", { action: "purchase_domain" })
     setPurchasing(true)
     setDomainError("")
     try {
@@ -347,6 +351,7 @@ export function ProjectPublish() {
   // ── Download handler ──
 
   async function handleDownload() {
+    pushDataLayer("ship_clicked", { action: "download_code" })
     setDownloading(true)
     setDownloadError("")
     try {

@@ -3,6 +3,7 @@
 import { useEffect } from "react"
 import { useI18n } from "@kalit/i18n/react"
 import { Icon } from "../../primitives/icon"
+import { pushDataLayer } from "../../lib/analytics"
 import s from "./credits-modal.module.scss"
 
 interface CreditsModalPlan {
@@ -46,12 +47,14 @@ export function CreditsModal({ open, onClose, billingHref, plans, mode = "out_of
 
   useEffect(() => {
     if (!open) return
+    // GTM: the paywall (out-of-credits / low-credits gate) was surfaced.
+    pushDataLayer("paywall_shown", { surface: "credits_modal", mode })
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose()
     }
     document.addEventListener("keydown", onKey)
     return () => document.removeEventListener("keydown", onKey)
-  }, [open, onClose])
+  }, [open, onClose, mode])
 
   if (!open) return null
 
@@ -78,7 +81,12 @@ export function CreditsModal({ open, onClose, billingHref, plans, mode = "out_of
 
         <div className={s.plans}>
           {plans.map((plan) => (
-            <a key={plan.key} href={billingHref} className={`${s.plan} ${plan.popular ? s.popular : ""}`}>
+            <a
+              key={plan.key}
+              href={billingHref}
+              className={`${s.plan} ${plan.popular ? s.popular : ""}`}
+              onClick={() => pushDataLayer("upgrade_started", { surface: "credits_modal", plan: plan.key })}
+            >
               <span className={s.planName}>{plan.name}</span>
               <span className={s.planPrice}>
                 <span className={s.planPriceAmount}>{plan.price}</span>
@@ -93,7 +101,11 @@ export function CreditsModal({ open, onClose, billingHref, plans, mode = "out_of
         </div>
 
         <div className={s.footer}>
-          <a href={billingHref} className={s.primaryCta}>
+          <a
+            href={billingHref}
+            className={s.primaryCta}
+            onClick={() => pushDataLayer("upgrade_started", { surface: "credits_modal", plan: "open_billing" })}
+          >
             {t("studio.openBilling")}
             <Icon icon="hugeicons:arrow-right-01" />
           </a>
