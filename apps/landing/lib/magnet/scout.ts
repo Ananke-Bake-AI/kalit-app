@@ -47,7 +47,13 @@ async function callGroqJson(body: Record<string, unknown>): Promise<Record<strin
   return JSON.parse(cleaned) as Record<string, unknown>
 }
 
-const str = (v: unknown, max = 400): string => String(v ?? "").trim().slice(0, max)
+// Trim, cap, and strip em/en dashes (the telltale "AI-written" punctuation) —
+// applied to every displayed field, including Search's own AI-generated copy.
+const str = (v: unknown, max = 400): string =>
+  String(v ?? "")
+    .replace(/\s*[—–]\s*/g, ", ")
+    .trim()
+    .slice(0, max)
 
 function profileText(p: ScoutProfile): string {
   return JSON.stringify({
@@ -72,9 +78,10 @@ Output ONLY valid JSON (no markdown) with this shape:
 }
 
 Rules:
-- Return 3 to 6 keywords. Each is matched as a SUBSTRING over idea names/descriptions/trend keywords, so use common domain NOUNS the matching ideas would actually contain (e.g. "clinic", "patient", "scheduling", "health") — NOT long phrases. One or two words max each, lowercase.
+- Return 3 to 6 keywords. Each is matched as a SUBSTRING over idea names/descriptions/trend keywords, so use common domain NOUNS the matching ideas would actually contain (e.g. "clinic", "patient", "scheduling", "health"), NOT long phrases. One or two words max each, lowercase.
 - Order keywords most-specific-to-the-founder first.
-- Never invent facts. "founderSummary" only reflects what they told you.`
+- Never invent facts. "founderSummary" only reflects what they told you.
+- "founderSummary" should sound like a friendly human talking, warm and a little excited. Never use em dashes or en dashes (— or –); use commas, periods or parentheses instead.`
 
 async function planSearch(p: ScoutProfile): Promise<{ keywords: string[]; founderSummary: string }> {
   try {
@@ -153,7 +160,8 @@ Output ONLY valid JSON (no markdown) with this shape:
 Rules:
 - One object per idea, same order, echo each projectId exactly.
 - "gtm" = 3-5 concrete, sequenced go-to-market steps a solo founder could actually run first.
-- Be specific to each idea's market and audience. No generic filler, no invented competitors or numbers.`
+- Be specific to each idea's market and audience. No generic filler, no invented competitors or numbers.
+- Write like a sharp, encouraging human, not a corporate deck. Punchy and concrete. Never use em dashes or en dashes (— or –); use commas, periods or parentheses instead.`
 
 function groundingInput(p: ScoutProfile, projects: SearchProject[]): string {
   return JSON.stringify({

@@ -6,9 +6,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale: raw } = await params
   const locale = isValidLocale(raw) ? (raw as Locale) : "en"
   return MetadataSeo({
-    fullTitle: "Find your startup idea — AI-scored 2026 opportunities | Kalit",
+    fullTitle: "Find your startup idea: AI-scored 2026 opportunities | Kalit",
     description:
-      "Tell the scout what excites you and get matched to the strongest 2026 startup ideas — scored from real demand across 25+ sources, with the market, business model and launch playbook. Free.",
+      "Tell the scout what excites you and get matched to the strongest 2026 startup ideas, scored from real demand across 25+ sources, with the market, business model and launch playbook. Free.",
     locale,
     pathname: "/idea-finder",
   })

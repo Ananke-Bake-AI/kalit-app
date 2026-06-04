@@ -48,9 +48,28 @@ $faint: color-mix(in srgb, var(--foreground) 10%, transparent);
 }
 
 /* Active question card */
-.qcard { @include glass-panel(1.2rem); padding: 1.3rem 1.4rem; display: flex; flex-direction: column; gap: 0.9rem; }
+.qcard {
+  @include glass-panel(1.2rem); padding: 1.3rem 1.4rem; display: flex; flex-direction: column; gap: 0.9rem;
+  position: relative; overflow: hidden;
+  border-color: color-mix(in srgb, var(--color-4) 38%, transparent);
+  &::before {
+    content: ""; position: absolute; inset: 0 0 auto 0; height: 3px;
+    background: linear-gradient(90deg, var(--color-4), color-mix(in srgb, var(--color-4) 30%, transparent));
+  }
+}
 .qlabel { font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; color: var(--foreground); }
-.qhint { font-size: 0.85rem; color: $muted; margin-top: -0.5rem; }
+.qhint { font-size: 0.9rem; color: $muted; line-height: 1.45; }
+
+/* Progress stepper */
+.progress { display: flex; align-items: center; gap: 0.4rem; }
+.progressDot {
+  width: 1.6rem; height: 0.32rem; border-radius: 1rem; background: $faint; transition: background 0.3s ease;
+  &[data-state="active"] { background: var(--color-4); }
+  &[data-state="done"] { background: color-mix(in srgb, var(--color-4) 60%, transparent); }
+}
+.progressLabel { margin-left: 0.5rem; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; color: $muted; }
+.reassure { font-size: 0.8rem; color: $muted; display: flex; align-items: center; gap: 0.4rem;
+  > :global(svg) { color: var(--color-4); } }
 .goalField {
   width: 100%; min-height: 5rem; resize: vertical; border-radius: 0.7rem;
   background: var(--glass-50, transparent); border: 1px solid $faint;

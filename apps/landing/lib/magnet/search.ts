@@ -135,6 +135,11 @@ export async function getSearchProject(id: string): Promise<SearchProject | null
   }
 }
 
+// Strip em/en dashes (the "AI-written" tell) from any displayed string.
+export function dedash(s: string): string {
+  return s.replace(/\s*[—–]\s*/g, ", ")
+}
+
 // ── JSON-field parsing (research stores several fields as JSON strings) ──
 export function parseStringArray(raw: unknown): string[] {
   if (Array.isArray(raw)) return raw.map(stringifyItem).filter(Boolean)
@@ -147,18 +152,18 @@ export function parseStringArray(raw: unknown): string[] {
     // Fall back to comma/newline split for plain-text fields.
     return raw
       .split(/[\n,]+/)
-      .map((s) => s.trim())
+      .map((s) => dedash(s.trim()))
       .filter(Boolean)
   }
   return []
 }
 
 function stringifyItem(item: unknown): string {
-  if (typeof item === "string") return item.trim()
+  if (typeof item === "string") return dedash(item.trim())
   if (item && typeof item === "object") {
     const o = item as Record<string, unknown>
     const name = o.name || o.title || o.label || o.competitor || o.product
-    if (typeof name === "string") return name.trim()
+    if (typeof name === "string") return dedash(name.trim())
   }
   return ""
 }

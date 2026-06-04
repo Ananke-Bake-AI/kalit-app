@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
 
   if (rateLimited(clientIp(req))) {
     return NextResponse.json(
-      { error: "You've explored a few ideas already — try again in a bit." },
+      { error: "You've explored a few ideas already. Give it a minute and try again." },
       { status: 429 },
     )
   }
@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
 
   if (scout.ideas.length === 0) {
     return NextResponse.json(
-      { error: "No strong matches yet — try broadening your interests." },
+      { error: "No strong matches yet. Try broadening your interests a little." },
       { status: 422 },
     )
   }

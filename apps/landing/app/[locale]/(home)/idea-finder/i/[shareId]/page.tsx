@@ -23,10 +23,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const data = await load(shareId)
   const top = data?.teaser?.ideas?.[0]
   return MetadataSeo({
-    fullTitle: top ? `${top.name} — a 2026 startup idea, scored by Kalit` : "Startup idea brief — Kalit",
+    fullTitle: top ? `${top.name}: a 2026 startup idea scored by Kalit` : "Startup idea brief by Kalit",
     description: top
-      ? `${top.tagline || "A data-backed 2026 opportunity"} — opportunity score ${top.scores.opportunity}/100. See the market, business model and launch playbook.`
-      : "An AI-scored startup idea from Kalit Search — see the market, business model and how to launch.",
+      ? `${top.tagline || "A data-backed 2026 opportunity"}. Opportunity score ${top.scores.opportunity}/100. See the market, business model and launch playbook.`
+      : "An AI-scored startup idea from Kalit Search. See the market, business model and how to launch.",
     locale,
     pathname: `/idea-finder/i/${shareId}`,
     image: `/api/magnet/idea/og/${shareId}`,
@@ -62,8 +62,8 @@ export default async function SharedIdeaPage({
           </h1>
           <p className={s.subtitle}>
             {unlocked
-              ? "The market, the business model, and how to launch — grounded in real demand signals."
-              : "Scored from real demand across 25+ sources. Unlock the full brief — free — or find one matched to you."}
+              ? "The market, the business model, and exactly how to launch. Grounded in real demand signals."
+              : "Scored from real demand across 25+ sources. Unlock the full brief free, or find one matched to you."}
           </p>
         </div>
 

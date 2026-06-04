@@ -167,11 +167,11 @@ export function BriefView({
           {/* ── Upsell into Flow / Pentest / Search ── */}
           <div className={s.upsell}>
             <div className={s.upsellHead}>
-              <h3>Feel it for real — ship a demo of {idea.name}</h3>
+              <h3>Stop reading. Ship a demo of {idea.name}.</h3>
               <p>
-                Watch Kalit Flow build a live demo landing page for this idea — real copy, your brand — so you can put it
-                in front of people and test demand this week. Then keep validating: probe a competitor&apos;s security with
-                Kalit Pentest, or let Kalit Search surface fresh ideas like this every day.
+                Watch Kalit Flow build a live demo landing page for this idea, real copy in your brand, so you can put
+                it in front of people and test demand this week. Then keep digging: probe a competitor&apos;s security
+                with Kalit Pentest, or let Kalit Search drop fresh ideas like this in your lap every day.
               </p>
             </div>
             <div className={s.upsellActions}>
@@ -194,7 +194,7 @@ export function BriefView({
           <div className={s.lockedInner} aria-hidden>
             <div className={s.section}>
               <div className={s.sectionTitle}><Icon icon="hugeicons:money-bag-02" /> Business model</div>
-              <p className={s.prose}>Revenue model, pricing strategy, MRR potential and market size — grounded in Kalit Search data.</p>
+              <p className={s.prose}>Revenue model, pricing, MRR potential and market size, grounded in Kalit Search data.</p>
             </div>
             <div className={s.section}>
               <div className={s.sectionTitle}><Icon icon="hugeicons:rocket-01" /> How to launch it</div>
@@ -207,10 +207,10 @@ export function BriefView({
           </div>
           <div className={s.lockOverlay}>
             <div className={s.lockIcon}><Icon icon="hugeicons:square-lock-02" /></div>
-            <div className={s.lockTitle}>Unlock the full brief — free</div>
+            <div className={s.lockTitle}>Unlock the full brief, free</div>
             <p className={s.lockText}>
-              The business model, the step-by-step launch playbook, the competition, and the MVP scope. Create a free
-              account to reveal it and see how Kalit helps you act on it.
+              The business model, the step by step launch playbook, the competition, and the MVP scope. Make a free
+              account to reveal it and see how Kalit helps you actually build it.
             </p>
             <Button icon="hugeicons:arrow-right-02" onClick={onUnlock} disabled={unlocking}>
               {unlocking ? "Unlocking…" : "Unlock the full brief"}

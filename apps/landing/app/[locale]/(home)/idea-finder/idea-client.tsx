@@ -205,15 +205,15 @@ export function IdeaClient() {
         {phase === "chat" && (
           <>
             <div className={s.hero}>
-              <span className={s.kicker}>Free · no signup · AI market datasets</span>
+              <span className={s.kicker}>60-second idea match · no signup</span>
               <h1 className={s.title}>
                 Find the startup idea<br />
                 <span className={s.titleAccent}>you were actually meant to build.</span>
               </h1>
               <p className={s.subtitle}>
-                Tell the scout what excites you. It reads 25+ trend sources, scores the strongest 2026 opportunities,
-                and hands you a personal brief — the market, the business model, and how to launch. Grounded in real
-                data from Kalit Search.
+                Tell the scout what you&apos;re into. It digs through 25+ trend sources, scores the hottest 2026
+                openings, and hands you a real game plan: the market, the money, and exactly how to launch. Straight
+                from live Kalit Search data.
               </p>
             </div>
 
@@ -221,7 +221,10 @@ export function IdeaClient() {
               <div className={s.thread}>
                 <div className={s.turn}>
                   <span className={s.avatar}><Icon icon="hugeicons:ai-chat-02" /></span>
-                  <div className={s.bubble}>Hey — I&apos;m your Kalit idea scout. Let&apos;s find a venture that fits you. {STEP_Q[0]}</div>
+                  <div className={s.bubble}>
+                    Hey, I&apos;m your idea scout. Four quick taps and I&apos;ll pull the 2026 ventures that actually fit
+                    you, scored on real demand. {STEP_Q[0]}
+                  </div>
                 </div>
                 {answered.map((t, i) => (
                   <div key={i} className={`${s.turn} ${s.turnUser}`}>
@@ -232,27 +235,33 @@ export function IdeaClient() {
                 {stepIdx > 0 && stepIdx < 4 && (
                   <div className={s.turn}>
                     <span className={s.avatar}><Icon icon="hugeicons:ai-chat-02" /></span>
-                    <div className={s.bubble}>{STEP_Q[stepIdx]}</div>
+                    <div className={s.bubble}><strong>{REACT[stepIdx - 1]}</strong> {STEP_Q[stepIdx]}</div>
                   </div>
                 )}
               </div>
 
               <div className={s.qcard}>
+                <div className={s.progress}>
+                  {[0, 1, 2, 3].map((i) => (
+                    <span key={i} className={s.progressDot} data-state={i < stepIdx ? "done" : i === stepIdx ? "active" : "idle"} />
+                  ))}
+                  <span className={s.progressLabel}>Question {stepIdx + 1} of 4</span>
+                </div>
+
                 {stepIdx === 0 && (
                   <>
-                    <label className={s.qlabel} htmlFor="goal">{STEP_Q[0]}</label>
                     <textarea
                       id="goal" className={s.goalField} autoFocus value={goal}
-                      placeholder="e.g. tools that help indie creators make money, or something in AI for small clinics…"
+                      placeholder="e.g. tools that help indie creators make money, or AI for small clinics"
                       onChange={(e) => setGoal(e.target.value)}
                       onKeyDown={(e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey) && canAdvance) advance() }}
                     />
+                    <span className={s.qhint}>{STEP_HINT[0]}</span>
                   </>
                 )}
                 {stepIdx === 1 && (
                   <>
-                    <span className={s.qlabel}>Which spaces pull you in?</span>
-                    <span className={s.qhint}>Pick any that resonate — they steer the search.</span>
+                    <span className={s.qhint}>{STEP_HINT[1]}</span>
                     <div className={s.chips}>
                       {INTERESTS.map((x) => (
                         <button key={x} type="button" className={s.chip} data-selected={interests.includes(x)} onClick={() => toggleInterest(x)}>{x}</button>
@@ -262,7 +271,7 @@ export function IdeaClient() {
                 )}
                 {stepIdx === 2 && (
                   <>
-                    <span className={s.qlabel}>Who do you most want to serve?</span>
+                    <span className={s.qhint}>{STEP_HINT[2]}</span>
                     <div className={s.chips}>
                       {AUDIENCE.map((x) => (
                         <button key={x} type="button" className={s.chip} data-selected={audience === x} onClick={() => setAudience(x)}>{x}</button>
@@ -272,7 +281,7 @@ export function IdeaClient() {
                 )}
                 {stepIdx === 3 && (
                   <>
-                    <span className={s.qlabel}>And where are you right now?</span>
+                    <span className={s.qhint}>{STEP_HINT[3]}</span>
                     <div className={s.chips}>
                       {STAGE.map((x) => (
                         <button key={x} type="button" className={s.chip} data-selected={stage === x} onClick={() => setStage(x)}>{x}</button>
@@ -283,7 +292,7 @@ export function IdeaClient() {
 
                 <div className={s.qactions}>
                   <Button onClick={advance} disabled={!canAdvance} icon={stepIdx === 3 ? "hugeicons:sparkles" : "hugeicons:arrow-right-02"}>
-                    {stepIdx === 3 ? "Find my ideas" : "Continue"}
+                    {stepIdx === 3 ? "Show me my ideas" : "Continue"}
                   </Button>
                   {stepIdx === 1 && (
                     <button type="button" className={s.skip} onClick={() => setStepIdx(2)}>Skip</button>
@@ -292,6 +301,7 @@ export function IdeaClient() {
                     <button type="button" className={s.skip} onClick={() => { setStage(""); void submit() }}>Skip</button>
                   )}
                 </div>
+                <span className={s.reassure}><Icon icon="hugeicons:flash" /> Takes about a minute. No signup, no card.</span>
                 {error && <p className={s.error}>{error}</p>}
               </div>
             </div>
@@ -305,8 +315,8 @@ export function IdeaClient() {
               <div className={s.loadingHead}>
                 <span className={s.loadingDial} />
                 <div>
-                  <h2>Scouting your ideas…</h2>
-                  <p>Matching real opportunities to what you told me.</p>
+                  <h2>On the hunt…</h2>
+                  <p>Reading the market for ventures that fit you.</p>
                 </div>
               </div>
               <ul className={s.loadingSteps}>
@@ -326,10 +336,10 @@ export function IdeaClient() {
           <div className={s.results}>
             <div className={s.founder}>
               <Icon icon="hugeicons:ai-chat-02" />
-              <p>{result.founderSummary} Here are the three strongest matches I found for you.</p>
+              <p>{result.founderSummary} Here are your three strongest plays, ranked on real demand.</p>
             </div>
 
-            <h2 className={s.resultsTitle}>Your top matches</h2>
+            <h2 className={s.resultsTitle}>Your 3 strongest matches</h2>
             <div className={s.ideas}>
               {result.ideas.map((idea) => {
                 const op = idea.scores.opportunity
@@ -387,8 +397,15 @@ export function IdeaClient() {
 }
 
 const STEP_Q = [
-  "What would you love to build — or a problem you'd love to solve?",
-  "Which spaces pull you in?",
-  "Who do you most want to serve?",
+  "What would you love to build? Or what problem quietly drives you nuts?",
+  "Which worlds pull you in?",
+  "Who do you want to build for?",
   "And where are you right now?",
 ]
+const STEP_HINT = [
+  "Dream out loud. The more real you get, the sharper your matches.",
+  "Tap everything that lights you up. It steers the whole hunt.",
+  "Your people. We hunt for ideas that need exactly them.",
+  "No wrong answer. It just tunes the picks.",
+]
+const REACT = ["Love it.", "Great mix.", "Perfect."]
