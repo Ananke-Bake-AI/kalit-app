@@ -1,0 +1,181 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - img [ref=e5]
+        - generic [ref=e9]: Please verify your email address to access all features.
+        - button "Resend email" [ref=e10] [cursor=pointer]
+      - button "Dismiss" [ref=e11] [cursor=pointer]:
+        - img [ref=e12]
+    - banner [ref=e14]:
+      - generic [ref=e15]:
+        - link "Kalit — Product Family kalit pentest flow marketing search" [ref=e16] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e17]:
+            - img "Kalit — Product Family" [ref=e18]
+            - generic [ref=e24]: kalit
+          - generic:
+            - generic: pentest
+            - generic: flow
+            - generic: marketing
+            - generic: search
+        - navigation [ref=e25]:
+          - list [ref=e26]:
+            - listitem [ref=e27]:
+              - generic [ref=e28] [cursor=pointer]:
+                - text: Suites
+                - img [ref=e29]
+            - listitem [ref=e31]:
+              - link "Pricing" [ref=e32] [cursor=pointer]:
+                - /url: /pricing
+            - listitem [ref=e33]:
+              - generic [ref=e34] [cursor=pointer]:
+                - text: Resources
+                - img [ref=e35]
+            - listitem [ref=e37]:
+              - link "How it works" [ref=e38] [cursor=pointer]:
+                - /url: /#how-it-works
+            - listitem [ref=e39]:
+              - link "Try now" [ref=e40] [cursor=pointer]:
+                - /url: /#try-now
+            - listitem [ref=e41]:
+              - link "Why Kalit?" [ref=e42] [cursor=pointer]:
+                - /url: /#why-kalit
+        - button "Change language" [ref=e44] [cursor=pointer]:
+          - generic [ref=e45]: 🇬🇧
+          - generic [ref=e46]: EN
+        - button "Dark mode" [ref=e47] [cursor=pointer]:
+          - img [ref=e48]
+        - link "14 days of free trial left Upgrade" [ref=e50] [cursor=pointer]:
+          - /url: /settings/billing
+          - img [ref=e51]
+          - generic [ref=e55]: 14 days of free trial left
+          - generic [ref=e56]: Upgrade
+        - link "Studio" [ref=e57] [cursor=pointer]:
+          - /url: /studio
+          - generic [ref=e58]: Studio
+        - button "User menu" [ref=e60] [cursor=pointer]:
+          - generic [ref=e63]: Airbnb QA3
+          - img [ref=e66]
+    - main [ref=e69]:
+      - generic [ref=e71]:
+        - generic [ref=e72]:
+          - generic [ref=e73]: Free conversion audit · no signup
+          - heading "Your landing page is leaking customers. See exactly why — then get a better one, in your brand." [level=1] [ref=e74]:
+            - text: Your landing page is leaking customers.
+            - text: See exactly why — then get a better one, in your brand.
+          - paragraph [ref=e75]: "Paste your URL for an instant, in-depth conversion audit: a score, the issues costing you signups, and how to fix each one. Then watch Kalit build a higher-converting version — your logo, colours and copy, with every issue fixed — live."
+          - generic [ref=e76]:
+            - textbox "yourwebsite.com" [active] [ref=e78]
+            - button "Roast it" [disabled] [ref=e79] [cursor=pointer]:
+              - generic [ref=e80]: Roast it
+              - img [ref=e81]
+        - generic [ref=e83]:
+          - generic [ref=e84]:
+            - img [ref=e86]
+            - generic [ref=e88]: "1"
+            - heading "Paste your URL" [level=3] [ref=e89]
+            - paragraph [ref=e90]: Any landing page or site — no signup, no setup.
+          - generic [ref=e91]:
+            - img [ref=e93]
+            - generic [ref=e97]: "2"
+            - heading "Get your audit" [level=3] [ref=e98]
+            - paragraph [ref=e99]: "A real conversion teardown: score, issues, impact, and fixes."
+          - generic [ref=e100]:
+            - img [ref=e102]
+            - generic [ref=e106]: "3"
+            - heading "Get a better version" [level=3] [ref=e107]
+            - paragraph [ref=e108]: Sign in free and watch Kalit build a higher-converting page in your brand, live.
+    - contentinfo [ref=e109]:
+      - generic [ref=e110]:
+        - generic [ref=e111]:
+          - generic [ref=e112]:
+            - generic [ref=e113]:
+              - img "Kalit — AI Platform" [ref=e114]
+              - generic [ref=e116]: kalit
+            - generic [ref=e117]:
+              - list [ref=e118]:
+                - listitem [ref=e119]:
+                  - link "Discord" [ref=e120] [cursor=pointer]:
+                    - /url: https://discord.gg/FssPgq5hQK
+                    - img [ref=e121]
+                - listitem [ref=e125]:
+                  - link "X" [ref=e126] [cursor=pointer]:
+                    - /url: https://x.com/kalit_ai
+                    - img [ref=e127]
+                - listitem [ref=e129]:
+                  - link "Linkedin" [ref=e130] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/company/kalit-ai
+                    - img [ref=e131]
+                - listitem [ref=e135]:
+                  - link "Telegram" [ref=e136] [cursor=pointer]:
+                    - /url: https://t.me/kalit_ai
+                    - img [ref=e137]
+              - paragraph [ref=e139]: © 2026. All rights reserved.
+          - generic [ref=e140]:
+            - generic [ref=e141]:
+              - heading "Suites" [level=3] [ref=e142]
+              - list [ref=e143]:
+                - listitem [ref=e144]:
+                  - link "Flow" [ref=e145] [cursor=pointer]:
+                    - /url: /flow
+                - listitem [ref=e146]:
+                  - link "Pentest" [ref=e147] [cursor=pointer]:
+                    - /url: /pentest
+                - listitem [ref=e148]:
+                  - link "Search" [ref=e149] [cursor=pointer]:
+                    - /url: /search
+                - listitem [ref=e150]:
+                  - link "Pricing" [ref=e151] [cursor=pointer]:
+                    - /url: /pricing
+            - generic [ref=e152]:
+              - heading "Resources" [level=3] [ref=e153]
+              - list [ref=e154]:
+                - listitem [ref=e155]:
+                  - link "FAQ" [ref=e156] [cursor=pointer]:
+                    - /url: /faq
+                - listitem [ref=e157]:
+                  - link "Support" [ref=e158] [cursor=pointer]:
+                    - /url: /support
+                - listitem [ref=e159]:
+                  - link "Blog" [ref=e160] [cursor=pointer]:
+                    - /url: /blog
+                - listitem [ref=e161]:
+                  - link "Changelog" [ref=e162] [cursor=pointer]:
+                    - /url: /changelog
+                - listitem [ref=e163]:
+                  - link "Compare" [ref=e164] [cursor=pointer]:
+                    - /url: /compare
+                - listitem [ref=e165]:
+                  - link "Alternatives" [ref=e166] [cursor=pointer]:
+                    - /url: /alternatives
+            - generic [ref=e167]:
+              - heading "Company" [level=3] [ref=e168]
+              - list [ref=e169]:
+                - listitem [ref=e170]:
+                  - link "About Us" [ref=e171] [cursor=pointer]:
+                    - /url: /about
+                - listitem [ref=e172]:
+                  - link "Careers" [ref=e173] [cursor=pointer]:
+                    - /url: /jobs
+                - listitem [ref=e174]:
+                  - link "Contact Us" [ref=e175] [cursor=pointer]:
+                    - /url: /contact-us
+        - generic [ref=e176]:
+          - link "Terms and Conditions" [ref=e177] [cursor=pointer]:
+            - /url: /terms-of-service
+          - link "Privacy Policy" [ref=e178] [cursor=pointer]:
+            - /url: /privacy-policy
+          - link "Security" [ref=e179] [cursor=pointer]:
+            - /url: /security
+          - link "Responsible use" [ref=e180] [cursor=pointer]:
+            - /url: /responsible-use
+          - paragraph [ref=e181]: All listed company names are trademarks ™ or registered trademarks ® of their respective holders.
+    - link "Join our Discord" [ref=e182] [cursor=pointer]:
+      - /url: https://discord.gg/FssPgq5hQK
+      - img [ref=e184]
+      - generic [ref=e188]: Join our Discord
+      - button "Dismiss" [ref=e189]:
+        - img [ref=e190]
+  - region "Notifications alt+T"
+  - alert [ref=e192]

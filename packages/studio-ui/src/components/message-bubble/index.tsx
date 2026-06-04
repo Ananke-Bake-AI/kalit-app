@@ -96,9 +96,13 @@ interface MessageBubbleProps {
   /** Whether the agent is currently streaming. Passed through to embedded
    * QCMs so the Send button can show a "queued" state. */
   isStreaming?: boolean
+  /** Active session id — scopes the QCM draft/sent sessionStorage keys so a
+   * generic question (e.g. "What's the visual vibe?") in different sessions
+   * can't collide and wrongly lock a fresh QCM as already-submitted. */
+  sessionId?: string
 }
 
-export const MessageBubble = memo(function MessageBubble({ message, showToolBadges, onRefreshMessages, onPreviewFile, subsequentUserMessages, onChoiceSubmit, onChoiceFreeform, isStreaming }: MessageBubbleProps) {
+export const MessageBubble = memo(function MessageBubble({ message, showToolBadges, onRefreshMessages, onPreviewFile, subsequentUserMessages, onChoiceSubmit, onChoiceFreeform, isStreaming, sessionId }: MessageBubbleProps) {
   const { t, locale } = useI18n()
   const [thinkingOpen, setThinkingOpen] = useState(false)
   const timeLabel = formatTime(message.createdAt, locale)
@@ -403,8 +407,9 @@ export const MessageBubble = memo(function MessageBubble({ message, showToolBadg
                 if (!anyAnswered && replies.length > 0) anyAnswered = true
 
                 // Same draftKey shape as the live-stream variant so picks
-                // made before the bubble swap carry over.
-                const draftKey = `live:${group[0]?.question ?? ""}:${group.length}`
+                // made before the bubble swap carry over. Scoped by session id
+                // so a generic first question can't collide across sessions.
+                const draftKey = `qcm:${sessionId ?? ""}:${group[0]?.question ?? ""}:${group.length}`
                 rendered.push(
                   <QcmGroup
                     key={i}

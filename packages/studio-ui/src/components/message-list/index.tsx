@@ -162,6 +162,7 @@ export function MessageList({ onStop, onPreviewFile, onRefreshMessages, onChoice
                 onChoiceSubmit={onChoiceSubmit}
                 onChoiceFreeform={onChoiceFreeform}
                 isStreaming={isStreaming}
+                sessionId={activeSessionId ?? undefined}
               />
             </Fragment>
           )
@@ -181,6 +182,7 @@ export function MessageList({ onStop, onPreviewFile, onRefreshMessages, onChoice
               }}
               onChoiceSubmit={onChoiceSubmit}
               onChoiceFreeform={onChoiceFreeform}
+              sessionId={activeSessionId ?? undefined}
             />
           </div>
         )}

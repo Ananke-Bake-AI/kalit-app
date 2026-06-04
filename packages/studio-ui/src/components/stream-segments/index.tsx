@@ -82,6 +82,8 @@ interface StreamSegmentsProps {
    * the chat input so they can type a custom answer. Receives the question
    * the link sits under so the host can prefill an attributable answer. */
   onChoiceFreeform?: (question?: string) => void
+  /** Active session id — scopes QCM draft/sent keys (see message-bubble). */
+  sessionId?: string
 }
 
 export const StreamSegments = memo(function StreamSegments({
@@ -93,6 +95,7 @@ export const StreamSegments = memo(function StreamSegments({
   onCaughtUp,
   onChoiceSubmit,
   onChoiceFreeform,
+  sessionId,
 }: StreamSegmentsProps) {
   const { t } = useI18n()
 
@@ -206,7 +209,7 @@ export const StreamSegments = memo(function StreamSegments({
             // message-bubble, so picks survive the live→persisted swap.
             // Hash the first question's text — collisions across messages
             // are negligible and we don't have a stable message id here.
-            const draftKey = `live:${group[0]?.question ?? ""}:${group.length}`
+            const draftKey = `qcm:${sessionId ?? ""}:${group[0]?.question ?? ""}:${group.length}`
             rendered.push(
               <QcmGroup
                 key={i}
