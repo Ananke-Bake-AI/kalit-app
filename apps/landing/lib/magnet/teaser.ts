@@ -347,6 +347,11 @@ function normalizeCritique(parsed: Record<string, unknown>): CritiqueResult {
   return { score, breakdown, verdict, problems, wins }
 }
 
+function parseJsonLoose(raw: string): Record<string, unknown> {
+  const cleaned = (raw || "").trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "")
+  return JSON.parse(cleaned) as Record<string, unknown>
+}
+
 async function callGroqJson(body: Record<string, unknown>): Promise<Record<string, unknown>> {
   const apiKey = process.env.GROQ_API_KEY
   if (!apiKey) throw new Error("GROQ_API_KEY not configured")
@@ -357,23 +362,79 @@ async function callGroqJson(body: Record<string, unknown>): Promise<Record<strin
   })
   if (!res.ok) throw new Error(`Groq error ${res.status}: ${await res.text()}`)
   const data = await res.json()
-  const raw = data.choices?.[0]?.message?.content?.trim() || ""
-  const cleaned = raw.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "")
-  return JSON.parse(cleaned) as Record<string, unknown>
+  return parseJsonLoose(data.choices?.[0]?.message?.content || "")
+}
+
+// ── Anthropic (Claude) provider — sharper conversion feedback than llama. ──
+// Switchable via MAGNET_LLM_PROVIDER; defaults to "anthropic" when an
+// ANTHROPIC_API_KEY is present, else falls back to Groq. Models overridable
+// via MAGNET_LLM_MODEL_ANTHROPIC / MAGNET_VISION_MODEL_ANTHROPIC.
+const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages"
+const ANTHROPIC_TEXT_MODEL = process.env.MAGNET_LLM_MODEL_ANTHROPIC || "claude-sonnet-4-6"
+const ANTHROPIC_VISION_MODEL = process.env.MAGNET_VISION_MODEL_ANTHROPIC || "claude-sonnet-4-6"
+const LLM_PROVIDER = (
+  process.env.MAGNET_LLM_PROVIDER || (process.env.ANTHROPIC_API_KEY ? "anthropic" : "groq")
+).toLowerCase()
+
+// Anthropic Messages API. `system` is top-level; `content` is either a plain
+// string or Claude content blocks (text + {type:"image", source:{base64}}).
+async function callAnthropicJson(
+  system: string,
+  content: string | Record<string, unknown>[],
+  model: string,
+): Promise<Record<string, unknown>> {
+  const apiKey = process.env.ANTHROPIC_API_KEY
+  if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured")
+  const res = await fetch(ANTHROPIC_API_URL, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+    },
+    body: JSON.stringify({
+      model,
+      max_tokens: 2000,
+      temperature: 0.4,
+      system,
+      messages: [{ role: "user", content }],
+    }),
+  })
+  if (!res.ok) throw new Error(`Anthropic error ${res.status}: ${await res.text()}`)
+  const data = await res.json()
+  const raw = Array.isArray(data.content)
+    ? data.content.filter((b: { type?: string }) => b?.type === "text").map((b: { text?: string }) => b.text || "").join("")
+    : ""
+  return parseJsonLoose(raw)
+}
+
+// Split a `data:<mime>;base64,<data>` URL into Claude's image-source parts.
+function dataUrlToAnthropicImage(dataUrl: string): Record<string, unknown> {
+  const m = dataUrl.match(/^data:([^;]+);base64,(.*)$/)
+  const allowed = ["image/jpeg", "image/png", "image/gif", "image/webp"]
+  const mt = m?.[1] || "image/png"
+  return {
+    type: "image",
+    source: { type: "base64", media_type: allowed.includes(mt) ? mt : "image/png", data: m?.[2] || "" },
+  }
 }
 
 // ── Text critique (fast/cheap, judges HTML signals) ──
 async function critique(signals: PageSignals): Promise<CritiqueResult> {
-  const parsed = await callGroqJson({
-    model: GROQ_MODEL,
-    temperature: 0.4,
-    max_tokens: 900,
-    response_format: { type: "json_object" },
-    messages: [
-      { role: "system", content: SYSTEM_PROMPT },
-      { role: "user", content: buildUserMessage(signals) },
-    ],
-  })
+  const userMsg = buildUserMessage(signals)
+  const parsed =
+    LLM_PROVIDER === "anthropic"
+      ? await callAnthropicJson(SYSTEM_PROMPT, userMsg, ANTHROPIC_TEXT_MODEL)
+      : await callGroqJson({
+          model: GROQ_MODEL,
+          temperature: 0.4,
+          max_tokens: 900,
+          response_format: { type: "json_object" },
+          messages: [
+            { role: "system", content: SYSTEM_PROMPT },
+            { role: "user", content: userMsg },
+          ],
+        })
   return normalizeCritique(parsed)
 }
 
@@ -421,25 +482,30 @@ async function fetchImageAsDataUrl(url: string): Promise<string> {
 
 async function critiqueVision(signals: PageSignals, shotUrl: string): Promise<CritiqueResult> {
   const dataUrl = await fetchImageAsDataUrl(shotUrl)
-  const parsed = await callGroqJson({
-    model: GROQ_VISION_MODEL,
-    temperature: 0.4,
-    max_tokens: 900,
-    response_format: { type: "json_object" },
-    messages: [
-      { role: "system", content: VISION_SYSTEM_PROMPT },
-      {
-        role: "user",
-        content: [
-          {
-            type: "text",
-            text: `Critique this landing page screenshot. Context signals for facts not visible (https, meta, mobile tag): ${buildUserMessage(signals)}`,
-          },
-          { type: "image_url", image_url: { url: dataUrl } },
-        ],
-      },
-    ],
-  })
+  const textPart = `Critique this landing page screenshot. Context signals for facts not visible (https, meta, mobile tag): ${buildUserMessage(signals)}`
+  const parsed =
+    LLM_PROVIDER === "anthropic"
+      ? await callAnthropicJson(
+          VISION_SYSTEM_PROMPT,
+          [{ type: "text", text: textPart }, dataUrlToAnthropicImage(dataUrl)],
+          ANTHROPIC_VISION_MODEL,
+        )
+      : await callGroqJson({
+          model: GROQ_VISION_MODEL,
+          temperature: 0.4,
+          max_tokens: 900,
+          response_format: { type: "json_object" },
+          messages: [
+            { role: "system", content: VISION_SYSTEM_PROMPT },
+            {
+              role: "user",
+              content: [
+                { type: "text", text: textPart },
+                { type: "image_url", image_url: { url: dataUrl } },
+              ],
+            },
+          ],
+        })
   return normalizeCritique(parsed)
 }
 
