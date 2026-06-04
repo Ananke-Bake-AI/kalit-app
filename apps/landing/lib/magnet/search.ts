@@ -116,11 +116,18 @@ function buildQuery(input: SearchProjectsInput): string {
   return s ? `?${s}` : ""
 }
 
-export async function searchProjects(input: SearchProjectsInput): Promise<SearchProject[]> {
+export async function searchProjects(
+  input: SearchProjectsInput,
+): Promise<{ projects: SearchProject[]; total: number }> {
   const data = (await searchFetch(`/api/projects${buildQuery(input)}`)) as {
     projects?: SearchProject[]
+    pagination?: { total?: number }
   }
-  return Array.isArray(data?.projects) ? data.projects : []
+  const projects = Array.isArray(data?.projects) ? data.projects : []
+  // `total` is how many ideas match this query across the whole DB (not just
+  // this page) — the breadth signal the scout uses to weight keyword specificity.
+  const total = typeof data?.pagination?.total === "number" ? data.pagination.total : projects.length
+  return { projects, total }
 }
 
 export async function getSearchProject(id: string): Promise<SearchProject | null> {

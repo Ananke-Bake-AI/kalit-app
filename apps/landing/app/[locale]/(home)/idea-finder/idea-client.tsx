@@ -16,9 +16,9 @@ import s from "./idea.module.scss"
 const CTX: MagnetContext = { door: "idea_finder", slug: "idea-finder" }
 
 const INTERESTS = [
-  "AI & agents", "Dev tools", "Fintech", "Health & wellness", "Creator economy",
-  "E-commerce", "Productivity", "Education", "Climate & energy", "Local services",
-  "Marketing & sales", "Gaming",
+  "AI & agents", "Web3 & crypto", "Dev tools", "Fintech", "Health & wellness",
+  "Creator economy", "E-commerce", "Productivity", "Education", "Climate & energy",
+  "Local services", "Marketing & sales", "Gaming",
 ]
 const AUDIENCE = ["Businesses (B2B)", "Consumers (B2C)", "Developers", "Creators", "Small businesses", "Enterprises"]
 const STAGE = ["Just exploring", "Validating an idea", "Ready to build"]

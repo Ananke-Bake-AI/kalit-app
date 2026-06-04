@@ -73,15 +73,20 @@ const PLAN_SYSTEM = `You translate a founder's interests into search keywords fo
 
 Output ONLY valid JSON (no markdown) with this shape:
 {
-  "keywords": ["<single salient term>", "<another>", "..."],
+  "keywords": ["<term>", "<term>", "..."],
   "founderSummary": "<one warm, specific sentence reflecting back what this founder wants to build and who for>"
 }
 
 Rules:
-- Return 3 to 6 keywords. Each is matched as a SUBSTRING over idea names/descriptions/trend keywords, so use common domain NOUNS the matching ideas would actually contain (e.g. "clinic", "patient", "scheduling", "health"), NOT long phrases. One or two words max each, lowercase.
+- Return 4 to 8 keywords. Each is matched as a SUBSTRING over idea names/descriptions/trend keywords, so use the concrete domain NOUNS that real matching products would literally contain.
+- EXPAND the founder's words into the vocabulary the products use, including close synonyms. Examples:
+  - "web3 / multi-chain / crypto" -> ["crypto","blockchain","wallet","onchain","staking","nft","dao"]
+  - "health / small clinics" -> ["clinic","patient","health","medical","care"]
+  - "help creators make money" -> ["creator","newsletter","audience","monetize","subscription"]
+- One or two words max each, lowercase, no punctuation.
+- AVOID vague or ambiguous substrings that match unrelated text: do not use "protocol", "token", "defi", "chain", "network", "platform", "app", "ai", "system", "solution", "tool".
 - Order keywords most-specific-to-the-founder first.
-- Never invent facts. "founderSummary" only reflects what they told you.
-- "founderSummary" should sound like a friendly human talking, warm and a little excited. Never use em dashes or en dashes (— or –); use commas, periods or parentheses instead.`
+- Never invent facts. "founderSummary" sounds like a friendly human, warm and a little excited. Never use em dashes or en dashes (— or –); use commas, periods or parentheses instead.`
 
 async function planSearch(p: ScoutProfile): Promise<{ keywords: string[]; founderSummary: string }> {
   try {
@@ -116,8 +121,11 @@ const STOPWORDS = new Set([
 // Terms so broad they match nearly every idea — querying them just surfaces the
 // globally highest-opportunity (off-topic) ideas, drowning the founder's space.
 const GENERIC_KEYWORDS = new Set([
-  "ai", "app", "saas", "tech", "platform", "tool", "software", "startup", "agent",
+  "ai", "app", "saas", "tech", "platform", "tool", "tools", "software", "startup", "agent",
   "agents", "automation", "data", "digital", "online", "web", "mobile", "api",
+  // Ambiguous substrings that match unrelated copy ("protocol" hits "AT Protocol",
+  // "defi" hits "definition", "token" hits "tokenize", "chain" hits "supply chain").
+  "protocol", "token", "tokens", "defi", "chain", "network", "system", "solution", "service",
 ])
 
 function dropGeneric(keywords: string[]): string[] {
@@ -149,7 +157,7 @@ Output ONLY valid JSON (no markdown) with this shape:
     {
       "projectId": "<echo the id>",
       "tagline": "<punchy one-liner for this idea, max 12 words>",
-      "fitReason": "<2 sentences: why THIS founder specifically is well-placed to build this, tied to their interests/audience/stage>",
+      "fitReason": "<2 sentences on why this is a compelling, timely opportunity. If it genuinely connects to the founder's interests or audience, make that link explicit. If it does not obviously connect, focus on why the opportunity itself is strong. NEVER say it is a bad fit, a poor match, or that the founder is not well-placed.>",
       "businessModelSummary": "<2-3 sentences on how it makes money, grounded in the revenueModel/pricing/MRR provided>",
       "gtm": ["<launch step 1>", "<step 2>", "<step 3>", "<step 4 (optional)>"],
       "demoIdea": "<one sentence: what a quick Kalit Flow demo site/landing for this idea would show off to test demand>"
@@ -161,7 +169,8 @@ Rules:
 - One object per idea, same order, echo each projectId exactly.
 - "gtm" = 3-5 concrete, sequenced go-to-market steps a solo founder could actually run first.
 - Be specific to each idea's market and audience. No generic filler, no invented competitors or numbers.
-- Write like a sharp, encouraging human, not a corporate deck. Punchy and concrete. Never use em dashes or en dashes (— or –); use commas, periods or parentheses instead.`
+- Write like a sharp, encouraging human, not a corporate deck. Punchy and concrete. Never use em dashes or en dashes (— or –); use commas, periods or parentheses instead.
+- NEVER hedge the fit. Do not write "while not directly aligning", "although not related", "may not align", "not a perfect fit" or anything similar. Stay positive: either tie it to the founder, or just sell why the opportunity is strong.`
 
 function groundingInput(p: ScoutProfile, projects: SearchProject[]): string {
   return JSON.stringify({
@@ -195,8 +204,11 @@ async function groundIdeas(
   projects: SearchProject[],
 ): Promise<Record<string, Grounding>> {
   const out: Record<string, Grounding> = {}
-  try {
-    const parsed = await callGroqJson({
+  // Grounding is what makes each card feel personal (tagline, fit, GTM). It's a
+  // single LLM call, so a transient Groq hiccup would leave every card on the
+  // bland default — retry once before giving up.
+  const ground = () =>
+    callGroqJson({
       model: GROQ_MODEL,
       temperature: 0.5,
       max_tokens: 1400,
@@ -206,6 +218,14 @@ async function groundIdeas(
         { role: "user", content: groundingInput(p, projects) },
       ],
     })
+  try {
+    let parsed: Record<string, unknown>
+    try {
+      parsed = await ground()
+    } catch {
+      await new Promise((r) => setTimeout(r, 600))
+      parsed = await ground()
+    }
     const arr = Array.isArray(parsed.ideas) ? (parsed.ideas as Record<string, unknown>[]) : []
     for (const it of arr) {
       const id = str(it.projectId, 60)
@@ -231,7 +251,9 @@ function hydrate(pr: SearchProject, g: Grounding | undefined): IdeaFull {
     projectId: pr.id,
     name: str(pr.name, 120) || "Untitled idea",
     category: str(pr.category, 60) || "General",
-    tagline: g?.tagline || str(pr.uniqueAngle, 120) || "A timely, data-backed opportunity.",
+    // Prefer the grounded one-liner; never fall back to the long uniqueAngle
+    // sentence (it reads as raw data). Use a short, clean default instead.
+    tagline: g?.tagline || "A timely, data-backed opportunity",
     fitReason: g?.fitReason || "This lines up with the space you said you want to work in.",
     scores: {
       opportunity: clampScore(pr.opportunityScore),
@@ -275,32 +297,50 @@ export async function runScout(profile: ScoutProfile): Promise<ScoutResult> {
   const plan = await planSearch(profile)
 
   // Query each keyword separately (Search matches whole-string substrings, so
-  // one combined query would match nothing), then union + rank by how many
-  // keywords an idea hit, then by opportunity. This keeps matches on-topic.
-  const byId = new Map<string, { p: SearchProject; hits: number }>()
-  const keywords = dropGeneric(plan.keywords).slice(0, 6)
+  // one combined query would match nothing). Then union + rank by a relevance
+  // score that weights each keyword by how SPECIFIC it is: a rare term like
+  // "climate" (few hits) is a strong topical signal, while a broad term like
+  // "building" (matches everything) barely counts. This stops generic
+  // high-opportunity ideas from crowding out the founder's actual space.
+  const keywords = dropGeneric(plan.keywords).slice(0, 8)
   const results = await Promise.all(
     keywords.map((kw) =>
-      searchProjects({ query: kw, sort: "opportunityScore", order: "desc", limit: 8 }).catch(() => []),
+      searchProjects({ query: kw, sort: "opportunityScore", order: "desc", limit: 10 })
+        .then((r) => ({ projects: r.projects, total: r.total }))
+        .catch(() => ({ projects: [] as SearchProject[], total: 0 })),
     ),
   )
-  for (const list of results) {
+  // Weight each keyword by specificity: a term that matches few ideas across the
+  // whole DB (e.g. "clinic", "climate") is a strong topical signal; a term that
+  // matches hundreds ("building", "marketplace") barely counts.
+  const weightOf = (total: number) => 1 / Math.sqrt(Math.max(1, total))
+  const byId = new Map<string, { p: SearchProject; score: number }>()
+  results.forEach(({ projects: list, total }) => {
+    const w = weightOf(total)
     for (const p of list) {
       const e = byId.get(p.id)
-      if (e) e.hits += 1
-      else byId.set(p.id, { p, hits: 1 })
+      if (e) e.score += w
+      else byId.set(p.id, { p, score: w })
     }
-  }
-  let projects = [...byId.values()]
-    .sort((a, b) => b.hits - a.hits || b.p.opportunityScore - a.p.opportunityScore)
-    .map((e) => e.p)
+  })
+  const ranked = [...byId.values()].sort(
+    (a, b) => b.score - a.score || b.p.opportunityScore - a.p.opportunityScore,
+  )
 
-  // Broaden to the strongest current opportunities only if the founder's space
-  // is too thin to fill three slots.
+  // An idea is "on-topic" only if it cleared the relevance floor, i.e. it hit at
+  // least one genuinely specific keyword (~11 DB matches → 1/sqrt(11) ≈ 0.30).
+  // Below that it only matched broad terms and isn't really in the founder's
+  // space. We show on-topic ideas first; if there aren't three, we say so
+  // honestly and backfill with the strongest live opportunities.
+  const FLOOR = 0.3
+  const onTopic = ranked.filter((e) => e.score >= FLOOR).map((e) => e.p)
+  const weak = onTopic.length < 3
+
+  let projects = onTopic.length >= 3 ? onTopic : ranked.map((e) => e.p)
   if (projects.length < 3) {
     const broad = await searchProjects({ sort: "opportunityScore", order: "desc", limit: 12 })
     const seen = new Set(projects.map((p) => p.id))
-    projects = [...projects, ...broad.filter((p) => !seen.has(p.id))]
+    projects = [...projects, ...broad.projects.filter((p) => !seen.has(p.id))]
   }
 
   const top = projects.slice(0, 3)
@@ -308,11 +348,15 @@ export async function runScout(profile: ScoutProfile): Promise<ScoutResult> {
     return { profile, founderSummary: plan.founderSummary, ideas: [], topProjectId: null }
   }
 
+  const founderSummary = weak
+    ? `${plan.founderSummary} I couldn't pin a deep match to that exact space yet, so here are the strongest opportunities live right now to get the gears turning.`
+    : plan.founderSummary
+
   const grounding = await groundIdeas(profile, top)
   const ideas = top.map((pr) => hydrate(pr, grounding[pr.id]))
   return {
     profile,
-    founderSummary: plan.founderSummary,
+    founderSummary,
     ideas,
     topProjectId: ideas[0]?.projectId ?? null,
   }
