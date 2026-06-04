@@ -8,10 +8,10 @@
  * them, the business model, and a launch playbook — all grounded in Search's
  * real, multi-source data. Free + anonymous. Signup unlocks the full brief.
  *
- * Reuses the GROQ_API_KEY / llama-3.3-70b pattern from the roast teaser. Two
- * cheap LLM hops: (1) profile → search params, (2) ground the top matches into
- * founder-fit + GTM narrative. Everything factual comes from Search, not the
- * model.
+ * Two cheap LLM hops on Claude Haiku 4.5 (ANTHROPIC_API_KEY): (1) profile →
+ * search keywords, (2) ground the top matches into founder-fit + GTM narrative.
+ * Both force structured JSON via a single required tool. Everything factual
+ * comes from Search, not the model.
  */
 import {
   getSearchProject,
@@ -26,25 +26,104 @@ import type { IdeaFull, IdeaTeaser, ScoutProfile } from "./idea-types"
 export { previewIdea } from "./idea-types"
 export type { IdeaFull, IdeaPreview, ScoutProfile } from "./idea-types"
 
-const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
-const GROQ_MODEL = "llama-3.3-70b-versatile"
-
 export type ScoutResult = IdeaTeaser
 
-// ─── Groq helpers ─────────────────────────────────────────────
-async function callGroqJson(body: Record<string, unknown>): Promise<Record<string, unknown>> {
-  const key = process.env.GROQ_API_KEY
-  if (!key) throw new Error("GROQ_API_KEY not configured")
-  const res = await fetch(GROQ_API_URL, {
+// ─── Claude (Anthropic) helper ────────────────────────────────
+// Haiku 4.5 for capacity + cost. We force valid JSON by exposing a single tool
+// and requiring it via tool_choice — the tool's `input` IS the structured
+// result, so there's nothing to parse out of prose. Direct fetch keeps the
+// dependency surface small (runtime is nodejs). Override the model with
+// SCOUT_MODEL if needed.
+const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages"
+const CLAUDE_MODEL = process.env.SCOUT_MODEL || "claude-haiku-4-5"
+
+interface ClaudeTool {
+  name: string
+  description: string
+  input_schema: Record<string, unknown>
+}
+
+async function callClaudeJson(opts: {
+  system: string
+  user: string
+  tool: ClaudeTool
+  maxTokens: number
+  temperature?: number
+}): Promise<Record<string, unknown>> {
+  const key = process.env.ANTHROPIC_API_KEY
+  if (!key) throw new Error("ANTHROPIC_API_KEY not configured")
+  const res = await fetch(ANTHROPIC_API_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
-    body: JSON.stringify(body),
+    headers: {
+      "content-type": "application/json",
+      "x-api-key": key,
+      "anthropic-version": "2023-06-01",
+    },
+    body: JSON.stringify({
+      model: CLAUDE_MODEL,
+      max_tokens: opts.maxTokens,
+      ...(typeof opts.temperature === "number" ? { temperature: opts.temperature } : {}),
+      // Cache the static system prompt across requests. Tools render before
+      // system, so this breakpoint caches the tool + system prefix together.
+      // (Below Haiku's ~4K-token cache minimum it's a harmless no-op.)
+      system: [{ type: "text", text: opts.system, cache_control: { type: "ephemeral" } }],
+      tools: [opts.tool],
+      tool_choice: { type: "tool", name: opts.tool.name },
+      messages: [{ role: "user", content: opts.user }],
+    }),
   })
-  if (!res.ok) throw new Error(`Groq error ${res.status}: ${await res.text()}`)
+  if (!res.ok) throw new Error(`Anthropic error ${res.status}: ${await res.text()}`)
   const data = await res.json()
-  const raw = data.choices?.[0]?.message?.content?.trim() || ""
-  const cleaned = raw.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "")
-  return JSON.parse(cleaned) as Record<string, unknown>
+  const block = Array.isArray(data?.content)
+    ? (data.content as { type?: string; input?: unknown }[]).find((b) => b?.type === "tool_use")
+    : null
+  if (!block || typeof block.input !== "object" || block.input === null) {
+    throw new Error("Anthropic: no tool_use block in response")
+  }
+  return block.input as Record<string, unknown>
+}
+
+// Forced-output tool schemas (the model must call these; `input` is the result).
+const PLAN_TOOL: ClaudeTool = {
+  name: "emit_search_plan",
+  description: "Return the search keywords and a one-line founder summary.",
+  input_schema: {
+    type: "object",
+    additionalProperties: false,
+    properties: {
+      keywords: { type: "array", items: { type: "string" } },
+      founderSummary: { type: "string" },
+    },
+    required: ["keywords", "founderSummary"],
+  },
+}
+
+const GROUND_TOOL: ClaudeTool = {
+  name: "emit_idea_briefs",
+  description: "Return a personal brief for each idea, one per input idea, same order.",
+  input_schema: {
+    type: "object",
+    additionalProperties: false,
+    properties: {
+      ideas: {
+        type: "array",
+        items: {
+          type: "object",
+          additionalProperties: false,
+          properties: {
+            projectId: { type: "string" },
+            tagline: { type: "string" },
+            fitReason: { type: "string" },
+            businessModelSummary: { type: "string" },
+            gtm: { type: "array", items: { type: "string" } },
+            demoIdea: { type: "string" },
+          },
+          required: ["projectId", "tagline", "fitReason", "businessModelSummary", "gtm", "demoIdea"],
+        },
+      },
+    },
+    required: ["ideas"],
+  },
 }
 
 // Trim, cap, and strip em/en dashes (the telltale "AI-written" punctuation) —
@@ -90,15 +169,12 @@ Rules:
 
 async function planSearch(p: ScoutProfile): Promise<{ keywords: string[]; founderSummary: string }> {
   try {
-    const parsed = await callGroqJson({
-      model: GROQ_MODEL,
+    const parsed = await callClaudeJson({
+      system: PLAN_SYSTEM,
+      user: profileText(p),
+      tool: PLAN_TOOL,
+      maxTokens: 400,
       temperature: 0.3,
-      max_tokens: 300,
-      response_format: { type: "json_object" },
-      messages: [
-        { role: "system", content: PLAN_SYSTEM },
-        { role: "user", content: profileText(p) },
-      ],
     })
     const keywords = Array.isArray(parsed.keywords)
       ? parsed.keywords.map((k) => str(k, 40).toLowerCase()).filter((k) => k.length > 1).slice(0, 6)
@@ -205,18 +281,15 @@ async function groundIdeas(
 ): Promise<Record<string, Grounding>> {
   const out: Record<string, Grounding> = {}
   // Grounding is what makes each card feel personal (tagline, fit, GTM). It's a
-  // single LLM call, so a transient Groq hiccup would leave every card on the
-  // bland default — retry once before giving up.
+  // single LLM call, so a transient hiccup would leave every card on the bland
+  // default — retry once before giving up.
   const ground = () =>
-    callGroqJson({
-      model: GROQ_MODEL,
+    callClaudeJson({
+      system: GROUND_SYSTEM,
+      user: groundingInput(p, projects),
+      tool: GROUND_TOOL,
+      maxTokens: 1500,
       temperature: 0.5,
-      max_tokens: 1400,
-      response_format: { type: "json_object" },
-      messages: [
-        { role: "system", content: GROUND_SYSTEM },
-        { role: "user", content: groundingInput(p, projects) },
-      ],
     })
   try {
     let parsed: Record<string, unknown>
