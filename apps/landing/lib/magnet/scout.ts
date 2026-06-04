@@ -292,13 +292,21 @@ async function groundIdeas(
       temperature: 0.5,
     })
   try {
-    let parsed: Record<string, unknown>
-    try {
-      parsed = await ground()
-    } catch {
-      await new Promise((r) => setTimeout(r, 600))
-      parsed = await ground()
+    // Up to 3 attempts with backoff — absorbs transient Anthropic 429/529
+    // (overloaded) blips during traffic bursts so a card never lands on the
+    // bland default just because one request got unlucky.
+    let parsed: Record<string, unknown> | null = null
+    let lastErr: unknown
+    for (let attempt = 0; attempt < 3; attempt++) {
+      if (attempt > 0) await new Promise((r) => setTimeout(r, attempt * 800))
+      try {
+        parsed = await ground()
+        break
+      } catch (e) {
+        lastErr = e
+      }
     }
+    if (!parsed) throw lastErr
     const arr = Array.isArray(parsed.ideas) ? (parsed.ideas as Record<string, unknown>[]) : []
     for (const it of arr) {
       const id = str(it.projectId, 60)
