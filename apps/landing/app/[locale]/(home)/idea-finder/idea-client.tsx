@@ -97,6 +97,15 @@ export function IdeaClient() {
     return true
   }, [stepIdx, goal, interests, audience])
 
+  // The chat thread is tall; when we collapse it into the short loading card
+  // (then results) the page shrinks and the old scroll position leaves you
+  // staring at the footer. Snap back to the top on each phase change.
+  useEffect(() => {
+    if (phase !== "chat" && typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" })
+    }
+  }, [phase])
+
   const submit = async () => {
     setPhase("loading")
     setError(null)
