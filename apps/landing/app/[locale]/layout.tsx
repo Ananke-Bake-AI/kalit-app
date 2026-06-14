@@ -1,6 +1,6 @@
 import { Providers } from "@/components/app/providers"
 import { JsonLd } from "@/components/seo/json-ld"
-import { auth } from "@/lib/auth"
+import { safeAuth } from "@/lib/auth"
 import { LOCALES, isValidLocale, loadMessages, type Locale } from "@/lib/i18n"
 import { getTranslationForLocale } from "@/lib/i18n-server"
 import { MetadataSeo } from "@/lib/metadata"
@@ -33,7 +33,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
   if (!isValidLocale(rawLocale)) notFound()
   const locale = rawLocale as Locale
 
-  const session = await auth()
+  const session = await safeAuth()
   const messages = await loadMessages(locale)
 
   return (

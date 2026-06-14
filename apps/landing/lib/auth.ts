@@ -1,4 +1,4 @@
-import NextAuth from "next-auth"
+import NextAuth, { type Session } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import bcrypt from "bcryptjs"
@@ -116,3 +116,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     ...authConfig.providers
   ]
 })
+
+// Session lookup hits the DB (Neon). On public pages a transient DB/auth blip
+// would otherwise throw during SSR and render the route's error boundary —
+// which is exactly the "Something went wrong" page crawlers (PageSpeed/Googlebot)
+// were occasionally capturing. For pages that work fine for anonymous visitors,
+// degrade to "no session" instead of nuking the whole render.
+export async function safeAuth(): Promise<Session | null> {
+  try {
+    return await auth()
+  } catch (err) {
+    console.error("safeAuth: session lookup failed, falling back to anonymous", err)
+    return null
+  }
+}

@@ -49,53 +49,62 @@ export const Color4Bg = ({ style, colors, seed = 1000, loop = true, className, n
     let cancelled = false
     const resolvedColors = colors?.length ? colors : DEFAULT_BG_COLORS
 
-    try {
-      instance = new (BgClass as new (params: {
-        dom: string
-        colors: string[]
-        seed: number
-        loop: boolean
-      }) => Color4BgInstance)({
-        dom: containerId,
-        colors: resolvedColors,
-        seed,
-        loop
-      })
-    } catch (err) {
-      console.error("Color4Bg: failed to create instance", style, err)
-      return
-    }
+    // This background is purely decorative WebGL. Defer its (expensive)
+    // instantiation until the browser is idle so it stays off the critical
+    // loading path — it was adding main-thread work (and a getComputedStyle
+    // crash) during the LCP/TBT window.
+    const init = () => {
+      if (cancelled) return
+      const node = containerRef.current
+      if (!node) return
 
-    if (instance.update) {
-      instance.update("noise", noise)
-    }
-
-    const node = containerRef.current
-    if (!node || typeof ResizeObserver === "undefined") {
-      return () => {
-        cancelled = true
-        if (instance && typeof instance.destroy === "function") {
-          try {
-            instance.destroy()
-          } catch (e) {
-            console.error("Color4Bg: cleanup error", e)
-          }
-        }
+      try {
+        instance = new (BgClass as new (params: {
+          dom: string
+          colors: string[]
+          seed: number
+          loop: boolean
+        }) => Color4BgInstance)({
+          dom: containerId,
+          colors: resolvedColors,
+          seed,
+          loop
+        })
+      } catch (err) {
+        console.error("Color4Bg: failed to create instance", style, err)
+        return
       }
+
+      if (instance.update) {
+        instance.update("noise", noise)
+      }
+
+      if (typeof ResizeObserver === "undefined") return
+
+      const runResize = () => {
+        if (cancelled || !instance?.resize) return
+        instance.resize()
+      }
+      resizeObserver = new ResizeObserver(() => {
+        requestAnimationFrame(runResize)
+      })
+      resizeObserver.observe(node)
+      requestAnimationFrame(runResize)
     }
 
-    const runResize = () => {
-      if (cancelled || !instance?.resize) return
-      instance.resize()
-    }
-    resizeObserver = new ResizeObserver(() => {
-      requestAnimationFrame(runResize)
-    })
-    resizeObserver.observe(node)
-    requestAnimationFrame(runResize)
+    const ric: (cb: () => void) => number =
+      typeof window.requestIdleCallback === "function"
+        ? (cb) => window.requestIdleCallback(cb, { timeout: 2000 })
+        : (cb) => window.setTimeout(cb, 200)
+    const cic: (id: number) => void =
+      typeof window.cancelIdleCallback === "function"
+        ? (id) => window.cancelIdleCallback(id)
+        : (id) => window.clearTimeout(id)
+    const idleId = ric(init)
 
     return () => {
       cancelled = true
+      cic(idleId)
       resizeObserver?.disconnect()
       resizeObserver = null
       if (instance && typeof instance.destroy === "function") {

@@ -1,8 +1,8 @@
 import { Wrapper } from "@/components/layout/wrapper"
-import { auth } from "@/lib/auth"
+import { safeAuth } from "@/lib/auth"
 
 export default async function SuitesLayout({ children }: { children: React.ReactNode }) {
-  const session = await auth()
+  const session = await safeAuth()
 
   return (
     <Wrapper session={session} color4bg={false}>

@@ -47,8 +47,9 @@ export const Hero = () => {
     const el = titleRef.current
     if (!el) return
 
-    gsap.set(el, { visibility: "visible" })
-
+    // The title paints from SSR/CSS (no longer visibility:hidden) so it stays
+    // the LCP element instead of waiting on this hook — under throttled CPU
+    // that wait was pushing LCP to ~10s. GSAP only enhances from here.
     if (!hasAnimatedRef.current) {
       hasAnimatedRef.current = true
       gsap

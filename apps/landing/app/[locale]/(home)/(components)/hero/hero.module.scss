@@ -15,7 +15,6 @@
 .title {
   @include fs(48px, 36, 128px);
   margin: var(--size-8) 0 0;
-  visibility: hidden;
   position: relative;
   z-index: 100;
 

@@ -20,7 +20,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{if(localStorage.getItem("dark-mode")==="1")document.documentElement.classList.add("dark")}catch(e){}})()`
+            __html: `(function(){try{var e=document.documentElement;e.classList.add("js");if(localStorage.getItem("dark-mode")==="1")e.classList.add("dark")}catch(e){}})()`
           }}
         />
         <link rel="preconnect" href="https://www.googletagmanager.com" />

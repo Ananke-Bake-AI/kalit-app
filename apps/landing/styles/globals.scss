@@ -149,9 +149,11 @@ h6 {
   }
 }
 
-/* Reveal */
+/* Reveal — only hide when JS is available (the `js` class is added pre-paint
+   in the root layout). Without JS, or if GSAP fails to run, the content stays
+   visible instead of being stuck invisible. */
 
-[data-reveal] {
+.js [data-reveal] {
   opacity: 0;
   transform: translateY(100px);
   will-change: transform, opacity;
