@@ -79,7 +79,9 @@
   "join": {
     "subtitle": "Başlayın",
     "title": "Flow + Pentest",
-    "description": "Kalit Flow lansman sayfalari olusturur ve yayina alir. Kalit Pentest canliya gecmeden once yetkili hedefleri tarar."
+    "description": "Kalit Flow lansman sayfalari olusturur ve yayina alir. Kalit Pentest canliya gecmeden once yetkili hedefleri tarar.",
+    "mute": "Sesi kapat",
+    "unmute": "Sesi aç"
   },
   "portfolio": {
     "subtitle": "Kalit Portföy",

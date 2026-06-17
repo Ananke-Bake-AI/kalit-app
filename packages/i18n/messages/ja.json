@@ -79,7 +79,9 @@
   "join": {
     "subtitle": "始めましょう",
     "title": "Flow + Pentest",
-    "description": "Kalit Flow はローンチページを作成して公開します。Kalit Pentest は公開前に許可済みターゲットをスキャンします。"
+    "description": "Kalit Flow はローンチページを作成して公開します。Kalit Pentest は公開前に許可済みターゲットをスキャンします。",
+    "mute": "ミュート",
+    "unmute": "ミュート解除"
   },
   "portfolio": {
     "subtitle": "Kalitポートフォリオ",

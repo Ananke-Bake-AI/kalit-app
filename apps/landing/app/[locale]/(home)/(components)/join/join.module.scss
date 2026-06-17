@@ -250,7 +250,9 @@ $responsiveJoinItem2: 500px;
 .screen {
   --screen-padding: calc(8px + 8 * (100vw - 320px) / 1080);
   background-color: var(--glass-15);
-  aspect-ratio: 16/11;
+  // Match the showcase video's native 16:9 so it fills the screen with no
+  // cropping or distortion (was 16/11, which zoomed and clipped the clip).
+  aspect-ratio: 16/9;
   width: var(--screen-width);
   max-width: 100%;
   margin-inline: auto;
@@ -259,11 +261,12 @@ $responsiveJoinItem2: 500px;
   @include cornerShape(var(--radius-1));
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
-  @include mask(linear-gradient(to top, oklch(from var(--bg-1) l c h / 0) 0%, var(--bg-1) 30%));
+  // Fade only the thin strip the cards bar overlaps so the lower part of the
+  // video stays visible (was 30%, which hid too much of the clip).
+  @include mask(linear-gradient(to top, oklch(from var(--bg-1) l c h / 0) 0%, var(--bg-1) 14%));
 
   @include max($responsiveJoin) {
-    aspect-ratio: 16/9;
-    @include mask(linear-gradient(to top, oklch(from var(--bg-1) l c h / 0) -100%, var(--bg-1) 40%));
+    @include mask(linear-gradient(to top, oklch(from var(--bg-1) l c h / 0) -100%, var(--bg-1) 18%));
   }
 
   &::after {
@@ -292,6 +295,38 @@ $responsiveJoinItem2: 500px;
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.sound {
+  position: absolute;
+  top: var(--size-4);
+  right: var(--size-4);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.6em;
+  height: 2.6em;
+  font-size: calc(13px + 4 * (100vw - 320px) / 1080);
+  border-radius: 50%;
+  color: var(--white);
+  background-color: oklch(0 0 0 / 0.4);
+  border: 1px solid oklch(1 0 0 / 0.18);
+  @include backdrop(8px);
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    background-color: oklch(0 0 0 / 0.6);
+    transform: scale(1.06);
+  }
+
+  svg {
+    width: 1.15em;
+    height: 1.15em;
+  }
 }
 
 .bg {

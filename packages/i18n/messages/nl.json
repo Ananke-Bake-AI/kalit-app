@@ -79,7 +79,9 @@
   "join": {
     "subtitle": "Aan de slag",
     "title": "Flow + Pentest",
-    "description": "Kalit Flow maakt en publiceert launchpagina's. Kalit Pentest scant geautoriseerde doelen voor go-live."
+    "description": "Kalit Flow maakt en publiceert launchpagina's. Kalit Pentest scant geautoriseerde doelen voor go-live.",
+    "mute": "Dempen",
+    "unmute": "Geluid aan"
   },
   "portfolio": {
     "subtitle": "Kalit Portfolio",

@@ -79,7 +79,9 @@
   "join": {
     "subtitle": "Начать",
     "title": "Flow + Pentest",
-    "description": "Kalit Flow создает и публикует launch-страницы. Kalit Pentest сканирует авторизованные цели перед запуском."
+    "description": "Kalit Flow создает и публикует launch-страницы. Kalit Pentest сканирует авторизованные цели перед запуском.",
+    "mute": "Выключить звук",
+    "unmute": "Включить звук"
   },
   "portfolio": {
     "subtitle": "Портфолио Kalit",

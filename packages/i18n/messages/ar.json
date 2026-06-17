@@ -79,7 +79,9 @@
   "join": {
     "subtitle": "ابدأ الآن",
     "title": "Flow + Pentest",
-    "description": "Kalit Flow ينشئ صفحات إطلاق وينشرها. Kalit Pentest يفحص الأهداف المصرح بها قبل النشر."
+    "description": "Kalit Flow ينشئ صفحات إطلاق وينشرها. Kalit Pentest يفحص الأهداف المصرح بها قبل النشر.",
+    "mute": "كتم الصوت",
+    "unmute": "تشغيل الصوت"
   },
   "portfolio": {
     "subtitle": "أعمال Kalit",

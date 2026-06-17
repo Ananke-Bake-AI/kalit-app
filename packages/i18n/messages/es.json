@@ -79,7 +79,9 @@
   "join": {
     "subtitle": "Empezar",
     "title": "Empieza con Flow. Añade Pentest antes del lanzamiento.",
-    "description": "Usa Flow para crear la página pública y luego ejecuta un chequeo de seguridad autorizado en tu app, API u objetivo de staging."
+    "description": "Usa Flow para crear la página pública y luego ejecuta un chequeo de seguridad autorizado en tu app, API u objetivo de staging.",
+    "mute": "Silenciar",
+    "unmute": "Activar sonido"
   },
   "portfolio": {
     "subtitle": "Portfolio Kalit",

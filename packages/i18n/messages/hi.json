@@ -79,7 +79,9 @@
   "join": {
     "subtitle": "शुरू करें",
     "title": "Flow + Pentest",
-    "description": "Kalit Flow लॉन्च पेज बनाकर लाइव करता है। Kalit Pentest गो-लाइव से पहले अधिकृत लक्ष्यों को स्कैन करता है।"
+    "description": "Kalit Flow लॉन्च पेज बनाकर लाइव करता है। Kalit Pentest गो-लाइव से पहले अधिकृत लक्ष्यों को स्कैन करता है।",
+    "mute": "म्यूट करें",
+    "unmute": "अनम्यूट करें"
   },
   "portfolio": {
     "subtitle": "Kalit पोर्टफ़ोलियो",

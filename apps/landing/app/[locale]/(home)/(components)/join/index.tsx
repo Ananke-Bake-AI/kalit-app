@@ -4,6 +4,7 @@ import { Button } from "@/components/button"
 import { Color4Bg } from "@/components/color4bg"
 import { Container } from "@/components/container"
 import { Heading } from "@/components/heading"
+import { Icon } from "@/components/icon"
 import { Link } from "@/components/link"
 import { Logo } from "@/components/logo"
 import { SUITES } from "@/lib/suites"
@@ -11,7 +12,7 @@ import { useTranslation } from "@/stores/i18n"
 import { useGSAP } from "@gsap/react"
 import clsx from "clsx"
 import gsap from "gsap"
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import s from "./join.module.scss"
 
 const LAUNCH_SUITE_IDS = new Set(["flow", "pentest", "search"])
@@ -22,6 +23,19 @@ export const Join = () => {
   const listRef = useRef<HTMLDivElement>(null)
   const path1Ref = useRef<SVGPathElement>(null)
   const path2Ref = useRef<SVGPathElement>(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
+  // Muted by default — required for autoplay; users opt into sound via the button.
+  const [muted, setMuted] = useState(true)
+
+  const toggleSound = () => {
+    const video = videoRef.current
+    if (!video) return
+    const next = !muted
+    video.muted = next
+    setMuted(next)
+    // Unmuting after a user gesture is allowed; make sure it's actually playing.
+    if (!next) void video.play().catch(() => {})
+  }
 
   useGSAP(() => {
     gsap
@@ -59,16 +73,27 @@ export const Join = () => {
           <div className={s.screen}>
             <div className={s.screenInside}>
               <video
+                ref={videoRef}
                 autoPlay
                 muted
                 loop
                 playsInline
                 preload="metadata"
-                poster="/video/kalit_new-poster.jpg"
+                poster="/video/kalit_showcase-poster.jpg"
                 className={s.video}
               >
-                <source src="/video/kalit_new.mp4" type="video/mp4" />
+                <source src="/video/kalit_showcase.mp4" type="video/mp4" />
               </video>
+              <button
+                type="button"
+                className={s.sound}
+                onClick={toggleSound}
+                aria-pressed={!muted}
+                aria-label={muted ? t("join.unmute") : t("join.mute")}
+                title={muted ? t("join.unmute") : t("join.mute")}
+              >
+                <Icon icon={muted ? "hugeicons:volume-mute-02" : "hugeicons:volume-high"} />
+              </button>
             </div>
           </div>
           <svg className={clsx(s.line, s.line1)} viewBox="0 0 850 215">

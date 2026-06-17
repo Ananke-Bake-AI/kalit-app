@@ -79,7 +79,9 @@
   "join": {
     "subtitle": "Começar",
     "title": "Flow + Pentest",
-    "description": "Kalit Flow cria e publica páginas de lançamento. Kalit Pentest escaneia alvos autorizados antes do go-live."
+    "description": "Kalit Flow cria e publica páginas de lançamento. Kalit Pentest escaneia alvos autorizados antes do go-live.",
+    "mute": "Silenciar",
+    "unmute": "Ativar som"
   },
   "portfolio": {
     "subtitle": "Portfolio Kalit",
