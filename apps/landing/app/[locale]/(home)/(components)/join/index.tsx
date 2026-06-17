@@ -96,12 +96,12 @@ export const Join = () => {
                 loop
                 playsInline
                 preload="metadata"
-                poster="/video/kalit_showcase-poster.jpg"
+                poster="/video/kalit_showcase-v2-poster.jpg"
                 className={s.video}
                 onPlay={() => setPlaying(true)}
                 onPause={() => setPlaying(false)}
               >
-                <source src="/video/kalit_showcase.mp4" type="video/mp4" />
+                <source src="/video/kalit_showcase-v2.mp4" type="video/mp4" />
               </video>
               <div className={s.controls}>
                 <button
