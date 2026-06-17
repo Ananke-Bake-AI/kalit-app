@@ -39,28 +39,28 @@ $responsiveJoinItem2: 500px;
 }
 
 .list {
-  position: absolute;
+  // Cards dock just BELOW the video, overlapping only a small lip, so the
+  // (vertically centered) video content is never hidden behind the bar.
+  --card-lip: calc(44px + 28 * (100vw - 320px) / 1080);
+  position: relative;
   width: calc(var(--screen-width) + 100px);
   max-width: 105%;
-  margin: auto;
+  margin: calc(-1 * var(--card-lip)) auto var(--spacing-2-5);
   @include backdrop(16px);
   @include cornerShape(var(--radius-1));
   @include border-glass;
-  bottom: var(--spacing-2-5);
   z-index: 15;
   background-color: var(--glass-75);
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   align-items: center;
 
   @include max($responsiveJoin) {
     --list-padding: calc(16px + 4 * (100vw - 320px) / 1080);
-    position: relative;
     padding: var(--list-padding);
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: calc(var(--list-padding) / 2);
+    margin-top: 0;
     margin-bottom: -1.75em;
   }
 
