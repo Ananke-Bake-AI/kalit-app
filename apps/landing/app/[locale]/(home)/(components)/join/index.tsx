@@ -63,9 +63,11 @@ export const Join = () => {
                 muted
                 loop
                 playsInline
+                preload="metadata"
+                poster="/video/kalit_new-poster.jpg"
                 className={s.video}
               >
-                <source src="/video/kalit-presentation.mp4" type="video/mp4" />
+                <source src="/video/kalit_new.mp4" type="video/mp4" />
               </video>
             </div>
           </div>
