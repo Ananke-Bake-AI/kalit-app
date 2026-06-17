@@ -81,7 +81,10 @@
     "title": "Start with Flow. Add Pentest before launch.",
     "description": "Use Flow to create the public page, then run an authorized security check on your app, API, or staging target.",
     "mute": "Mute",
-    "unmute": "Unmute"
+    "unmute": "Unmute",
+    "play": "Play",
+    "pause": "Pause",
+    "restart": "Restart"
   },
   "portfolio": {
     "subtitle": "Kalit Portfolio",

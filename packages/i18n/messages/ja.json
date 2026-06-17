@@ -81,7 +81,10 @@
     "title": "Flow + Pentest",
     "description": "Kalit Flow はローンチページを作成して公開します。Kalit Pentest は公開前に許可済みターゲットをスキャンします。",
     "mute": "ミュート",
-    "unmute": "ミュート解除"
+    "unmute": "ミュート解除",
+    "play": "再生",
+    "pause": "一時停止",
+    "restart": "最初から"
   },
   "portfolio": {
     "subtitle": "Kalitポートフォリオ",

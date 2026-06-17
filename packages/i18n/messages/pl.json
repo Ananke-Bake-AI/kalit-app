@@ -81,7 +81,10 @@
     "title": "Flow + Pentest",
     "description": "Kalit Flow tworzy i wdraza strony startowe. Kalit Pentest skanuje autoryzowane cele przed publikacja.",
     "mute": "Wycisz",
-    "unmute": "Włącz dźwięk"
+    "unmute": "Włącz dźwięk",
+    "play": "Odtwórz",
+    "pause": "Pauza",
+    "restart": "Od nowa"
   },
   "portfolio": {
     "subtitle": "Portfolio Kalit",

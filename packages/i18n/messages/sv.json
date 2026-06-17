@@ -81,7 +81,10 @@
     "title": "Flow + Pentest",
     "description": "Kalit Flow skapar och publicerar lanseringssidor. Kalit Pentest skannar auktoriserade mal fore go-live.",
     "mute": "Tysta",
-    "unmute": "Slå på ljud"
+    "unmute": "Slå på ljud",
+    "play": "Spela",
+    "pause": "Pausa",
+    "restart": "Börja om"
   },
   "portfolio": {
     "subtitle": "Kalit Portfolio",

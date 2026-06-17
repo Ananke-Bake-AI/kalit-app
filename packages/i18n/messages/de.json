@@ -81,7 +81,10 @@
     "title": "Flow + Pentest",
     "description": "Kalit Flow erstellt und deployt Launch-Seiten. Kalit Pentest scannt autorisierte Ziele vor dem Go-live.",
     "mute": "Stummschalten",
-    "unmute": "Ton einschalten"
+    "unmute": "Ton einschalten",
+    "play": "Abspielen",
+    "pause": "Pause",
+    "restart": "Neu starten"
   },
   "portfolio": {
     "subtitle": "Kalit Portfolio",

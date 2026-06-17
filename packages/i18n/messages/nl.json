@@ -81,7 +81,10 @@
     "title": "Flow + Pentest",
     "description": "Kalit Flow maakt en publiceert launchpagina's. Kalit Pentest scant geautoriseerde doelen voor go-live.",
     "mute": "Dempen",
-    "unmute": "Geluid aan"
+    "unmute": "Geluid aan",
+    "play": "Afspelen",
+    "pause": "Pauze",
+    "restart": "Opnieuw"
   },
   "portfolio": {
     "subtitle": "Kalit Portfolio",

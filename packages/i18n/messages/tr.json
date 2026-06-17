@@ -81,7 +81,10 @@
     "title": "Flow + Pentest",
     "description": "Kalit Flow lansman sayfalari olusturur ve yayina alir. Kalit Pentest canliya gecmeden once yetkili hedefleri tarar.",
     "mute": "Sesi kapat",
-    "unmute": "Sesi aç"
+    "unmute": "Sesi aç",
+    "play": "Oynat",
+    "pause": "Duraklat",
+    "restart": "Yeniden başlat"
   },
   "portfolio": {
     "subtitle": "Kalit Portföy",

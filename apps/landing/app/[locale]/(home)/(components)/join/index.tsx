@@ -26,6 +26,9 @@ export const Join = () => {
   const videoRef = useRef<HTMLVideoElement>(null)
   // Muted by default — required for autoplay; users opt into sound via the button.
   const [muted, setMuted] = useState(true)
+  // The clip autoplays and loops, so it's playing by default. Synced to the
+  // real <video> via onPlay/onPause so the control reflects actual state.
+  const [playing, setPlaying] = useState(true)
 
   const toggleSound = () => {
     const video = videoRef.current
@@ -35,6 +38,20 @@ export const Join = () => {
     setMuted(next)
     // Unmuting after a user gesture is allowed; make sure it's actually playing.
     if (!next) void video.play().catch(() => {})
+  }
+
+  const togglePlay = () => {
+    const video = videoRef.current
+    if (!video) return
+    if (video.paused) void video.play().catch(() => {})
+    else video.pause()
+  }
+
+  const restart = () => {
+    const video = videoRef.current
+    if (!video) return
+    video.currentTime = 0
+    void video.play().catch(() => {})
   }
 
   useGSAP(() => {
@@ -81,19 +98,41 @@ export const Join = () => {
                 preload="metadata"
                 poster="/video/kalit_showcase-poster.jpg"
                 className={s.video}
+                onPlay={() => setPlaying(true)}
+                onPause={() => setPlaying(false)}
               >
                 <source src="/video/kalit_showcase.mp4" type="video/mp4" />
               </video>
-              <button
-                type="button"
-                className={s.sound}
-                onClick={toggleSound}
-                aria-pressed={!muted}
-                aria-label={muted ? t("join.unmute") : t("join.mute")}
-                title={muted ? t("join.unmute") : t("join.mute")}
-              >
-                <Icon icon={muted ? "hugeicons:volume-mute-02" : "hugeicons:volume-high"} />
-              </button>
+              <div className={s.controls}>
+                <button
+                  type="button"
+                  className={s.control}
+                  onClick={togglePlay}
+                  aria-label={playing ? t("join.pause") : t("join.play")}
+                  title={playing ? t("join.pause") : t("join.play")}
+                >
+                  <Icon icon={playing ? "hugeicons:pause" : "hugeicons:play"} />
+                </button>
+                <button
+                  type="button"
+                  className={s.control}
+                  onClick={restart}
+                  aria-label={t("join.restart")}
+                  title={t("join.restart")}
+                >
+                  <Icon icon="hugeicons:refresh" />
+                </button>
+                <button
+                  type="button"
+                  className={s.control}
+                  onClick={toggleSound}
+                  aria-pressed={!muted}
+                  aria-label={muted ? t("join.unmute") : t("join.mute")}
+                  title={muted ? t("join.unmute") : t("join.mute")}
+                >
+                  <Icon icon={muted ? "hugeicons:volume-mute-02" : "hugeicons:volume-high"} />
+                </button>
+              </div>
             </div>
           </div>
           <svg className={clsx(s.line, s.line1)} viewBox="0 0 850 215">

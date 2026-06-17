@@ -81,7 +81,10 @@
     "title": "Flow + Pentest",
     "description": "Kalit Flow ينشئ صفحات إطلاق وينشرها. Kalit Pentest يفحص الأهداف المصرح بها قبل النشر.",
     "mute": "كتم الصوت",
-    "unmute": "تشغيل الصوت"
+    "unmute": "تشغيل الصوت",
+    "play": "تشغيل",
+    "pause": "إيقاف مؤقت",
+    "restart": "إعادة التشغيل"
   },
   "portfolio": {
     "subtitle": "أعمال Kalit",

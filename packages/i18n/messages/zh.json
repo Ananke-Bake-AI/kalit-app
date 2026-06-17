@@ -81,7 +81,10 @@
     "title": "Flow + Pentest",
     "description": "Kalit Flow 创建并部署发布页。Kalit Pentest 在上线前扫描已授权目标。",
     "mute": "静音",
-    "unmute": "取消静音"
+    "unmute": "取消静音",
+    "play": "播放",
+    "pause": "暂停",
+    "restart": "重新播放"
   },
   "portfolio": {
     "subtitle": "Kalit 作品集",

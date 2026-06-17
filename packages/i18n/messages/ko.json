@@ -81,7 +81,10 @@
     "title": "Flow + Pentest",
     "description": "Kalit Flow는 출시 페이지를 만들고 배포합니다. Kalit Pentest는 출시 전에 승인된 대상을 스캔합니다.",
     "mute": "음소거",
-    "unmute": "음소거 해제"
+    "unmute": "음소거 해제",
+    "play": "재생",
+    "pause": "일시정지",
+    "restart": "다시 시작"
   },
   "portfolio": {
     "subtitle": "Kalit 포트폴리오",
