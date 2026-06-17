@@ -163,5 +163,5 @@ function detectPreferred(request: NextRequest): Locale {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon[^/]*|fonts|img|sitemap|robots).*)"]
+  matcher: ["/((?!api|_next/static|_next/image|favicon[^/]*|fonts|img|assets|video|sitemap|robots).*)"]
 }
