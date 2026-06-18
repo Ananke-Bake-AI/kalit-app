@@ -1,12 +1,14 @@
 import { Container } from "@/components/container"
 import { Heading } from "@/components/heading"
 import { Icon } from "@/components/icon"
+import { SuiteFaq } from "@/components/suite-faq"
 import {
   SearchHeroPrompt,
   SuiteLandingHero,
   SuiteLandingHow
 } from "@/components/suite-landing"
 import { isValidLocale, type Locale } from "@/lib/i18n"
+import { SUITE_FAQ } from "@/lib/suite-faq"
 import { getServerTranslation, getTranslationForLocale } from "@/lib/i18n-server"
 import { MetadataSeo } from "@/lib/metadata"
 import { getSuiteById } from "@/lib/suites"
@@ -128,6 +130,7 @@ export default async function SearchPage() {
         ]}
         poweredTitle={t("suiteLanding.poweredByAI")}
       />
+      <SuiteFaq items={SUITE_FAQ.search} />
     </>
   )
 }

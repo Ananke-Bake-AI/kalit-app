@@ -1,4 +1,5 @@
 import { Portfolio } from "@/components/portfolio"
+import { SuiteFaq } from "@/components/suite-faq"
 import {
   FlowHeroPrompt,
   SuiteLandingFeatures,
@@ -7,6 +8,7 @@ import {
   SuiteLandingPlans
 } from "@/components/suite-landing"
 import { Underline } from "@/components/underline"
+import { SUITE_FAQ } from "@/lib/suite-faq"
 import { formatLocalizedPrices } from "@/lib/currency"
 import { isValidLocale, type Locale } from "@/lib/i18n"
 import { getServerLocale, getServerTranslation, getTranslationForLocale } from "@/lib/i18n-server"
@@ -216,6 +218,7 @@ export default async function FlowPage() {
         suiteAppUrl={suiteAppUrl}
         marketingPath={flowMarketingPath}
       />
+      <SuiteFaq items={SUITE_FAQ.flow} />
     </>
   )
 }

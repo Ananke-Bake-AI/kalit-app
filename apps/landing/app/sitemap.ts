@@ -3,6 +3,7 @@ import { DEFAULT_LOCALE, LOCALES, localePath } from "@/lib/i18n"
 import { ALTERNATIVES } from "@/app/[locale]/(home)/alternatives/data"
 import { COMPETITORS } from "@/app/[locale]/(home)/compare/data"
 import { listPublishedPosts } from "@/app/[locale]/(home)/blog/posts-server"
+import { GLOSSARY } from "@/lib/glossary"
 
 const BASE_URL = "https://kalit.ai"
 
@@ -33,6 +34,7 @@ const STATIC_PAGES: PageDef[] = [
 
   // SEO / content hubs
   { path: "/blog", changeFrequency: "daily", priority: 0.7 },
+  { path: "/glossary", changeFrequency: "weekly", priority: 0.6 },
   { path: "/alternatives", changeFrequency: "weekly", priority: 0.7 },
   { path: "/compare", changeFrequency: "weekly", priority: 0.7 },
   { path: "/changelog", changeFrequency: "weekly", priority: 0.6 },
@@ -80,6 +82,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
   for (const comp of COMPETITORS) {
     pages.push({ path: `/compare/${comp.slug}`, changeFrequency: "weekly", priority: 0.7 })
+  }
+
+  // Glossary terms (DefinedTerm pages).
+  for (const term of GLOSSARY) {
+    pages.push({ path: `/glossary/${term.slug}`, changeFrequency: "monthly", priority: 0.5 })
   }
 
   // Blog posts are locale-agnostic by slug. listPublishedPosts is resilient and

@@ -6,6 +6,7 @@
 import { APP_BASE_URL } from "@/lib/config"
 import { DEFAULT_LOCALE } from "@/lib/i18n"
 import { listPublishedPosts } from "@/app/[locale]/(home)/blog/posts-server"
+import { GLOSSARY } from "@/lib/glossary"
 
 export const revalidate = 3600
 
@@ -15,6 +16,10 @@ export async function GET() {
 
   const guides = posts
     .map((p) => `- [${p.title}](${base}/blog/${p.slug}): ${p.description}`)
+    .join("\n")
+
+  const glossary = GLOSSARY
+    .map((t) => `- [${t.term}](${base}/glossary/${t.slug}): ${t.short}`)
     .join("\n")
 
   const body = `# Kalit AI
@@ -37,6 +42,10 @@ Kalit AI (${base}) gives early-stage founders and indie builders specialized AI 
 ## Guides and articles
 
 ${guides}
+
+## Glossary
+
+${glossary}
 
 ## Company and reference
 

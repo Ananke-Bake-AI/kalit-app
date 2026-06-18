@@ -1,0 +1,118 @@
+@use "@/styles/app-glass" as *;
+@use "@/styles/mixins" as *;
+
+.group {
+  margin-top: 2.5rem;
+}
+
+.groupTitle {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  color: var(--text);
+  margin-bottom: 1.1rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0.9rem;
+}
+
+.card {
+  @include glass-panel(0.9rem);
+  padding: 1.1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color 0.15s ease,
+    transform 0.15s ease;
+
+  @include is-hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--color-4) 50%, transparent);
+  }
+
+  strong {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    color: var(--text);
+  }
+
+  span {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+}
+
+.term {
+  max-width: 720px;
+  margin-inline: auto;
+}
+
+.back {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+
+  @include is-hover {
+    color: var(--text);
+  }
+}
+
+.termTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.lede {
+  margin-top: 0.8rem;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.body {
+  margin-top: 1.8rem;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text);
+
+  p {
+    margin-bottom: 1.1rem;
+  }
+
+  a {
+    color: var(--color-4);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  code {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.9em;
+    background: color-mix(in srgb, var(--text) 8%, transparent);
+    padding: 0.1em 0.35em;
+    border-radius: 0.3rem;
+  }
+}
+
+.related {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid color-mix(in srgb, var(--text) 10%, transparent);
+
+  h2 {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    color: var(--text);
+    margin-bottom: 1.2rem;
+  }
+}

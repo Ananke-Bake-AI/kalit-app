@@ -584,6 +584,16 @@ export const EN_PAGE_STRINGS = {
     empty: "No posts yet. Check back soon.",
     ctaHeading: "Ready to try it yourself?",
     ctaText: "Go from prompt to a launched, scanned, production-ready product with Kalit."
+  },
+  glossary: {
+    metaTitle: "Glossary — Kalit AI",
+    metaDescription:
+      "Plain-English definitions of the security, building and growth terms founders run into when launching a product: IDOR, OWASP, SARIF, MVP, TAM/SAM/SOM and more.",
+    title: "Glossary",
+    description: "Plain-English definitions of the terms founders meet when building, securing and launching a product.",
+    relatedTitle: "Related terms",
+    backLink: "← All terms",
+    metaTermSuffix: "definition"
   }
 } as const
 
