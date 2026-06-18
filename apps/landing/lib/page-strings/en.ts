@@ -581,7 +581,9 @@ export const EN_PAGE_STRINGS = {
     shareX: "Share on X",
     shareLinkedIn: "Share on LinkedIn",
     shareHN: "Share on Hacker News",
-    empty: "No posts yet. Check back soon."
+    empty: "No posts yet. Check back soon.",
+    ctaHeading: "Ready to try it yourself?",
+    ctaText: "Go from prompt to a launched, scanned, production-ready product with Kalit."
   }
 } as const
 

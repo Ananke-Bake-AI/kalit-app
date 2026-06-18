@@ -2,7 +2,8 @@ import { Container } from "@/components/container"
 import { Link } from "@/components/link"
 import { PageHeader } from "@/components/page-header"
 import { PageSection } from "@/components/page-section"
-import { isValidLocale, type Locale } from "@/lib/i18n"
+import { APP_BASE_URL } from "@/lib/config"
+import { isValidLocale, localePath, type Locale } from "@/lib/i18n"
 import { getServerTranslation } from "@/lib/i18n-server"
 import { MetadataSeo } from "@/lib/metadata"
 import { getPageStrings } from "@/lib/page-strings"
@@ -22,12 +23,18 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale: raw } = await params
   const locale = isValidLocale(raw) ? (raw as Locale) : "en"
   const b = (await getPageStrings(locale)).blog
-  return MetadataSeo({
+  const meta = MetadataSeo({
     fullTitle: b.metaTitle,
     description: b.metaDescription,
     locale,
     pathname: "/blog"
   })
+  // Advertise the RSS feed for discovery / syndication.
+  meta.alternates = {
+    ...meta.alternates,
+    types: { "application/rss+xml": `${localePath("/blog/rss.xml", locale)}` }
+  }
+  return meta
 }
 
 export default async function BlogIndex({
@@ -42,7 +49,34 @@ export default async function BlogIndex({
 
   const [featured, ...rest] = posts
 
+  const base = APP_BASE_URL.toString().replace(/\/$/, "")
+  const blogUrl = `${base}${localePath("/blog", locale)}`
+  const blogJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: b.metaTitle,
+    description: b.metaDescription,
+    url: blogUrl,
+    inLanguage: locale,
+    publisher: {
+      "@type": "Organization",
+      name: "Kalit AI",
+      logo: { "@type": "ImageObject", url: `${base}/img/thumbnail.jpg` }
+    },
+    blogPost: posts.map((p) => ({
+      "@type": "BlogPosting",
+      headline: p.title,
+      description: p.description,
+      url: `${base}${localePath(`/blog/${p.slug}`, locale)}`,
+      datePublished: p.publishedAt?.toISOString(),
+      dateModified: p.updatedAt.toISOString(),
+      author: { "@type": "Person", name: p.authorName },
+      keywords: p.tags.join(", ")
+    }))
+  }
+
   return (
+    <>
     <PageSection>
       <Container>
         <div className={s.indexHeader}>
@@ -116,5 +150,10 @@ export default async function BlogIndex({
         </div>
       </Container>
     </PageSection>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(blogJsonLd) }}
+    />
+    </>
   )
 }

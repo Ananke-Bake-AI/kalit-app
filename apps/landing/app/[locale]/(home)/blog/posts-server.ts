@@ -22,6 +22,8 @@ export interface ResolvedPost {
   updatedAt: Date
   readingMinutes: number
   locale: Locale
+  /** Locales with real content for this post: "en" + any translated locales. */
+  availableLocales: Locale[]
 }
 
 interface TranslationEntry {
@@ -41,7 +43,15 @@ function resolveLocale(post: BlogPost, locale: Locale): ResolvedPost {
   const trMap = (post.translations as Record<string, TranslationEntry> | null) || {}
   const tr = locale !== "en" ? trMap[locale] : null
 
+  // A translation only "counts" if it actually has a body — otherwise the page
+  // would just render the English fallback under a foreign hreflang.
+  const availableLocales = [
+    "en" as Locale,
+    ...Object.keys(trMap).filter((k) => trMap[k]?.body) as Locale[]
+  ]
+
   return {
+    availableLocales,
     id: post.id,
     slug: post.slug,
     title: tr?.title || post.title,

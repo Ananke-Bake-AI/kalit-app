@@ -1,6 +1,8 @@
 import { Container } from "@/components/container"
 import { Link } from "@/components/link"
+import { Logo } from "@/components/logo"
 import { PageSection } from "@/components/page-section"
+import { SUITES, type SuiteId } from "@/lib/suites"
 import { APP_BASE_URL } from "@/lib/config"
 import { isValidLocale, type Locale } from "@/lib/i18n"
 import { MetadataSeo } from "@/lib/metadata"
@@ -19,6 +21,31 @@ export async function generateStaticParams() {
 }
 
 export const revalidate = 60
+
+// Map a post's tags to the most relevant suite for the end-of-post CTA.
+const TAG_SUITE: Record<string, SuiteId> = {
+  security: "pentest",
+  pentest: "pentest",
+  vulnerability: "pentest",
+  flow: "flow",
+  engineering: "flow",
+  agents: "flow",
+  product: "flow",
+  launch: "flow",
+  "founder-notes": "flow",
+  search: "search",
+  research: "search",
+  market: "search",
+  marketing: "marketing"
+}
+
+function suiteForTags(tags: string[]): SuiteId {
+  for (const tag of tags) {
+    const hit = TAG_SUITE[tag.toLowerCase()]
+    if (hit) return hit
+  }
+  return "flow"
+}
 
 export async function generateMetadata({
   params
@@ -44,8 +71,21 @@ export async function generateMetadata({
     locale,
     pathname: `/blog/${post.slug}`,
     type: "article",
-    image: post.ogImageUrl || post.coverImageUrl || undefined,
-    keywords: post.tags.length ? post.tags : undefined
+    // Per-post image: explicit cover/OG if set, else an auto-generated card so
+    // the post never shares with the generic site thumbnail.
+    image:
+      post.ogImageUrl ||
+      post.coverImageUrl ||
+      `/api/blog/og/${post.slug}${locale === "en" ? "" : `?locale=${locale}`}`,
+    keywords: post.tags.length ? post.tags : undefined,
+    article: {
+      publishedTime: post.publishedAt?.toISOString(),
+      modifiedTime: post.updatedAt.toISOString(),
+      authors: [post.authorName],
+      tags: post.tags,
+      section: post.tags[0]
+    },
+    availableLocales: post.availableLocales
   })
 }
 
@@ -96,6 +136,7 @@ export default async function BlogPostPage({
   const b = (await getPageStrings(locale)).blog
   const related = await listRelatedPosts(post.slug, post.tags, locale, 3)
   const headings = extractHeadings(post.body)
+  const ctaSuite = SUITES.find((suite) => suite.id === suiteForTags(post.tags)) ?? SUITES[0]
 
   const fmtDate = (d: Date | null) =>
     d
@@ -253,6 +294,22 @@ export default async function BlogPostPage({
                   {post.body}
                 </ReactMarkdown>
               </div>
+
+              <aside
+                className={s.cta}
+                style={{ "--color": ctaSuite.color } as React.CSSProperties}
+              >
+                <div className={s.ctaIcon} aria-hidden="true">
+                  <Logo id={ctaSuite.id} />
+                </div>
+                <div className={s.ctaText}>
+                  <strong>{b.ctaHeading}</strong>
+                  <span>{b.ctaText}</span>
+                </div>
+                <Link href={`/${ctaSuite.id}`} className={s.ctaBtn}>
+                  {ctaSuite.button}
+                </Link>
+              </aside>
 
               {related.length > 0 && (
                 <section className={s.related}>

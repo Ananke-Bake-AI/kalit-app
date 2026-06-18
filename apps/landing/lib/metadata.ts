@@ -2,6 +2,14 @@ import { APP_BASE_URL, APP_NAME } from "@/lib/config"
 import { DEFAULT_LOCALE, LOCALES, localePath, type Locale } from "@/lib/i18n"
 import type { Metadata } from "next"
 
+interface ArticleMeta {
+  publishedTime?: string
+  modifiedTime?: string
+  authors?: string[]
+  tags?: string[]
+  section?: string
+}
+
 interface MetadataSeoProps {
   fullTitle?: string
   title?: string
@@ -14,13 +22,21 @@ interface MetadataSeoProps {
   keywords?: string[]
   noIndex?: boolean
   favicon?: string
+  /** Open Graph `article:*` fields — only emitted when type === "article". */
+  article?: ArticleMeta
+  /**
+   * Restrict hreflang to locales that actually have distinct content. Defaults
+   * to all 16. Pass e.g. ["en", "fr"] for a blog post translated only to FR so
+   * we don't advertise 14 "translations" that are really English fallbacks.
+   */
+  availableLocales?: Locale[]
 }
 
-/** Build hreflang alternates for all 16 locales + x-default. */
-function buildAlternates(pathname: string) {
+/** Build hreflang alternates for the given locales (default: all 16) + x-default. */
+function buildAlternates(pathname: string, locales: readonly Locale[] = LOCALES) {
   const base = APP_BASE_URL.toString().replace(/\/$/, "")
   const languages: Record<string, string> = {}
-  for (const loc of LOCALES) {
+  for (const loc of locales) {
     languages[loc] = `${base}${localePath(pathname, loc)}`
   }
   languages["x-default"] = `${base}${localePath(pathname, DEFAULT_LOCALE)}`
@@ -38,7 +54,9 @@ export const MetadataSeo = ({
   type = "website",
   keywords,
   noIndex = false,
-  favicon = "/favicon.svg"
+  favicon = "/favicon.svg",
+  article,
+  availableLocales
 }: MetadataSeoProps): Metadata => {
   const headTitle = fullTitle ? fullTitle : `${APP_NAME} - ${title}`
   const fullUrl = url ? new URL(url, APP_BASE_URL) : pathname ? new URL(localePath(pathname, locale), APP_BASE_URL) : APP_BASE_URL
@@ -62,7 +80,7 @@ export const MetadataSeo = ({
 
   const alternates: Metadata["alternates"] = {
     canonical: fullUrl.toString(),
-    ...(pathname ? { languages: buildAlternates(pathname) } : {})
+    ...(pathname ? { languages: buildAlternates(pathname, availableLocales) } : {})
   }
 
   return {
@@ -96,7 +114,16 @@ export const MetadataSeo = ({
           width: 1200,
           height: 630
         }
-      ]
+      ],
+      ...(type === "article" && article
+        ? {
+            publishedTime: article.publishedTime,
+            modifiedTime: article.modifiedTime,
+            authors: article.authors,
+            tags: article.tags,
+            section: article.section
+          }
+        : {})
     },
     twitter: {
       card: "summary_large_image",
