@@ -27,6 +27,7 @@ export const Footer = () => {
         { title: t("footer.faq"), href: "/faq" },
         { title: t("footer.support"), href: "/support" },
         { title: "Blog", href: "/blog" },
+        { title: "Glossary", href: "/glossary" },
         { title: "Changelog", href: "/changelog" },
         { title: "Compare", href: "/compare" },
         { title: "Alternatives", href: "/alternatives" }
