@@ -4,6 +4,8 @@ import { headers } from "next/headers"
 import { Suspense } from "react"
 import { Toast } from "@/components/layout/toast"
 import { GARouteTracker } from "@/components/analytics/ga-route-tracker"
+import { FbPixelRouteTracker } from "@/components/analytics/fb-pixel-route-tracker"
+import { FB_PIXEL_ID } from "@/lib/fbpixel"
 import "@/styles/globals.scss"
 import { fonts } from "./fonts"
 
@@ -25,6 +27,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
         <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link rel="preconnect" href="https://connect.facebook.net" />
+        <link rel="dns-prefetch" href="https://connect.facebook.net" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         {/* Single gtag.js bootstrap. Loader src uses the GA4 ID so
@@ -59,6 +63,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-WNSM869M');`
           }}
         />
+        {/* Meta (Facebook) Pixel — base + initial PageView. SPA navigations
+            fire PageView via <FbPixelRouteTracker/>; conversions are mirrored
+            from the dataLayer in lib/fbpixel.ts. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${FB_PIXEL_ID}');fbq('track','PageView');`
+          }}
+        />
       </head>
       <body className={fonts}>
         {/* Google Tag Manager (noscript) fallback. Required by GTM's
@@ -71,6 +83,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             style={{ display: "none", visibility: "hidden" }}
           />
         </noscript>
+        {/* Meta Pixel noscript fallback. */}
+        <noscript>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            height="1"
+            width="1"
+            style={{ display: "none" }}
+            src={`https://www.facebook.com/tr?id=${FB_PIXEL_ID}&ev=PageView&noscript=1`}
+            alt=""
+          />
+        </noscript>
         {children}
         {/* Single global toaster — the styled <Toast/> is mounted here only.
             It used to also be rendered in the layout wrapper + studio-shell,
@@ -81,6 +104,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             Suspense boundary because GARouteTracker reads useSearchParams. */}
         <Suspense fallback={null}>
           <GARouteTracker />
+          <FbPixelRouteTracker />
         </Suspense>
       </body>
     </html>

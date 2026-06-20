@@ -50,7 +50,10 @@ export async function createCheckoutSession(planKey: string) {
     customer: customerId,
     mode: "subscription",
     line_items: [{ price: priceId, quantity: 1 }],
-    success_url: new URL("/dashboard?checkout=success", APP_URL).toString(),
+    success_url: new URL(
+      `/dashboard?checkout=success&type=subscription&plan=${plan.key}&value=${plan.monthlyPrice / 100}&currency=USD`,
+      APP_URL
+    ).toString(),
     cancel_url: new URL("/settings/billing?checkout=canceled", APP_URL).toString(),
     metadata: {
       orgId: org.id,
@@ -203,7 +206,10 @@ export async function createCreditCheckoutSession(packKey: string) {
     customer: customerId,
     mode: "payment",
     line_items: [{ price: priceId, quantity: 1 }],
-    success_url: new URL(`/settings/billing?checkout=success&type=credits&amount=${pack.credits}`, APP_URL).toString(),
+    success_url: new URL(
+      `/settings/billing?checkout=success&type=credits&amount=${pack.credits}&value=${pack.priceCents / 100}&currency=USD`,
+      APP_URL
+    ).toString(),
     cancel_url: new URL("/settings/billing?checkout=canceled", APP_URL).toString(),
     metadata: {
       orgId: org.id,

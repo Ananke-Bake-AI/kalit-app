@@ -16,6 +16,8 @@
  * GTM-facing path; the two coexist on the shared dataLayer global.
  */
 
+import { forwardEventToPixel } from "@/lib/fbpixel"
+
 declare global {
   interface Window {
     dataLayer?: Record<string, unknown>[]
@@ -26,4 +28,7 @@ export function pushDataLayer(event: string, params: Record<string, unknown> = {
   if (typeof window === "undefined") return
   window.dataLayer = window.dataLayer || []
   window.dataLayer.push({ event, ...params })
+  // Mirror conversions to the Meta Pixel (sign_up → CompleteRegistration,
+  // trial_started → StartTrial, purchase_completed → Purchase, …).
+  forwardEventToPixel(event, params)
 }

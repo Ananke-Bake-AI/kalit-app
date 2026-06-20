@@ -23,9 +23,13 @@ export function CheckoutSuccessTracker() {
     firedRef.current = true
     const type = searchParams.get("type") || "subscription"
     const amount = searchParams.get("amount")
+    const value = searchParams.get("value")
+    const currency = searchParams.get("currency") || "USD"
     pushDataLayer("purchase_completed", {
       type,
       ...(amount ? { credits: Number(amount) } : {}),
+      // Monetary value → Meta Pixel Purchase (ROAS) + GA4.
+      ...(value ? { value: Number(value), currency } : {}),
     })
   }, [searchParams, pathname])
 

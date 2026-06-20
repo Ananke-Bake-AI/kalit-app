@@ -3,6 +3,7 @@
 import { Button } from "@/components/button"
 import { Container } from "@/components/container"
 import { TextField } from "@/components/text-field"
+import { pushDataLayer } from "@/lib/analytics/data-layer"
 import { localePath } from "@/lib/i18n"
 import { useI18n } from "@/stores/i18n"
 import { completeOnboarding } from "@/server/actions/onboarding"
@@ -66,6 +67,10 @@ export default function SetupPage() {
       toast.error(result.error)
       return
     }
+
+    // Trial activation north-star: onboarding done → 14-day trial granted.
+    // → StartTrial on the Meta Pixel (and trial_started in GTM/GA4).
+    pushDataLayer("trial_started", { plan: "trial", method: "onboarding" })
 
     await update({ onboardingDone: true, orgId: result.orgId })
     // Skip result.redirectTo (which points at /flow) and route to /studio
