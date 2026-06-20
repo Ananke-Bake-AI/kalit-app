@@ -4,7 +4,6 @@ import { headers } from "next/headers"
 import { Suspense } from "react"
 import { Toast } from "@/components/layout/toast"
 import { GARouteTracker } from "@/components/analytics/ga-route-tracker"
-import { FbPixelRouteTracker } from "@/components/analytics/fb-pixel-route-tracker"
 import { FB_PIXEL_ID } from "@/lib/fbpixel"
 import "@/styles/globals.scss"
 import { fonts } from "./fonts"
@@ -63,12 +62,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-WNSM869M');`
           }}
         />
-        {/* Meta (Facebook) Pixel — base + initial PageView. SPA navigations
-            fire PageView via <FbPixelRouteTracker/>; conversions are mirrored
-            from the dataLayer in lib/fbpixel.ts. */}
+        {/* Meta (Facebook) Pixel — load + init only. PageView is intentionally
+            NOT fired here: the GTM container (GTM-WNSM869M) already owns the
+            Meta PageView (incl. SPA navs), so firing it here too would
+            double-count. Conversions (CompleteRegistration / StartTrial /
+            Purchase / Lead) are mirrored from the dataLayer in lib/fbpixel.ts —
+            those live only in code, so there's no duplication. init() is a
+            no-op if GTM initialised the same pixel first; it guarantees fbq is
+            ready for the conversion events regardless of load order. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${FB_PIXEL_ID}');fbq('track','PageView');`
+            __html: `!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${FB_PIXEL_ID}');`
           }}
         />
       </head>
@@ -104,7 +108,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             Suspense boundary because GARouteTracker reads useSearchParams. */}
         <Suspense fallback={null}>
           <GARouteTracker />
-          <FbPixelRouteTracker />
         </Suspense>
       </body>
     </html>
