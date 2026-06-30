@@ -1,5 +1,5 @@
 import { prisma } from "./prisma"
-import { FREE_PLAN, getPlan } from "./plans"
+import { getPlan } from "./plans"
 import type { SuiteId } from "./suites"
 
 export interface ResolvedEntitlements {
@@ -12,9 +12,17 @@ export interface ResolvedEntitlements {
 }
 
 export async function resolveEntitlements(orgId: string): Promise<ResolvedEntitlements> {
+  // Locked baseline — what an org gets with NO active subscription and NO
+  // active trial. Every org is granted a 14-day TRIAL on onboarding; while it
+  // is live the TRIAL overrides below grant Flow + 5 credits, and a paid
+  // subscription grants its plan. When the trial expires its entitlements drop
+  // out of the override query (expiresAt filter), so the org falls back to
+  // THIS: a hard paywall — zero credits and no suite access until they buy.
+  // There is no perpetual free usage tier (the "Free" card in plans.ts is
+  // marketing display only — it represents the 14-day trial, not ongoing use).
   const defaults: ResolvedEntitlements = {
-    suites: { flow: true, marketing: false, pentest: false, search: false },
-    creditsPerMonth: FREE_PLAN.creditsPerMonth,
+    suites: { flow: false, marketing: false, pentest: false, search: false },
+    creditsPerMonth: 0,
     maxMembers: 1,
     planKey: "free",
     isTrial: false,
