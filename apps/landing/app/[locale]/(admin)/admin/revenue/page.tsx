@@ -20,7 +20,11 @@ export default async function AdminRevenuePage() {
   const stats = [
     { label: "MRR", value: formatCents(data.mrr), hint: "Monthly Recurring Revenue" },
     { label: "ARR", value: formatCents(data.arr), hint: "Annual run rate" },
-    { label: "Active subs", value: String(data.activeCount), hint: `${data.totalSubscriptions} total` },
+    {
+      label: "Active subs",
+      value: String(data.activeCount),
+      hint: data.testCount > 0 ? `${data.totalSubscriptions} real · ${data.testCount} test hidden` : `${data.totalSubscriptions} total`
+    },
     { label: "Churned (month)", value: String(data.churnedThisMonth), hint: "Cancelled this month" },
     { label: "Manual access", value: String(data.manualAccessOrgs), hint: "Orgs with free/trial access" }
   ]
@@ -70,15 +74,18 @@ export default async function AdminRevenuePage() {
             <span>Stripe ID</span>
           </div>
           {data.subscriptions.map((sub) => (
-            <div key={sub.id} className={s.tableRow}>
-              <span className={s.orgName}>{sub.orgName}</span>
+            <div key={sub.id} className={s.tableRow} data-test={sub.isTest || undefined}>
+              <span className={s.orgName}>
+                {sub.orgName}
+                {sub.isTest ? <Badge>test</Badge> : null}
+              </span>
               <span className={s.ownerInfo}>
                 <span className={s.ownerName}>{sub.ownerName}</span>
                 <span className={s.ownerEmail}>{sub.ownerEmail}</span>
               </span>
               <span className={s.planKey}>{sub.planKey}</span>
               <span>
-                <Badge variant={statusVariant(sub.status)}>
+                <Badge variant={sub.isTest ? undefined : statusVariant(sub.status)}>
                   {sub.status.toLowerCase()}
                   {sub.cancelAtPeriodEnd ? " (cancelling)" : ""}
                 </Badge>

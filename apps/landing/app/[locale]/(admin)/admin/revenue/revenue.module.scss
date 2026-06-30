@@ -153,10 +153,19 @@
     min-width: 0;
     gap: var(--size-2);
   }
+
+  // Test / internal subs: dimmed so it's obvious they're excluded from the
+  // headline MRR/ARR numbers (they're kept in the list for visibility).
+  &[data-test] {
+    opacity: 0.5;
+  }
 }
 
 .orgName {
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
 }
 
 .ownerInfo {

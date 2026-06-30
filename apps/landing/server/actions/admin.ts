@@ -815,12 +815,20 @@ export async function getAdminRevenue() {
     orderBy: { createdAt: "desc" }
   })
 
-  // Compute MRR
+  // Real Stripe subscriptions get an opaque `sub_<base62>` id (live ones are
+  // `sub_1…`). Internal/comp accounts are seeded with readable ids
+  // (`sub_manual_…`, `sub_internal_…`, `sub_test_…`) — they must NOT count
+  // toward revenue or they inflate MRR/ARR with money no one is paying.
+  const isTestSub = (stripeSubscriptionId: string | null | undefined) =>
+    /^sub_(manual|internal|test)_/i.test(stripeSubscriptionId ?? "")
+
+  // Compute MRR — paying (non-test) active/trialing subs only.
   const activeSubscriptions = subscriptions.filter((s) => s.status === "ACTIVE" || s.status === "TRIALING")
+  const realActiveSubscriptions = activeSubscriptions.filter((s) => !isTestSub(s.stripeSubscriptionId))
   let mrr = 0
   const planBreakdown: Record<string, { count: number; revenue: number }> = {}
 
-  for (const sub of activeSubscriptions) {
+  for (const sub of realActiveSubscriptions) {
     const plan = PLANS.find((p) => p.key === sub.planKey)
     if (plan) {
       mrr += plan.monthlyPrice
@@ -830,8 +838,12 @@ export async function getAdminRevenue() {
     }
   }
 
-  // Churned this month
-  const churned = subscriptions.filter(
+  // "Real" totals exclude test/internal subs so the headline stats are honest.
+  const realSubscriptions = subscriptions.filter((s) => !isTestSub(s.stripeSubscriptionId))
+  const testCount = subscriptions.length - realSubscriptions.length
+
+  // Churned this month (real subs only)
+  const churned = realSubscriptions.filter(
     (s) => s.status === "CANCELED" && s.updatedAt >= startOfMonth
   ).length
 
@@ -844,8 +856,9 @@ export async function getAdminRevenue() {
   return {
     mrr,
     arr: mrr * 12,
-    totalSubscriptions: subscriptions.length,
-    activeCount: activeSubscriptions.length,
+    totalSubscriptions: realSubscriptions.length,
+    activeCount: realActiveSubscriptions.length,
+    testCount,
     churnedThisMonth: churned,
     manualAccessOrgs: manualOrgs.length,
     planBreakdown: Object.entries(planBreakdown).map(([key, val]) => ({
@@ -861,6 +874,7 @@ export async function getAdminRevenue() {
       stripePriceId: s.stripePriceId,
       planKey: s.planKey,
       status: s.status,
+      isTest: isTestSub(s.stripeSubscriptionId),
       currentPeriodStart: s.currentPeriodStart,
       currentPeriodEnd: s.currentPeriodEnd,
       cancelAtPeriodEnd: s.cancelAtPeriodEnd,
