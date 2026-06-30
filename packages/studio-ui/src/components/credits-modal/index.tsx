@@ -47,8 +47,11 @@ export function CreditsModal({ open, onClose, billingHref, plans, mode = "out_of
 
   useEffect(() => {
     if (!open) return
-    // GTM: the paywall (out-of-credits / low-credits gate) was surfaced.
-    pushDataLayer("paywall_shown", { surface: "credits_modal", mode })
+    // Analytics: the paywall (out-of-credits / low-credits gate) was surfaced.
+    pushDataLayer("paywall_viewed", { surface: "credits_modal", mode })
+    pushDataLayer(mode === "out_of_credits" ? "credits_exhausted" : "credits_low", {
+      surface: "credits_modal",
+    })
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose()
     }
@@ -85,7 +88,7 @@ export function CreditsModal({ open, onClose, billingHref, plans, mode = "out_of
               key={plan.key}
               href={billingHref}
               className={`${s.plan} ${plan.popular ? s.popular : ""}`}
-              onClick={() => pushDataLayer("upgrade_started", { surface: "credits_modal", plan: plan.key })}
+              onClick={() => pushDataLayer("upgrade_clicked", { surface: "credits_modal", plan: plan.key })}
             >
               <span className={s.planName}>{plan.name}</span>
               <span className={s.planPrice}>
@@ -104,7 +107,7 @@ export function CreditsModal({ open, onClose, billingHref, plans, mode = "out_of
           <a
             href={billingHref}
             className={s.primaryCta}
-            onClick={() => pushDataLayer("upgrade_started", { surface: "credits_modal", plan: "open_billing" })}
+            onClick={() => pushDataLayer("upgrade_clicked", { surface: "credits_modal", plan: "open_billing" })}
           >
             {t("studio.openBilling")}
             <Icon icon="hugeicons:arrow-right-01" />

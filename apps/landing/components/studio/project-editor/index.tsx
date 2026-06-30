@@ -15,6 +15,7 @@ import {
   type PollData,
 } from "@/lib/build-utils"
 import { useI18n } from "@/stores/i18n"
+import { pushDataLayer } from "@/lib/analytics/data-layer"
 import s from "./project-editor.module.scss"
 
 // ---------------------------------------------------------------------------
@@ -399,6 +400,30 @@ export function ProjectEditor() {
   const [errorMessage, setErrorMessage] = useState("")
   const [pausing, setPausing] = useState(false)
   const [projectTypeLabel, setProjectTypeLabel] = useState<"landing" | "webapp">("landing")
+
+  // Analytics: emit the generation lifecycle once per project. `started` flips
+  // when we observe an in-progress build; `ended` flips on the first terminal
+  // state. A project that mounts already-completed (no `started`) is a reopen,
+  // not a fresh success — see the effect below.
+  const genTrackRef = useRef<{ started: boolean; ended: boolean }>({ started: false, ended: false })
+  const previewTrackedRef = useRef(false)
+
+  useEffect(() => {
+    if (!id) return
+    const g = genTrackRef.current
+    if (pageState === "polling" && !g.started) {
+      g.started = true
+      pushDataLayer("generation_started", { project: id })
+    } else if (pageState === "preview" && !g.ended) {
+      g.ended = true
+      // started → we watched it build → success. Otherwise it loaded already
+      // finished → the user reopened an existing project.
+      pushDataLayer(g.started ? "generation_succeeded" : "project_reopened", { project: id })
+    } else if (pageState === "error" && !g.ended) {
+      g.ended = true
+      pushDataLayer("generation_failed", { project: id, reason: errorMessage || "unknown" })
+    }
+  }, [pageState, id, errorMessage])
 
   // Polling state
   const [progress, setProgress] = useState(0)
@@ -788,6 +813,14 @@ export function ProjectEditor() {
               src={`/api/broker/project/${id}/iframe?_t=${iframeKey}`}
               className={iframeClass}
               title={t("studio.preview")}
+              onLoad={() => {
+                // First time the live preview actually renders (not the polling
+                // placeholder, not auto-refresh reloads).
+                if (pageState === "preview" && !previewTrackedRef.current) {
+                  previewTrackedRef.current = true
+                  pushDataLayer("app_preview_rendered", { project: id })
+                }
+              }}
             />
 
             {/* Device toggle */}

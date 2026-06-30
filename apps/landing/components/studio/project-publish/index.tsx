@@ -159,7 +159,7 @@ export function ProjectPublish() {
 
   async function handleDeploy() {
     if (!slug.trim()) return
-    pushDataLayer("ship_clicked", { action: "deploy_subdomain" })
+    pushDataLayer("publish_started", { target: "subdomain" })
     setDeploying(true)
     setDeployError("")
     setDeploySuccess("")
@@ -172,12 +172,15 @@ export function ProjectPublish() {
       const json = await res.json()
       if (!res.ok || !json.success) {
         setDeployError(json.error || t("studio.deploymentFailed"))
+        pushDataLayer("deploy_failed", { target: "subdomain", reason: json.error || "unknown" })
       } else {
         setDeploySuccess(t("studio.liveAt").replace("{url}", json.data?.url || slug + ".kalit.ai"))
+        pushDataLayer("publish_succeeded", { target: "subdomain" })
         fetchDelivery()
       }
     } catch {
       setDeployError(t("studio.networkError"))
+      pushDataLayer("deploy_failed", { target: "subdomain", reason: "network_error" })
     } finally {
       setDeploying(false)
     }
@@ -229,7 +232,7 @@ export function ProjectPublish() {
 
   async function handleConnectDomain() {
     if (!domainInput.trim()) return
-    pushDataLayer("ship_clicked", { action: "connect_domain" })
+    pushDataLayer("publish_started", { target: "custom_domain" })
     setConnecting(true)
     setDomainError("")
     setDnsRecords(null)
@@ -245,12 +248,15 @@ export function ProjectPublish() {
       const json = await res.json()
       if (!res.ok || !json.success) {
         setDomainError(json.error || t("studio.connectionFailed"))
+        pushDataLayer("deploy_failed", { target: "custom_domain", reason: json.error || "unknown" })
       } else {
         if (json.data?.dnsRecords) setDnsRecords(json.data.dnsRecords)
+        pushDataLayer("custom_domain_connected", { domain: domainInput.trim().toLowerCase() })
         fetchDelivery()
       }
     } catch {
       setDomainError(t("studio.networkError"))
+      pushDataLayer("deploy_failed", { target: "custom_domain", reason: "network_error" })
     } finally {
       setConnecting(false)
     }

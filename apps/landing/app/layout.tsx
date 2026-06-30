@@ -4,6 +4,7 @@ import { headers } from "next/headers"
 import { Suspense } from "react"
 import { Toast } from "@/components/layout/toast"
 import { GARouteTracker } from "@/components/analytics/ga-route-tracker"
+import { AnalyticsBridge } from "@/components/analytics/analytics-bridge"
 import { FB_PIXEL_ID } from "@/lib/fbpixel"
 import "@/styles/globals.scss"
 import { fonts } from "./fonts"
@@ -109,6 +110,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <Suspense fallback={null}>
           <GARouteTracker />
         </Suspense>
+        {/* Registers window.__kalitTrack so the studio-ui package fans events
+            out through the same GTM/X + GA4 + Meta dispatcher. */}
+        <AnalyticsBridge />
       </body>
     </html>
   )

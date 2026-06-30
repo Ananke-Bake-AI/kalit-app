@@ -7,6 +7,7 @@ import { MetadataSeo } from "@/lib/metadata"
 import { getPageStrings } from "@/lib/page-strings"
 import { CREDIT_PACKS, FREE_PLAN, PLANS } from "@/lib/plans"
 import { PricingCta, PricingPackCta } from "./pricing-cta"
+import { PricingViewed } from "./pricing-viewed"
 import s from "./pricing.module.scss"
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
@@ -77,6 +78,7 @@ export default async function PricingPage({
 
   return (
     <PageSection>
+      <PricingViewed />
       <Container>
         <PageHeader title={p.title} description={p.description} />
 

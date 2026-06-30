@@ -68,8 +68,8 @@ export function ImportRepoModal({ sessionId, onClose, onEnsureSession }: ImportR
 
   const handleAttached = useCallback((r: ImportedRepoState) => {
     setImportedRepo(r)
-    // GTM: existing repo successfully imported into a studio session.
-    pushDataLayer("studio_repo_import", { method: tab, has_token: !!r.hasToken })
+    // An integration (Git repo) was successfully connected to a studio session.
+    pushDataLayer("integration_connected", { integration: "repo", method: tab, has_token: !!r.hasToken })
     pushRepoLinkedNotice(repoDisplayName(r.url))
     onClose()
   }, [setImportedRepo, pushRepoLinkedNotice, onClose, tab])

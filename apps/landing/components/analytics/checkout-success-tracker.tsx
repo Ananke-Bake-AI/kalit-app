@@ -25,7 +25,11 @@ export function CheckoutSuccessTracker() {
     const amount = searchParams.get("amount")
     const value = searchParams.get("value")
     const currency = searchParams.get("currency") || "USD"
-    pushDataLayer("purchase_completed", {
+    // Paid conversion. A subscription checkout → `subscription_started`; a
+    // one-off credit-pack purchase → `purchase_completed`. Both map to the
+    // Meta `Purchase` standard event (carrying value/currency for ROAS).
+    const event = type === "subscription" ? "subscription_started" : "purchase_completed"
+    pushDataLayer(event, {
       type,
       ...(amount ? { credits: Number(amount) } : {}),
       // Monetary value → Meta Pixel Purchase (ROAS) + GA4.

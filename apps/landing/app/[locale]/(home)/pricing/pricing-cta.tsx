@@ -2,6 +2,7 @@
 
 import { Link } from "@/components/link"
 import { createCheckoutSession, createCreditCheckoutSession } from "@/server/actions/billing"
+import { pushDataLayer } from "@/lib/analytics/data-layer"
 import { useSession } from "next-auth/react"
 import { useState } from "react"
 import { toast } from "sonner"
@@ -44,11 +45,21 @@ export function PricingCta({ planKey, label, signedOutHref, className }: Pricing
       : planKey === "free"
         ? "/dashboard"
         : "/contact-us"
-    return <Link href={href} className={className}>{label}</Link>
+    return (
+      <Link
+        href={href}
+        className={className}
+        onClick={() => pushDataLayer("plan_selected", { plan: planKey, logged_in: loggedIn })}
+      >
+        {label}
+      </Link>
+    )
   }
 
   const handleCheckout = async () => {
     setLoading(true)
+    pushDataLayer("plan_selected", { plan: planKey, logged_in: true })
+    pushDataLayer("checkout_started", { plan: planKey, type: "subscription" })
     const result = await createCheckoutSession(planKey)
     setLoading(false)
     if (result.error) {
@@ -92,7 +103,11 @@ export function PricingPackCta({ packKey, className, credits }: PricingPackCtaPr
 
   if (!loggedIn) {
     return (
-      <Link href="/register?plan=starter" className={className}>
+      <Link
+        href="/register?plan=starter"
+        className={className}
+        onClick={() => pushDataLayer("plan_selected", { plan: "starter", pack: packKey, logged_in: false })}
+      >
         Get started
       </Link>
     )
@@ -100,6 +115,8 @@ export function PricingPackCta({ packKey, className, credits }: PricingPackCtaPr
 
   const handleBuy = async () => {
     setLoading(true)
+    pushDataLayer("plan_selected", { pack: packKey, logged_in: true })
+    pushDataLayer("checkout_started", { pack: packKey, type: "credits" })
     const result = await createCreditCheckoutSession(packKey)
     setLoading(false)
     if (result.error) {

@@ -43,6 +43,9 @@ export default function RegisterPage() {
     e.preventDefault()
     setLoading(true)
 
+    // Funnel: the signup attempt has begun (form submitted).
+    pushDataLayer("signup_started", { method: "credentials" })
+
     const result = await register({ name, email, password })
 
     if (result.error) {
@@ -51,8 +54,8 @@ export default function RegisterPage() {
       return
     }
 
-    // GTM conversion: account created via email/password.
-    pushDataLayer("sign_up", { method: "credentials" })
+    // Conversion: account created via email/password.
+    pushDataLayer("signup_completed", { method: "credentials" })
 
     const signInResult = await signIn("credentials", {
       email,
@@ -73,8 +76,11 @@ export default function RegisterPage() {
   }
 
   const handleOAuth = async (provider: string) => {
-    // Best-effort: OAuth does a full-page redirect, so push before navigating.
-    pushDataLayer("sign_up", { method: provider })
+    // OAuth does a full-page redirect, so push before navigating. Completion
+    // can't be confirmed post-redirect here, so fire it optimistically (same
+    // behaviour as before) alongside the started signal.
+    pushDataLayer("signup_started", { method: provider })
+    pushDataLayer("signup_completed", { method: provider })
     await signIn(provider, { callbackUrl: destUrl() })
   }
 

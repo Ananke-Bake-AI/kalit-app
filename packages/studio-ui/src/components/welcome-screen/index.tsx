@@ -119,8 +119,8 @@ export function WelcomeScreen({ onPromptSelect, activeSuite, onEnsureSession }: 
                     className={s.promptCard}
                     style={{ "--suite-color": config.color } as React.CSSProperties}
                     onClick={() => {
-                      // GTM: quick-prompt card selected on the studio welcome screen.
-                      pushDataLayer("studio_prompt_select", { suite })
+                      // Intent: a builder prompt was entered (starter card picked).
+                      pushDataLayer("builder_prompt_entered", { suite, source: "starter_card" })
                       onPromptSelect(t(promptKey), suite)
                     }}
                   >

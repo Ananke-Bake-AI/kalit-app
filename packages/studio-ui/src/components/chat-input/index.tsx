@@ -18,7 +18,6 @@ import clsx from "clsx"
 import s from "./chat-input.module.scss"
 import { ImportRepoModal } from "../import-repo-modal"
 import { CreditsModal } from "../credits-modal"
-import { pushDataLayer } from "../../lib/analytics"
 
 // Subscription tiles surfaced in the out-of-credits modal. Kept inline
 // here so the shared studio-ui package stays self-contained — hosts
@@ -113,13 +112,9 @@ export function ChatInput({ onSend, disabled, prefill, onEnsureSession }: ChatIn
   const handleSend = useCallback(() => {
     const trimmed = input.trim()
     if (!trimmed || disabled || isStreaming) return
-    // GTM: studio prompt submitted (the studio's primary engagement form).
-    // Length only, never the prompt text — no PII into the dataLayer.
-    pushDataLayer("studio_prompt_submit", {
-      prompt_length: trimmed.length,
-      attachments: attachedFiles.length,
-      has_repo: !!importedRepo,
-    })
+    // Prompt + generation analytics are fired centrally in use-studio-chat's
+    // handleSend (the single authoritative send path), where first-vs-iteration
+    // can be determined from the session's message history.
     onSend(trimmed, attachedFiles.length > 0 ? attachedFiles : undefined)
     setInput("")
     setAttachedFiles([])

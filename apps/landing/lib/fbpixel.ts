@@ -30,33 +30,56 @@ export function fbqTrackCustom(event: string, params?: Record<string, unknown>):
   else window.fbq("trackCustom", event)
 }
 
-// Internal dataLayer event name → Meta standard event.
+// Canonical internal event name → Meta STANDARD event.
 //
-// The three campaign-optimization north-stars:
-//   1. SIGNUP            sign_up / account_created → CompleteRegistration
-//   2. TRIAL ACTIVATION  trial_started            → StartTrial
-//   3. PURCHASE          purchase_completed       → Purchase (value + currency)
+// Anything NOT listed here still reaches Meta as a *custom* event
+// (`trackCustom('<event>')`) — see forwardEventToPixel — so the full funnel
+// taxonomy lands in Meta; this map just upgrades the ones Meta optimizes on to
+// its standard events. Canonical names mirror the taxonomy in events.ts; the
+// legacy aliases are kept so historical GTM tags / older call sites still map.
 const STANDARD_EVENTS: Record<string, string> = {
-  // 1) Signup — a new account is created (register form, OAuth, or magnet).
-  sign_up: "CompleteRegistration",
-  account_created: "CompleteRegistration",
-  // 2) Trial activation — onboarding completed, 14-day trial granted.
+  // Signup — a new account is created (register form, OAuth, or magnet).
+  signup_completed: "CompleteRegistration",
+  sign_up: "CompleteRegistration", // legacy alias
+  account_created: "CompleteRegistration", // magnet
+  // Trial activation — onboarding completed, 14-day trial granted.
   trial_started: "StartTrial",
-  // 3) Purchase — a paid subscription or credit pack completed.
-  purchase_completed: "Purchase",
-  // Supporting funnel events.
+  // Checkout opened (paywall → Stripe).
+  checkout_started: "InitiateCheckout",
+  upgrade_started: "InitiateCheckout", // legacy alias
+  // Paid conversion — a subscription or credit pack completed (value+currency).
+  subscription_started: "Purchase",
+  purchase_completed: "Purchase", // legacy alias
+  // Top-of-funnel intent.
+  pricing_viewed: "ViewContent",
+  app_preview_rendered: "ViewContent",
+  // Leads.
   generate_lead: "Lead", // contact form
   claim_started: "Lead", // magnet claim
-  brief_unlocked: "Lead", // magnet gated unlock
-  upgrade_started: "InitiateCheckout" // checkout opened
+  brief_unlocked: "Lead" // magnet gated unlock
 }
+
+// Events we deliberately DON'T mirror to Meta (Meta already owns PageView via
+// GTM, so firing these would double-count or add noise).
+const PIXEL_SKIP = new Set<string>(["page_view", "landing_page_viewed"])
 
 const DEFAULT_CURRENCY = "USD"
 
-/** Mirror an internal dataLayer event to its matching Meta standard event. */
+/**
+ * Mirror a canonical internal event to Meta: a standard event when one is
+ * mapped above, otherwise a custom event carrying the same name. This is why
+ * EVERY funnel event shows up in Meta Events Manager.
+ */
 export function forwardEventToPixel(event: string, params: Record<string, unknown>): void {
+  if (PIXEL_SKIP.has(event)) return
+
   const standard = STANDARD_EVENTS[event]
-  if (!standard) return
+
+  if (!standard) {
+    // No standard mapping → fire as a custom event so Meta still records it.
+    fbqTrackCustom(event, params)
+    return
+  }
 
   if (standard === "Purchase") {
     const value = typeof params.value === "number" ? params.value : undefined
@@ -71,5 +94,5 @@ export function forwardEventToPixel(event: string, params: Record<string, unknow
     return
   }
 
-  fbqTrack(standard)
+  fbqTrack(standard, params)
 }

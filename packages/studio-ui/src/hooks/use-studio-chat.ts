@@ -22,6 +22,7 @@ import {
   writeNotificationPrefs,
 } from "./use-notification-system"
 import { AgentStreamReducer } from "../lib/stream-consumer"
+import { pushDataLayer } from "../lib/analytics"
 import type { SuiteId } from "../lib/suites"
 import type { ChatMessage, ChatSession, UploadedFile } from "../types"
 import { useStudioSocket, type StudioSocketFrame } from "./use-studio-socket"
@@ -806,6 +807,8 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
       const createData = await createRes.json()
       const session: ChatSession = createData.session
       addSession(session)
+      // A new project/session was created.
+      pushDataLayer("project_created", { session: session.id, model: selectedModel })
       setActiveSessionId(session.id)
       // No need to seed messages — bySession[session.id] starts at
       // the EMPTY_SESSION_STATE sentinel via the selector default.
@@ -854,6 +857,18 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
       sessionId = await ensureSession()
       if (!sessionId) return
     }
+
+    // Analytics: prompt submitted (first vs iteration) + generation kicked off.
+    // Counting only prior USER messages keeps system notices (e.g. repo-linked)
+    // from misclassifying the genuine first prompt. Length only, never the text.
+    const priorUserMsgs =
+      useStudioStore.getState().bySession[sessionId]?.messages?.filter((m) => m.role === "user").length ?? 0
+    pushDataLayer(priorUserMsgs === 0 ? "first_prompt_submitted" : "prompt_submitted", {
+      session: sessionId,
+      prompt_length: message.length,
+      attachments: files?.length ?? 0,
+    })
+    pushDataLayer("generation_started", { session: sessionId })
 
     // Capture the originating sessionId so every state mutation below
     // can be gated against `activeSessionRef.current`. Without these

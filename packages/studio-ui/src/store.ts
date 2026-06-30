@@ -1,6 +1,8 @@
 import { create } from "zustand"
 import { shallow } from "zustand/shallow"
 
+import { pushDataLayer } from "./lib/analytics"
+
 import type {
   AtMenuState,
   ChatMessage,
@@ -446,7 +448,11 @@ export const useStudioStore = create<StudioStore>((set, get) => ({
   setTaskforceStandard: (taskforceStandard) => set({ taskforceStandard }),
 
   error: null,
-  setError: (error) => set({ error }),
+  setError: (error) => {
+    // Analytics: a user-facing error was surfaced (only on set, not on clear).
+    if (error) pushDataLayer("error_encountered", { surface: "studio", message: error })
+    set({ error })
+  },
 
   deleteConfirm: null,
   setDeleteConfirm: (deleteConfirm) => set({ deleteConfirm }),
