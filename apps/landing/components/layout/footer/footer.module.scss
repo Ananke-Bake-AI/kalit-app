@@ -111,6 +111,18 @@ $responsiveFooter: 800px;
   }
 }
 
+// Standalone "Get started" CTA band, rendered directly above the footer
+// (was previously a row inside the footer container). The bottom border is
+// the divider between the CTA and the footer below it.
+.getStarted {
+  position: relative;
+  z-index: 1;
+  margin-top: var(--spacing-4);
+  padding-bottom: var(--spacing-2);
+  color: var(--text-secondary);
+  border-bottom: 1px solid oklch(from var(--text-secondary) l c h / 0.15);
+}
+
 .newsletter {
   display: flex;
   align-items: center;

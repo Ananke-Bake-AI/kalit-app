@@ -10,6 +10,7 @@ import NextTopLoader from "nextjs-toploader"
 import { DiscordFAB } from "../discord-fab"
 import { EmailBanner } from "../email-banner"
 import { Footer } from "../footer"
+import { Newsletter } from "../footer/newsletter"
 import { GSAP } from "../gsap"
 import { Header } from "../header"
 import { RealViewport } from "../real-viewport"
@@ -51,6 +52,8 @@ export const Wrapper = ({ children, session = null, color4bg = true }: WrapperPr
       <Header initialSession={session} />
       <main className={s.main}>{children}</main>
       {color4bg ? <Color4Bg style="blur-gradient" className={s.color4bg} /> : null}
+      {/* "Get started" CTA band — sits directly above the footer (anon-only). */}
+      <Newsletter />
       <Footer />
       <DiscordFAB />
       <RealViewport />

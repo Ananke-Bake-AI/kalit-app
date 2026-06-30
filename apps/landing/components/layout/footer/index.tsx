@@ -6,7 +6,6 @@ import { useTranslation } from "@/stores/i18n"
 import { Link } from "@/components/link"
 import { Socials } from "../socials"
 import s from "./footer.module.scss"
-import { Newsletter } from "./newsletter"
 
 export const Footer = () => {
   const t = useTranslation()
@@ -69,7 +68,6 @@ export const Footer = () => {
             ))}
           </div>
         </div>
-        <Newsletter />
         <div className={s.bottom}>
           <Link href="/terms-of-service">{t("footer.terms")}</Link>
           <Link href="/privacy-policy">{t("footer.privacy")}</Link>
