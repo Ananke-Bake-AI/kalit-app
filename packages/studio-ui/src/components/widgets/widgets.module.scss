@@ -495,12 +495,19 @@
 
 // ── Vote bar ───────────────────────────────────────────
 
+// Status header + vote actions on one row (vote pinned right).
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--size-2);
+}
+
 .voteBar {
   display: flex;
   align-items: center;
-  gap: var(--size-1);
-  margin-top: var(--size-1-5);
-  padding-left: 26px;
+  gap: var(--size-0-5);
+  flex-shrink: 0;
 }
 
 .voteLabel {

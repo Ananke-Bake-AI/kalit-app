@@ -40,6 +40,8 @@ interface ResearchData {
   assetCount: number
   assets: Asset[]
   startedAt?: string
+  votes?: Record<string, number>
+  userVote?: string | null
 }
 
 interface ResearchWidgetProps {
@@ -125,9 +127,17 @@ const VOTE_OPTS: { key: string; cls: string; title: string; icon: ReactNode }[] 
   { key: "bad", cls: s.voteBad, title: "Bad", icon: (<><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3z" /><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17" /></>) },
 ]
 
-function VoteBar({ researchId }: { researchId: string }) {
-  const [vote, setVote] = useState<string | null>(null)
-  const [counts, setCounts] = useState<Record<string, number> | null>(null)
+function VoteBar({
+  researchId,
+  initialVotes,
+  initialUserVote,
+}: {
+  researchId: string
+  initialVotes?: Record<string, number>
+  initialUserVote?: string | null
+}) {
+  const [vote, setVote] = useState<string | null>(initialUserVote ?? null)
+  const [counts, setCounts] = useState<Record<string, number> | null>(initialVotes ?? null)
   const [busy, setBusy] = useState(false)
 
   const cast = async (v: string) => {
@@ -319,11 +329,14 @@ export function ResearchWidget({ researchId, onCompleted, onPreviewFile }: Resea
 
     return (
       <div className={s.cardSuccess}>
-        <div className={s.header}>
-          <span className={s.dotSuccess}><Icon icon="hugeicons:tick-02" /></span>
-          <span className={`${s.statusLabel} ${s.textSuccess}`}>
-            {data.assetCount !== 1 ? t("studio.foundAssetsPlural").replace("{count}", String(data.assetCount)) : t("studio.foundAssets").replace("{count}", String(data.assetCount))}
-          </span>
+        <div className={s.headerRow}>
+          <div className={s.header}>
+            <span className={s.dotSuccess}><Icon icon="hugeicons:tick-02" /></span>
+            <span className={`${s.statusLabel} ${s.textSuccess}`}>
+              {data.assetCount !== 1 ? t("studio.foundAssetsPlural").replace("{count}", String(data.assetCount)) : t("studio.foundAssets").replace("{count}", String(data.assetCount))}
+            </span>
+          </div>
+          <VoteBar researchId={researchId} initialVotes={data.votes} initialUserVote={data.userVote} />
         </div>
 
         {data.prompt && (
@@ -349,8 +362,6 @@ export function ResearchWidget({ researchId, onCompleted, onPreviewFile }: Resea
         )}
 
         {!hasAnyAssets && renderThumbPlaceholders(1)}
-
-        <VoteBar researchId={researchId} />
       </div>
     )
   }
