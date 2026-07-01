@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef, useCallback } from "react"
+import { useState, useEffect, useRef, useCallback, type ReactNode } from "react"
 import { brokerFetch, toFindAssetsUrl } from "../../host"
 import { useI18n } from "@kalit/i18n/react"
 import { Icon } from "../../primitives/icon"
@@ -110,6 +110,92 @@ function AssetPreview({ asset, onPreview }: { asset: Asset; onPreview?: (f: { ur
   if (isImage(asset.path)) return <ImagePreview asset={asset} onPreview={onPreview} />
   if (isAudio(asset.path)) return <AudioPreview asset={asset} />
   return <FilePreview asset={asset} />
+}
+
+// ── Vote bar ──
+//
+// Community vote (good / average / bad) on a finished research. Routed
+// browser → landing proxy → broker → find-assets (PATCH /vote), which
+// increments the tallies and feeds the MemRL reward loop. Icon-only,
+// inline SVG (no emoji), colours match the find-assets native UI.
+
+const VOTE_OPTS: { key: string; color: string; title: string; icon: ReactNode }[] = [
+  { key: "good", color: "#22c55e", title: "Good", icon: (<><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3z" /><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" /></>) },
+  { key: "average", color: "#f59e0b", title: "Average", icon: (<line x1="5" y1="12" x2="19" y2="12" />) },
+  { key: "bad", color: "#ef4444", title: "Bad", icon: (<><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3z" /><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17" /></>) },
+]
+
+function VoteBar({ researchId }: { researchId: string }) {
+  const [vote, setVote] = useState<string | null>(null)
+  const [counts, setCounts] = useState<Record<string, number> | null>(null)
+  const [busy, setBusy] = useState(false)
+
+  const cast = async (v: string) => {
+    if (busy) return
+    const next = vote === v ? "" : v
+    const prevVote = vote
+    const prevCounts = counts
+    setBusy(true)
+    setVote(next || null)
+    try {
+      const res = await brokerFetch(`/api/broker/research/${researchId}/vote`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ vote: next }),
+      })
+      const json = (await res.json().catch(() => ({}))) as {
+        data?: { votes?: Record<string, number>; user_vote?: string | null }
+      }
+      if (res.ok && json.data) {
+        setVote(json.data.user_vote ?? null)
+        setCounts(json.data.votes ?? null)
+      } else {
+        setVote(prevVote)
+        setCounts(prevCounts)
+      }
+    } catch {
+      setVote(prevVote)
+      setCounts(prevCounts)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 6, paddingLeft: 26, marginTop: 4 }}>
+      {VOTE_OPTS.map((o) => {
+        const active = vote === o.key
+        return (
+          <button
+            key={o.key}
+            type="button"
+            title={o.title}
+            aria-label={o.title}
+            disabled={busy}
+            onClick={() => cast(o.key)}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 4,
+              padding: "3px 8px",
+              borderRadius: 14,
+              cursor: busy ? "default" : "pointer",
+              border: `1px solid ${active ? o.color : "var(--border, #2a2a3a)"}`,
+              background: active ? `${o.color}1a` : "transparent",
+              color: active ? o.color : "var(--text-secondary, #888)",
+              fontSize: "0.6rem",
+              lineHeight: 1,
+            }}
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              {o.icon}
+            </svg>
+            {counts ? <span>{counts[o.key] ?? 0}</span> : null}
+          </button>
+        )
+      })}
+    </div>
+  )
 }
 
 // ── Main widget ──
@@ -274,6 +360,8 @@ export function ResearchWidget({ researchId, onCompleted, onPreviewFile }: Resea
         )}
 
         {!hasAnyAssets && renderThumbPlaceholders(1)}
+
+        <VoteBar researchId={researchId} />
       </div>
     )
   }
