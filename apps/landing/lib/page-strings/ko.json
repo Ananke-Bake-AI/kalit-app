@@ -13,14 +13,14 @@
     "oneTimeLabel": "1회성",
     "faqTitle": "가격 FAQ",
     "planOutcomes": {
-      "free": "Kalit Flow를 3회 생성으로 사용해 보세요. 카드 불필요.",
+      "free": "14일 무료 체험 — 모든 제품, 5회 생성. 카드 불필요.",
       "starter": "매월 세련된 랜딩 사이트 하나 또는 작은 MVP를 게시.",
       "pro": "완전한 제품을 구축하고 반복하거나 에이전시 클라이언트 작업을 실행.",
       "enterprise": "무제한 좌석으로 Flow + Pentest + Search를 실행.",
       "custom": "맞춤형 좌석 수, 에이전시 도구, 볼륨 가격 — 팀에 맞춤화."
     },
     "planCtas": {
-      "free": "무료로 시작",
+      "free": "무료 체험 시작",
       "starter": "Starter 시작",
       "pro": "Pro 시작",
       "enterprise": "Enterprise 시작",

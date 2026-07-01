@@ -13,14 +13,14 @@
     "oneTimeLabel": "jednorazowo",
     "faqTitle": "FAQ o cenach",
     "planOutcomes": {
-      "free": "Wypróbuj Kalit Flow z 3 generacjami. Bez karty.",
+      "free": "14-dniowy darmowy okres próbny — wszystkie pakiety, 5 generacji. Bez karty.",
       "starter": "Publikuj jedną dopracowaną landing page lub małe MVP miesięcznie.",
       "pro": "Buduj i iteruj pełny produkt, lub wykonuj prace klienckie dla agencji.",
       "enterprise": "Uruchamiaj Flow + Pentest + Search z nieograniczoną liczbą miejsc.",
       "custom": "Niestandardowa liczba miejsc, narzędzia dla agencji, ceny wolumenowe — skrojone pod twój zespół."
     },
     "planCtas": {
-      "free": "Zacznij za darmo",
+      "free": "Rozpocznij okres próbny",
       "starter": "Wybierz Starter",
       "pro": "Wybierz Pro",
       "enterprise": "Wybierz Enterprise",

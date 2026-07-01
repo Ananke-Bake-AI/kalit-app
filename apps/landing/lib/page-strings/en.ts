@@ -16,7 +16,7 @@ export const EN_PAGE_STRINGS = {
   pricing: {
     metaTitle: "Pricing - Kalit AI",
     metaDescription:
-      "Simple, transparent pricing for the Kalit AI software factory. Free plan, paid tiers for solo builders, agencies and teams. Pentest and Search included on Enterprise.",
+      "Simple, transparent pricing for the Kalit AI software factory. 14-day free trial, paid tiers for solo builders, agencies and teams. Pentest and Search included on Enterprise.",
     title: "Simple pricing. One AI software factory.",
     description: "Free to try. Paid plans scale by credits and seats. Pentest and Search included on Enterprise.",
     intervalMonth: "/ month",
@@ -29,14 +29,14 @@ export const EN_PAGE_STRINGS = {
     fxDisclaimer: "Approximate local price. The exact amount in your card's currency is shown at checkout.",
     faqTitle: "Pricing FAQ",
     planOutcomes: {
-      free: "Try Kalit Flow with 3 generations. No card required.",
+      free: "14-day free trial — every suite, 5 generations. No card required.",
       starter: "Ship one polished landing site or small MVP per month.",
       pro: "Build and iterate a full product, or run agency client work.",
       enterprise: "Run Flow + Pentest + Search with unlimited seats.",
       custom: "Custom seat counts, agency tooling, volume pricing — built around your team."
     },
     planCtas: {
-      free: "Start free",
+      free: "Start free trial",
       starter: "Start Starter",
       pro: "Start Pro",
       enterprise: "Start Enterprise",

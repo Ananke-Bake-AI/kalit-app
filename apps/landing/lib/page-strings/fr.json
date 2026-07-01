@@ -14,14 +14,14 @@
     "fxDisclaimer": "Prix local approximatif. Le montant exact dans la devise de votre carte est affiché au moment du paiement.",
     "faqTitle": "FAQ sur les tarifs",
     "planOutcomes": {
-      "free": "Essayez Kalit Flow avec 3 générations. Aucune carte requise.",
+      "free": "Essai gratuit de 14 jours — toutes les suites, 5 générations. Sans carte.",
       "starter": "Publiez un site d'atterrissage poli ou un petit MVP par mois.",
       "pro": "Concevez et itérez un produit complet, ou exécutez des travaux pour des clients d'agence.",
       "enterprise": "Exécutez Flow + Pentest + Search avec des sièges illimités.",
       "custom": "Sièges sur mesure, outils pour agences, tarifs au volume — adaptés à votre équipe."
     },
     "planCtas": {
-      "free": "Commencez gratuitement",
+      "free": "Démarrer l'essai gratuit",
       "starter": "Commencez avec Starter",
       "pro": "Commencez avec Pro",
       "enterprise": "Commencez avec Enterprise",

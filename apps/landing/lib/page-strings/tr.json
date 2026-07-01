@@ -13,14 +13,14 @@
     "oneTimeLabel": "tek seferlik",
     "faqTitle": "Fiyat SSS",
     "planOutcomes": {
-      "free": "Kalit Flow'u 3 üretimle dene. Kart gerekmez.",
+      "free": "14 günlük ücretsiz deneme — tüm paketler, 5 üretim. Kart gerekmez.",
       "starter": "Ayda bir cilalı landing veya küçük bir MVP yayınla.",
       "pro": "Tam bir ürün inşa et ve iyileştir, veya ajans müşteri işlerini yürüt.",
       "enterprise": "Flow + Pentest + Search'ü sınırsız koltukla kullan.",
       "custom": "Özel koltuk sayıları, ajans araçları, hacim fiyatlandırması — ekibine göre uyarlanmış."
     },
     "planCtas": {
-      "free": "Ücretsiz başla",
+      "free": "Ücretsiz denemeyi başlat",
       "starter": "Starter'ı başlat",
       "pro": "Pro'yu başlat",
       "enterprise": "Enterprise'ı başlat",
