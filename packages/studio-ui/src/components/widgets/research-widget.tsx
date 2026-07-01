@@ -119,10 +119,10 @@ function AssetPreview({ asset, onPreview }: { asset: Asset; onPreview?: (f: { ur
 // increments the tallies and feeds the MemRL reward loop. Icon-only,
 // inline SVG (no emoji), colours match the find-assets native UI.
 
-const VOTE_OPTS: { key: string; color: string; title: string; icon: ReactNode }[] = [
-  { key: "good", color: "#22c55e", title: "Good", icon: (<><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3z" /><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" /></>) },
-  { key: "average", color: "#f59e0b", title: "Average", icon: (<line x1="5" y1="12" x2="19" y2="12" />) },
-  { key: "bad", color: "#ef4444", title: "Bad", icon: (<><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3z" /><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17" /></>) },
+const VOTE_OPTS: { key: string; cls: string; title: string; icon: ReactNode }[] = [
+  { key: "good", cls: s.voteGood, title: "Good", icon: (<><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3z" /><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" /></>) },
+  { key: "average", cls: s.voteAverage, title: "Average", icon: (<line x1="5" y1="12" x2="19" y2="12" />) },
+  { key: "bad", cls: s.voteBad, title: "Bad", icon: (<><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3z" /><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17" /></>) },
 ]
 
 function VoteBar({ researchId }: { researchId: string }) {
@@ -162,7 +162,7 @@ function VoteBar({ researchId }: { researchId: string }) {
   }
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 6, paddingLeft: 26, marginTop: 4 }}>
+    <div className={s.voteBar}>
       {VOTE_OPTS.map((o) => {
         const active = vote === o.key
         return (
@@ -171,26 +171,15 @@ function VoteBar({ researchId }: { researchId: string }) {
             type="button"
             title={o.title}
             aria-label={o.title}
+            aria-pressed={active}
             disabled={busy}
             onClick={() => cast(o.key)}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 4,
-              padding: "3px 8px",
-              borderRadius: 14,
-              cursor: busy ? "default" : "pointer",
-              border: `1px solid ${active ? o.color : "var(--border, #2a2a3a)"}`,
-              background: active ? `${o.color}1a` : "transparent",
-              color: active ? o.color : "var(--text-secondary, #888)",
-              fontSize: "0.6rem",
-              lineHeight: 1,
-            }}
+            className={`${s.voteBtn} ${o.cls} ${active ? s.voteActive : ""}`}
           >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               {o.icon}
             </svg>
-            {counts ? <span>{counts[o.key] ?? 0}</span> : null}
+            {counts ? <span className={s.voteCount}>{counts[o.key] ?? 0}</span> : null}
           </button>
         )
       })}
