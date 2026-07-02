@@ -123,6 +123,45 @@ function extractHeadings(body: string): Heading[] {
   return out
 }
 
+// Extract Q&A pairs from a post's "## FAQ" / "## Frequently Asked Questions" section
+// (each "### question" followed by its answer text) so we can emit FAQPage structured
+// data. Google shows FAQ rich results and AI answer engines cite these directly — a big
+// GEO win. Returns [] for posts without an FAQ section.
+function extractFaq(body: string): { q: string; a: string }[] {
+  const lines = body.split("\n")
+  const start = lines.findIndex((l) =>
+    /^(#{2,4})\s+(faq|frequently asked questions)\b/i.test(l.trim())
+  )
+  if (start === -1) return []
+  const level = lines[start].trim().match(/^(#+)/)?.[1].length ?? 2
+  const out: { q: string; a: string }[] = []
+  let q: string | null = null
+  let buf: string[] = []
+  const flush = () => {
+    const a = buf.join("\n").trim()
+    if (q && a) out.push({ q, a })
+    q = null
+    buf = []
+  }
+  for (let i = start + 1; i < lines.length; i++) {
+    const heading = lines[i].trim().match(/^(#+)\s+(.*)$/)
+    if (heading && heading[1].length <= level) break // section ended
+    if (heading && heading[1].length === level + 1) {
+      flush()
+      q = heading[2].trim()
+      continue
+    }
+    if (q) buf.push(lines[i])
+  }
+  flush()
+  return out
+}
+
+// JSON-LD must not let a "</script>" inside content close the tag early.
+function jsonLdSafe(obj: unknown): string {
+  return JSON.stringify(obj).replace(/</g, "\\u003c")
+}
+
 export default async function BlogPostPage({
   params
 }: {
@@ -188,6 +227,21 @@ export default async function BlogPostPage({
       { "@type": "ListItem", position: 2, name: post.title, item: publicUrl }
     ]
   }
+
+  const faqItems = extractFaq(post.body)
+  const faqJsonLd =
+    faqItems.length >= 2
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          inLanguage: locale,
+          mainEntity: faqItems.map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a }
+          }))
+        }
+      : null
 
   const authorInitial = post.authorName
     .split(/\s+/)
@@ -333,12 +387,18 @@ export default async function BlogPostPage({
 
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdSafe(articleJsonLd) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdSafe(breadcrumbJsonLd) }}
       />
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLdSafe(faqJsonLd) }}
+        />
+      )}
     </>
   )
 }
