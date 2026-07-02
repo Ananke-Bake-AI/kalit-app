@@ -4,7 +4,7 @@ import { Logo } from "@/components/logo"
 import { PageSection } from "@/components/page-section"
 import { SUITES, type SuiteId } from "@/lib/suites"
 import { APP_BASE_URL } from "@/lib/config"
-import { isValidLocale, type Locale } from "@/lib/i18n"
+import { DEFAULT_LOCALE, isValidLocale, localePath, type Locale } from "@/lib/i18n"
 import { MetadataSeo } from "@/lib/metadata"
 import { notFound } from "next/navigation"
 import ReactMarkdown from "react-markdown"
@@ -65,11 +65,20 @@ export async function generateMetadata({
     })
   }
 
+  // If this locale has no real translation (it's serving the English fallback),
+  // canonicalize to the English URL so we don't spawn ~16 duplicate English pages
+  // per post. Translated locales (in availableLocales) keep their self-canonical.
+  const isFallback = locale !== DEFAULT_LOCALE && !post.availableLocales.includes(locale)
+  const canonicalUrl = isFallback
+    ? new URL(localePath(`/blog/${post.slug}`, DEFAULT_LOCALE), APP_BASE_URL).toString()
+    : undefined
+
   return MetadataSeo({
     fullTitle: `${post.seoTitle || post.title} - Kalit AI`,
     description: post.seoDescription || post.description,
     locale,
     pathname: `/blog/${post.slug}`,
+    canonicalUrl,
     type: "article",
     // Per-post image: explicit cover/OG if set, else an auto-generated card so
     // the post never shares with the generic site thumbnail.

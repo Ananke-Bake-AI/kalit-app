@@ -22,6 +22,12 @@ interface MetadataSeoProps {
   keywords?: string[]
   noIndex?: boolean
   favicon?: string
+  /**
+   * Override the canonical URL. Use when a localized URL serves untranslated
+   * (fallback) content and should consolidate to the source-language page instead
+   * of self-canonicalizing — avoids N duplicate pages of the same content.
+   */
+  canonicalUrl?: string
   /** Open Graph `article:*` fields — only emitted when type === "article". */
   article?: ArticleMeta
   /**
@@ -55,6 +61,7 @@ export const MetadataSeo = ({
   keywords,
   noIndex = false,
   favicon = "/favicon.svg",
+  canonicalUrl,
   article,
   availableLocales
 }: MetadataSeoProps): Metadata => {
@@ -79,7 +86,7 @@ export const MetadataSeo = ({
   ]
 
   const alternates: Metadata["alternates"] = {
-    canonical: fullUrl.toString(),
+    canonical: canonicalUrl ?? fullUrl.toString(),
     ...(pathname ? { languages: buildAlternates(pathname, availableLocales) } : {})
   }
 
