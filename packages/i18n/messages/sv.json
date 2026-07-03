@@ -827,7 +827,8 @@
     "creditsPerMonthLine": "{credits} krediter / månad",
     "mostSelected": "Mest valda",
     "openBilling": "Öppna fakturering",
-    "maybeLater": "Kanske senare"
+    "maybeLater": "Kanske senare",
+    "downloadRequiresPaid": "Att exportera koden kräver ett betalt abonnemang. Uppgradera till Starter för att ladda ner ditt projekt."
   },
   "seo": {
     "homeTitle": "Lansera din webbplats - Skanna fore go-live",

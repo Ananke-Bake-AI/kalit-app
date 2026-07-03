@@ -827,7 +827,8 @@
     "creditsPerMonthLine": "{credits} créditos / mês",
     "mostSelected": "Mais escolhido",
     "openBilling": "Abrir cobrança",
-    "maybeLater": "Talvez depois"
+    "maybeLater": "Talvez depois",
+    "downloadRequiresPaid": "Exportar o código requer um plano pago. Faça upgrade para o Starter para baixar seu projeto."
   },
   "seo": {
     "homeTitle": "Lance seu site - Escaneie antes do go-live",

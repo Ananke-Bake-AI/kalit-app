@@ -827,7 +827,8 @@
     "creditsPerMonthLine": "{credits} кредитов / мес",
     "mostSelected": "Выбирают чаще",
     "openBilling": "Открыть оплату",
-    "maybeLater": "Позже"
+    "maybeLater": "Позже",
+    "downloadRequiresPaid": "Экспорт кода доступен только на платном тарифе. Перейдите на Starter, чтобы скачать проект."
   },
   "seo": {
     "homeTitle": "Запустите сайт - Проверьте до go-live",

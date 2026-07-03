@@ -827,7 +827,8 @@
     "creditsPerMonthLine": "ayda {credits} kredi",
     "mostSelected": "En çok seçilen",
     "openBilling": "Faturayı aç",
-    "maybeLater": "Belki sonra"
+    "maybeLater": "Belki sonra",
+    "downloadRequiresPaid": "Kodu dışa aktarmak ücretli bir plan gerektirir. Projeni indirmek için Starter'a geç."
   },
   "seo": {
     "homeTitle": "Siteni yayina al - Canliya gecmeden tara",

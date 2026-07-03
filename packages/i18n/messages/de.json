@@ -827,7 +827,8 @@
     "creditsPerMonthLine": "{credits} Credits / Monat",
     "mostSelected": "Am häufigsten gewählt",
     "openBilling": "Abrechnung öffnen",
-    "maybeLater": "Vielleicht später"
+    "maybeLater": "Vielleicht später",
+    "downloadRequiresPaid": "Der Code-Export erfordert einen kostenpflichtigen Plan. Wechsle zu Starter, um dein Projekt herunterzuladen."
   },
   "seo": {
     "homeTitle": "Starte deine Website - Scanne vor dem Go-live",

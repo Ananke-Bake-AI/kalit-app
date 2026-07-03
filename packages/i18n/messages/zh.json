@@ -827,7 +827,8 @@
     "creditsPerMonthLine": "每月 {credits} 积分",
     "mostSelected": "最常选择",
     "openBilling": "打开账单",
-    "maybeLater": "稍后"
+    "maybeLater": "稍后",
+    "downloadRequiresPaid": "导出代码需要付费套餐。升级到 Starter 即可下载您的项目。"
   },
   "seo": {
     "homeTitle": "发布你的网站 - 上线前扫描",

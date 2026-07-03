@@ -827,7 +827,8 @@
     "creditsPerMonthLine": "{credits} kredytów / mies",
     "mostSelected": "Najczęściej wybierany",
     "openBilling": "Otwórz rozliczenia",
-    "maybeLater": "Może później"
+    "maybeLater": "Może później",
+    "downloadRequiresPaid": "Eksport kodu wymaga planu płatnego. Przejdź na Starter, aby pobrać projekt."
   },
   "seo": {
     "homeTitle": "Uruchom swoja strone - Skanuj przed publikacja",

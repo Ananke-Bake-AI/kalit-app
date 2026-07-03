@@ -363,11 +363,16 @@ export function ProjectPublish() {
     try {
       const res = await brokerFetch(`/api/broker/project/${id}/download`, { method: "POST" })
       if (!res.ok) {
-        const json = await res.json().catch(() => ({}))
+        const json = (await res.json().catch(() => ({}))) as {
+          error?: string
+          requiresPaidPlan?: boolean
+        }
         setDownloadError(
-          res.status === 402
-            ? t("studio.notEnoughCreditsDownload")
-            : (json as { error?: string }).error || t("studio.downloadFailed"),
+          json.requiresPaidPlan
+            ? t("studio.downloadRequiresPaid")
+            : res.status === 402
+              ? t("studio.notEnoughCreditsDownload")
+              : json.error || t("studio.downloadFailed"),
         )
         setDownloading(false)
         return

@@ -827,7 +827,8 @@
     "creditsPerMonthLine": "{credits} رصيد / شهر",
     "mostSelected": "الأكثر اختيارًا",
     "openBilling": "فتح الفواتير",
-    "maybeLater": "ربما لاحقًا"
+    "maybeLater": "ربما لاحقًا",
+    "downloadRequiresPaid": "يتطلب تصدير الكود خطة مدفوعة. قم بالترقية إلى Starter لتنزيل مشروعك."
   },
   "seo": {
     "homeTitle": "أطلق موقعك - افحص قبل النشر",

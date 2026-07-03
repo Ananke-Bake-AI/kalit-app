@@ -827,7 +827,8 @@
     "creditsPerMonthLine": "월 {credits} 크레딧",
     "mostSelected": "가장 인기",
     "openBilling": "결제 열기",
-    "maybeLater": "나중에"
+    "maybeLater": "나중에",
+    "downloadRequiresPaid": "코드 내보내기는 유료 플랜이 필요합니다. 프로젝트를 다운로드하려면 Starter로 업그레이드하세요."
   },
   "seo": {
     "homeTitle": "사이트 출시 - 출시 전 스캔",

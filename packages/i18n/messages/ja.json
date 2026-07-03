@@ -827,7 +827,8 @@
     "creditsPerMonthLine": "月{credits}クレジット",
     "mostSelected": "最も選ばれている",
     "openBilling": "請求を開く",
-    "maybeLater": "後で"
+    "maybeLater": "後で",
+    "downloadRequiresPaid": "コードのエクスポートには有料プランが必要です。プロジェクトをダウンロードするには Starter にアップグレードしてください。"
   },
   "seo": {
     "homeTitle": "サイトを公開 - 公開前にスキャン",

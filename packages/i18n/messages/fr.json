@@ -904,7 +904,8 @@
     "creditsPerMonthLine": "{credits} crédits / mois",
     "mostSelected": "Le plus choisi",
     "openBilling": "Ouvrir la facturation",
-    "maybeLater": "Plus tard"
+    "maybeLater": "Plus tard",
+    "downloadRequiresPaid": "L'export du code nécessite un plan payant. Passez à Starter pour télécharger votre projet."
   },
   "seo": {
     "homeTitle": "Lancez votre site et scannez avant la mise en ligne",

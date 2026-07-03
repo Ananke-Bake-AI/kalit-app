@@ -827,7 +827,8 @@
     "creditsPerMonthLine": "{credits} क्रेडिट / माह",
     "mostSelected": "सबसे अधिक चुना गया",
     "openBilling": "बिलिंग खोलें",
-    "maybeLater": "शायद बाद में"
+    "maybeLater": "शायद बाद में",
+    "downloadRequiresPaid": "कोड एक्सपोर्ट करने के लिए सशुल्क प्लान ज़रूरी है। अपना प्रोजेक्ट डाउनलोड करने के लिए Starter पर अपग्रेड करें।"
   },
   "seo": {
     "homeTitle": "अपनी साइट लॉन्च करें - गो-लाइव से पहले स्कैन करें",

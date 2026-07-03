@@ -92,6 +92,13 @@ export function getPlan(key: string): PlanConfig | undefined {
   return PLANS.find((p) => p.key === key)
 }
 
+// True only for a real PAID tier (starter/pro/enterprise). "free" (the trial /
+// post-trial state) and null are NOT paid. Used to gate paid-only features like
+// exporting/downloading the project code.
+export function isPaidPlan(key: string | null | undefined): boolean {
+  return !!key && PLANS.some((p) => p.key === key)
+}
+
 // One-off credit packs — purchased on top of the monthly subscription. Same
 // admin-managed-price-id pattern as PLANS: the price IDs live in AppSetting
 // under STRIPE_PRICE_CREDITS_<KEY> and resolve at runtime.

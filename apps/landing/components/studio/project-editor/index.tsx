@@ -31,6 +31,9 @@ interface DownloadInfo {
   creditsBalance: number
   plan: string
   withinQuota: boolean
+  // Server-set: true when the org is on the trial / free tier, which cannot
+  // export code at all — it must upgrade to at least Starter first.
+  requiresPaidPlan?: boolean
 }
 
 interface HotfixInfo {
@@ -71,7 +74,9 @@ function DownloadModal({ projectId, onClose }: { projectId: string; onClose: () 
     })()
   }, [projectId])
 
-  const canConfirm = info && (info.withinQuota || info.creditsBalance >= info.downloadCost)
+  // Trial / free orgs are hard-blocked from exporting regardless of quota.
+  const paidGate = !!info?.requiresPaidPlan
+  const canConfirm = !paidGate && info && (info.withinQuota || info.creditsBalance >= info.downloadCost)
   const needsUpgrade = info && !info.withinQuota && info.creditsBalance < info.downloadCost
 
   async function handleDownload() {
@@ -80,11 +85,16 @@ function DownloadModal({ projectId, onClose }: { projectId: string; onClose: () 
     try {
       const res = await brokerFetch(`/api/broker/project/${projectId}/download`, { method: "POST" })
       if (!res.ok) {
-        const json = await res.json().catch(() => ({}))
+        const json = (await res.json().catch(() => ({}))) as {
+          error?: string
+          requiresPaidPlan?: boolean
+        }
         setError(
-          res.status === 402
-            ? t("studio.notEnoughCreditsDownload")
-            : (json as { error?: string }).error || t("studio.downloadFailed"),
+          json.requiresPaidPlan
+            ? t("studio.downloadRequiresPaid")
+            : res.status === 402
+              ? t("studio.notEnoughCreditsDownload")
+              : json.error || t("studio.downloadFailed"),
         )
         setLoading(false)
         return
@@ -126,7 +136,13 @@ function DownloadModal({ projectId, onClose }: { projectId: string; onClose: () 
         ) : (
           <>
             <span className={s.modalTitle}>{t("studio.downloadTitle")}</span>
-            {info &&
+            {paidGate && (
+              <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)", textAlign: "center" }}>
+                {t("studio.downloadRequiresPaid")}
+              </span>
+            )}
+            {!paidGate &&
+              info &&
               (info.withinQuota ? (
                 <div className={s.modalQuotaOk}>
                   <span className={s.modalRowLabel}>{t("studio.freeDownload")}</span>
@@ -158,13 +174,15 @@ function DownloadModal({ projectId, onClose }: { projectId: string; onClose: () 
                 </>
               ))}
             {error && <span className={s.modalError}>{error}</span>}
-            {needsUpgrade ? (
+            {paidGate || needsUpgrade ? (
               <>
-                <span style={{ fontSize: "0.75rem", color: "var(--text-secondary)", textAlign: "center" }}>
-                  {t("studio.notEnoughCreditsDownload")}
-                </span>
+                {needsUpgrade && !paidGate && (
+                  <span style={{ fontSize: "0.75rem", color: "var(--text-secondary)", textAlign: "center" }}>
+                    {t("studio.notEnoughCreditsDownload")}
+                  </span>
+                )}
                 <div className={s.modalBtnRow}>
-                  {info && info.plan !== "max" && (
+                  {(paidGate || (info && info.plan !== "max")) && (
                     <button
                       className={s.modalBtnPrimary}
                       onClick={() => router.push("/settings/billing")}

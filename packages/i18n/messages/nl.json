@@ -827,7 +827,8 @@
     "creditsPerMonthLine": "{credits} credits / maand",
     "mostSelected": "Meest gekozen",
     "openBilling": "Facturatie openen",
-    "maybeLater": "Misschien later"
+    "maybeLater": "Misschien later",
+    "downloadRequiresPaid": "Code exporteren vereist een betaald abonnement. Upgrade naar Starter om je project te downloaden."
   },
   "seo": {
     "homeTitle": "Lanceer je site - Scan voor go-live",
