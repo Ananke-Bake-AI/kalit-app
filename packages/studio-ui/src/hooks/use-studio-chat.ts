@@ -791,8 +791,15 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
 
   // ── Lazy session creation ───────────────────────────────
 
+  const ensureSessionInflight = useRef<Promise<string | null> | null>(null)
   const ensureSession = useCallback(async (): Promise<string | null> => {
     if (activeSessionRef.current) return activeSessionRef.current
+    // Dedupe concurrent callers: two quick uploads (a multi-file drop, or drop +
+    // paste) both saw a null session and each POSTed /sessions, creating TWO
+    // sessions and binding the uploads to different ones — the other half of the
+    // "upload works 1/3" bug. Share one in-flight creation promise.
+    if (ensureSessionInflight.current) return ensureSessionInflight.current
+    const run = async (): Promise<string | null> => {
     try {
       const { selectedModel, taskforceStandard } = useStudioStore.getState()
       const createRes = await brokerFetch("/api/broker/sessions", {
@@ -818,6 +825,14 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
     } catch {
       setError(t("studio.connectionError"))
       return null
+    }
+    }
+    const p = run()
+    ensureSessionInflight.current = p
+    try {
+      return await p
+    } finally {
+      ensureSessionInflight.current = null
     }
   }, [addSession, setActiveSessionId, setError, t, onSessionActivated])
 

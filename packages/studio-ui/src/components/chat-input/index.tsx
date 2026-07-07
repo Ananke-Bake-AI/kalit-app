@@ -205,14 +205,25 @@ export function ChatInput({ onSend, disabled, prefill, onEnsureSession }: ChatIn
       if (res.ok) {
         const data = await res.json()
         const uploaded: UploadedFile[] = data.files || []
-        setAttachedFiles([...attachedFiles, ...uploaded])
+        // Read the LATEST attached files from the store (not the stale closure
+        // value): two quick uploads (a second drop, or adding a 2nd/3rd photo)
+        // used to clobber each other — the "works 1 time in 3" bug. Appending
+        // onto the freshest state fixes it.
+        if (uploaded.length > 0) {
+          const current = useStudioStore.getState().attachedFiles
+          setAttachedFiles([...current, ...uploaded])
+        }
+      } else {
+        console.error("[studio] upload failed:", res.status, await res.text().catch(() => ""))
       }
-    } catch {
-      // silent
+    } catch (err) {
+      console.error("[studio] upload error:", err)
     } finally {
       setIsUploading(false)
     }
-  }, [activeSessionId, attachedFiles, onEnsureSession, setAttachedFiles, setIsUploading])
+    // `attachedFiles` intentionally NOT in deps — we use the functional updater
+    // above, so the callback stays stable and can't capture stale state.
+  }, [activeSessionId, onEnsureSession, setAttachedFiles, setIsUploading])
 
   const handleFileUpload = useCallback((files: FileList | null) => {
     if (!files) return
