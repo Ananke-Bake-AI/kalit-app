@@ -35,7 +35,7 @@ export interface StudioShellProps {
   onSend: (text: string) => void;
   onStop: () => void;
   onRefreshTree: () => void;
-  attachments?: { id: string; name: string; url: string }[];
+  attachments?: { id: string; name: string }[];
   uploading?: boolean;
   onAddFiles?: (files: File[]) => void;
   onRemoveAttachment?: (id: string) => void;

@@ -16,7 +16,7 @@ interface Props {
   onStop: () => void;
   onChoiceAnswer: (text: string) => void;
   ctxPercent?: number | null;
-  attachments?: { id: string; name: string; url: string }[];
+  attachments?: { id: string; name: string }[];
   uploading?: boolean;
   onAddFiles?: (files: File[]) => void;
   onRemoveAttachment?: (id: string) => void;
@@ -84,7 +84,7 @@ export function Chat({ title, messages, streaming, activity, model, onModelChang
   // heartbeat pour le temps écoulé de l'indicateur d'activité
   useEffect(() => { if (!activity) return; const t = setInterval(() => force((n) => n + 1), 1000); return () => clearInterval(t); }, [activity]);
 
-  const send = () => { const t = val.trim(); if (!t || streaming) return; onSend(t); setVal(''); };
+  const send = () => { const t = val.trim(); if ((!t && !attachments.length) || streaming) return; onSend(t); setVal(''); };
   const elapsed = activity ? Math.floor((Date.now() - activity.since) / 1000) : 0;
 
   return (
@@ -149,7 +149,7 @@ export function Chat({ title, messages, streaming, activity, model, onModelChang
               <span className="sv-kbd">⏎</span>
               {streaming
                 ? <button className="sv-btn" onClick={onStop}><IconStop /> {st.stop}</button>
-                : <button className="sv-btn sv-btn--primary" onClick={send} disabled={!val.trim()}><IconSend /> {st.send}</button>}
+                : <button className="sv-btn sv-btn--primary" onClick={send} disabled={!val.trim() && !attachments.length}><IconSend /> {st.send}</button>}
             </div>
           </div>
         </div>
