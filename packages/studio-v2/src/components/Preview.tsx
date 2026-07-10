@@ -14,8 +14,8 @@ const SUG_ICONS = [
   <><rect key="a" x="6" y="2.5" width="12" height="19" rx="3" /><path key="b" d="M10.5 18.5h3" /></>,
   // cabinet d'avocats (colonnes)
   <path key="i" d="M4 9h16M5 9l7-5 7 5M6.5 9v8M11 9v8M13 9v8M17.5 9v8M4 21h16" />,
-  // jeu memory
-  <><rect key="a" x="3" y="3" width="7" height="7" rx="1.4" /><rect key="b" x="14" y="3" width="7" height="7" rx="1.4" /><rect key="c" x="3" y="14" width="7" height="7" rx="1.4" /><path key="d" d="M14 17.5h7M17.5 14v7" /></>,
+  // audit sécurité (pentest) : bouclier + check
+  <><path key="a" d="M12 2.5l7.5 3v5.7c0 4.5-3.1 7.6-7.5 9-4.4-1.4-7.5-4.5-7.5-9V5.5l7.5-3z" /><path key="b" d="M8.8 12.2l2.3 2.3 4.1-4.4" /></>,
 ];
 
 const IconArrow = () => (
