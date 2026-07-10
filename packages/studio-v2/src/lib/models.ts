@@ -21,8 +21,11 @@ export const MODEL_GROUPS: ModelGroup[] = [
     label: 'Ollama Cloud',
     models: [
       { id: 'cloud/kimi-k2.5:cloud', label: 'kimi-k2.5', provider: 'ollama' },
+      { id: 'cloud/kimi-k2.6:cloud', label: 'kimi-k2.6', provider: 'ollama' },
+      { id: 'cloud/kimi-k2.7-code:cloud', label: 'kimi-k2.7-code', provider: 'ollama' },
       { id: 'cloud/qwen3-coder:480b-cloud', label: 'qwen3-coder 480b', provider: 'ollama' },
       { id: 'cloud/deepseek-v3.2:cloud', label: 'deepseek-v3.2', provider: 'ollama' },
+      { id: 'cloud/deepseek-v4-pro:cloud', label: 'deepseek-v4-pro', provider: 'ollama' },
       { id: 'cloud/glm-5:cloud', label: 'glm-5', provider: 'ollama' },
       { id: 'cloud/minimax-m2.5:cloud', label: 'minimax-m2.5', provider: 'ollama' },
       { id: 'cloud/gpt-oss:120b-cloud', label: 'gpt-oss 120b', provider: 'ollama' },
