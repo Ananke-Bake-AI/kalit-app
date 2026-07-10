@@ -79,7 +79,7 @@ function activityFor(ev: RawEvent): string {
   return 'travaille';
 }
 
-export function useBrokerStudio(client: BrokerClient, lang: string = 'en') {
+export function useBrokerStudio(client: BrokerClient, lang: string = 'en', brokerUrl: string = '') {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [baseMessages, setBaseMessages] = useState<Message[]>([]); // persistés
@@ -247,20 +247,29 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en') {
 
   const removeAttachment = useCallback((id: string) => setPending((p) => p.filter((x) => x.id !== id)), []);
 
-  // Upload des fichiers en attente dans le workspace de la session (à l'envoi).
+  // Upload des fichiers dans le workspace de la session (à l'envoi). Va DIRECT au
+  // broker public (CORS ouvert) — le rewrite Next bufferise mal les gros
+  // multipart (images) et fait traîner/planter la requête. Lève en cas d'échec
+  // pour ne PAS prétendre à tort que les fichiers sont là.
   const uploadPending = useCallback(async (sid: string, items: { id: string; file: File }[]): Promise<string[]> => {
     if (!items.length) return [];
     setUploading(true);
+    const ctl = new AbortController();
+    const timer = setTimeout(() => ctl.abort(), 120000);
     try {
       const fd = new FormData();
       fd.append('sessionId', sid);
       fd.append('category', 'assets');
       for (const it of items) fd.append('files', it.file);
-      await client.fetch('/api/broker/upload', { method: 'POST', body: fd });
-    } catch { /* best effort */ }
-    setUploading(false);
-    return items.map((it) => it.file.name);
-  }, [client]);
+      const url = (brokerUrl ? brokerUrl.replace(/\/+$/, '') : '') + '/api/flow/upload';
+      const r = await client.fetch(brokerUrl ? url : '/api/broker/upload', { method: 'POST', body: fd, signal: ctl.signal });
+      if (!r.ok) throw new Error('upload ' + r.status);
+      return items.map((it) => it.file.name);
+    } finally {
+      clearTimeout(timer);
+      setUploading(false);
+    }
+  }, [client, brokerUrl]);
 
   const send = useCallback(async (text: string) => {
     const items = pending;
@@ -268,15 +277,23 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en') {
     const sid = await ensureSession();
     if (!sid) return;
     setPending([]);
-    const names = await uploadPending(sid, items);
+    // Feedback immédiat : message optimiste + activité, AVANT l'upload (sinon
+    // l'UI paraît figée le temps du téléversement).
+    turnActive.current = true;
+    setLiveError(null);
+    setBaseMessages((m) => [...m, { id: 'temp-' + Date.now(), role: 'user', segments: [{ kind: 'text', content: text || (items.length ? '(fichiers joints)' : '') }] }]);
+    setStreaming(true); setActivity({ label: items.length ? 'téléverse les fichiers' : 'démarre', since: Date.now() });
+    // Upload d'abord — le worker doit voir les fichiers. Échec → on stoppe et on
+    // le dit (pas de faux « fichiers joints »).
+    let names: string[] = [];
+    if (items.length) {
+      try { names = await uploadPending(sid, items); }
+      catch { pushError(sid, "L'upload des fichiers a échoué (réseau ou fichier trop lourd). Réessaie."); return; }
+    }
     const body = names.length
       ? `[${names.length} fichier(s) joint(s) par l'utilisateur, disponibles dans ./attachments/ : ${names.join(', ')}]\n\n${text}`
       : text;
-    // message utilisateur optimiste
-    turnActive.current = true;
-    setLiveError(null);
-    setBaseMessages((m) => [...m, { id: 'temp-' + Date.now(), role: 'user', segments: [{ kind: 'text', content: body }] }]);
-    setStreaming(true); setActivity({ label: 'démarre', since: Date.now() });
+    setActivity({ label: 'démarre', since: Date.now() });
     // POST /messages : le WS écrit les segments live. Mais on PARSE quand même
     // le corps SSE pour les side-effects que le WS ne porte pas toujours —
     // notamment `error` (sinon échec silencieux) et `done` (finalisation de
@@ -302,7 +319,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en') {
     turnActive.current = false;   // tour terminé côté POST → plus de live
     finalizeSoft();
     if (sid) loadMessages(sid);   // sync l'état persisté (ex: QCM en attente de réponse)
-  }, [pending, ensureSession, uploadPending, client, lang]);
+  }, [pending, ensureSession, uploadPending, pushError, client, lang]);
 
   const stop = useCallback(async () => {
     if (activeId) await client.fetch(`/api/broker/cancel/${activeId}`, { method: 'POST' }).catch(() => {});

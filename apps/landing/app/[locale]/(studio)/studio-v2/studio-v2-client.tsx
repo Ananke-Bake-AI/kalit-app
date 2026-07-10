@@ -33,7 +33,7 @@ export function StudioV2Client() {
     fileUrlPrefix: { from: "/api/flow/", to: "/api/broker/" },
   }), [wsBaseUrl])
 
-  const s = useBrokerStudio(client, lang)
+  const s = useBrokerStudio(client, lang, wsBaseUrl)
   const user = { name: session?.user?.name || session?.user?.email || "" }
 
   return (
