@@ -30,3 +30,6 @@ export const IconFile = (p: SVGProps<SVGSVGElement>) => (<svg {...base(p)}><path
 export const IconRefresh = (p: SVGProps<SVGSVGElement>) => (<svg {...base(p)}><path d="M21 12a9 9 0 1 1-2.6-6.4M21 4v5h-5" /></svg>);
 export const IconExpand = (p: SVGProps<SVGSVGElement>) => (<svg {...base(p)}><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" /></svg>);
 export const IconAttach = (p: SVGProps<SVGSVGElement>) => (<svg {...base(p)}><path d="M21 11.5 12 20a5 5 0 0 1-7-7l9-9a3.5 3.5 0 0 1 5 5l-9 9a2 2 0 0 1-3-3l8.5-8.5" /></svg>);
+export const IconDots = (p: SVGProps<SVGSVGElement>) => (<svg {...base(p)}><circle cx={12} cy={5} r={1.4} /><circle cx={12} cy={12} r={1.4} /><circle cx={12} cy={19} r={1.4} /></svg>);
+export const IconTrash = (p: SVGProps<SVGSVGElement>) => (<svg {...base(p)}><path d="M4 7h16M10 11v6M14 11v6M5 7l1 13a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-13M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" /></svg>);
+export const IconClose = (p: SVGProps<SVGSVGElement>) => (<svg {...base(p)}><path d="M6 6l12 12M18 6 6 18" /></svg>);

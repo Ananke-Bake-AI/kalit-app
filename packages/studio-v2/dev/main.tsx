@@ -23,7 +23,7 @@ function LiveApp() {
       user={{ name: 'Studio v2 Dev' }}
       model={s.model} onModelChange={s.setModel}
       publishUrl={s.publishUrl} publishing={s.publishing} canPublish={s.canPublish} onPublish={s.publish}
-      onSelect={s.select} onNew={s.newProject} onSend={s.send} onStop={s.stop}
+      onSelect={s.select} onNew={s.newProject} onDelete={s.deleteSession} onSend={s.send} onStop={s.stop}
       onRefreshTree={s.refreshTree}
     />
   );
@@ -98,6 +98,7 @@ function App() {
       model={model} onModelChange={setModel}
       onSelect={setActiveId}
       onNew={() => { setActiveId(null); setMessages([]); }}
+      onDelete={() => {}}
       onSend={send} onStop={stop} onRefreshTree={() => {}}
     />
   );

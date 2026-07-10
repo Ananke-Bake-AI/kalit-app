@@ -10,6 +10,8 @@ export interface Session {
   status: SessionStatus;
   model?: string;
   updatedAt: number;
+  projectId?: string;       // flow_projects.id lié (null = session sans projet)
+  projectDeployed?: boolean; // le projet lié a un site publié
 }
 
 export interface ChoiceOption { label: string; description?: string; }

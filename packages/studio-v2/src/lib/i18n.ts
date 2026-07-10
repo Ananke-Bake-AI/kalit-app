@@ -49,6 +49,11 @@ export interface Strings {
     working: string; starting: string; uploading: string; compacting: string;
   };
   errors: { rate: string; credits: string; timeout: string; generic: string; upload: string };
+  del: {
+    title: string; sessionOnly: string; sessionOnlyHint: string;
+    projectToo: string; projectTooHint: string; plainHint: string;
+    cancel: string; confirm: string; deleting: string;
+  };
 }
 
 const fr: Strings = {
@@ -113,6 +118,17 @@ const fr: Strings = {
     generic: 'Une erreur est survenue pendant la génération. Réessaie.',
     upload: "L'upload des fichiers a échoué (réseau ou fichier trop lourd). Réessaie.",
   },
+  del: {
+    title: 'Supprimer cette session ?',
+    sessionOnly: 'Supprimer la session seule',
+    sessionOnlyHint: 'Garde le projet lié (fichiers, archive, site en ligne).',
+    projectToo: 'Supprimer le projet + la session',
+    projectTooHint: "Supprime le projet, son archive et le site publié s'il existe. Irréversible.",
+    plainHint: 'Supprime la conversation et ses messages.',
+    cancel: 'Annuler',
+    confirm: 'Supprimer',
+    deleting: 'Suppression…',
+  },
 };
 
 const en: Strings = {
@@ -176,6 +192,17 @@ const en: Strings = {
     timeout: 'The service is taking too long to respond. Try again.',
     generic: 'An error occurred during generation. Try again.',
     upload: 'File upload failed (network or file too large). Try again.',
+  },
+  del: {
+    title: 'Delete this session?',
+    sessionOnly: 'Delete session only',
+    sessionOnlyHint: 'Keeps the linked project (files, archive, live site).',
+    projectToo: 'Delete project + session',
+    projectTooHint: 'Removes the project, its archive and the live site if any. Irreversible.',
+    plainHint: 'Removes the chat and its messages.',
+    cancel: 'Cancel',
+    confirm: 'Delete',
+    deleting: 'Deleting…',
   },
 };
 

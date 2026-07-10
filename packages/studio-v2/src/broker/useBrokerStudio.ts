@@ -11,11 +11,11 @@ import { StreamReducer, choiceFromInput, type RawEvent } from './reducer';
 import { DEFAULT_MODEL_ID } from '../lib/models';
 import { stringsFor, type Strings } from '../lib/i18n';
 
-interface ChatSessionDTO { id: string; title: string | null; model: string; isProcessing?: boolean; createdAt: number; updatedAt: number; }
+interface ChatSessionDTO { id: string; title: string | null; model: string; isProcessing?: boolean; createdAt: number; updatedAt: number; projectId?: string; projectDeployed?: boolean; }
 interface ChatMessageDTO { id: string; role: string; content?: string; thinking?: string; tools?: Array<{ name: string; input?: unknown; done?: boolean }>; files?: Array<{ name: string; url: string; mimeType?: string }>; createdAt: number; }
 
 function dtoToSession(d: ChatSessionDTO): Session {
-  return { id: d.id, title: d.title || 'Sans titre', status: d.isProcessing ? 'running' : 'idle', model: d.model, updatedAt: d.updatedAt || d.createdAt || 0 };
+  return { id: d.id, title: d.title || 'Sans titre', status: d.isProcessing ? 'running' : 'idle', model: d.model, updatedAt: d.updatedAt || d.createdAt || 0, projectId: d.projectId, projectDeployed: d.projectDeployed };
 }
 // Le message assistant persisté stocke ses segments comme un tableau JSON
 // SÉRIALISÉ dans `content` (ex: '[{"type":"text",...},{"type":"tool",...}]').
@@ -347,6 +347,21 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
 
   const newProject = useCallback(() => { setActiveId(null); setBaseMessages([]); setLive(null); setStreaming(false); setActivity(null); setPending([]); setOutOfCredits(false); }, []);
 
+  // Suppression d'une session. mode='session' → DELETE la session seule ; mode
+  // ='project' → DELETE le projet lié (le broker cascade : deploy + archive R2 +
+  // workspace + lignes DB + session). Optimiste : on la retire de la liste tout de
+  // suite, et si c'était la session active on repart sur un écran vierge.
+  const deleteSession = useCallback(async (id: string, mode: 'session' | 'project') => {
+    const sess = sessions.find((x) => x.id === id);
+    const path = mode === 'project' && sess?.projectId
+      ? `/api/broker/projects/${sess.projectId}`
+      : `/api/broker/sessions/${id}`;
+    setSessions((list) => list.filter((x) => x.id !== id));
+    if (activeRef.current === id) newProject();
+    await client.fetch(path, { method: 'DELETE' }).catch(() => {});
+    loadSessions();
+  }, [sessions, client, loadSessions, newProject]);
+
   // messages affichés = persistés + message assistant live en cours
   const messages: Message[] = useMemo(() => {
     const out = [...baseMessages];
@@ -361,5 +376,5 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   }, [baseMessages, live, liveError, streaming]);
 
   const attachments = pending.map((p) => ({ id: p.id, name: p.file.name }));
-  return { sessions, activeId, messages, streaming, activity, tree, previewUrl, model, publishUrl, publishing, canPublish: !!projectId, attachments, uploading, outOfCredits, addFiles, removeAttachment, socketStatus: socket.status, select, newProject, send, stop, setModel, publish, refreshTree, reloadSessions: loadSessions };
+  return { sessions, activeId, messages, streaming, activity, tree, previewUrl, model, publishUrl, publishing, canPublish: !!projectId, attachments, uploading, outOfCredits, addFiles, removeAttachment, socketStatus: socket.status, select, newProject, send, stop, deleteSession, setModel, publish, refreshTree, reloadSessions: loadSessions };
 }

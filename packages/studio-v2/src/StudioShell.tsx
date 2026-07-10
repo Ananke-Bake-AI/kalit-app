@@ -32,6 +32,7 @@ export interface StudioShellProps {
   onModelChange: (id: string) => void;
   onSelect: (id: string) => void;
   onNew: () => void;
+  onDelete: (id: string, mode: 'session' | 'project') => void;
   onSend: (text: string) => void;
   onStop: () => void;
   onRefreshTree: () => void;
@@ -58,7 +59,7 @@ export function StudioShell(props: StudioShellProps) {
   return (
     <StringsContext.Provider value={t}>
     <div className="sv sv-shell" data-pane={pane}>
-      <Sidebar sessions={props.sessions} activeId={props.activeId} user={props.user} onSelect={selectMobile} onNew={() => { props.onNew(); setPane('chat'); }} />
+      <Sidebar sessions={props.sessions} activeId={props.activeId} user={props.user} onSelect={selectMobile} onNew={() => { props.onNew(); setPane('chat'); }} onDelete={props.onDelete} />
       <Chat
         title={active?.title ?? t.newProject}
         messages={props.messages} streaming={props.streaming} activity={props.activity}
