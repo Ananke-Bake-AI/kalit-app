@@ -92,8 +92,18 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   const [liveError, setLiveError] = useState<string | null>(null); // survit à loadMessages
   const [tree, setTree] = useState<FileNode[]>([]);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [model, setModel] = useState<string>(DEFAULT_MODEL_ID);
+  // Modèle : init DEFAULT (SSR-safe), puis on charge la dernière sélection
+  // sauvegardée en localStorage au mount. setModel (exposé à l'UI) persiste ;
+  // setModelState (interne) sert juste à refléter le modèle d'une session.
+  const [model, setModelState] = useState<string>(DEFAULT_MODEL_ID);
   const modelRef = useRef(model); modelRef.current = model;
+  useEffect(() => {
+    try { const s = localStorage.getItem('kalit.studio.model'); if (s) setModelState(s); } catch { /* ignore */ }
+  }, []);
+  const setModel = useCallback((id: string) => {
+    setModelState(id);
+    try { localStorage.setItem('kalit.studio.model', id); } catch { /* ignore */ }
+  }, []);
   const [projectId, setProjectId] = useState<string | null>(null);
   const [publishUrl, setPublishUrl] = useState<string | null>(null);
   const [publishing, setPublishing] = useState(false);
@@ -240,9 +250,10 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     const running = sessions.find((x) => x.id === id)?.status === 'running';
     turnActive.current = running;
     setActiveId(id); setLive(null); setLiveError(null); setOutOfCredits(false);
-    // Reflète le modèle réel de la session sélectionnée dans le sélecteur.
+    // Reflète le modèle réel de la session sélectionnée (sans écraser la
+    // dernière sélection sauvegardée : un switch de session n'est pas un choix).
     const sm = sessions.find((x) => x.id === id)?.model;
-    if (sm) setModel(sm);
+    if (sm) setModelState(sm);
     setStreaming(running);
     setActivity(running ? { label: t.activity.working, since: Date.now() } : null);
     loadMessages(id);
