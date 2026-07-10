@@ -7,7 +7,8 @@
 .sv-side__top { display: flex; align-items: center; gap: var(--sv-2); padding: var(--sv-3); border-bottom: 1px solid var(--sv-line-soft); }
 .sv-brand { display: flex; align-items: center; gap: 9px; font-weight: 600; letter-spacing: -.01em; font-size: 15px; }
 .sv-brand svg { width: 22px; height: 22px; }
-.sv-side__new { margin: var(--sv-3); }
+.sv-side__new { display: flex; justify-content: center; margin: var(--sv-3); height: 40px; font-size: 13.5px; border-radius: var(--sv-r); box-shadow: 0 3px 12px var(--sv-accent-dim), inset 0 1px 0 rgba(255,255,255,.2); }
+.sv-side__new svg { width: 16px; height: 16px; }
 .sv-side__list { flex: 1; overflow-y: auto; padding: 0 var(--sv-2) var(--sv-3); display: flex; flex-direction: column; gap: 2px; }
 .sv-side__group { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--sv-text-3); padding: var(--sv-4) var(--sv-2) var(--sv-1); }
 .sv-sess { display: flex; flex-direction: column; gap: 1px; padding: 8px 10px; border-radius: var(--sv-r-sm); cursor: pointer; }
@@ -73,6 +74,8 @@
 .sv-composer textarea { border: 0; background: transparent; color: var(--sv-text); font: inherit; resize: none; outline: none; min-height: 42px; max-height: 200px; }
 .sv-composer__row { display: flex; align-items: center; gap: var(--sv-2); }
 .sv-composer__row-r { margin-left: auto; display: flex; align-items: center; gap: var(--sv-2); }
+.sv-composer__row-r .sv-btn { height: 34px; padding: 0 15px; border-radius: var(--sv-r); }
+.sv-composer__row-r .sv-btn--primary svg { width: 15px; height: 15px; }
 
 /* ── Droite : aperçu ── */
 .sv-prev { display: flex; flex-direction: column; background: var(--sv-surface); }

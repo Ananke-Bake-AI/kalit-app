@@ -27,7 +27,7 @@ export function Sidebar({ sessions, activeId, user, onSelect, onNew }: Props) {
       <div className="sv-side__top">
         <span className="sv-brand"><IconLogo /> Studio</span>
       </div>
-      <button className="sv-btn sv-btn--primary sv-side__new" onClick={onNew}><IconPlus /> Nouveau projet</button>
+      <button className="sv-btn sv-btn--primary sv-side__new" onClick={onNew}><IconPlus /> {st.newProject}</button>
       <div style={{ padding: '0 12px 8px' }}>
         <div className="sv-composer__box" style={{ padding: '6px 10px', flexDirection: 'row', alignItems: 'center', gap: 8 }}>
           <IconSearch style={{ color: 'var(--sv-text-3)', flexShrink: 0 }} />
@@ -36,7 +36,7 @@ export function Sidebar({ sessions, activeId, user, onSelect, onNew }: Props) {
         </div>
       </div>
       <div className="sv-side__list">
-        {filtered.length === 0 && <div className="sv-side__group">Aucun projet</div>}
+        {filtered.length === 0 && <div className="sv-side__group">{st.noProjects}</div>}
         {filtered.map((s) => (
           <div key={s.id} className={'sv-sess' + (s.id === activeId ? ' sv-sess--active' : '')} onClick={() => onSelect(s.id)}>
             <div className="sv-sess__title">{s.title}</div>
@@ -44,11 +44,9 @@ export function Sidebar({ sessions, activeId, user, onSelect, onNew }: Props) {
           </div>
         ))}
       </div>
-      <div className="sv-side__foot">
-        <div className="sv-avatar">{user.name.slice(0, 1).toUpperCase()}</div>
-        <span style={{ fontSize: 13, color: 'var(--sv-text-2)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.name}</span>
-        {typeof user.credits === 'number' && <span className="sv-credits">{user.credits} crédits</span>}
-      </div>
+      {typeof user.credits === 'number' && (
+        <div className="sv-side__foot"><span className="sv-credits">{user.credits}</span></div>
+      )}
     </aside>
   );
 }

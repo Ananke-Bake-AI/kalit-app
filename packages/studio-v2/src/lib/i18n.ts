@@ -37,6 +37,7 @@ export interface Strings {
   running: string;
   stop: string;
   send: string;
+  noProjects: string;
 }
 
 const fr: Strings = {
@@ -81,6 +82,7 @@ const fr: Strings = {
   running: 'en cours',
   stop: 'Stop',
   send: 'Envoyer',
+  noProjects: 'Aucun projet',
 };
 
 const en: Strings = {
@@ -125,6 +127,7 @@ const en: Strings = {
   running: 'running',
   stop: 'Stop',
   send: 'Send',
+  noProjects: 'No projects yet',
 };
 
 const TABLE: Record<string, Strings> = { fr, en };

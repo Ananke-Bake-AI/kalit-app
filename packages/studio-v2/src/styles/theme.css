@@ -71,8 +71,15 @@ body { margin: 0; }
 }
 .sv-btn:hover { background: var(--sv-raised); border-color: var(--sv-text-3); }
 .sv-btn:focus-visible { outline: 2px solid var(--sv-accent); outline-offset: 1px; }
-.sv-btn--primary { background: var(--sv-accent); border-color: var(--sv-accent); color: var(--sv-text-inv); font-weight: 600; }
-.sv-btn--primary:hover { background: var(--sv-accent-2); border-color: var(--sv-accent-2); }
+.sv-btn--primary {
+  background: linear-gradient(180deg, var(--sv-accent-2), var(--sv-accent));
+  border-color: transparent; color: #fff; font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.18);
+  transition: background .12s, box-shadow .12s, transform .06s;
+}
+.sv-btn--primary:hover { background: linear-gradient(180deg, var(--sv-accent-2), var(--sv-accent-2)); box-shadow: 0 4px 16px var(--sv-accent-dim), inset 0 1px 0 rgba(255,255,255,.22); }
+.sv-btn--primary:active { transform: translateY(1px); box-shadow: 0 1px 2px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.12); }
+.sv-btn--primary:disabled { opacity: .45; cursor: default; box-shadow: none; transform: none; }
 .sv-btn--ghost { background: transparent; border-color: transparent; color: var(--sv-text-2); }
 .sv-btn--ghost:hover { background: var(--sv-surface-2); color: var(--sv-text); }
 .sv-btn--icon { width: 32px; padding: 0; justify-content: center; }
