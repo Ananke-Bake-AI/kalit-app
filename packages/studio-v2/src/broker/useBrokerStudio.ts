@@ -196,7 +196,11 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
         // erreur véhiculée sur le WS aussi → message clair
         if (ev.type === 'error') setLiveError(humanizeError(ev.content as string | undefined, t.errors));
       } else if (f.type === 'session_attached') {
+        // Reprise d'une session active (switch/reload) : ré-accepter les frames
+        // live et montrer l'activité immédiatement.
+        turnActive.current = true;
         setStreaming(true);
+        setActivity((a) => a ?? { label: t.activity.working, since: Date.now() });
       } else if (f.type === 'session_stream_closed') {
         finalize(f.sessionId!);
       }
@@ -223,11 +227,16 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   }, []);
 
   const select = useCallback((id: string) => {
-    turnActive.current = false;
-    setActiveId(id); setLive(null); setStreaming(false); setActivity(null); setLiveError(null);
+    // Session déjà en cours de génération (switch/reload) : on ré-accepte les
+    // frames WS live pour ré-afficher l'activité de l'agent au lieu de rester figé.
+    const running = sessions.find((x) => x.id === id)?.status === 'running';
+    turnActive.current = running;
+    setActiveId(id); setLive(null); setLiveError(null);
+    setStreaming(running);
+    setActivity(running ? { label: t.activity.working, since: Date.now() } : null);
     loadMessages(id);
     socket.subscribe(id);
-  }, [loadMessages, socket]);
+  }, [loadMessages, socket, sessions, t]);
 
   // Crée la session à la volée si besoin (upload ou 1er message).
   const ensureSession = useCallback(async (): Promise<string | null> => {
