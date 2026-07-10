@@ -242,7 +242,7 @@ export function useBrokerStudio(client: BrokerClient) {
     // notamment `error` (sinon échec silencieux) et `done` (finalisation de
     // secours si le WS n'a pas émis session_stream_closed).
     try {
-      const r = await client.fetch(`/api/broker/sessions/${sid}/messages`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: text, language: 'fr', progressMode: 'default', taskforceModelProvider: DEFAULT_TF_PROVIDER, requestId: 'r' + Date.now() }) });
+      const r = await client.fetch(`/api/broker/sessions/${sid}/messages`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: text, language: 'fr', progressMode: 'default', suite: 'project', taskforceModelProvider: DEFAULT_TF_PROVIDER, requestId: 'r' + Date.now() }) });
       if (r.status === 402) { pushError(sid, 'Crédits insuffisants pour lancer ce projet.'); finalizeSoft(); return; }
       if (r.body) {
         const reader = r.body.getReader(); const dec = new TextDecoder(); let buf = '';
