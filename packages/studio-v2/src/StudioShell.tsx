@@ -47,6 +47,7 @@ export function StudioShell(props: StudioShellProps) {
         title={active?.title ?? 'Nouveau projet'}
         messages={props.messages} streaming={props.streaming} activity={props.activity}
         ctxPercent={props.ctxPercent} onSend={props.onSend} onStop={props.onStop}
+        onChoiceAnswer={props.onSend}
       />
       <Preview
         mode={mode} onMode={setMode} previewUrl={props.previewUrl} tree={props.tree}

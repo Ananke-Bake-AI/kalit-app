@@ -9,10 +9,42 @@ interface Props {
   activity: Activity | null;
   onSend: (text: string) => void;
   onStop: () => void;
+  onChoiceAnswer: (text: string) => void;
   ctxPercent?: number | null;
 }
 
-function SegmentView({ s }: { s: Segment }) {
+function ChoiceView({ s, onAnswer }: { s: Extract<Segment, { kind: 'choice' }>; onAnswer: (t: string) => void }) {
+  const [sel, setSel] = useState<string[]>([]);
+  if (s.answered) {
+    return (
+      <div className="sv-choice sv-choice--locked">
+        <div className="sv-choice__q">{s.question}</div>
+        <div className="sv-choice__opts">{s.options.map((o) => <span key={o.label} className="sv-choice__pill">{o.label}</span>)}</div>
+      </div>
+    );
+  }
+  const toggle = (label: string) => {
+    if (!s.multiSelect) { onAnswer(label); return; }
+    setSel((p) => p.includes(label) ? p.filter((x) => x !== label) : [...p, label]);
+  };
+  return (
+    <div className="sv-choice">
+      <div className="sv-choice__q">{s.question}</div>
+      <div className="sv-choice__opts">
+        {s.options.map((o) => (
+          <button key={o.label} className={'sv-choice__opt' + (sel.includes(o.label) ? ' sv-choice__opt--on' : '')} onClick={() => toggle(o.label)}>
+            <span className="sv-choice__label">{o.label}</span>
+            {o.description && <span className="sv-choice__desc">{o.description}</span>}
+          </button>
+        ))}
+      </div>
+      {s.multiSelect && <button className="sv-btn sv-btn--primary" disabled={!sel.length} onClick={() => onAnswer(sel.join(', '))}>Valider</button>}
+      {s.freeform && <div className="sv-choice__free">ou réponds librement ci-dessous</div>}
+    </div>
+  );
+}
+
+function SegmentView({ s, onChoiceAnswer }: { s: Segment; onChoiceAnswer: (t: string) => void }) {
   if (s.kind === 'text') return <div className="sv-msg__text">{s.content}</div>;
   if (s.kind === 'thinking') return (
     <div className="sv-think"><div className="sv-think__l">réflexion</div><div className="sv-think__t">{s.content}</div></div>
@@ -22,10 +54,11 @@ function SegmentView({ s }: { s: Segment }) {
   );
   if (s.kind === 'file') return <div className="sv-tool">↓ {s.name}</div>;
   if (s.kind === 'error') return <div className="sv-err">{s.content}</div>;
+  if (s.kind === 'choice') return <ChoiceView s={s} onAnswer={onChoiceAnswer} />;
   return null;
 }
 
-export function Chat({ title, messages, streaming, activity, onSend, onStop, ctxPercent }: Props) {
+export function Chat({ title, messages, streaming, activity, onSend, onStop, onChoiceAnswer, ctxPercent }: Props) {
   const [val, setVal] = useState('');
   const feedRef = useRef<HTMLDivElement>(null);
   const [, force] = useState(0);
@@ -54,7 +87,7 @@ export function Chat({ title, messages, streaming, activity, onSend, onStop, ctx
             <div className="sv-msg__av">{m.role === 'user' ? 'V' : 'K'}</div>
             <div className="sv-msg__body">
               <div className="sv-msg__name">{m.role === 'user' ? 'Vous' : 'Kalit'}</div>
-              {m.segments.map((s, i) => <SegmentView key={i} s={s} />)}
+              {m.segments.map((s, i) => <SegmentView key={i} s={s} onChoiceAnswer={onChoiceAnswer} />)}
             </div>
           </div>
         ))}

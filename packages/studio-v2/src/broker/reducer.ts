@@ -3,7 +3,17 @@
 // un event non-texte arrive ou en fin de flux — pas de rendu token-par-token
 // incohérent. Le thinking est accumulé à part.
 
-import type { Segment } from '../lib/types';
+import type { ChoiceOption, Segment } from '../lib/types';
+
+/** L'agent du broker pose ses questions via le tool `ask_choice`; on le rend en
+ *  QCM répondable plutôt qu'en badge d'outil. Input: {question, options, freeform, multi_select}. */
+export function choiceFromInput(input: unknown): Extract<Segment, { kind: 'choice' }> | null {
+  const i = input as { question?: string; options?: ChoiceOption[]; multi_select?: boolean; freeform?: boolean } | undefined;
+  if (!i || !i.question || !Array.isArray(i.options)) return null;
+  const options = i.options.filter((o) => o && o.label).map((o) => ({ label: String(o.label), description: o.description }));
+  if (options.length < 1) return null;
+  return { kind: 'choice', question: i.question, options, multiSelect: !!i.multi_select, freeform: i.freeform !== false };
+}
 
 export interface RawEvent {
   type?: string;
@@ -47,8 +57,22 @@ export class StreamReducer {
 
       case 'tool_use': {
         this.flushText();
+        // ask_choice → QCM répondable, pas un badge d'outil.
+        if (ev.name === 'ask_choice') {
+          const choice = choiceFromInput(ev.input);
+          if (choice) { this.segments.push(choice); this.onChange(); return 'ongoing'; }
+        }
         const input = ev.input && typeof ev.input === 'object' ? JSON.stringify(ev.input) : String(ev.input ?? '');
         this.segments.push({ kind: 'tool', name: String(ev.name ?? 'tool'), input: input.slice(0, 200), done: false });
+        this.onChange();
+        return 'ongoing';
+      }
+
+      case 'choice': {
+        this.flushText();
+        const c = (ev as { choice?: unknown }).choice ?? ev;
+        const choice = choiceFromInput(c);
+        if (choice) this.segments.push(choice);
         this.onChange();
         return 'ongoing';
       }

@@ -7,7 +7,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Activity, Message, Segment, Session } from '../lib/types';
 import type { BrokerClient } from './client';
 import { useBrokerSocket, type Frame } from './socket';
-import { StreamReducer, type RawEvent } from './reducer';
+import { StreamReducer, choiceFromInput, type RawEvent } from './reducer';
 
 interface ChatSessionDTO { id: string; title: string | null; model: string; isProcessing?: boolean; createdAt: number; updatedAt: number; }
 interface ChatMessageDTO { id: string; role: string; content?: string; thinking?: string; tools?: Array<{ name: string; input?: unknown; done?: boolean }>; files?: Array<{ name: string; url: string; mimeType?: string }>; createdAt: number; }
@@ -22,7 +22,11 @@ function elToSegment(e: { type?: string; content?: string; name?: string; input?
   switch (e.type) {
     case 'text': return { kind: 'text', content: e.content ?? '' };
     case 'thinking': return { kind: 'thinking', content: e.content ?? '' };
-    case 'tool': return { kind: 'tool', name: e.name ?? 'tool', input: e.input ? JSON.stringify(e.input).slice(0, 200) : undefined, done: e.done ?? true };
+    case 'tool': {
+      if (e.name === 'ask_choice') { const c = choiceFromInput(e.input); if (c) return c; }
+      return { kind: 'tool', name: e.name ?? 'tool', input: e.input ? JSON.stringify(e.input).slice(0, 200) : undefined, done: e.done ?? true };
+    }
+    case 'choice': return choiceFromInput(e);
     case 'file': return { kind: 'file', name: e.name ?? 'fichier', url: e.url ?? '', mimeType: e.mimeType };
     case 'error': return { kind: 'error', content: e.content ?? 'Erreur' };
     default: return null; // widget / choice / progress : gérés plus tard
@@ -87,6 +91,10 @@ export function useBrokerStudio(client: BrokerClient) {
   const reducers = useRef<Map<string, StreamReducer>>(new Map());
   const activeRef = useRef<string | null>(null);
   activeRef.current = activeId;
+  // Tour en cours: on n'accepte les frames WS (live) que pendant un tour actif.
+  // Empêche les frames tardives de reconstruire le live APRÈS le chargement des
+  // messages persistés → sinon doublons (live + persisté).
+  const turnActive = useRef(false);
 
   const socket = useBrokerSocket(useCallback(() => client.connectWebSocket(), [client]));
 
@@ -103,7 +111,15 @@ export function useBrokerStudio(client: BrokerClient) {
 
   const loadMessages = useCallback(async (sid: string) => {
     const d = await api.json<{ messages: ChatMessageDTO[] }>(`/api/broker/sessions/${sid}/messages`);
-    setBaseMessages((d?.messages ?? []).map(dtoToMessage));
+    const msgs = (d?.messages ?? []).map(dtoToMessage);
+    // Un choix est VERROUILLÉ seulement si un message utilisateur le suit
+    // (déjà répondu). S'il est le dernier sans réponse, il reste répondable.
+    for (let i = 0; i < msgs.length; i++) {
+      const answered = msgs.slice(i + 1).some((m) => m.role === 'user');
+      for (const s of msgs[i].segments) if (s.kind === 'choice') s.answered = answered;
+    }
+    setLive(null); // les messages persistés font foi → pas de doublon live
+    setBaseMessages(msgs);
   }, [api]);
 
   useEffect(() => { loadSessions(); }, [loadSessions]);
@@ -113,6 +129,7 @@ export function useBrokerStudio(client: BrokerClient) {
     return socket.onFrame((f: Frame) => {
       if (f.sessionId && f.sessionId !== activeRef.current) return; // isolation par-session
       if (f.type === 'session_event') {
+        if (!turnActive.current) return; // frame tardive après fin de tour → ignorer
         const r = reducers.current.get(f.sessionId!) ?? new StreamReducer(() => {});
         reducers.current.set(f.sessionId!, r);
         const ev = f.data as RawEvent;
@@ -133,6 +150,7 @@ export function useBrokerStudio(client: BrokerClient) {
   }, [socket]);
 
   const finalize = useCallback((sid: string) => {
+    turnActive.current = false;
     reducers.current.delete(sid);
     setLive(null); setStreaming(false); setActivity(null);
     if (sid === activeRef.current) { loadMessages(sid); }
@@ -150,6 +168,7 @@ export function useBrokerStudio(client: BrokerClient) {
   }, []);
 
   const select = useCallback((id: string) => {
+    turnActive.current = false;
     setActiveId(id); setLive(null); setStreaming(false); setActivity(null); setLiveError(null);
     loadMessages(id);
     socket.subscribe(id);
@@ -165,6 +184,7 @@ export function useBrokerStudio(client: BrokerClient) {
       setActiveId(sid); activeRef.current = sid; socket.subscribe(sid);
     }
     // message utilisateur optimiste
+    turnActive.current = true;
     setLiveError(null);
     setBaseMessages((m) => [...m, { id: 'temp-' + Date.now(), role: 'user', segments: [{ kind: 'text', content: text }] }]);
     setStreaming(true); setActivity({ label: 'démarre', since: Date.now() });
@@ -190,7 +210,9 @@ export function useBrokerStudio(client: BrokerClient) {
         }
       }
     } catch { /* le WS reste la source de vérité */ }
+    turnActive.current = false;   // tour terminé côté POST → plus de live
     finalizeSoft();
+    if (sid) loadMessages(sid);   // sync l'état persisté (ex: QCM en attente de réponse)
   }, [activeId, api, client, socket]);
 
   const stop = useCallback(async () => {
@@ -203,7 +225,7 @@ export function useBrokerStudio(client: BrokerClient) {
   // messages affichés = persistés + message assistant live en cours
   const messages: Message[] = useMemo(() => {
     const out = [...baseMessages];
-    if (live && (live.segments.length || live.thinking)) {
+    if (streaming && live && (live.segments.length || live.thinking)) {
       const liveSegs: Segment[] = [];
       if (live.thinking) liveSegs.push({ kind: 'thinking', content: live.thinking });
       liveSegs.push(...live.segments);
@@ -211,7 +233,7 @@ export function useBrokerStudio(client: BrokerClient) {
     }
     if (liveError) out.push({ id: 'liveError', role: 'assistant', segments: [{ kind: 'error', content: liveError }] });
     return out;
-  }, [baseMessages, live, liveError]);
+  }, [baseMessages, live, liveError, streaming]);
 
   return { sessions, activeId, messages, streaming, activity, socketStatus: socket.status, select, newProject, send, stop, reloadSessions: loadSessions };
 }

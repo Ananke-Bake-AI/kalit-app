@@ -12,12 +12,14 @@ export interface Session {
   updatedAt: number;
 }
 
+export interface ChoiceOption { label: string; description?: string; }
 export type Segment =
   | { kind: 'text'; content: string }
   | { kind: 'thinking'; content: string }
   | { kind: 'tool'; name: string; input?: string; done?: boolean }
   | { kind: 'file'; name: string; url: string; mimeType?: string }
-  | { kind: 'error'; content: string };
+  | { kind: 'error'; content: string }
+  | { kind: 'choice'; question: string; options: ChoiceOption[]; multiSelect?: boolean; freeform?: boolean; answered?: boolean };
 
 export interface Message {
   id: string;

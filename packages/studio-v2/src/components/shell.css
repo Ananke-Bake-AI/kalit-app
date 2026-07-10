@@ -42,6 +42,18 @@
 .sv-tool { display: inline-flex; align-items: center; gap: 7px; font: 12px var(--sv-mono); color: var(--sv-warn); background: var(--sv-surface); border: 1px solid var(--sv-line-soft); border-radius: var(--sv-r-sm); padding: 4px 9px; margin: 3px 0; }
 .sv-tool__arg { color: var(--sv-text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 320px; }
 .sv-err { display: block; margin: 4px 0; padding: 8px 11px; border-radius: var(--sv-r-sm); font-size: 13px; color: #ffd7d3; background: rgba(229,88,77,.10); border: 1px solid rgba(229,88,77,.32); }
+/* QCM (ask_choice) */
+.sv-choice { margin: 8px 0; padding: 12px; border: 1px solid var(--sv-line); border-radius: var(--sv-r); background: var(--sv-surface); }
+.sv-choice__q { font-weight: 550; font-size: 13.5px; margin-bottom: 10px; }
+.sv-choice__opts { display: flex; flex-direction: column; gap: 6px; }
+.sv-choice__opt { display: flex; flex-direction: column; gap: 2px; text-align: left; padding: 9px 12px; border: 1px solid var(--sv-line); border-radius: var(--sv-r-sm); background: var(--sv-surface-2); color: var(--sv-text); font: inherit; cursor: pointer; transition: border-color .12s, background .12s; }
+.sv-choice__opt:hover { border-color: var(--sv-accent-line); background: var(--sv-raised); }
+.sv-choice__opt--on { border-color: var(--sv-accent); background: var(--sv-accent-dim); }
+.sv-choice__label { font-size: 13px; font-weight: 500; }
+.sv-choice__desc { font-size: 12px; color: var(--sv-text-3); }
+.sv-choice__free { font-size: 12px; color: var(--sv-text-3); margin-top: 8px; }
+.sv-choice--locked .sv-choice__opts { flex-direction: row; flex-wrap: wrap; }
+.sv-choice__pill { font-size: 12px; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--sv-line); color: var(--sv-text-2); }
 .sv-activity { display: flex; align-items: center; gap: 8px; padding: 6px var(--sv-4); color: var(--sv-accent); font-size: 12.5px; flex-shrink: 0; }
 .sv-activity__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--sv-accent); animation: sv-pulse2 1.1s ease-in-out infinite; }
 .sv-activity__t { color: var(--sv-text-3); margin-left: auto; font-variant-numeric: tabular-nums; }
