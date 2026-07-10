@@ -3,6 +3,7 @@ import type { Activity, Message, Segment } from '../lib/types';
 import { IconAttach, IconSend, IconStop } from '../lib/icons';
 import { ModelSelector } from './ModelSelector';
 import { useStrings } from '../lib/i18n';
+import { Md } from '../lib/markdown';
 
 interface Props {
   title: string;
@@ -51,7 +52,7 @@ function ChoiceView({ s, onAnswer }: { s: Extract<Segment, { kind: 'choice' }>; 
 
 function SegmentView({ s, onChoiceAnswer }: { s: Segment; onChoiceAnswer: (t: string) => void }) {
   const st = useStrings();
-  if (s.kind === 'text') return <div className="sv-msg__text">{s.content}</div>;
+  if (s.kind === 'text') return <div className="sv-msg__text sv-md"><Md text={s.content} /></div>;
   if (s.kind === 'thinking') return (
     <div className="sv-think"><div className="sv-think__l">{st.thinking}</div><div className="sv-think__t">{s.content}</div></div>
   );
