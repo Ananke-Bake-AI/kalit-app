@@ -2,6 +2,30 @@ import { StrictMode, useCallback, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { StudioShell } from '../src';
 import type { Activity, FileNode, Message, Session } from '../src/lib/types';
+import { createDevClient } from '../src/broker/client';
+import { useBrokerStudio } from '../src/broker/useBrokerStudio';
+
+// Mode live (?live) : branche le vrai broker via l'adaptateur. Le token de dev
+// est pré-minté (dev-token.ts, gitignoré). En prod c'est getToken → NextAuth.
+const LIVE = new URLSearchParams(location.search).has('live');
+
+function LiveApp() {
+  const [client] = useState(() => createDevClient({
+    getToken: async () => (await import('./dev-token')).DEV_TOKEN,
+    baseUrl: '', wsBaseUrl: '', // same-origin → proxifié par Vite vers le broker
+  }));
+  const s = useBrokerStudio(client);
+  return (
+    <StudioShell
+      sessions={s.sessions} activeId={s.activeId} messages={s.messages}
+      streaming={s.streaming} activity={s.activity} ctxPercent={null}
+      previewUrl={null} tree={[]}
+      user={{ name: 'Studio v2 Dev' }}
+      onSelect={s.select} onNew={s.newProject} onSend={s.send} onStop={s.stop}
+      onRefreshTree={() => {}}
+    />
+  );
+}
 
 // Harnais de dev : données mockées + simulation de streaming (thinking → tool →
 // texte) pour valider l'UX sans le broker. Remplacé par l'adaptateur broker réel
@@ -75,4 +99,4 @@ function App() {
   );
 }
 
-createRoot(document.getElementById('sv-root')!).render(<StrictMode><App /></StrictMode>);
+createRoot(document.getElementById('sv-root')!).render(<StrictMode>{LIVE ? <LiveApp /> : <App />}</StrictMode>);

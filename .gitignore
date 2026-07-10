@@ -39,3 +39,4 @@ apps/landing/*.png
 apps/landing/*.yml
 apps/landing/*.mjs
 apps/landing/gpt_context.txt
+packages/studio-v2/dev/dev-token.ts
