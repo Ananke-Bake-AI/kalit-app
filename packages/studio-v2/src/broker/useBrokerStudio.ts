@@ -327,6 +327,12 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
       ? `[${names.length} fichier(s) joint(s) par l'utilisateur, disponibles dans ./attachments/ : ${names.join(', ')}]\n\n${text}`
       : text;
     setActivity({ label: t.activity.starting, since: Date.now() });
+    // `sawDone` = le POST a reçu l'event terminal 'done'. S'il ne le voit PAS
+    // (POST coupé par un timeout proxy sur un long tool call), on NE finalise
+    // pas : sinon turnActive repasse false et le handler WS ignore toutes les
+    // frames suivantes → gel du chat jusqu'au reload. Le WS reste alors seul
+    // maître de la fin (session_stream_closed).
+    let sawDone = false;
     // POST /messages : le WS écrit les segments live. Mais on PARSE quand même
     // le corps SSE pour les side-effects que le WS ne porte pas toujours —
     // notamment `error` (sinon échec silencieux) et `done` (finalisation de
@@ -345,13 +351,18 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
             if (!line.startsWith('data:')) continue;
             let ev: { type?: string; content?: string }; try { ev = JSON.parse(line.slice(5).trim()); } catch { continue; }
             if (ev.type === 'error') { pushError(sid, humanizeError(ev.content, t.errors)); }
+            if (ev.type === 'done') sawDone = true;
           }
         }
       }
     } catch { /* le WS reste la source de vérité */ }
-    turnActive.current = false;   // tour terminé côté POST → plus de live
-    finalizeSoft();
-    if (sid) loadMessages(sid);   // sync l'état persisté (ex: QCM en attente de réponse)
+    // On ne finalise QUE si le tour est réellement terminé (event 'done' vu).
+    // POST coupé prématurément sans 'done' → laisser le WS piloter le live.
+    if (sawDone) {
+      turnActive.current = false;
+      finalizeSoft();
+      if (sid) loadMessages(sid);   // sync l'état persisté (ex: QCM en attente de réponse)
+    }
   }, [pending, ensureSession, uploadPending, pushError, client, lang]);
 
   const stop = useCallback(async () => {
