@@ -24,6 +24,11 @@ function dtoToMessage(d: ChatMessageDTO): Message {
   return { id: d.id, role: d.role === 'user' ? 'user' : 'assistant', segments };
 }
 
+// Modèle par défaut : kimi (ollama cloud) — évite le rate-limit Anthropic du
+// broker. Taskforce sur openai pour ne pas retomber sur Anthropic côté build.
+const DEFAULT_MODEL = 'kimi-k2.5:cloud';
+const DEFAULT_TF_PROVIDER = 'openai';
+
 /** Traduit une erreur backend brute en message clair pour l'utilisateur. */
 function humanizeError(raw?: string): string {
   const s = raw ?? '';
@@ -129,7 +134,7 @@ export function useBrokerStudio(client: BrokerClient) {
   const send = useCallback(async (text: string) => {
     let sid = activeId;
     if (!sid) {
-      const created = await api.json<{ session: ChatSessionDTO }>('/api/broker/sessions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'anthropic:claude-sonnet-5', taskforceModelProvider: 'anthropic' }) });
+      const created = await api.json<{ session: ChatSessionDTO }>('/api/broker/sessions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: DEFAULT_MODEL, taskforceModelProvider: DEFAULT_TF_PROVIDER }) });
       if (!created?.session) return;
       sid = created.session.id;
       setSessions((s) => [dtoToSession(created.session), ...s]);
@@ -144,7 +149,7 @@ export function useBrokerStudio(client: BrokerClient) {
     // notamment `error` (sinon échec silencieux) et `done` (finalisation de
     // secours si le WS n'a pas émis session_stream_closed).
     try {
-      const r = await client.fetch(`/api/broker/sessions/${sid}/messages`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: text, language: 'fr', progressMode: 'default', taskforceModelProvider: 'anthropic', requestId: 'r' + Date.now() }) });
+      const r = await client.fetch(`/api/broker/sessions/${sid}/messages`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: text, language: 'fr', progressMode: 'default', taskforceModelProvider: DEFAULT_TF_PROVIDER, requestId: 'r' + Date.now() }) });
       if (r.status === 402) { pushError(sid, 'Crédits insuffisants pour lancer ce projet.'); finalizeSoft(); return; }
       if (r.body) {
         const reader = r.body.getReader(); const dec = new TextDecoder(); let buf = '';
