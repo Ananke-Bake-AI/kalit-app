@@ -8,6 +8,7 @@ import type { Activity, FileNode, Message, Segment, Session } from '../lib/types
 import type { BrokerClient } from './client';
 import { useBrokerSocket, type Frame } from './socket';
 import { StreamReducer, choiceFromInput, type RawEvent } from './reducer';
+import { DEFAULT_MODEL_ID } from '../lib/models';
 
 interface ChatSessionDTO { id: string; title: string | null; model: string; isProcessing?: boolean; createdAt: number; updatedAt: number; }
 interface ChatMessageDTO { id: string; role: string; content?: string; thinking?: string; tools?: Array<{ name: string; input?: unknown; done?: boolean }>; files?: Array<{ name: string; url: string; mimeType?: string }>; createdAt: number; }
@@ -52,9 +53,7 @@ function dtoToMessage(d: ChatMessageDTO): Message {
   return { id: d.id, role: d.role === 'user' ? 'user' : 'assistant', segments };
 }
 
-// Modèle par défaut : kimi (ollama cloud) — évite le rate-limit Anthropic du
-// broker. Taskforce sur openai pour ne pas retomber sur Anthropic côté build.
-const DEFAULT_MODEL = 'kimi-k2.5:cloud';
+// Taskforce (build) sur openai : le broker's Anthropic est souvent en 429.
 const DEFAULT_TF_PROVIDER = 'openai';
 
 /** Traduit une erreur backend brute en message clair pour l'utilisateur. */
@@ -90,6 +89,8 @@ export function useBrokerStudio(client: BrokerClient) {
   const [liveError, setLiveError] = useState<string | null>(null); // survit à loadMessages
   const [tree, setTree] = useState<FileNode[]>([]);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [model, setModel] = useState<string>(DEFAULT_MODEL_ID);
+  const modelRef = useRef(model); modelRef.current = model;
   const reducers = useRef<Map<string, StreamReducer>>(new Map());
   const activeRef = useRef<string | null>(null);
   activeRef.current = activeId;
@@ -203,7 +204,7 @@ export function useBrokerStudio(client: BrokerClient) {
   const send = useCallback(async (text: string) => {
     let sid = activeId;
     if (!sid) {
-      const created = await api.json<{ session: ChatSessionDTO }>('/api/broker/sessions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: DEFAULT_MODEL, taskforceModelProvider: DEFAULT_TF_PROVIDER }) });
+      const created = await api.json<{ session: ChatSessionDTO }>('/api/broker/sessions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: modelRef.current, taskforceModelProvider: DEFAULT_TF_PROVIDER }) });
       if (!created?.session) return;
       sid = created.session.id;
       setSessions((s) => [dtoToSession(created.session), ...s]);
@@ -261,5 +262,5 @@ export function useBrokerStudio(client: BrokerClient) {
     return out;
   }, [baseMessages, live, liveError, streaming]);
 
-  return { sessions, activeId, messages, streaming, activity, tree, previewUrl, socketStatus: socket.status, select, newProject, send, stop, refreshTree, reloadSessions: loadSessions };
+  return { sessions, activeId, messages, streaming, activity, tree, previewUrl, model, socketStatus: socket.status, select, newProject, send, stop, setModel, refreshTree, reloadSessions: loadSessions };
 }

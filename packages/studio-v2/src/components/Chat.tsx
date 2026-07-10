@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Activity, Message, Segment } from '../lib/types';
 import { IconAttach, IconSend, IconStop } from '../lib/icons';
+import { ModelSelector } from './ModelSelector';
 
 interface Props {
   title: string;
   messages: Message[];
   streaming: boolean;
   activity: Activity | null;
+  model: string;
+  onModelChange: (id: string) => void;
   onSend: (text: string) => void;
   onStop: () => void;
   onChoiceAnswer: (text: string) => void;
@@ -58,7 +61,7 @@ function SegmentView({ s, onChoiceAnswer }: { s: Segment; onChoiceAnswer: (t: st
   return null;
 }
 
-export function Chat({ title, messages, streaming, activity, onSend, onStop, onChoiceAnswer, ctxPercent }: Props) {
+export function Chat({ title, messages, streaming, activity, model, onModelChange, onSend, onStop, onChoiceAnswer, ctxPercent }: Props) {
   const [val, setVal] = useState('');
   const feedRef = useRef<HTMLDivElement>(null);
   const [, force] = useState(0);
@@ -78,6 +81,7 @@ export function Chat({ title, messages, streaming, activity, onSend, onStop, onC
           {typeof ctxPercent === 'number' && (
             <span className="sv-chip" title="Contexte utilisé">ctx {ctxPercent}%</span>
           )}
+          <ModelSelector value={model} onChange={onModelChange} />
         </div>
       </div>
 

@@ -22,6 +22,8 @@ export interface StudioShellProps {
   tree: FileNode[];
   user: { name: string; credits?: number };
   ctxPercent?: number | null;
+  model: string;
+  onModelChange: (id: string) => void;
   onSelect: (id: string) => void;
   onNew: () => void;
   onSend: (text: string) => void;
@@ -46,8 +48,8 @@ export function StudioShell(props: StudioShellProps) {
       <Chat
         title={active?.title ?? 'Nouveau projet'}
         messages={props.messages} streaming={props.streaming} activity={props.activity}
-        ctxPercent={props.ctxPercent} onSend={props.onSend} onStop={props.onStop}
-        onChoiceAnswer={props.onSend}
+        ctxPercent={props.ctxPercent} model={props.model} onModelChange={props.onModelChange}
+        onSend={props.onSend} onStop={props.onStop} onChoiceAnswer={props.onSend}
       />
       <Preview
         mode={mode} onMode={setMode} previewUrl={props.previewUrl} tree={props.tree}

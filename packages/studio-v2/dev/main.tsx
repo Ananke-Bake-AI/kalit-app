@@ -21,6 +21,7 @@ function LiveApp() {
       streaming={s.streaming} activity={s.activity} ctxPercent={null}
       previewUrl={s.previewUrl} tree={s.tree}
       user={{ name: 'Studio v2 Dev' }}
+      model={s.model} onModelChange={s.setModel}
       onSelect={s.select} onNew={s.newProject} onSend={s.send} onStop={s.stop}
       onRefreshTree={s.refreshTree}
     />
@@ -65,6 +66,7 @@ function App() {
   const [streaming, setStreaming] = useState(false);
   const [activity, setActivity] = useState<Activity | null>(null);
   const [ctx, setCtx] = useState<number | null>(27);
+  const [model, setModel] = useState('kimi-k2.5:cloud');
   const timers = useRef<number[]>([]);
 
   const stop = useCallback(() => { timers.current.forEach(clearTimeout); timers.current = []; setStreaming(false); setActivity(null); }, []);
@@ -92,6 +94,7 @@ function App() {
       streaming={streaming} activity={activity} ctxPercent={ctx}
       previewUrl="https://example.com" tree={TREE}
       user={{ name: 'Vincent', credits: 1240 }}
+      model={model} onModelChange={setModel}
       onSelect={setActiveId}
       onNew={() => { setActiveId(null); setMessages([]); }}
       onSend={send} onStop={stop} onRefreshTree={() => {}}
