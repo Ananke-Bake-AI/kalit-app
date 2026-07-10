@@ -85,10 +85,37 @@ export function RepositoriesClient({
         toast.error(result.error || "Could not open")
         return
       }
-      // Hard navigate to /studio?session=<id>; the session JWT flow needs a
-      // page reload to refresh.
-      window.location.href = `/studio?session=${result.sessionId}`
+      // Hard navigate (le bootstrap JWT/session du studio a besoin d'un reload).
+      // Chemin propre deep-link /studio/<id> (studio-v2 ouvre la session).
+      window.location.href = `/studio/${result.sessionId}`
     })
+  }
+
+  const handleDownload = async (d: RepositoryProject) => {
+    const tid = toast.loading("Preparing ZIP…")
+    try {
+      const res = await fetch(`/api/repositories/${d.id}/download`)
+      if (!res.ok) {
+        const msg = await res.text().catch(() => "")
+        toast.dismiss(tid)
+        toast.error(res.status === 429 ? "Download limited to once every 5 minutes — try again shortly." : msg || "Download failed")
+        return
+      }
+      const blob = await res.blob()
+      const href = URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = href
+      a.download = `${(d.displayName || d.title || d.id).replace(/[^a-z0-9-_]+/gi, "-").slice(0, 40) || "project"}.zip`
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      URL.revokeObjectURL(href)
+      toast.dismiss(tid)
+      toast.success("Download ready")
+    } catch {
+      toast.dismiss(tid)
+      toast.error("Download failed")
+    }
   }
 
   const handleRename = (d: RepositoryProject) => {
@@ -327,6 +354,7 @@ export function RepositoriesClient({
                 onVisit={() => handleVisit(d)}
                 onRename={() => handleRename(d)}
                 onArchive={() => handleArchiveToggle(d)}
+                onDownload={() => handleDownload(d)}
                 onDelete={() => handleDelete(d)}
                 onRemix={() => {
                   setRemixIdea("")
@@ -364,6 +392,7 @@ function RepoCard({
   onVisit,
   onRename,
   onArchive,
+  onDownload,
   onDelete,
   onRemix,
   onStar,
@@ -375,6 +404,7 @@ function RepoCard({
   onVisit: () => void
   onRename: () => void
   onArchive: () => void
+  onDownload: () => void
   onDelete: () => void
   onRemix: () => void
   onStar: () => void
@@ -486,6 +516,7 @@ function RepoCard({
           canPublish={!!url || d.status === "completed"}
           onRename={onRename}
           onArchive={onArchive}
+          onDownload={onDownload}
           onDelete={onDelete}
           onVisibilityToggle={onVisibilityToggle}
         />
@@ -504,6 +535,7 @@ function CardMenu({
   canPublish,
   onRename,
   onArchive,
+  onDownload,
   onDelete,
   onVisibilityToggle,
 }: {
@@ -512,6 +544,7 @@ function CardMenu({
   canPublish: boolean
   onRename: () => void
   onArchive: () => void
+  onDownload: () => void
   onDelete: () => void
   onVisibilityToggle: () => void
 }) {
@@ -577,6 +610,15 @@ function CardMenu({
                 }}
               >
                 {archived ? "Restore" : "Archive"}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false)
+                  onDownload()
+                }}
+              >
+                Download ZIP
               </button>
               <button
                 type="button"

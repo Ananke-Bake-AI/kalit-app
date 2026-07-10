@@ -39,6 +39,7 @@ export interface StudioShellProps {
   uploading?: boolean;
   onAddFiles?: (files: File[]) => void;
   onRemoveAttachment?: (id: string) => void;
+  outOfCredits?: boolean;
 }
 
 /** Shell présentation pur : reçoit l'état et les callbacks, ne connaît pas le
@@ -65,6 +66,7 @@ export function StudioShell(props: StudioShellProps) {
         onSend={props.onSend} onStop={props.onStop} onChoiceAnswer={props.onSend}
         attachments={props.attachments} uploading={props.uploading}
         onAddFiles={props.onAddFiles} onRemoveAttachment={props.onRemoveAttachment}
+        outOfCredits={props.outOfCredits} pricingHref={`/${props.lang || 'en'}/pricing`}
       />
       <Preview
         mode={mode} onMode={setMode} previewUrl={props.previewUrl} tree={props.tree}

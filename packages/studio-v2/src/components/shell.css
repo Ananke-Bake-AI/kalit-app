@@ -191,3 +191,8 @@
   /* la sidebar prend toute la largeur en mobile */
   .sv-side { border-right: 0; }
 }
+
+/* Bannière crédits épuisés : au-dessus du composer, message + CTA upgrade. */
+.sv-credits { display: flex; align-items: center; gap: var(--sv-3); flex-wrap: wrap; margin: 0 var(--sv-3) 8px; padding: 10px 12px; border-radius: var(--sv-r-sm); font-size: 13px; color: #ffe1b8; background: rgba(245,158,11,.10); border: 1px solid rgba(245,158,11,.34); }
+.sv-credits__msg { flex: 1; min-width: 180px; }
+.sv-credits__cta { white-space: nowrap; text-decoration: none; }

@@ -20,6 +20,8 @@ interface Props {
   uploading?: boolean;
   onAddFiles?: (files: File[]) => void;
   onRemoveAttachment?: (id: string) => void;
+  outOfCredits?: boolean;
+  pricingHref?: string;
 }
 
 function ChoiceView({ s, onAnswer }: { s: Extract<Segment, { kind: 'choice' }>; onAnswer: (t: string) => void }) {
@@ -69,7 +71,7 @@ function SegmentView({ s, onChoiceAnswer }: { s: Segment; onChoiceAnswer: (t: st
   return null;
 }
 
-export function Chat({ title, messages, streaming, activity, model, onModelChange, onSend, onStop, onChoiceAnswer, ctxPercent, attachments = [], uploading, onAddFiles, onRemoveAttachment }: Props) {
+export function Chat({ title, messages, streaming, activity, model, onModelChange, onSend, onStop, onChoiceAnswer, ctxPercent, attachments = [], uploading, onAddFiles, onRemoveAttachment, outOfCredits, pricingHref }: Props) {
   const st = useStrings();
   const [val, setVal] = useState('');
   const feedRef = useRef<HTMLDivElement>(null);
@@ -120,6 +122,13 @@ export function Chat({ title, messages, streaming, activity, model, onModelChang
         <div className="sv-activity">
           <span className="sv-activity__dot" />{activity.label}
           {elapsed >= 2 && <span className="sv-activity__t">{elapsed}s</span>}
+        </div>
+      )}
+
+      {outOfCredits && (
+        <div className="sv-credits" role="alert">
+          <span className="sv-credits__msg">{st.errors.credits}</span>
+          <a className="sv-btn sv-btn--primary sv-credits__cta" href={pricingHref || '/pricing'}>{st.upgrade}</a>
         </div>
       )}
 

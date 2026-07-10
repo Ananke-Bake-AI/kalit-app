@@ -42,6 +42,7 @@ export interface Strings {
   dropHere: string;
   untitled: string;
   errorLabel: string;
+  upgrade: string;
   activity: {
     thinking: string; writing: string; write: string; edit: string; read: string;
     bash: string; task: string; browser: string; assets: string; tool: string;
@@ -97,6 +98,7 @@ const fr: Strings = {
   dropHere: 'Déposez vos fichiers ici',
   untitled: 'Sans titre',
   errorLabel: 'Erreur',
+  upgrade: 'Passer à une offre supérieure',
   activity: {
     thinking: 'réfléchit', writing: 'rédige la réponse', write: 'écrit un fichier',
     edit: 'modifie un fichier', read: 'lit un fichier', bash: 'exécute une commande',
@@ -160,6 +162,7 @@ const en: Strings = {
   dropHere: 'Drop your files here',
   untitled: 'Untitled',
   errorLabel: 'Error',
+  upgrade: 'Upgrade your plan',
   activity: {
     thinking: 'thinking', writing: 'writing the response', write: 'writing a file',
     edit: 'editing a file', read: 'reading a file', bash: 'running a command',

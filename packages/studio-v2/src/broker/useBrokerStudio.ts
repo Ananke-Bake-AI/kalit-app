@@ -101,6 +101,8 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   // message (évite de créer une session/workspace vide juste pour un upload).
   const [pending, setPending] = useState<{ id: string; file: File }[]>([]);
   const [uploading, setUploading] = useState(false);
+  // Crédits épuisés : le broker refuse le tour en 402 → bannière + CTA upgrade.
+  const [outOfCredits, setOutOfCredits] = useState(false);
   const reducers = useRef<Map<string, StreamReducer>>(new Map());
   const activeRef = useRef<string | null>(null);
   activeRef.current = activeId;
@@ -237,7 +239,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     // frames WS live pour ré-afficher l'activité de l'agent au lieu de rester figé.
     const running = sessions.find((x) => x.id === id)?.status === 'running';
     turnActive.current = running;
-    setActiveId(id); setLive(null); setLiveError(null);
+    setActiveId(id); setLive(null); setLiveError(null); setOutOfCredits(false);
     setStreaming(running);
     setActivity(running ? { label: t.activity.working, since: Date.now() } : null);
     loadMessages(id);
@@ -297,7 +299,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     // Feedback immédiat : message optimiste + activité, AVANT l'upload (sinon
     // l'UI paraît figée le temps du téléversement).
     turnActive.current = true;
-    setLiveError(null);
+    setLiveError(null); setOutOfCredits(false);
     setBaseMessages((m) => [...m, { id: 'temp-' + Date.now(), role: 'user', segments: [{ kind: 'text', content: text || (items.length ? '(fichiers joints)' : '') }] }]);
     setStreaming(true); setActivity({ label: items.length ? t.activity.uploading : t.activity.starting, since: Date.now() });
     // Upload d'abord — le worker doit voir les fichiers. Échec → on stoppe et on
@@ -317,7 +319,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     // secours si le WS n'a pas émis session_stream_closed).
     try {
       const r = await client.fetch(`/api/broker/sessions/${sid}/messages`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: body, language: lang, progressMode: 'default', suite: 'project', taskforceModelProvider: DEFAULT_TF_PROVIDER, requestId: 'r' + Date.now() }) });
-      if (r.status === 402) { pushError(sid, t.errors.credits); finalizeSoft(); return; }
+      if (r.status === 402) { setOutOfCredits(true); finalizeSoft(); setBaseMessages((m) => m.filter((x) => !x.id.startsWith('temp-'))); return; }
       if (r.body) {
         const reader = r.body.getReader(); const dec = new TextDecoder(); let buf = '';
         for (;;) {
@@ -343,7 +345,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     setStreaming(false); setActivity(null);
   }, [activeId, client]);
 
-  const newProject = useCallback(() => { setActiveId(null); setBaseMessages([]); setLive(null); setStreaming(false); setActivity(null); setPending([]); }, []);
+  const newProject = useCallback(() => { setActiveId(null); setBaseMessages([]); setLive(null); setStreaming(false); setActivity(null); setPending([]); setOutOfCredits(false); }, []);
 
   // messages affichés = persistés + message assistant live en cours
   const messages: Message[] = useMemo(() => {
@@ -359,5 +361,5 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   }, [baseMessages, live, liveError, streaming]);
 
   const attachments = pending.map((p) => ({ id: p.id, name: p.file.name }));
-  return { sessions, activeId, messages, streaming, activity, tree, previewUrl, model, publishUrl, publishing, canPublish: !!projectId, attachments, uploading, addFiles, removeAttachment, socketStatus: socket.status, select, newProject, send, stop, setModel, publish, refreshTree, reloadSessions: loadSessions };
+  return { sessions, activeId, messages, streaming, activity, tree, previewUrl, model, publishUrl, publishing, canPublish: !!projectId, attachments, uploading, outOfCredits, addFiles, removeAttachment, socketStatus: socket.status, select, newProject, send, stop, setModel, publish, refreshTree, reloadSessions: loadSessions };
 }

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useMemo, useRef } from "react"
-import { useParams } from "next/navigation"
+import { useParams, useSearchParams } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { createBrokerClient } from "@kalit/broker-client"
 import { StudioShell, useBrokerStudio } from "@kalit/studio-v2"
@@ -23,6 +23,7 @@ async function resolveToken(): Promise<string | null> {
 export function StudioV2Client({ initialSessionId }: { initialSessionId?: string }) {
   const { data: session } = useSession()
   const params = useParams()
+  const searchParams = useSearchParams()
   const lang = (Array.isArray(params?.locale) ? params?.locale[0] : params?.locale) || "en"
   const wsBaseUrl = process.env.NEXT_PUBLIC_BROKER_URL || "https://broker-api.kalit.ai"
 
@@ -45,6 +46,28 @@ export function StudioV2Client({ initialSessionId }: { initialSessionId?: string
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialSessionId])
 
+  // Entrée par query params (une seule fois), puis nettoyage de l'URL :
+  //  • ?prompt=…            (landing / /flow)  → nouvelle session avec ce texte.
+  //  • ?session=…           (open depuis discover/profil)  → ouvre cette session.
+  //  • ?session=…&prompt=…  (remix)  → ouvre la session forkée + envoie l'idée dedans.
+  // Ignoré si un deep-link /studio/<id> est déjà en cours (initialSessionId).
+  const didPrompt = useRef(false)
+  useEffect(() => {
+    if (didPrompt.current || initialSessionId) return
+    const sess = searchParams?.get("session")
+    const p = searchParams?.get("prompt")
+    if (!sess && !p?.trim()) return
+    didPrompt.current = true
+    window.history.replaceState(null, "", `/${lang}/studio`)
+    if (sess) {
+      s.select(sess)
+      if (p?.trim()) s.send(p)
+    } else {
+      s.send(p as string)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   // Garde l'URL synchro avec la session active → /studio/<id> partageable et
   // pratique pour debug. replaceState : pas de navigation Next (pas de remount).
   useEffect(() => {
@@ -62,6 +85,7 @@ export function StudioV2Client({ initialSessionId }: { initialSessionId?: string
       onSelect={s.select} onNew={s.newProject} onSend={s.send} onStop={s.stop}
       onRefreshTree={s.refreshTree}
       attachments={s.attachments} uploading={s.uploading} onAddFiles={s.addFiles} onRemoveAttachment={s.removeAttachment}
+      outOfCredits={s.outOfCredits}
     />
   )
 }

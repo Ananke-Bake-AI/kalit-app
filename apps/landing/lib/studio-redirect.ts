@@ -3,34 +3,21 @@
  * Used by suite hero prompts and the home page hero.
  */
 
-import { brokerFetch } from "@/lib/broker-direct"
 import type { SuiteId } from "@/lib/suites"
 
 /**
- * Create a broker session and return the /studio URL with params.
- * Falls back to a prompt-only URL if session creation fails.
+ * Return the /studio URL carrying the user's prompt. On arrival the studio
+ * creates the session with this prompt as its first message.
+ *
+ * On ne pré-crée PLUS de session ici : ça laissait une session vide en DB si
+ * l'utilisateur repartait avant d'envoyer. Le studio (studio-v2) crée la
+ * session au 1er message via ?prompt=. Async conservé pour ne pas changer les
+ * appelants (qui `await`).
  */
 export async function createStudioSession(
   prompt: string,
   suiteId: SuiteId,
 ): Promise<string> {
-  try {
-    const res = await brokerFetch("/api/broker/sessions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ model: "anthropic:claude-haiku-4-5-20251001" }),
-    })
-    if (res.ok) {
-      const data = await res.json()
-      const sessionId = data.session?.id
-      if (sessionId) {
-        return `/studio?session=${sessionId}&prompt=${encodeURIComponent(prompt)}&suite=${suiteId}`
-      }
-    }
-  } catch {
-    // Fall through
-  }
-  // Fallback: navigate to studio with just prompt + suite (studio-client will create session)
   return `/studio?prompt=${encodeURIComponent(prompt)}&suite=${suiteId}`
 }
 
