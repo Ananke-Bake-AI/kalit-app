@@ -12,11 +12,8 @@ interface Props {
   onDelete: (id: string, mode: 'session' | 'project') => void;
 }
 
-const DOT: Record<Session['status'], string> = { running: 'sv-dot--run', idle: 'sv-dot--idle', archived: 'sv-dot--arch' };
-
 export function Sidebar({ sessions, activeId, user, onSelect, onNew, onDelete }: Props) {
   const st = useStrings();
-  const LABEL: Record<Session['status'], string> = { running: st.running, idle: st.ready, archived: st.archived };
   const [q, setQ] = useState('');
   const [deleting, setDeleting] = useState<Session | null>(null);
   const [busy, setBusy] = useState(false);
@@ -48,12 +45,14 @@ export function Sidebar({ sessions, activeId, user, onSelect, onNew, onDelete }:
         </div>
       </div>
       <div className="sv-side__list">
-        {filtered.length === 0 && <div className="sv-side__group">{st.noProjects}</div>}
+        {filtered.length === 0
+          ? <div className="sv-side__group">{st.noProjects}</div>
+          : <div className="sv-side__group">{st.recents}</div>}
         {filtered.map((s) => (
           <div key={s.id} className={'sv-sess' + (s.id === activeId ? ' sv-sess--active' : '')} onClick={() => onSelect(s.id)}>
-            <div className="sv-sess__body">
-              <div className="sv-sess__title">{s.title}</div>
-              <div className="sv-sess__meta"><span className={'sv-dot ' + DOT[s.status]} /> {LABEL[s.status]}{s.model ? ` · ${s.model.split('/').pop()}` : ''}</div>
+            <div className="sv-sess__title">
+              {s.status === 'running' && <span className="sv-dot sv-dot--run sv-sess__run" title={st.running} />}
+              <span className="sv-sess__name">{s.title}</span>
             </div>
             <button
               className="sv-sess__more"

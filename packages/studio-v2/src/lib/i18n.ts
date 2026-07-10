@@ -43,6 +43,7 @@ export interface Strings {
   untitled: string;
   errorLabel: string;
   upgrade: string;
+  recents: string;
   activity: {
     thinking: string; writing: string; write: string; edit: string; read: string;
     bash: string; task: string; browser: string; assets: string; tool: string;
@@ -104,6 +105,7 @@ const fr: Strings = {
   untitled: 'Sans titre',
   errorLabel: 'Erreur',
   upgrade: 'Passer à une offre supérieure',
+  recents: 'Récents',
   activity: {
     thinking: 'réfléchit', writing: 'rédige la réponse', write: 'écrit un fichier',
     edit: 'modifie un fichier', read: 'lit un fichier', bash: 'exécute une commande',
@@ -179,6 +181,7 @@ const en: Strings = {
   untitled: 'Untitled',
   errorLabel: 'Error',
   upgrade: 'Upgrade your plan',
+  recents: 'Recents',
   activity: {
     thinking: 'thinking', writing: 'writing the response', write: 'writing a file',
     edit: 'editing a file', read: 'reading a file', bash: 'running a command',
