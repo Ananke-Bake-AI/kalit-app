@@ -2,7 +2,7 @@ import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ["bcryptjs"],
-  transpilePackages: ["@kalit/broker-client", "@kalit/i18n", "@kalit/studio-ui"],
+  transpilePackages: ["@kalit/broker-client", "@kalit/i18n", "@kalit/studio-ui", "@kalit/studio-v2"],
   images: {
     qualities: [25, 50, 75, 80, 100]
   },

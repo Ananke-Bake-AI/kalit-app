@@ -20,6 +20,7 @@
     "@kalit/broker-client": "workspace:*",
     "@kalit/i18n": "workspace:*",
     "@kalit/studio-ui": "workspace:*",
+    "@kalit/studio-v2": "workspace:*",
     "@prisma/client": "^6.19.2",
     "@reactuses/core": "^6.1.12",
     "@t3-oss/env-nextjs": "^0.13.10",
