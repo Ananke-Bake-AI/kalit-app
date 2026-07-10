@@ -114,8 +114,8 @@ export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing
         <span className={'sv-tab' + (mode === 'files' ? ' sv-tab--on' : '')} onClick={() => onMode('files')}><IconCode width={14} height={14} style={{ verticalAlign: '-2px', marginRight: 5 }} />{t.files}</span>
         <div className="sv-prev__bar-r">
           {publishUrl
-            ? <a className="sv-btn sv-btn--ghost" href={publishUrl} target="_blank" rel="noreferrer" title={t.onlineSite}><span className="sv-dot sv-dot--idle" /> {t.online}</a>
-            : canPublish && <button className="sv-btn sv-btn--primary" disabled={publishing} onClick={onPublish}>{publishing ? t.publishing : t.publish}</button>}
+            ? <a className="sv-btn sv-live" href={publishUrl} target="_blank" rel="noreferrer" title={t.onlineSite}><span className="sv-live__dot" /> {t.online}</a>
+            : <button className="sv-btn sv-btn--primary" disabled={!canPublish || publishing} onClick={onPublish} title={!canPublish ? t.cantPublish : t.publish}>{publishing && <span className="sv-btn__spin" />}{publishing ? t.publishing : t.publish}</button>}
           <button className="sv-btn sv-btn--ghost sv-btn--icon" title={t.refresh} onClick={onRefresh}><IconRefresh /></button>
           <button className="sv-btn sv-btn--ghost sv-btn--icon" title={t.openTab} onClick={onOpen}><IconExpand /></button>
         </div>
