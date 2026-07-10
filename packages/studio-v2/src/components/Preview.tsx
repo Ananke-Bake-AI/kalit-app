@@ -1,6 +1,26 @@
 import type { FileNode, PreviewMode } from '../lib/types';
-import { IconCode, IconExpand, IconEye, IconFolder, IconFile, IconRefresh } from '../lib/icons';
+import { IconCode, IconExpand, IconEye, IconFolder, IconFile, IconRefresh, IconLogo } from '../lib/icons';
 import { useStrings } from '../lib/i18n';
+
+// Icônes décoratives par suggestion (même ordre que t.suggestions, fr/en alignés).
+const SUG_ICONS = [
+  // restaurant
+  <path key="i" d="M4 3v6a2 2 0 0 0 2 2h0v10M6 3v6M9 3v6M9 3v18M17 3c-1.2 0-2 1.6-2 4s.8 3.5 2 3.5V21" />,
+  // portfolio / photo
+  <><rect key="a" x="3" y="6" width="18" height="14" rx="2.5" /><circle key="b" cx="12" cy="13" r="3.4" /><path key="c" d="M8 6l1.5-2h5L16 6" /></>,
+  // dashboard SaaS
+  <><rect key="a" x="3" y="3" width="7" height="9" rx="1.6" /><rect key="b" x="14" y="3" width="7" height="5" rx="1.6" /><rect key="c" x="14" y="12" width="7" height="9" rx="1.6" /><rect key="d" x="3" y="16" width="7" height="5" rx="1.6" /></>,
+  // app mobile
+  <><rect key="a" x="6" y="2.5" width="12" height="19" rx="3" /><path key="b" d="M10.5 18.5h3" /></>,
+  // cabinet d'avocats (colonnes)
+  <path key="i" d="M4 9h16M5 9l7-5 7 5M6.5 9v8M11 9v8M13 9v8M17.5 9v8M4 21h16" />,
+  // jeu memory
+  <><rect key="a" x="3" y="3" width="7" height="7" rx="1.4" /><rect key="b" x="14" y="3" width="7" height="7" rx="1.4" /><rect key="c" x="3" y="14" width="7" height="7" rx="1.4" /><path key="d" d="M14 17.5h7M17.5 14v7" /></>,
+];
+
+const IconArrow = () => (
+  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+);
 
 interface Props {
   mode: PreviewMode;
@@ -59,17 +79,27 @@ function PreviewEmpty({ building, hasMessages, onSuggest }: { building?: boolean
 
   // Nouvelle session : propositions de départ (sans encombrer le chat).
   return (
-    <div className="sv-prev__welcome">
-      <div className="sv-prev__welcome-h">
-        <div className="sv-prev__state-title">{t.suggestTitle}</div>
-        <div className="sv-prev__state-sub">{t.suggestSub}</div>
-      </div>
-      <div className="sv-prev__sugs">
-        {t.suggestions.map((s) => (
-          <button key={s} type="button" className="sv-sug" onClick={() => onSuggest?.(s)}>
-            {s}
-          </button>
-        ))}
+    <div className="sv-welcome">
+      <div className="sv-welcome__glow" aria-hidden />
+      <div className="sv-welcome__inner">
+        <div className="sv-welcome__hero">
+          <span className="sv-welcome__mark"><IconLogo width={30} height={30} /></span>
+          <h1 className="sv-welcome__title">{t.suggestTitle}</h1>
+          <p className="sv-welcome__sub">{t.suggestSub}</p>
+        </div>
+        <div className="sv-welcome__grid">
+          {t.suggestions.map((s, i) => (
+            <button key={s} type="button" className="sv-card" onClick={() => onSuggest?.(s)}>
+              <span className="sv-card__ic">
+                <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                  {SUG_ICONS[i % SUG_ICONS.length]}
+                </svg>
+              </span>
+              <span className="sv-card__txt">{s}</span>
+              <span className="sv-card__arr"><IconArrow /></span>
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -98,12 +98,28 @@
 .sv-prev__spinner { width: 30px; height: 30px; border-radius: 50%; border: 2.5px solid var(--sv-line); border-top-color: var(--sv-accent); animation: sv-spin .8s linear infinite; }
 @keyframes sv-spin { to { transform: rotate(360deg); } }
 
-.sv-prev__welcome { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: var(--sv-5); padding: clamp(var(--sv-5), 6vh, var(--sv-8)) var(--sv-5); }
-.sv-prev__welcome-h { text-align: center; display: flex; flex-direction: column; gap: 6px; }
-.sv-prev__sugs { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--sv-3); max-width: 520px; width: 100%; margin: 0 auto; }
-.sv-sug { text-align: left; padding: 12px 14px; font: inherit; font-size: 13px; line-height: 1.35; color: var(--sv-text-2); background: var(--sv-surface-2); border: 1px solid var(--sv-line); border-radius: var(--sv-r); cursor: pointer; transition: border-color .12s, background .12s, color .12s; }
-.sv-sug:hover { border-color: var(--sv-accent); background: var(--sv-accent-dim); color: var(--sv-text); }
-@media (max-width: 560px) { .sv-prev__sugs { grid-template-columns: 1fr; } }
+/* Écran d'accueil (nouvelle session) */
+.sv-welcome { position: relative; flex: 1; min-height: 0; overflow-y: auto; display: flex; align-items: center; justify-content: center; padding: clamp(var(--sv-5), 5vh, var(--sv-8)) var(--sv-5); }
+.sv-welcome__glow { position: absolute; inset: 0; pointer-events: none; background:
+  radial-gradient(60% 55% at 50% 0%, var(--sv-accent-dim), transparent 70%),
+  radial-gradient(40% 40% at 85% 15%, rgba(106,160,255,.08), transparent 70%); }
+.sv-welcome__inner { position: relative; width: 100%; max-width: 560px; display: flex; flex-direction: column; gap: clamp(var(--sv-5), 4vh, var(--sv-6)); }
+.sv-welcome__hero { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.sv-welcome__mark { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 16px; background: var(--sv-surface-2); border: 1px solid var(--sv-line); box-shadow: 0 0 0 6px var(--sv-accent-dim), 0 10px 30px rgba(0,0,0,.35); margin-bottom: 4px; }
+.sv-welcome__title { margin: 0; font-size: clamp(20px, 3.4vw, 25px); font-weight: 650; letter-spacing: -.02em; line-height: 1.15;
+  background: linear-gradient(120deg, var(--sv-text), var(--sv-accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.sv-welcome__sub { margin: 0; font-size: 13.5px; color: var(--sv-text-3); max-width: 380px; line-height: 1.5; }
+.sv-welcome__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.sv-card { position: relative; display: flex; align-items: center; gap: 11px; text-align: left; padding: 13px 14px; font: inherit; font-size: 13px; line-height: 1.3; color: var(--sv-text-2);
+  background: var(--sv-surface-2); border: 1px solid var(--sv-line); border-radius: var(--sv-r); cursor: pointer;
+  transition: transform .14s ease, border-color .14s, background .14s, box-shadow .14s, color .14s; }
+.sv-card:hover { transform: translateY(-2px); color: var(--sv-text); border-color: color-mix(in srgb, var(--sv-accent) 55%, var(--sv-line)); background: var(--sv-raised); box-shadow: 0 8px 22px rgba(0,0,0,.28), 0 0 0 1px var(--sv-accent-dim); }
+.sv-card__ic { flex-shrink: 0; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; color: var(--sv-accent-2); background: var(--sv-accent-dim); border: 1px solid color-mix(in srgb, var(--sv-accent) 22%, transparent); transition: background .14s, color .14s; }
+.sv-card:hover .sv-card__ic { background: color-mix(in srgb, var(--sv-accent) 22%, transparent); color: #fff; }
+.sv-card__txt { flex: 1; min-width: 0; }
+.sv-card__arr { flex-shrink: 0; color: var(--sv-text-3); opacity: 0; transform: translateX(-4px); transition: opacity .14s, transform .14s, color .14s; }
+.sv-card:hover .sv-card__arr { opacity: 1; transform: translateX(0); color: var(--sv-accent-2); }
+@media (max-width: 560px) { .sv-welcome__grid { grid-template-columns: 1fr; } }
 
 /* ── Nav mobile (barre de bascule entre panneaux) ── */
 .sv-mnav { display: none; }
