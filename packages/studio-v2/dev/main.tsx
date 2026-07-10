@@ -22,6 +22,7 @@ function LiveApp() {
       previewUrl={s.previewUrl} tree={s.tree}
       user={{ name: 'Studio v2 Dev' }}
       model={s.model} onModelChange={s.setModel}
+      publishUrl={s.publishUrl} publishing={s.publishing} canPublish={s.canPublish} onPublish={s.publish}
       onSelect={s.select} onNew={s.newProject} onSend={s.send} onStop={s.stop}
       onRefreshTree={s.refreshTree}
     />

@@ -91,6 +91,9 @@ export function useBrokerStudio(client: BrokerClient) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [model, setModel] = useState<string>(DEFAULT_MODEL_ID);
   const modelRef = useRef(model); modelRef.current = model;
+  const [projectId, setProjectId] = useState<string | null>(null);
+  const [publishUrl, setPublishUrl] = useState<string | null>(null);
+  const [publishing, setPublishing] = useState(false);
   const reducers = useRef<Map<string, StreamReducer>>(new Map());
   const activeRef = useRef<string | null>(null);
   activeRef.current = activeId;
@@ -141,9 +144,28 @@ export function useBrokerStudio(client: BrokerClient) {
     const d = await api.json<{ tree?: { name: string; path: string; type?: string; size?: number; children?: unknown[] }[]; projectId?: string; flowProjectId?: string }>(`/api/broker/workspace-tree/${sid}`);
     if (sid !== activeRef.current) return;
     if (d?.tree) setTree(d.tree.map(mapNode));
-    const pid = d?.flowProjectId || d?.projectId;
+    const pid = d?.flowProjectId || d?.projectId || null;
+    setProjectId(pid);
     setPreviewUrl(pid ? `/api/broker/project/${pid}/iframe` : null);
   }, [api, mapNode]);
+
+  // Publish : état courant du déploiement de la session active.
+  useEffect(() => {
+    if (!projectId) { setPublishUrl(null); return; }
+    let stop = false;
+    api.json<{ subdomainUrl?: string | null }>(`/api/broker/project/${projectId}/publish`).then((d) => { if (!stop) setPublishUrl(d?.subdomainUrl ?? null); });
+    return () => { stop = true; };
+  }, [projectId, api]);
+
+  const publish = useCallback(async () => {
+    if (!projectId) return;
+    setPublishing(true);
+    const slug = (sessions.find((s) => s.id === activeRef.current)?.title || 'kalit')
+      .toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'kalit';
+    const r = await client.fetch(`/api/broker/project/${projectId}/publish`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'subdomain', slug }) }).catch(() => null);
+    if (r && r.ok) { const d = await r.json().catch(() => null); setPublishUrl((d?.data ?? d)?.subdomainUrl ?? null); }
+    setPublishing(false);
+  }, [projectId, client, sessions]);
   useEffect(() => {
     if (!activeId) { setTree([]); setPreviewUrl(null); return; }
     refreshTree();
@@ -262,5 +284,5 @@ export function useBrokerStudio(client: BrokerClient) {
     return out;
   }, [baseMessages, live, liveError, streaming]);
 
-  return { sessions, activeId, messages, streaming, activity, tree, previewUrl, model, socketStatus: socket.status, select, newProject, send, stop, setModel, refreshTree, reloadSessions: loadSessions };
+  return { sessions, activeId, messages, streaming, activity, tree, previewUrl, model, publishUrl, publishing, canPublish: !!projectId, socketStatus: socket.status, select, newProject, send, stop, setModel, publish, refreshTree, reloadSessions: loadSessions };
 }

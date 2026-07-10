@@ -6,6 +6,10 @@ interface Props {
   onMode: (m: PreviewMode) => void;
   previewUrl: string | null;
   tree: FileNode[];
+  publishUrl: string | null;
+  publishing: boolean;
+  canPublish: boolean;
+  onPublish: () => void;
   onRefresh: () => void;
   onOpen: () => void;
 }
@@ -34,13 +38,16 @@ function Tree({ nodes, depth = 0 }: { nodes: FileNode[]; depth?: number }) {
   );
 }
 
-export function Preview({ mode, onMode, previewUrl, tree, onRefresh, onOpen }: Props) {
+export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing, canPublish, onPublish, onRefresh, onOpen }: Props) {
   return (
     <section className="sv-prev">
       <div className="sv-prev__bar">
         <span className={'sv-tab' + (mode === 'preview' ? ' sv-tab--on' : '')} onClick={() => onMode('preview')}><IconEye width={14} height={14} style={{ verticalAlign: '-2px', marginRight: 5 }} />Aperçu</span>
         <span className={'sv-tab' + (mode === 'files' ? ' sv-tab--on' : '')} onClick={() => onMode('files')}><IconCode width={14} height={14} style={{ verticalAlign: '-2px', marginRight: 5 }} />Fichiers</span>
         <div className="sv-prev__bar-r">
+          {publishUrl
+            ? <a className="sv-btn sv-btn--ghost" href={publishUrl} target="_blank" rel="noreferrer" title="Site en ligne"><span className="sv-dot sv-dot--idle" /> en ligne</a>
+            : canPublish && <button className="sv-btn sv-btn--primary" disabled={publishing} onClick={onPublish}>{publishing ? 'Publication…' : 'Publier'}</button>}
           <button className="sv-btn sv-btn--ghost sv-btn--icon" title="Rafraîchir" onClick={onRefresh}><IconRefresh /></button>
           <button className="sv-btn sv-btn--ghost sv-btn--icon" title="Ouvrir dans un onglet" onClick={onOpen}><IconExpand /></button>
         </div>

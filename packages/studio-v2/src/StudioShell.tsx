@@ -20,6 +20,10 @@ export interface StudioShellProps {
   activity: Activity | null;
   previewUrl: string | null;
   tree: FileNode[];
+  publishUrl?: string | null;
+  publishing?: boolean;
+  canPublish?: boolean;
+  onPublish?: () => void;
   user: { name: string; credits?: number };
   ctxPercent?: number | null;
   model: string;
@@ -53,6 +57,7 @@ export function StudioShell(props: StudioShellProps) {
       />
       <Preview
         mode={mode} onMode={setMode} previewUrl={props.previewUrl} tree={props.tree}
+        publishUrl={props.publishUrl ?? null} publishing={!!props.publishing} canPublish={!!props.canPublish} onPublish={props.onPublish ?? (() => {})}
         onRefresh={props.onRefreshTree} onOpen={() => props.previewUrl && window.open(props.previewUrl, '_blank')}
       />
       <nav className="sv-mnav" aria-label="Navigation">
