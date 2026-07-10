@@ -21,6 +21,7 @@ function SegmentView({ s }: { s: Segment }) {
     <div className="sv-tool">⚙ {s.name}{s.input ? <span className="sv-tool__arg">{s.input}</span> : null}{s.done ? ' ·' : '…'}</div>
   );
   if (s.kind === 'file') return <div className="sv-tool">↓ {s.name}</div>;
+  if (s.kind === 'error') return <div className="sv-err">{s.content}</div>;
   return null;
 }
 

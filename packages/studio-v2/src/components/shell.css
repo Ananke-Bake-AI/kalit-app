@@ -41,6 +41,7 @@
 .sv-think__t { font-size: 12.5px; font-style: italic; color: var(--sv-text-2); white-space: pre-wrap; max-height: 150px; overflow-y: auto; }
 .sv-tool { display: inline-flex; align-items: center; gap: 7px; font: 12px var(--sv-mono); color: var(--sv-warn); background: var(--sv-surface); border: 1px solid var(--sv-line-soft); border-radius: var(--sv-r-sm); padding: 4px 9px; margin: 3px 0; }
 .sv-tool__arg { color: var(--sv-text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 320px; }
+.sv-err { display: block; margin: 4px 0; padding: 8px 11px; border-radius: var(--sv-r-sm); font-size: 13px; color: #ffd7d3; background: rgba(229,88,77,.10); border: 1px solid rgba(229,88,77,.32); }
 .sv-activity { display: flex; align-items: center; gap: 8px; padding: 6px var(--sv-4); color: var(--sv-accent); font-size: 12.5px; flex-shrink: 0; }
 .sv-activity__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--sv-accent); animation: sv-pulse2 1.1s ease-in-out infinite; }
 .sv-activity__t { color: var(--sv-text-3); margin-left: auto; font-variant-numeric: tabular-nums; }

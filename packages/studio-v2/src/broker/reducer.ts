@@ -68,6 +68,12 @@ export class StreamReducer {
         this.onChange();
         return 'ongoing';
 
+      case 'error':
+        this.flushText();
+        this.segments.push({ kind: 'error', content: String(ev.content ?? 'Une erreur est survenue.') });
+        this.onChange();
+        return 'ongoing';
+
       case 'idle':
       case 'stream_closed':
         this.flushText();

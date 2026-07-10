@@ -16,7 +16,8 @@ export type Segment =
   | { kind: 'text'; content: string }
   | { kind: 'thinking'; content: string }
   | { kind: 'tool'; name: string; input?: string; done?: boolean }
-  | { kind: 'file'; name: string; url: string; mimeType?: string };
+  | { kind: 'file'; name: string; url: string; mimeType?: string }
+  | { kind: 'error'; content: string };
 
 export interface Message {
   id: string;

@@ -24,6 +24,15 @@ function dtoToMessage(d: ChatMessageDTO): Message {
   return { id: d.id, role: d.role === 'user' ? 'user' : 'assistant', segments };
 }
 
+/** Traduit une erreur backend brute en message clair pour l'utilisateur. */
+function humanizeError(raw?: string): string {
+  const s = raw ?? '';
+  if (/429|rate.?limit/i.test(s)) return 'Le service est momentanément saturé (limite de débit). Réessaie dans quelques instants.';
+  if (/402|credit/i.test(s)) return 'Crédits insuffisants pour lancer ce projet.';
+  if (/timeout|timed out/i.test(s)) return 'Le service met trop de temps à répondre. Réessaie.';
+  return 'Une erreur est survenue pendant la génération. Réessaie.';
+}
+
 const ACTIVITY: Record<string, string> = { Write: 'écrit un fichier', Edit: 'modifie un fichier', Read: 'lit un fichier', Bash: 'exécute une commande', Task: 'délègue à un sous-agent' };
 function activityFor(ev: RawEvent): string {
   if (ev.type === 'thinking') return 'réfléchit';
@@ -45,6 +54,7 @@ export function useBrokerStudio(client: BrokerClient) {
   const [live, setLive] = useState<{ segments: Segment[]; thinking: string } | null>(null);
   const [streaming, setStreaming] = useState(false);
   const [activity, setActivity] = useState<Activity | null>(null);
+  const [liveError, setLiveError] = useState<string | null>(null); // survit à loadMessages
   const reducers = useRef<Map<string, StreamReducer>>(new Map());
   const activeRef = useRef<string | null>(null);
   activeRef.current = activeId;
@@ -82,6 +92,8 @@ export function useBrokerStudio(client: BrokerClient) {
         const res = r.apply(ev);
         setLive({ ...r.render() });
         if (res === 'terminal') finalize(f.sessionId!);
+        // erreur véhiculée sur le WS aussi → message clair
+        if (ev.type === 'error') setLiveError(humanizeError(ev.content as string | undefined));
       } else if (f.type === 'session_attached') {
         setStreaming(true);
       } else if (f.type === 'session_stream_closed') {
@@ -98,8 +110,18 @@ export function useBrokerStudio(client: BrokerClient) {
     loadSessions();
   }, [loadMessages, loadSessions]);
 
+  // Finalisation de secours quand le run se termine par une erreur SSE (le WS
+  // n'émet pas toujours session_stream_closed dans ce cas).
+  const finalizeSoft = useCallback(() => { setStreaming(false); setActivity(null); }, []);
+  // Erreur affichée dans le fil. État séparé pour ne pas être écrasé par
+  // loadMessages (qui recharge les messages persistés du serveur).
+  const pushError = useCallback((sid: string, content: string) => {
+    if (sid !== activeRef.current) return;
+    setLiveError(content); setLive(null); setStreaming(false); setActivity(null);
+  }, []);
+
   const select = useCallback((id: string) => {
-    setActiveId(id); setLive(null); setStreaming(false); setActivity(null);
+    setActiveId(id); setLive(null); setStreaming(false); setActivity(null); setLiveError(null);
     loadMessages(id);
     socket.subscribe(id);
   }, [loadMessages, socket]);
@@ -114,13 +136,32 @@ export function useBrokerStudio(client: BrokerClient) {
       setActiveId(sid); activeRef.current = sid; socket.subscribe(sid);
     }
     // message utilisateur optimiste
+    setLiveError(null);
     setBaseMessages((m) => [...m, { id: 'temp-' + Date.now(), role: 'user', segments: [{ kind: 'text', content: text }] }]);
     setStreaming(true); setActivity({ label: 'démarre', since: Date.now() });
-    // POST /messages : draîné pour la backpressure, mais le WS écrit l'état.
+    // POST /messages : le WS écrit les segments live. Mais on PARSE quand même
+    // le corps SSE pour les side-effects que le WS ne porte pas toujours —
+    // notamment `error` (sinon échec silencieux) et `done` (finalisation de
+    // secours si le WS n'a pas émis session_stream_closed).
     try {
       const r = await client.fetch(`/api/broker/sessions/${sid}/messages`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: text, language: 'fr', progressMode: 'default', taskforceModelProvider: 'anthropic', requestId: 'r' + Date.now() }) });
-      if (r.body) { const reader = r.body.getReader(); while (true) { const { done } = await reader.read(); if (done) break; } }
+      if (r.status === 402) { pushError(sid, 'Crédits insuffisants pour lancer ce projet.'); finalizeSoft(); return; }
+      if (r.body) {
+        const reader = r.body.getReader(); const dec = new TextDecoder(); let buf = '';
+        for (;;) {
+          const { value, done } = await reader.read(); if (done) break;
+          buf += dec.decode(value, { stream: true });
+          let nl: number;
+          while ((nl = buf.indexOf('\n')) >= 0) {
+            const line = buf.slice(0, nl).trim(); buf = buf.slice(nl + 1);
+            if (!line.startsWith('data:')) continue;
+            let ev: { type?: string; content?: string }; try { ev = JSON.parse(line.slice(5).trim()); } catch { continue; }
+            if (ev.type === 'error') { pushError(sid, humanizeError(ev.content)); }
+          }
+        }
+      }
     } catch { /* le WS reste la source de vérité */ }
+    finalizeSoft();
   }, [activeId, api, client, socket]);
 
   const stop = useCallback(async () => {
@@ -132,12 +173,16 @@ export function useBrokerStudio(client: BrokerClient) {
 
   // messages affichés = persistés + message assistant live en cours
   const messages: Message[] = useMemo(() => {
-    if (!live || (!live.segments.length && !live.thinking)) return baseMessages;
-    const liveSegs: Segment[] = [];
-    if (live.thinking) liveSegs.push({ kind: 'thinking', content: live.thinking });
-    liveSegs.push(...live.segments);
-    return [...baseMessages, { id: 'live', role: 'assistant', segments: liveSegs }];
-  }, [baseMessages, live]);
+    const out = [...baseMessages];
+    if (live && (live.segments.length || live.thinking)) {
+      const liveSegs: Segment[] = [];
+      if (live.thinking) liveSegs.push({ kind: 'thinking', content: live.thinking });
+      liveSegs.push(...live.segments);
+      out.push({ id: 'live', role: 'assistant', segments: liveSegs });
+    }
+    if (liveError) out.push({ id: 'liveError', role: 'assistant', segments: [{ kind: 'error', content: liveError }] });
+    return out;
+  }, [baseMessages, live, liveError]);
 
   return { sessions, activeId, messages, streaming, activity, socketStatus: socket.status, select, newProject, send, stop, reloadSessions: loadSessions };
 }
