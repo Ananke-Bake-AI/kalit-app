@@ -1,10 +1,11 @@
-import { Suspense } from "react"
-import { StudioV2Client } from "./studio-v2-client"
+import { redirect } from "next/navigation"
 
-export default function StudioV2Page() {
-  return (
-    <Suspense>
-      <StudioV2Client />
-    </Suspense>
-  )
+// /studio-v2 est désormais servi sur /studio → redirection canonique.
+export default async function StudioV2Redirect({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  redirect(`/${locale}/studio`)
 }

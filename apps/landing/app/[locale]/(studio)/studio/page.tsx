@@ -1,10 +1,11 @@
 import { Suspense } from "react"
-import { StudioClient } from "./studio-client"
+// Le studio v2 est désormais LE studio (servi sur /studio).
+import { StudioV2Client } from "../studio-v2/studio-v2-client"
 
 export default function StudioPage() {
   return (
     <Suspense>
-      <StudioClient />
+      <StudioV2Client />
     </Suspense>
   )
 }
