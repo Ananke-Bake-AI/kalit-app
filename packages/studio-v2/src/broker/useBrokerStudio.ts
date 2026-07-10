@@ -15,11 +15,35 @@ interface ChatMessageDTO { id: string; role: string; content?: string; thinking?
 function dtoToSession(d: ChatSessionDTO): Session {
   return { id: d.id, title: d.title || 'Sans titre', status: d.isProcessing ? 'running' : 'idle', model: d.model, updatedAt: d.updatedAt || d.createdAt || 0 };
 }
+// Le message assistant persisté stocke ses segments comme un tableau JSON
+// SÉRIALISÉ dans `content` (ex: '[{"type":"text",...},{"type":"tool",...}]').
+// Le message user a un `content` texte simple. On gère les deux.
+function elToSegment(e: { type?: string; content?: string; name?: string; input?: unknown; done?: boolean; url?: string; mimeType?: string }): Segment | null {
+  switch (e.type) {
+    case 'text': return { kind: 'text', content: e.content ?? '' };
+    case 'thinking': return { kind: 'thinking', content: e.content ?? '' };
+    case 'tool': return { kind: 'tool', name: e.name ?? 'tool', input: e.input ? JSON.stringify(e.input).slice(0, 200) : undefined, done: e.done ?? true };
+    case 'file': return { kind: 'file', name: e.name ?? 'fichier', url: e.url ?? '', mimeType: e.mimeType };
+    case 'error': return { kind: 'error', content: e.content ?? 'Erreur' };
+    default: return null; // widget / choice / progress : gérés plus tard
+  }
+}
+function parseContent(content?: string): Segment[] {
+  if (!content) return [];
+  const t = content.trim();
+  if (t.startsWith('[')) {
+    try {
+      const arr = JSON.parse(t);
+      if (Array.isArray(arr)) return arr.map(elToSegment).filter((s): s is Segment => s !== null);
+    } catch { /* pas du JSON → texte brut */ }
+  }
+  return [{ kind: 'text', content }];
+}
 function dtoToMessage(d: ChatMessageDTO): Message {
   const segments: Segment[] = [];
   if (d.thinking) segments.push({ kind: 'thinking', content: d.thinking });
   for (const t of d.tools ?? []) segments.push({ kind: 'tool', name: t.name, input: t.input ? JSON.stringify(t.input).slice(0, 200) : undefined, done: t.done ?? true });
-  if (d.content) segments.push({ kind: 'text', content: d.content });
+  segments.push(...parseContent(d.content));
   for (const f of d.files ?? []) segments.push({ kind: 'file', name: f.name, url: f.url, mimeType: f.mimeType });
   return { id: d.id, role: d.role === 'user' ? 'user' : 'assistant', segments };
 }
