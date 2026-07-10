@@ -39,6 +39,7 @@ export interface Strings {
   send: string;
   noProjects: string;
   cantPublish: string;
+  dropHere: string;
 }
 
 const fr: Strings = {
@@ -85,6 +86,7 @@ const fr: Strings = {
   send: 'Envoyer',
   noProjects: 'Aucun projet',
   cantPublish: 'Termine ton projet avant de le publier',
+  dropHere: 'Déposez vos fichiers ici',
 };
 
 const en: Strings = {
@@ -131,6 +133,7 @@ const en: Strings = {
   send: 'Send',
   noProjects: 'No projects yet',
   cantPublish: 'Finish your project before publishing',
+  dropHere: 'Drop your files here',
 };
 
 const TABLE: Record<string, Strings> = { fr, en };

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type DragEvent } from 'react';
 import type { Activity, Message, Segment } from '../lib/types';
 import { IconAttach, IconSend, IconStop } from '../lib/icons';
 import { ModelSelector } from './ModelSelector';
@@ -16,6 +16,10 @@ interface Props {
   onStop: () => void;
   onChoiceAnswer: (text: string) => void;
   ctxPercent?: number | null;
+  attachments?: { id: string; name: string; url: string }[];
+  uploading?: boolean;
+  onAddFiles?: (files: File[]) => void;
+  onRemoveAttachment?: (id: string) => void;
 }
 
 function ChoiceView({ s, onAnswer }: { s: Extract<Segment, { kind: 'choice' }>; onAnswer: (t: string) => void }) {
@@ -65,11 +69,16 @@ function SegmentView({ s, onChoiceAnswer }: { s: Segment; onChoiceAnswer: (t: st
   return null;
 }
 
-export function Chat({ title, messages, streaming, activity, model, onModelChange, onSend, onStop, onChoiceAnswer, ctxPercent }: Props) {
+export function Chat({ title, messages, streaming, activity, model, onModelChange, onSend, onStop, onChoiceAnswer, ctxPercent, attachments = [], uploading, onAddFiles, onRemoveAttachment }: Props) {
   const st = useStrings();
   const [val, setVal] = useState('');
   const feedRef = useRef<HTMLDivElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [dragging, setDragging] = useState(false);
   const [, force] = useState(0);
+
+  const pickFiles = (fl: FileList | null) => { if (fl && fl.length && onAddFiles) onAddFiles(Array.from(fl)); };
+  const onDrop = (e: DragEvent<HTMLElement>) => { e.preventDefault(); setDragging(false); pickFiles(e.dataTransfer.files); };
 
   useEffect(() => { feedRef.current?.scrollTo({ top: feedRef.current.scrollHeight }); }, [messages, activity]);
   // heartbeat pour le temps écoulé de l'indicateur d'activité
@@ -79,7 +88,12 @@ export function Chat({ title, messages, streaming, activity, model, onModelChang
   const elapsed = activity ? Math.floor((Date.now() - activity.since) / 1000) : 0;
 
   return (
-    <section className="sv-chat">
+    <section className="sv-chat"
+      onDragOver={(e) => { if (onAddFiles) { e.preventDefault(); setDragging(true); } }}
+      onDragLeave={(e) => { if (e.currentTarget === e.target) setDragging(false); }}
+      onDrop={onDrop}
+    >
+      {dragging && <div className="sv-drop"><div className="sv-drop__in">{st.dropHere}</div></div>}
       <div className="sv-chat__bar">
         <span className="sv-chat__title">{title}</span>
         <div className="sv-chat__bar-r">
@@ -111,13 +125,26 @@ export function Chat({ title, messages, streaming, activity, model, onModelChang
 
       <div className="sv-composer">
         <div className="sv-composer__box">
+          {(attachments.length > 0 || uploading) && (
+            <div className="sv-atts">
+              {attachments.map((a) => (
+                <span key={a.id} className="sv-att" title={a.name}>
+                  <IconAttach width={12} height={12} />
+                  <span className="sv-att__n">{a.name}</span>
+                  <button className="sv-att__x" onClick={() => onRemoveAttachment?.(a.id)} aria-label="remove">×</button>
+                </span>
+              ))}
+              {uploading && <span className="sv-att sv-att--load"><span className="sv-btn__spin" /></span>}
+            </div>
+          )}
           <textarea
             value={val} onChange={(e) => setVal(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }}
             placeholder={st.composerPlaceholder} rows={1}
           />
           <div className="sv-composer__row">
-            <button className="sv-btn sv-btn--ghost sv-btn--icon" title={st.attach}><IconAttach /></button>
+            <button className="sv-btn sv-btn--ghost sv-btn--icon" title={st.attach} onClick={() => fileRef.current?.click()} disabled={!onAddFiles}><IconAttach /></button>
+            <input ref={fileRef} type="file" multiple style={{ display: 'none' }} onChange={(e) => { pickFiles(e.target.files); e.target.value = ''; }} />
             <div className="sv-composer__row-r">
               <span className="sv-kbd">⏎</span>
               {streaming

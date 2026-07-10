@@ -35,6 +35,10 @@ export interface StudioShellProps {
   onSend: (text: string) => void;
   onStop: () => void;
   onRefreshTree: () => void;
+  attachments?: { id: string; name: string; url: string }[];
+  uploading?: boolean;
+  onAddFiles?: (files: File[]) => void;
+  onRemoveAttachment?: (id: string) => void;
 }
 
 /** Shell présentation pur : reçoit l'état et les callbacks, ne connaît pas le
@@ -59,6 +63,8 @@ export function StudioShell(props: StudioShellProps) {
         messages={props.messages} streaming={props.streaming} activity={props.activity}
         ctxPercent={props.ctxPercent} model={props.model} onModelChange={props.onModelChange}
         onSend={props.onSend} onStop={props.onStop} onChoiceAnswer={props.onSend}
+        attachments={props.attachments} uploading={props.uploading}
+        onAddFiles={props.onAddFiles} onRemoveAttachment={props.onRemoveAttachment}
       />
       <Preview
         mode={mode} onMode={setMode} previewUrl={props.previewUrl} tree={props.tree}

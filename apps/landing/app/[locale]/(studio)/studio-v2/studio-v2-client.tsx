@@ -44,6 +44,7 @@ export function StudioV2Client() {
       publishUrl={s.publishUrl} publishing={s.publishing} canPublish={s.canPublish} onPublish={s.publish}
       onSelect={s.select} onNew={s.newProject} onSend={s.send} onStop={s.stop}
       onRefreshTree={s.refreshTree}
+      attachments={s.attachments} uploading={s.uploading} onAddFiles={s.addFiles} onRemoveAttachment={s.removeAttachment}
     />
   )
 }

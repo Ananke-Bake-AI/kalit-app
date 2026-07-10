@@ -94,6 +94,8 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en') {
   const [projectId, setProjectId] = useState<string | null>(null);
   const [publishUrl, setPublishUrl] = useState<string | null>(null);
   const [publishing, setPublishing] = useState(false);
+  const [attachments, setAttachments] = useState<{ id: string; name: string; url: string }[]>([]);
+  const [uploading, setUploading] = useState(false);
   const reducers = useRef<Map<string, StreamReducer>>(new Map());
   const activeRef = useRef<string | null>(null);
   activeRef.current = activeId;
@@ -223,26 +225,59 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en') {
     socket.subscribe(id);
   }, [loadMessages, socket]);
 
+  // Crée la session à la volée si besoin (upload ou 1er message).
+  const ensureSession = useCallback(async (): Promise<string | null> => {
+    if (activeRef.current) return activeRef.current;
+    const created = await api.json<{ session: ChatSessionDTO }>('/api/broker/sessions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: modelRef.current, taskforceModelProvider: DEFAULT_TF_PROVIDER }) });
+    if (!created?.session) return null;
+    const sid = created.session.id;
+    setSessions((s) => [dtoToSession(created.session), ...s]);
+    setActiveId(sid); activeRef.current = sid; socket.subscribe(sid);
+    return sid;
+  }, [api, socket]);
+
+  // Upload de pièces jointes → écrites dans le workspace RAM (./attachments/).
+  const addFiles = useCallback(async (files: File[]) => {
+    const list = files.filter((f) => f.size <= 10 * 1024 * 1024);
+    if (!list.length) return;
+    const sid = await ensureSession();
+    if (!sid) return;
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append('sessionId', sid);
+      fd.append('category', 'assets');
+      for (const f of list) fd.append('files', f);
+      const r = await client.fetch('/api/broker/upload', { method: 'POST', body: fd });
+      if (r.ok) {
+        const d = (await r.json()) as { files?: { fileId: string; name: string; url: string }[] };
+        setAttachments((a) => [...a, ...(d?.files ?? []).map((f) => ({ id: f.fileId, name: f.name, url: f.url }))]);
+      }
+    } catch { /* ignore */ }
+    setUploading(false);
+  }, [client, ensureSession]);
+
+  const removeAttachment = useCallback((id: string) => setAttachments((a) => a.filter((x) => x.id !== id)), []);
+
   const send = useCallback(async (text: string) => {
-    let sid = activeId;
-    if (!sid) {
-      const created = await api.json<{ session: ChatSessionDTO }>('/api/broker/sessions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: modelRef.current, taskforceModelProvider: DEFAULT_TF_PROVIDER }) });
-      if (!created?.session) return;
-      sid = created.session.id;
-      setSessions((s) => [dtoToSession(created.session), ...s]);
-      setActiveId(sid); activeRef.current = sid; socket.subscribe(sid);
-    }
+    const sid = await ensureSession();
+    if (!sid) return;
+    const atts = attachments;
+    setAttachments([]);
+    const body = atts.length
+      ? `[${atts.length} fichier(s) joint(s) par l'utilisateur, disponibles dans ./attachments/ : ${atts.map((a) => a.name).join(', ')}]\n\n${text}`
+      : text;
     // message utilisateur optimiste
     turnActive.current = true;
     setLiveError(null);
-    setBaseMessages((m) => [...m, { id: 'temp-' + Date.now(), role: 'user', segments: [{ kind: 'text', content: text }] }]);
+    setBaseMessages((m) => [...m, { id: 'temp-' + Date.now(), role: 'user', segments: [{ kind: 'text', content: body }] }]);
     setStreaming(true); setActivity({ label: 'démarre', since: Date.now() });
     // POST /messages : le WS écrit les segments live. Mais on PARSE quand même
     // le corps SSE pour les side-effects que le WS ne porte pas toujours —
     // notamment `error` (sinon échec silencieux) et `done` (finalisation de
     // secours si le WS n'a pas émis session_stream_closed).
     try {
-      const r = await client.fetch(`/api/broker/sessions/${sid}/messages`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: text, language: lang, progressMode: 'default', suite: 'project', taskforceModelProvider: DEFAULT_TF_PROVIDER, requestId: 'r' + Date.now() }) });
+      const r = await client.fetch(`/api/broker/sessions/${sid}/messages`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: body, language: lang, progressMode: 'default', suite: 'project', taskforceModelProvider: DEFAULT_TF_PROVIDER, requestId: 'r' + Date.now() }) });
       if (r.status === 402) { pushError(sid, 'Crédits insuffisants pour lancer ce projet.'); finalizeSoft(); return; }
       if (r.body) {
         const reader = r.body.getReader(); const dec = new TextDecoder(); let buf = '';
@@ -262,14 +297,14 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en') {
     turnActive.current = false;   // tour terminé côté POST → plus de live
     finalizeSoft();
     if (sid) loadMessages(sid);   // sync l'état persisté (ex: QCM en attente de réponse)
-  }, [activeId, api, client, socket]);
+  }, [ensureSession, attachments, client, lang]);
 
   const stop = useCallback(async () => {
     if (activeId) await client.fetch(`/api/broker/cancel/${activeId}`, { method: 'POST' }).catch(() => {});
     setStreaming(false); setActivity(null);
   }, [activeId, client]);
 
-  const newProject = useCallback(() => { setActiveId(null); setBaseMessages([]); setLive(null); setStreaming(false); setActivity(null); }, []);
+  const newProject = useCallback(() => { setActiveId(null); setBaseMessages([]); setLive(null); setStreaming(false); setActivity(null); setAttachments([]); }, []);
 
   // messages affichés = persistés + message assistant live en cours
   const messages: Message[] = useMemo(() => {
@@ -284,5 +319,5 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en') {
     return out;
   }, [baseMessages, live, liveError, streaming]);
 
-  return { sessions, activeId, messages, streaming, activity, tree, previewUrl, model, publishUrl, publishing, canPublish: !!projectId, socketStatus: socket.status, select, newProject, send, stop, setModel, publish, refreshTree, reloadSessions: loadSessions };
+  return { sessions, activeId, messages, streaming, activity, tree, previewUrl, model, publishUrl, publishing, canPublish: !!projectId, attachments, uploading, addFiles, removeAttachment, socketStatus: socket.status, select, newProject, send, stop, setModel, publish, refreshTree, reloadSessions: loadSessions };
 }
