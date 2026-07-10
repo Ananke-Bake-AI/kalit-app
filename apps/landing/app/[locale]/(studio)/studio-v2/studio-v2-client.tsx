@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo } from "react"
+import { useEffect, useMemo, useRef } from "react"
 import { useParams } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { createBrokerClient } from "@kalit/broker-client"
@@ -20,7 +20,7 @@ async function resolveToken(): Promise<string | null> {
   return null
 }
 
-export function StudioV2Client() {
+export function StudioV2Client({ initialSessionId }: { initialSessionId?: string }) {
   const { data: session } = useSession()
   const params = useParams()
   const lang = (Array.isArray(params?.locale) ? params?.locale[0] : params?.locale) || "en"
@@ -35,6 +35,23 @@ export function StudioV2Client() {
 
   const s = useBrokerStudio(client, lang, wsBaseUrl)
   const user = { name: session?.user?.name || session?.user?.email || "" }
+
+  // Deep-link : sélectionne la session de l'URL au 1er rendu (une seule fois).
+  const didInit = useRef(false)
+  useEffect(() => {
+    if (didInit.current || !initialSessionId) return
+    didInit.current = true
+    s.select(initialSessionId)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialSessionId])
+
+  // Garde l'URL synchro avec la session active → /studio/<id> partageable et
+  // pratique pour debug. replaceState : pas de navigation Next (pas de remount).
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    const want = s.activeId ? `/${lang}/studio/${s.activeId}` : `/${lang}/studio`
+    if (window.location.pathname !== want) window.history.replaceState(null, "", want)
+  }, [s.activeId, lang])
 
   return (
     <StudioShell

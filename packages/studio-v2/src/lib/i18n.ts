@@ -45,7 +45,7 @@ export interface Strings {
   activity: {
     thinking: string; writing: string; write: string; edit: string; read: string;
     bash: string; task: string; browser: string; assets: string; tool: string;
-    working: string; starting: string; uploading: string;
+    working: string; starting: string; uploading: string; compacting: string;
   };
   errors: { rate: string; credits: string; timeout: string; generic: string; upload: string };
 }
@@ -102,6 +102,7 @@ const fr: Strings = {
     edit: 'modifie un fichier', read: 'lit un fichier', bash: 'exécute une commande',
     task: 'délègue à un sous-agent', browser: 'pilote le navigateur', assets: 'cherche des assets',
     tool: 'outil', working: 'travaille', starting: 'démarre', uploading: 'téléverse les fichiers',
+    compacting: 'résume la conversation…',
   },
   errors: {
     rate: 'Le service est momentanément saturé (limite de débit). Réessaie dans quelques instants.',
@@ -164,6 +165,7 @@ const en: Strings = {
     edit: 'editing a file', read: 'reading a file', bash: 'running a command',
     task: 'delegating to a subagent', browser: 'driving the browser', assets: 'searching assets',
     tool: 'tool', working: 'working', starting: 'starting', uploading: 'uploading files',
+    compacting: 'compacting conversation…',
   },
   errors: {
     rate: 'The service is momentarily saturated (rate limit). Try again in a moment.',

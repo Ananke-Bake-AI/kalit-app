@@ -67,6 +67,7 @@ function humanizeError(raw: string | undefined, e: Strings['errors']): string {
 }
 
 function activityFor(ev: RawEvent, a: Strings['activity']): string {
+  if (ev.type === 'compact') return a.compacting;
   if (ev.type === 'thinking') return a.thinking;
   if (ev.type === 'text') return a.writing;
   if (ev.type === 'tool_use') {
