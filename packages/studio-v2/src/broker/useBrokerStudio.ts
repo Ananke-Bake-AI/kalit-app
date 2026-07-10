@@ -227,6 +227,11 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   }, []);
 
   const select = useCallback((id: string) => {
+    // activeRef mis à jour SYNCHRONEMENT : sur une re-souscription (curseur > 0),
+    // le broker envoie session_attached immédiatement (sans session_context) —
+    // si activeRef pointait encore sur l'ancienne session, la frame serait
+    // filtrée et l'activité ne réapparaîtrait pas.
+    activeRef.current = id;
     // Session déjà en cours de génération (switch/reload) : on ré-accepte les
     // frames WS live pour ré-afficher l'activité de l'agent au lieu de rester figé.
     const running = sessions.find((x) => x.id === id)?.status === 'running';
