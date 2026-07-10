@@ -4,15 +4,18 @@ import type { ReactNode } from 'react';
 // tout). Couvre ce que l'agent produit : gras, italique, code inline + blocs,
 // liens explicites et URLs nues, titres, listes, citations.
 
-const INLINE_RE = /(`[^`]+`)|(\*\*[^*]+\*\*)|(\*[^*\n]+\*|_[^_\n]+_)|(\[[^\]]+\]\([^)\s]+\))|((?:https?:\/\/|www\.)[^\s<>()]+)/g;
+// Source du pattern inline. IMPORTANT : on crée un RegExp NEUF à chaque appel de
+// inline() — un regex /g partagé casserait en récursion (lastIndex partagé →
+// boucle infinie sur le gras/italique).
+const INLINE_SRC = '(`[^`]+`)|(\\*\\*[^*]+\\*\\*)|(\\*[^*\\n]+\\*|_[^_\\n]+_)|(\\[[^\\]]+\\]\\([^)\\s]+\\))|((?:https?:\\/\\/|www\\.)[^\\s<>()]+)';
 
 function inline(text: string, kp = ''): ReactNode[] {
   const out: ReactNode[] = [];
+  const re = new RegExp(INLINE_SRC, 'g');
   let last = 0;
   let m: RegExpExecArray | null;
   let i = 0;
-  INLINE_RE.lastIndex = 0;
-  while ((m = INLINE_RE.exec(text))) {
+  while ((m = re.exec(text))) {
     if (m.index > last) out.push(text.slice(last, m.index));
     const tok = m[0];
     const key = kp + 'i' + i++;
