@@ -240,6 +240,9 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     const running = sessions.find((x) => x.id === id)?.status === 'running';
     turnActive.current = running;
     setActiveId(id); setLive(null); setLiveError(null); setOutOfCredits(false);
+    // Reflète le modèle réel de la session sélectionnée dans le sélecteur.
+    const sm = sessions.find((x) => x.id === id)?.model;
+    if (sm) setModel(sm);
     setStreaming(running);
     setActivity(running ? { label: t.activity.working, since: Date.now() } : null);
     loadMessages(id);
@@ -318,7 +321,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     // notamment `error` (sinon échec silencieux) et `done` (finalisation de
     // secours si le WS n'a pas émis session_stream_closed).
     try {
-      const r = await client.fetch(`/api/broker/sessions/${sid}/messages`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: body, language: lang, progressMode: 'default', suite: 'project', taskforceModelProvider: DEFAULT_TF_PROVIDER, requestId: 'r' + Date.now() }) });
+      const r = await client.fetch(`/api/broker/sessions/${sid}/messages`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: body, language: lang, progressMode: 'default', suite: 'project', model: modelRef.current, taskforceModelProvider: DEFAULT_TF_PROVIDER, requestId: 'r' + Date.now() }) });
       if (r.status === 402) { setOutOfCredits(true); finalizeSoft(); setBaseMessages((m) => m.filter((x) => !x.id.startsWith('temp-'))); return; }
       if (r.body) {
         const reader = r.body.getReader(); const dec = new TextDecoder(); let buf = '';
