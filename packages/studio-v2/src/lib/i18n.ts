@@ -40,6 +40,14 @@ export interface Strings {
   noProjects: string;
   cantPublish: string;
   dropHere: string;
+  untitled: string;
+  errorLabel: string;
+  activity: {
+    thinking: string; writing: string; write: string; edit: string; read: string;
+    bash: string; task: string; browser: string; assets: string; tool: string;
+    working: string; starting: string; uploading: string;
+  };
+  errors: { rate: string; credits: string; timeout: string; generic: string; upload: string };
 }
 
 const fr: Strings = {
@@ -87,6 +95,21 @@ const fr: Strings = {
   noProjects: 'Aucun projet',
   cantPublish: 'Termine ton projet avant de le publier',
   dropHere: 'Déposez vos fichiers ici',
+  untitled: 'Sans titre',
+  errorLabel: 'Erreur',
+  activity: {
+    thinking: 'réfléchit', writing: 'rédige la réponse', write: 'écrit un fichier',
+    edit: 'modifie un fichier', read: 'lit un fichier', bash: 'exécute une commande',
+    task: 'délègue à un sous-agent', browser: 'pilote le navigateur', assets: 'cherche des assets',
+    tool: 'outil', working: 'travaille', starting: 'démarre', uploading: 'téléverse les fichiers',
+  },
+  errors: {
+    rate: 'Le service est momentanément saturé (limite de débit). Réessaie dans quelques instants.',
+    credits: 'Crédits insuffisants pour lancer ce projet.',
+    timeout: 'Le service met trop de temps à répondre. Réessaie.',
+    generic: 'Une erreur est survenue pendant la génération. Réessaie.',
+    upload: "L'upload des fichiers a échoué (réseau ou fichier trop lourd). Réessaie.",
+  },
 };
 
 const en: Strings = {
@@ -134,6 +157,21 @@ const en: Strings = {
   noProjects: 'No projects yet',
   cantPublish: 'Finish your project before publishing',
   dropHere: 'Drop your files here',
+  untitled: 'Untitled',
+  errorLabel: 'Error',
+  activity: {
+    thinking: 'thinking', writing: 'writing the response', write: 'writing a file',
+    edit: 'editing a file', read: 'reading a file', bash: 'running a command',
+    task: 'delegating to a subagent', browser: 'driving the browser', assets: 'searching assets',
+    tool: 'tool', working: 'working', starting: 'starting', uploading: 'uploading files',
+  },
+  errors: {
+    rate: 'The service is momentarily saturated (rate limit). Try again in a moment.',
+    credits: 'Not enough credits to start this project.',
+    timeout: 'The service is taking too long to respond. Try again.',
+    generic: 'An error occurred during generation. Try again.',
+    upload: 'File upload failed (network or file too large). Try again.',
+  },
 };
 
 const TABLE: Record<string, Strings> = { fr, en };

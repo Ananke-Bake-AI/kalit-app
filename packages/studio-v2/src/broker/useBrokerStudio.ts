@@ -9,6 +9,7 @@ import type { BrokerClient } from './client';
 import { useBrokerSocket, type Frame } from './socket';
 import { StreamReducer, choiceFromInput, type RawEvent } from './reducer';
 import { DEFAULT_MODEL_ID } from '../lib/models';
+import { stringsFor, type Strings } from '../lib/i18n';
 
 interface ChatSessionDTO { id: string; title: string | null; model: string; isProcessing?: boolean; createdAt: number; updatedAt: number; }
 interface ChatMessageDTO { id: string; role: string; content?: string; thinking?: string; tools?: Array<{ name: string; input?: unknown; done?: boolean }>; files?: Array<{ name: string; url: string; mimeType?: string }>; createdAt: number; }
@@ -57,29 +58,30 @@ function dtoToMessage(d: ChatMessageDTO): Message {
 const DEFAULT_TF_PROVIDER = 'openai';
 
 /** Traduit une erreur backend brute en message clair pour l'utilisateur. */
-function humanizeError(raw?: string): string {
+function humanizeError(raw: string | undefined, e: Strings['errors']): string {
   const s = raw ?? '';
-  if (/429|rate.?limit/i.test(s)) return 'Le service est momentanément saturé (limite de débit). Réessaie dans quelques instants.';
-  if (/402|credit/i.test(s)) return 'Crédits insuffisants pour lancer ce projet.';
-  if (/timeout|timed out/i.test(s)) return 'Le service met trop de temps à répondre. Réessaie.';
-  return 'Une erreur est survenue pendant la génération. Réessaie.';
+  if (/429|rate.?limit/i.test(s)) return e.rate;
+  if (/402|credit/i.test(s)) return e.credits;
+  if (/timeout|timed out/i.test(s)) return e.timeout;
+  return e.generic;
 }
 
-const ACTIVITY: Record<string, string> = { Write: 'écrit un fichier', Edit: 'modifie un fichier', Read: 'lit un fichier', Bash: 'exécute une commande', Task: 'délègue à un sous-agent' };
-function activityFor(ev: RawEvent): string {
-  if (ev.type === 'thinking') return 'réfléchit';
-  if (ev.type === 'text') return 'rédige la réponse';
+function activityFor(ev: RawEvent, a: Strings['activity']): string {
+  if (ev.type === 'thinking') return a.thinking;
+  if (ev.type === 'text') return a.writing;
   if (ev.type === 'tool_use') {
     const n = String(ev.name ?? '');
-    if (ACTIVITY[n]) return ACTIVITY[n];
-    if (/^mcp__browser/.test(n)) return 'pilote le navigateur';
-    if (/find-assets/.test(n)) return 'cherche des assets';
-    return `outil ${n}`;
+    const map: Record<string, string> = { Write: a.write, Edit: a.edit, Read: a.read, Bash: a.bash, Task: a.task };
+    if (map[n]) return map[n];
+    if (/^mcp__browser/.test(n)) return a.browser;
+    if (/find-assets/.test(n)) return a.assets;
+    return `${a.tool} ${n}`;
   }
-  return 'travaille';
+  return a.working;
 }
 
 export function useBrokerStudio(client: BrokerClient, lang: string = 'en', brokerUrl: string = '') {
+  const t = useMemo(() => stringsFor(lang), [lang]);
   const [sessions, setSessions] = useState<Session[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [baseMessages, setBaseMessages] = useState<Message[]>([]); // persistés
@@ -187,12 +189,12 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
         reducers.current.set(f.sessionId!, r);
         const ev = f.data as RawEvent;
         setStreaming(true);
-        setActivity({ label: activityFor(ev), since: Date.now() });
+        setActivity({ label: activityFor(ev, t.activity), since: Date.now() });
         const res = r.apply(ev);
         setLive({ ...r.render() });
         if (res === 'terminal') finalize(f.sessionId!);
         // erreur véhiculée sur le WS aussi → message clair
-        if (ev.type === 'error') setLiveError(humanizeError(ev.content as string | undefined));
+        if (ev.type === 'error') setLiveError(humanizeError(ev.content as string | undefined, t.errors));
       } else if (f.type === 'session_attached') {
         setStreaming(true);
       } else if (f.type === 'session_stream_closed') {
@@ -282,25 +284,25 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     turnActive.current = true;
     setLiveError(null);
     setBaseMessages((m) => [...m, { id: 'temp-' + Date.now(), role: 'user', segments: [{ kind: 'text', content: text || (items.length ? '(fichiers joints)' : '') }] }]);
-    setStreaming(true); setActivity({ label: items.length ? 'téléverse les fichiers' : 'démarre', since: Date.now() });
+    setStreaming(true); setActivity({ label: items.length ? t.activity.uploading : t.activity.starting, since: Date.now() });
     // Upload d'abord — le worker doit voir les fichiers. Échec → on stoppe et on
     // le dit (pas de faux « fichiers joints »).
     let names: string[] = [];
     if (items.length) {
       try { names = await uploadPending(sid, items); }
-      catch { pushError(sid, "L'upload des fichiers a échoué (réseau ou fichier trop lourd). Réessaie."); return; }
+      catch { pushError(sid, t.errors.upload); return; }
     }
     const body = names.length
       ? `[${names.length} fichier(s) joint(s) par l'utilisateur, disponibles dans ./attachments/ : ${names.join(', ')}]\n\n${text}`
       : text;
-    setActivity({ label: 'démarre', since: Date.now() });
+    setActivity({ label: t.activity.starting, since: Date.now() });
     // POST /messages : le WS écrit les segments live. Mais on PARSE quand même
     // le corps SSE pour les side-effects que le WS ne porte pas toujours —
     // notamment `error` (sinon échec silencieux) et `done` (finalisation de
     // secours si le WS n'a pas émis session_stream_closed).
     try {
       const r = await client.fetch(`/api/broker/sessions/${sid}/messages`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: body, language: lang, progressMode: 'default', suite: 'project', taskforceModelProvider: DEFAULT_TF_PROVIDER, requestId: 'r' + Date.now() }) });
-      if (r.status === 402) { pushError(sid, 'Crédits insuffisants pour lancer ce projet.'); finalizeSoft(); return; }
+      if (r.status === 402) { pushError(sid, t.errors.credits); finalizeSoft(); return; }
       if (r.body) {
         const reader = r.body.getReader(); const dec = new TextDecoder(); let buf = '';
         for (;;) {
@@ -311,7 +313,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
             const line = buf.slice(0, nl).trim(); buf = buf.slice(nl + 1);
             if (!line.startsWith('data:')) continue;
             let ev: { type?: string; content?: string }; try { ev = JSON.parse(line.slice(5).trim()); } catch { continue; }
-            if (ev.type === 'error') { pushError(sid, humanizeError(ev.content)); }
+            if (ev.type === 'error') { pushError(sid, humanizeError(ev.content, t.errors)); }
           }
         }
       }
