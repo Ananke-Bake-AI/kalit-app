@@ -1,5 +1,6 @@
 import type { FileNode, PreviewMode } from '../lib/types';
 import { IconCode, IconExpand, IconEye, IconFolder, IconFile, IconRefresh } from '../lib/icons';
+import { useStrings } from '../lib/i18n';
 
 interface Props {
   mode: PreviewMode;
@@ -12,6 +13,9 @@ interface Props {
   onPublish: () => void;
   onRefresh: () => void;
   onOpen: () => void;
+  building?: boolean;
+  hasMessages?: boolean;
+  onSuggest?: (prompt: string) => void;
 }
 
 function fmt(b?: number) {
@@ -38,26 +42,60 @@ function Tree({ nodes, depth = 0 }: { nodes: FileNode[]; depth?: number }) {
   );
 }
 
-export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing, canPublish, onPublish, onRefresh, onOpen }: Props) {
+/** État du panneau quand il n'y a pas encore d'aperçu à montrer. */
+function PreviewEmpty({ building, hasMessages, onSuggest }: { building?: boolean; hasMessages?: boolean; onSuggest?: (p: string) => void }) {
+  const t = useStrings();
+
+  // L'agent travaille (ou a commencé) mais aucun fichier servable encore.
+  if (building || hasMessages) {
+    return (
+      <div className="sv-prev__state">
+        <div className="sv-prev__spinner" aria-hidden />
+        <div className="sv-prev__state-title">{t.building}</div>
+        <div className="sv-prev__state-sub">{t.buildingSub}</div>
+      </div>
+    );
+  }
+
+  // Nouvelle session : propositions de départ (sans encombrer le chat).
+  return (
+    <div className="sv-prev__welcome">
+      <div className="sv-prev__welcome-h">
+        <div className="sv-prev__state-title">{t.suggestTitle}</div>
+        <div className="sv-prev__state-sub">{t.suggestSub}</div>
+      </div>
+      <div className="sv-prev__sugs">
+        {t.suggestions.map((s) => (
+          <button key={s} type="button" className="sv-sug" onClick={() => onSuggest?.(s)}>
+            {s}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing, canPublish, onPublish, onRefresh, onOpen, building, hasMessages, onSuggest }: Props) {
+  const t = useStrings();
   return (
     <section className="sv-prev">
       <div className="sv-prev__bar">
-        <span className={'sv-tab' + (mode === 'preview' ? ' sv-tab--on' : '')} onClick={() => onMode('preview')}><IconEye width={14} height={14} style={{ verticalAlign: '-2px', marginRight: 5 }} />Aperçu</span>
-        <span className={'sv-tab' + (mode === 'files' ? ' sv-tab--on' : '')} onClick={() => onMode('files')}><IconCode width={14} height={14} style={{ verticalAlign: '-2px', marginRight: 5 }} />Fichiers</span>
+        <span className={'sv-tab' + (mode === 'preview' ? ' sv-tab--on' : '')} onClick={() => onMode('preview')}><IconEye width={14} height={14} style={{ verticalAlign: '-2px', marginRight: 5 }} />{t.preview}</span>
+        <span className={'sv-tab' + (mode === 'files' ? ' sv-tab--on' : '')} onClick={() => onMode('files')}><IconCode width={14} height={14} style={{ verticalAlign: '-2px', marginRight: 5 }} />{t.files}</span>
         <div className="sv-prev__bar-r">
           {publishUrl
-            ? <a className="sv-btn sv-btn--ghost" href={publishUrl} target="_blank" rel="noreferrer" title="Site en ligne"><span className="sv-dot sv-dot--idle" /> en ligne</a>
-            : canPublish && <button className="sv-btn sv-btn--primary" disabled={publishing} onClick={onPublish}>{publishing ? 'Publication…' : 'Publier'}</button>}
-          <button className="sv-btn sv-btn--ghost sv-btn--icon" title="Rafraîchir" onClick={onRefresh}><IconRefresh /></button>
-          <button className="sv-btn sv-btn--ghost sv-btn--icon" title="Ouvrir dans un onglet" onClick={onOpen}><IconExpand /></button>
+            ? <a className="sv-btn sv-btn--ghost" href={publishUrl} target="_blank" rel="noreferrer" title={t.onlineSite}><span className="sv-dot sv-dot--idle" /> {t.online}</a>
+            : canPublish && <button className="sv-btn sv-btn--primary" disabled={publishing} onClick={onPublish}>{publishing ? t.publishing : t.publish}</button>}
+          <button className="sv-btn sv-btn--ghost sv-btn--icon" title={t.refresh} onClick={onRefresh}><IconRefresh /></button>
+          <button className="sv-btn sv-btn--ghost sv-btn--icon" title={t.openTab} onClick={onOpen}><IconExpand /></button>
         </div>
       </div>
       {mode === 'preview' ? (
         previewUrl
           ? <div className="sv-prev__body"><iframe className="sv-prev__frame" src={previewUrl} title="preview" /></div>
-          : <div className="sv-empty">L'aperçu apparaîtra ici<br />dès que l'agent aura écrit les premiers fichiers.</div>
+          : <PreviewEmpty building={building} hasMessages={hasMessages} onSuggest={onSuggest} />
       ) : (
-        tree.length ? <div className="sv-tree"><Tree nodes={tree} /></div> : <div className="sv-empty">Aucun fichier pour l'instant.</div>
+        tree.length ? <div className="sv-tree"><Tree nodes={tree} /></div> : <div className="sv-empty">{t.noFiles}</div>
       )}
     </section>
   );

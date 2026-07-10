@@ -1,0 +1,139 @@
+import { createContext, useContext } from 'react';
+
+// i18n autonome du studio v2 : toutes les chaînes visibles, fr/en. La locale
+// vient de la route (/[locale]/…) et est fournie via <StringsProvider>.
+export interface Strings {
+  newProject: string;
+  preview: string;
+  files: string;
+  publish: string;
+  publishing: string;
+  online: string;
+  onlineSite: string;
+  refresh: string;
+  openTab: string;
+  building: string;
+  buildingSub: string;
+  suggestTitle: string;
+  suggestSub: string;
+  suggestions: string[];
+  previewWaiting: string;
+  noFiles: string;
+  searchPlaceholder: string;
+  ready: string;
+  archived: string;
+  answerFreely: string;
+  thinking: string;
+  ctxUsed: string;
+  composerPlaceholder: string;
+  attach: string;
+  agentModel: string;
+  navProjects: string;
+  navChat: string;
+  navPreview: string;
+  navigation: string;
+  you: string;
+  validate: string;
+  running: string;
+  stop: string;
+  send: string;
+}
+
+const fr: Strings = {
+  newProject: 'Nouveau projet',
+  preview: 'Aperçu',
+  files: 'Fichiers',
+  publish: 'Publier',
+  publishing: 'Publication…',
+  online: 'en ligne',
+  onlineSite: 'Site en ligne',
+  refresh: 'Rafraîchir',
+  openTab: 'Ouvrir dans un onglet',
+  building: 'Construction en cours',
+  buildingSub: "L'agent écrit les premiers fichiers — l'aperçu s'affichera tout seul.",
+  suggestTitle: 'Que veux-tu construire ?',
+  suggestSub: 'Décris ton idée dans le chat, ou pars d’un exemple :',
+  suggestions: [
+    'Une landing page pour mon restaurant italien',
+    'Un portfolio minimaliste pour photographe',
+    'Un dashboard SaaS avec authentification',
+    'Une page de vente pour une app mobile',
+    'Un site vitrine pour un cabinet d’avocats',
+    'Un petit jeu de memory en HTML/CSS/JS',
+  ],
+  previewWaiting: 'Préparation de l’aperçu…',
+  noFiles: 'Aucun fichier pour l’instant.',
+  searchPlaceholder: 'Rechercher…',
+  ready: 'prêt',
+  archived: 'archivé',
+  answerFreely: 'ou réponds librement ci-dessous',
+  thinking: 'réflexion',
+  ctxUsed: 'Contexte utilisé',
+  composerPlaceholder: 'Décris ce que tu veux construire…',
+  attach: 'Joindre un fichier',
+  agentModel: "Modèle de l'agent",
+  navProjects: 'Projets',
+  navChat: 'Chat',
+  navPreview: 'Aperçu',
+  navigation: 'Navigation',
+  you: 'Vous',
+  validate: 'Valider',
+  running: 'en cours',
+  stop: 'Stop',
+  send: 'Envoyer',
+};
+
+const en: Strings = {
+  newProject: 'New project',
+  preview: 'Preview',
+  files: 'Files',
+  publish: 'Publish',
+  publishing: 'Publishing…',
+  online: 'live',
+  onlineSite: 'Live site',
+  refresh: 'Refresh',
+  openTab: 'Open in a new tab',
+  building: 'Building',
+  buildingSub: 'The agent is writing the first files — the preview will appear on its own.',
+  suggestTitle: 'What do you want to build?',
+  suggestSub: 'Describe your idea in the chat, or start from an example:',
+  suggestions: [
+    'A landing page for my Italian restaurant',
+    'A minimalist portfolio for a photographer',
+    'A SaaS dashboard with authentication',
+    'A sales page for a mobile app',
+    'A one-page site for a law firm',
+    'A small memory game in HTML/CSS/JS',
+  ],
+  previewWaiting: 'Preparing the preview…',
+  noFiles: 'No files yet.',
+  searchPlaceholder: 'Search…',
+  ready: 'ready',
+  archived: 'archived',
+  answerFreely: 'or reply freely below',
+  thinking: 'thinking',
+  ctxUsed: 'Context used',
+  composerPlaceholder: 'Describe what you want to build…',
+  attach: 'Attach a file',
+  agentModel: 'Agent model',
+  navProjects: 'Projects',
+  navChat: 'Chat',
+  navPreview: 'Preview',
+  navigation: 'Navigation',
+  you: 'You',
+  validate: 'Confirm',
+  running: 'running',
+  stop: 'Stop',
+  send: 'Send',
+};
+
+const TABLE: Record<string, Strings> = { fr, en };
+
+/** Renvoie les chaînes pour une locale (fallback anglais). */
+export function stringsFor(lang?: string): Strings {
+  const code = (lang || 'en').slice(0, 2).toLowerCase();
+  return TABLE[code] ?? en;
+}
+
+export const StringsContext = createContext<Strings>(en);
+export const useStrings = () => useContext(StringsContext);

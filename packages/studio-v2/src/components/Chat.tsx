@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { Activity, Message, Segment } from '../lib/types';
 import { IconAttach, IconSend, IconStop } from '../lib/icons';
 import { ModelSelector } from './ModelSelector';
+import { useStrings } from '../lib/i18n';
 
 interface Props {
   title: string;
@@ -17,6 +18,7 @@ interface Props {
 }
 
 function ChoiceView({ s, onAnswer }: { s: Extract<Segment, { kind: 'choice' }>; onAnswer: (t: string) => void }) {
+  const st = useStrings();
   const [sel, setSel] = useState<string[]>([]);
   if (s.answered) {
     return (
@@ -41,16 +43,17 @@ function ChoiceView({ s, onAnswer }: { s: Extract<Segment, { kind: 'choice' }>; 
           </button>
         ))}
       </div>
-      {s.multiSelect && <button className="sv-btn sv-btn--primary" disabled={!sel.length} onClick={() => onAnswer(sel.join(', '))}>Valider</button>}
-      {s.freeform && <div className="sv-choice__free">ou réponds librement ci-dessous</div>}
+      {s.multiSelect && <button className="sv-btn sv-btn--primary" disabled={!sel.length} onClick={() => onAnswer(sel.join(', '))}>{st.validate}</button>}
+      {s.freeform && <div className="sv-choice__free">{st.answerFreely}</div>}
     </div>
   );
 }
 
 function SegmentView({ s, onChoiceAnswer }: { s: Segment; onChoiceAnswer: (t: string) => void }) {
+  const st = useStrings();
   if (s.kind === 'text') return <div className="sv-msg__text">{s.content}</div>;
   if (s.kind === 'thinking') return (
-    <div className="sv-think"><div className="sv-think__l">réflexion</div><div className="sv-think__t">{s.content}</div></div>
+    <div className="sv-think"><div className="sv-think__l">{st.thinking}</div><div className="sv-think__t">{s.content}</div></div>
   );
   if (s.kind === 'tool') return (
     <div className="sv-tool">⚙ {s.name}{s.input ? <span className="sv-tool__arg">{s.input}</span> : null}{s.done ? ' ·' : '…'}</div>
@@ -62,6 +65,7 @@ function SegmentView({ s, onChoiceAnswer }: { s: Segment; onChoiceAnswer: (t: st
 }
 
 export function Chat({ title, messages, streaming, activity, model, onModelChange, onSend, onStop, onChoiceAnswer, ctxPercent }: Props) {
+  const st = useStrings();
   const [val, setVal] = useState('');
   const feedRef = useRef<HTMLDivElement>(null);
   const [, force] = useState(0);
@@ -79,7 +83,7 @@ export function Chat({ title, messages, streaming, activity, model, onModelChang
         <span className="sv-chat__title">{title}</span>
         <div className="sv-chat__bar-r">
           {typeof ctxPercent === 'number' && (
-            <span className="sv-chip" title="Contexte utilisé">ctx {ctxPercent}%</span>
+            <span className="sv-chip" title={st.ctxUsed}>ctx {ctxPercent}%</span>
           )}
           <ModelSelector value={model} onChange={onModelChange} />
         </div>
@@ -90,7 +94,7 @@ export function Chat({ title, messages, streaming, activity, model, onModelChang
           <div key={m.id} className={'sv-msg ' + (m.role === 'user' ? 'sv-msg--user' : 'sv-msg--asst')}>
             <div className="sv-msg__av">{m.role === 'user' ? 'V' : 'K'}</div>
             <div className="sv-msg__body">
-              <div className="sv-msg__name">{m.role === 'user' ? 'Vous' : 'Kalit'}</div>
+              <div className="sv-msg__name">{m.role === 'user' ? st.you : 'Kalit'}</div>
               {m.segments.map((s, i) => <SegmentView key={i} s={s} onChoiceAnswer={onChoiceAnswer} />)}
             </div>
           </div>
@@ -109,15 +113,15 @@ export function Chat({ title, messages, streaming, activity, model, onModelChang
           <textarea
             value={val} onChange={(e) => setVal(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }}
-            placeholder="Décris ce que tu veux construire…" rows={1}
+            placeholder={st.composerPlaceholder} rows={1}
           />
           <div className="sv-composer__row">
-            <button className="sv-btn sv-btn--ghost sv-btn--icon" title="Joindre un fichier"><IconAttach /></button>
+            <button className="sv-btn sv-btn--ghost sv-btn--icon" title={st.attach}><IconAttach /></button>
             <div className="sv-composer__row-r">
               <span className="sv-kbd">⏎</span>
               {streaming
-                ? <button className="sv-btn" onClick={onStop}><IconStop /> Stop</button>
-                : <button className="sv-btn sv-btn--primary" onClick={send} disabled={!val.trim()}><IconSend /> Envoyer</button>}
+                ? <button className="sv-btn" onClick={onStop}><IconStop /> {st.stop}</button>
+                : <button className="sv-btn sv-btn--primary" onClick={send} disabled={!val.trim()}><IconSend /> {st.send}</button>}
             </div>
           </div>
         </div>

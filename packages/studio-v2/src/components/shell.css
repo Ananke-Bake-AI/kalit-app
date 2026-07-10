@@ -91,6 +91,20 @@
 
 .sv-empty { flex: 1; display: grid; place-items: center; color: var(--sv-text-3); text-align: center; padding: var(--sv-6); }
 
+/* États de l'aperçu : build en cours (spinner) + accueil (suggestions). */
+.sv-prev__state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--sv-3); padding: var(--sv-6); text-align: center; }
+.sv-prev__state-title { font-size: 15px; font-weight: 600; color: var(--sv-text); }
+.sv-prev__state-sub { font-size: 13px; color: var(--sv-text-3); max-width: 340px; line-height: 1.5; }
+.sv-prev__spinner { width: 30px; height: 30px; border-radius: 50%; border: 2.5px solid var(--sv-line); border-top-color: var(--sv-accent); animation: sv-spin .8s linear infinite; }
+@keyframes sv-spin { to { transform: rotate(360deg); } }
+
+.sv-prev__welcome { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: var(--sv-5); padding: clamp(var(--sv-5), 6vh, var(--sv-8)) var(--sv-5); }
+.sv-prev__welcome-h { text-align: center; display: flex; flex-direction: column; gap: 6px; }
+.sv-prev__sugs { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--sv-3); max-width: 520px; width: 100%; margin: 0 auto; }
+.sv-sug { text-align: left; padding: 12px 14px; font: inherit; font-size: 13px; line-height: 1.35; color: var(--sv-text-2); background: var(--sv-surface-2); border: 1px solid var(--sv-line); border-radius: var(--sv-r); cursor: pointer; transition: border-color .12s, background .12s, color .12s; }
+.sv-sug:hover { border-color: var(--sv-accent); background: var(--sv-accent-dim); color: var(--sv-text); }
+@media (max-width: 560px) { .sv-prev__sugs { grid-template-columns: 1fr; } }
+
 /* ── Nav mobile (barre de bascule entre panneaux) ── */
 .sv-mnav { display: none; }
 

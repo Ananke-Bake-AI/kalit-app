@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import type { Session } from '../lib/types';
 import { IconLogo, IconPlus, IconSearch } from '../lib/icons';
+import { useStrings } from '../lib/i18n';
 
 interface Props {
   sessions: Session[];
@@ -11,9 +12,11 @@ interface Props {
 }
 
 const DOT: Record<Session['status'], string> = { running: 'sv-dot--run', idle: 'sv-dot--idle', archived: 'sv-dot--arch' };
-const LABEL: Record<Session['status'], string> = { running: 'en cours', idle: 'prêt', archived: 'archivé' };
+
 
 export function Sidebar({ sessions, activeId, user, onSelect, onNew }: Props) {
+  const st = useStrings();
+  const LABEL: Record<Session['status'], string> = { running: st.running, idle: st.ready, archived: st.archived };
   const [q, setQ] = useState('');
   const filtered = useMemo(
     () => sessions.filter((s) => s.title.toLowerCase().includes(q.toLowerCase())).sort((a, b) => b.updatedAt - a.updatedAt),
@@ -28,7 +31,7 @@ export function Sidebar({ sessions, activeId, user, onSelect, onNew }: Props) {
       <div style={{ padding: '0 12px 8px' }}>
         <div className="sv-composer__box" style={{ padding: '6px 10px', flexDirection: 'row', alignItems: 'center', gap: 8 }}>
           <IconSearch style={{ color: 'var(--sv-text-3)', flexShrink: 0 }} />
-          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Rechercher…"
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={st.searchPlaceholder}
             style={{ border: 0, background: 'transparent', color: 'var(--sv-text)', font: 'inherit', outline: 'none', width: '100%' }} />
         </div>
       </div>

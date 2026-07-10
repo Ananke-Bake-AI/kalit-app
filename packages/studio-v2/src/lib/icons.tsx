@@ -7,11 +7,16 @@ const base = (p: SVGProps<SVGSVGElement>) => ({
   strokeLinejoin: 'round' as const, ...p,
 });
 
+// Vrai logo Kalit (même path que @kalit/studio-ui), tracé en bleu accent.
 export const IconLogo = (p: SVGProps<SVGSVGElement>) => (
-  <svg width={22} height={22} viewBox="0 0 24 24" fill="none" {...p}>
-    <rect width={24} height={24} rx={6} fill="#101318" />
-    <path d="M8 5v14M8 12l7-7M8 12l7 7" stroke="url(#svg)" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" />
-    <defs><linearGradient id="svg" x1="8" y1="5" x2="15" y2="19" gradientUnits="userSpaceOnUse"><stop stopColor="#4C8DFF" /><stop offset="1" stopColor="#6AA0FF" /></linearGradient></defs>
+  <svg width={22} height={22} viewBox="0 0 82 82" fill="none" style={{ overflow: 'visible' }} {...p}>
+    <path
+      d="M71.8779 81.977C71.8779 64.9236 58.0534 51.0991 41 51.0991C23.9466 51.0991 10.1221 64.9236 10.1221 81.977V0.0436401M71.8779 0.0646362C71.8779 17.118 58.0534 30.9426 41 30.9426"
+      stroke="var(--sv-accent, #4c8dff)"
+      strokeWidth={21}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </svg>
 );
 export const IconPlus = (p: SVGProps<SVGSVGElement>) => (<svg {...base(p)}><path d="M12 5v14M5 12h14" /></svg>);

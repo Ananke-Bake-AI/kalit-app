@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { MODEL_GROUPS, labelFor } from '../lib/models';
+import { useStrings } from '../lib/i18n';
 
 interface Props { value: string; onChange: (id: string) => void; }
 
 export function ModelSelector({ value, onChange }: Props) {
+  const st = useStrings();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -15,7 +17,7 @@ export function ModelSelector({ value, onChange }: Props) {
 
   return (
     <div className="sv-model" ref={ref}>
-      <button className="sv-btn sv-btn--ghost" onClick={() => setOpen((o) => !o)} title="Modèle de l'agent">
+      <button className="sv-btn sv-btn--ghost" onClick={() => setOpen((o) => !o)} title={st.agentModel}>
         <span className="sv-model__dot" /> {labelFor(value)}
         <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="m6 9 6 6 6-6" /></svg>
       </button>
