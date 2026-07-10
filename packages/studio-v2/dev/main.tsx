@@ -19,10 +19,10 @@ function LiveApp() {
     <StudioShell
       sessions={s.sessions} activeId={s.activeId} messages={s.messages}
       streaming={s.streaming} activity={s.activity} ctxPercent={null}
-      previewUrl={null} tree={[]}
+      previewUrl={s.previewUrl} tree={s.tree}
       user={{ name: 'Studio v2 Dev' }}
       onSelect={s.select} onNew={s.newProject} onSend={s.send} onStop={s.stop}
-      onRefreshTree={() => {}}
+      onRefreshTree={s.refreshTree}
     />
   );
 }

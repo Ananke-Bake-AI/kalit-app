@@ -4,7 +4,7 @@
 // session_stream_closed est autoritaire pour finaliser.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { Activity, Message, Segment, Session } from '../lib/types';
+import type { Activity, FileNode, Message, Segment, Session } from '../lib/types';
 import type { BrokerClient } from './client';
 import { useBrokerSocket, type Frame } from './socket';
 import { StreamReducer, choiceFromInput, type RawEvent } from './reducer';
@@ -88,6 +88,8 @@ export function useBrokerStudio(client: BrokerClient) {
   const [streaming, setStreaming] = useState(false);
   const [activity, setActivity] = useState<Activity | null>(null);
   const [liveError, setLiveError] = useState<string | null>(null); // survit à loadMessages
+  const [tree, setTree] = useState<FileNode[]>([]);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const reducers = useRef<Map<string, StreamReducer>>(new Map());
   const activeRef = useRef<string | null>(null);
   activeRef.current = activeId;
@@ -123,6 +125,30 @@ export function useBrokerStudio(client: BrokerClient) {
   }, [api]);
 
   useEffect(() => { loadSessions(); }, [loadSessions]);
+
+  // Preview + file-tree : poll workspace-tree de la session active (contrat §4).
+  const HIDDEN = new Set(['node_modules', '.pnpm-store', '.git', '.claude']);
+  const mapNode = useCallback((n: { name: string; path: string; type?: string; size?: number; children?: unknown[] }): FileNode => {
+    const dir = n.type === 'directory' || Array.isArray(n.children);
+    const collapsed = dir && HIDDEN.has(n.name);
+    return { name: n.name, path: n.path, dir, size: n.size, collapsed, children: collapsed ? undefined : (n.children as typeof n[])?.map(mapNode) };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const refreshTree = useCallback(async () => {
+    const sid = activeRef.current;
+    if (!sid) { setTree([]); setPreviewUrl(null); return; }
+    const d = await api.json<{ tree?: { name: string; path: string; type?: string; size?: number; children?: unknown[] }[]; projectId?: string; flowProjectId?: string }>(`/api/broker/workspace-tree/${sid}`);
+    if (sid !== activeRef.current) return;
+    if (d?.tree) setTree(d.tree.map(mapNode));
+    const pid = d?.flowProjectId || d?.projectId;
+    setPreviewUrl(pid ? `/api/broker/project/${pid}/iframe` : null);
+  }, [api, mapNode]);
+  useEffect(() => {
+    if (!activeId) { setTree([]); setPreviewUrl(null); return; }
+    refreshTree();
+    const t = setInterval(refreshTree, 5000);
+    return () => clearInterval(t);
+  }, [activeId, refreshTree]);
 
   // frames WS de la session active → reducer → état live
   useEffect(() => {
@@ -235,5 +261,5 @@ export function useBrokerStudio(client: BrokerClient) {
     return out;
   }, [baseMessages, live, liveError, streaming]);
 
-  return { sessions, activeId, messages, streaming, activity, socketStatus: socket.status, select, newProject, send, stop, reloadSessions: loadSessions };
+  return { sessions, activeId, messages, streaming, activity, tree, previewUrl, socketStatus: socket.status, select, newProject, send, stop, refreshTree, reloadSessions: loadSessions };
 }
