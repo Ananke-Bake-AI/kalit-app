@@ -261,10 +261,10 @@
 
 /* Prompt-quality halo : coloration live de la box selon la richesse du prompt.
    low = ambre (succinct), mid = jaune-vert, high = vert (riche). Discret. */
-.sv-composer__box.sv-q--low  { box-shadow: 0 0 0 1px color-mix(in srgb, var(--sv-warn) 55%, transparent), 0 0 14px color-mix(in srgb, var(--sv-warn) 30%, transparent); }
-.sv-composer__box.sv-q--mid  { box-shadow: 0 0 0 1px color-mix(in srgb, #e6c74d 55%, transparent), 0 0 14px color-mix(in srgb, #e6c74d 28%, transparent); }
-.sv-composer__box.sv-q--high { box-shadow: 0 0 0 1px color-mix(in srgb, var(--sv-ok) 60%, transparent), 0 0 16px color-mix(in srgb, var(--sv-ok) 32%, transparent); }
-.sv-composer__box { transition: box-shadow .25s ease; }
+.sv-composer__box.sv-q--low  { border-color: var(--sv-warn); box-shadow: 0 0 0 1px var(--sv-warn), 0 0 22px color-mix(in srgb, var(--sv-warn) 45%, transparent); }
+.sv-composer__box.sv-q--mid  { border-color: #e6c74d; box-shadow: 0 0 0 1px #e6c74d, 0 0 22px color-mix(in srgb, #e6c74d 42%, transparent); }
+.sv-composer__box.sv-q--high { border-color: var(--sv-ok); box-shadow: 0 0 0 1px var(--sv-ok), 0 0 26px color-mix(in srgb, var(--sv-ok) 48%, transparent); }
+.sv-composer__box { transition: box-shadow .25s ease, border-color .25s ease; }
 
 /* Toggle discret (point coloré = niveau courant ; clic = on/off). */
 .sv-qtoggle { display: inline-grid; place-items: center; width: 26px; height: 26px; border: 0; background: transparent; cursor: pointer; border-radius: var(--sv-r-sm); }
