@@ -430,13 +430,25 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   // suite, et si c'était la session active on repart sur un écran vierge.
   const deleteSession = useCallback(async (id: string, mode: 'session' | 'project') => {
     const sess = sessions.find((x) => x.id === id);
-    const path = mode === 'project' && sess?.projectId
-      ? `/api/broker/projects/${sess.projectId}`
+    // mode='project' → tear the project down (rows + sessions + R2). Prefer the
+    // project endpoint (it also purges the R2 archive), but when we don't know
+    // the projectId fall back to the session endpoint WITH ?deleteProject=1 so
+    // the broker still resolves + drops the project instead of orphaning it
+    // (session-only delete would leave a draft on /repositories).
+    const path = mode === 'project'
+      ? (sess?.projectId
+          ? `/api/broker/projects/${sess.projectId}`
+          : `/api/broker/sessions/${id}?deleteProject=1`)
       : `/api/broker/sessions/${id}`;
     setSessions((list) => list.filter((x) => x.id !== id));
     if (activeRef.current === id) newProject();
-    await client.fetch(path, { method: 'DELETE' }).catch(() => {});
-    loadSessions();
+    // Do NOT swallow failures: an errored/timed-out teardown used to look like
+    // a success (optimistic removal) yet leave the project behind. Re-sync from
+    // the server so a failed delete reappears in the list — honest state.
+    let ok = false;
+    try { const r = await client.fetch(path, { method: 'DELETE' }); ok = r.ok; } catch { ok = false; }
+    await loadSessions();
+    return ok;
   }, [sessions, client, loadSessions, newProject]);
 
   // messages affichés = persistés + message assistant live en cours
