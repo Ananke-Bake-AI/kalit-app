@@ -13,8 +13,16 @@ export interface PlanConfig {
   suites: SuiteId[]
   creditsPerMonth: number
   maxMembers: number
+  // Per-account storage cap (workspace files + R2 archives), in megabytes.
+  // free 200 MB / starter 10 GB / pro 100 GB / enterprise 300 GB.
+  storageMB: number
   features: string[]
   popular?: boolean
+}
+
+// Human label for a plan's storage cap ("200 MB", "10 GB", …).
+export function formatStorage(mb: number): string {
+  return mb >= 1024 ? `${mb / 1024} GB` : `${mb} MB`
 }
 
 // The "free" entry is the 14-DAY TRIAL, not a perpetual free tier. Signing up
@@ -30,9 +38,11 @@ export const FREE_PLAN: PlanConfig = {
   suites: ["flow"],
   creditsPerMonth: 15,
   maxMembers: 1,
+  storageMB: 200,
   features: [
     "Full access for 14 days",
     "15 credits / month",
+    "200 MB storage",
     "Every suite included",
     "No credit card required",
   ],
@@ -46,9 +56,11 @@ export const PLANS: PlanConfig[] = [
     suites: ["flow"],
     creditsPerMonth: 75,
     maxMembers: 2,
+    storageMB: 10240,
     features: [
       "Kalit Flow access",
       "75 credits / month",
+      "10 GB storage",
       "2 team members",
       "Custom domain",
       "Email support",
@@ -61,11 +73,13 @@ export const PLANS: PlanConfig[] = [
     suites: ["flow"],
     creditsPerMonth: 350,
     maxMembers: 10,
+    storageMB: 102400,
     popular: true,
     features: [
       "Kalit Flow — pages and apps",
       "350 credits / month",
       "Access to more intelligent models",
+      "100 GB storage",
       "10 team members",
       "Deploy to production",
       "Priority support",
@@ -79,10 +93,12 @@ export const PLANS: PlanConfig[] = [
     suites: ["flow", "pentest", "search"],
     creditsPerMonth: 1200,
     maxMembers: -1,
+    storageMB: 307200,
     features: [
       "Flow + Pentest + Search",
       "1,200 credits / month",
       "Access to more intelligent models",
+      "300 GB storage",
       "Unlimited team members",
       "Priority execution",
       "Pre-launch security scans",
