@@ -46,7 +46,7 @@
 .sv-model__opt { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; padding: 7px 9px; border: 0; background: transparent; color: var(--sv-text); font: inherit; font-size: 13px; border-radius: var(--sv-r-sm); cursor: pointer; }
 .sv-model__opt:hover { background: var(--sv-surface-2); }
 .sv-model__opt--on { background: var(--sv-accent-dim); color: var(--sv-accent-2); }
-.sv-feed { flex: 1; overflow-y: auto; padding: var(--sv-5) var(--sv-4); display: flex; flex-direction: column; gap: var(--sv-4); }
+.sv-feed { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding: var(--sv-5) var(--sv-4); display: flex; flex-direction: column; gap: var(--sv-4); }
 .sv-msg { display: flex; gap: var(--sv-3); max-width: 100%; }
 .sv-msg__av { width: 26px; height: 26px; border-radius: var(--sv-r-sm); flex-shrink: 0; display: grid; place-items: center; font-size: 11px; font-weight: 700; }
 .sv-msg--user .sv-msg__av { background: var(--sv-raised); color: var(--sv-text-2); }
@@ -172,7 +172,12 @@
 
 /* ── Responsive : à ≤860px on passe en panneau unique + nav ── */
 @media (max-width: 860px) {
-  .sv-shell { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
+  /* Bound the shell to the DYNAMIC viewport height. The desktop chain relies on
+     html/body height:100%, but mobile browser chrome makes 100%/100vh unreliable
+     — the 1fr row then collapses to content height and .sv-feed (flex:1;
+     overflow-y:auto) never gets a bounded parent, so the chat can't scroll.
+     100dvh pins it to the visible viewport so the feed scrolls internally. */
+  .sv-shell { grid-template-columns: 1fr; grid-template-rows: 1fr auto; height: 100vh; height: 100dvh; overflow: hidden; }
   .sv-shell > .sv-side, .sv-shell > .sv-chat, .sv-shell > .sv-prev {
     grid-row: 1; grid-column: 1; border-right: 0;
   }
@@ -235,3 +240,7 @@
 .sv-storage__bar > span { display: block; height: 100%; background: var(--sv-accent); border-radius: 3px; transition: width .3s ease; }
 .sv-storage--warn .sv-storage__bar > span { background: var(--sv-warn); }
 .sv-storage__warn { font-size: 11px; color: var(--sv-warn); }
+
+/* Square icon button (fullscreen toggle in the chat bar). */
+.sv-iconbtn { width: 32px; height: 32px; padding: 0; display: inline-grid; place-items: center; flex-shrink: 0; }
+.sv-iconbtn svg { width: 15px; height: 15px; }

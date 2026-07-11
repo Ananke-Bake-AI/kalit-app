@@ -58,6 +58,7 @@ export interface Strings {
   };
   deployBlocked: { title: string; body: string; close: string };
   storage: { label: string; almostFull: string; blockedTitle: string; blockedBody: string; close: string };
+  fullscreen: string;
 }
 
 const fr: Strings = {
@@ -147,6 +148,7 @@ const fr: Strings = {
     blockedBody: "Tu as atteint la limite de stockage de ton offre. Supprime un projet pour libérer de l'espace, ou passe à une offre supérieure pour créer de nouveaux projets. Tes projets existants restent modifiables.",
     close: 'Compris',
   },
+  fullscreen: 'Plein écran',
 };
 
 const en: Strings = {
@@ -236,6 +238,7 @@ const en: Strings = {
     blockedBody: "You've reached your plan's storage limit. Delete a project to free up space, or upgrade your plan to start new ones. Your existing projects stay editable.",
     close: 'Got it',
   },
+  fullscreen: 'Fullscreen',
 };
 
 const TABLE: Record<string, Strings> = { fr, en };

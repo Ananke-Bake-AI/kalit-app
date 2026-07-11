@@ -5,6 +5,35 @@ import { ModelSelector } from './ModelSelector';
 import { useStrings } from '../lib/i18n';
 import { Md } from '../lib/markdown';
 
+// Toggle fullscreen for the whole studio. Uses the Fullscreen API (works on
+// desktop + Android Chrome; iOS Safari doesn't support element fullscreen, so
+// the button gracefully no-ops there).
+function FullscreenBtn({ label }: { label: string }) {
+  const [fs, setFs] = useState(false);
+  useEffect(() => {
+    const on = () => setFs(!!(document.fullscreenElement || (document as unknown as { webkitFullscreenElement?: Element }).webkitFullscreenElement));
+    document.addEventListener('fullscreenchange', on);
+    document.addEventListener('webkitfullscreenchange', on);
+    return () => { document.removeEventListener('fullscreenchange', on); document.removeEventListener('webkitfullscreenchange', on); };
+  }, []);
+  const toggle = () => {
+    const doc = document as unknown as { fullscreenElement?: Element; exitFullscreen?: () => Promise<void>; webkitExitFullscreen?: () => void };
+    const el = document.documentElement as unknown as { requestFullscreen?: () => Promise<void>; webkitRequestFullscreen?: () => void };
+    if (doc.fullscreenElement || (document as unknown as { webkitFullscreenElement?: Element }).webkitFullscreenElement) {
+      (doc.exitFullscreen ?? doc.webkitExitFullscreen)?.call(document);
+    } else {
+      (el.requestFullscreen ?? el.webkitRequestFullscreen)?.call(document.documentElement);
+    }
+  };
+  return (
+    <button className="sv-btn sv-btn--ghost sv-iconbtn" onClick={toggle} title={label} aria-label={label}>
+      {fs
+        ? <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" /></svg>
+        : <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" /></svg>}
+    </button>
+  );
+}
+
 interface Props {
   title: string;
   messages: Message[];
@@ -103,6 +132,7 @@ export function Chat({ title, messages, streaming, activity, model, onModelChang
             <span className="sv-chip" title={st.ctxUsed}>ctx {ctxPercent}%</span>
           )}
           <ModelSelector value={model} onChange={onModelChange} />
+          <FullscreenBtn label={st.fullscreen} />
         </div>
       </div>
 
