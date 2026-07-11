@@ -7,12 +7,21 @@ interface Props {
   sessions: Session[];
   activeId: string | null;
   user: { name: string; credits?: number };
+  storage?: { usedBytes: number; limitBytes: number } | null;
   onSelect: (id: string) => void;
   onNew: () => void;
   onDelete: (id: string, mode: 'session' | 'project') => void;
 }
 
-export function Sidebar({ sessions, activeId, user, onSelect, onNew, onDelete }: Props) {
+// Compact byte formatter for the storage gauge (e.g. "44 MB", "1.2 GB").
+function fmtBytes(n: number): string {
+  if (n >= 1 << 30) return (n / (1 << 30)).toFixed(n < 10 << 30 ? 1 : 0) + ' GB';
+  if (n >= 1 << 20) return Math.round(n / (1 << 20)) + ' MB';
+  if (n >= 1 << 10) return Math.round(n / (1 << 10)) + ' KB';
+  return n + ' B';
+}
+
+export function Sidebar({ sessions, activeId, user, storage, onSelect, onNew, onDelete }: Props) {
   const st = useStrings();
   const [q, setQ] = useState('');
   const [deleting, setDeleting] = useState<Session | null>(null);
@@ -65,6 +74,20 @@ export function Sidebar({ sessions, activeId, user, onSelect, onNew, onDelete }:
           </div>
         ))}
       </div>
+      {storage && storage.limitBytes > 0 && (() => {
+        const pct = Math.min(100, Math.round((storage.usedBytes / storage.limitBytes) * 100));
+        const warn = pct >= 80;
+        return (
+          <div className={'sv-storage' + (warn ? ' sv-storage--warn' : '')}>
+            <div className="sv-storage__head">
+              <span>{st.storage.label}</span>
+              <span className="sv-storage__num">{fmtBytes(storage.usedBytes)} / {fmtBytes(storage.limitBytes)}</span>
+            </div>
+            <div className="sv-storage__bar"><span style={{ width: pct + '%' }} /></div>
+            {warn && <div className="sv-storage__warn">{st.storage.almostFull}</div>}
+          </div>
+        );
+      })()}
       {typeof user.credits === 'number' && (
         <div className="sv-side__foot"><span className="sv-credits">{user.credits}</span></div>
       )}

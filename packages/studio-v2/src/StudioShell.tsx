@@ -46,6 +46,9 @@ export interface StudioShellProps {
   outOfCredits?: boolean;
   deployBlocked?: boolean;
   onDismissDeployBlocked?: () => void;
+  storage?: { usedBytes: number; limitBytes: number } | null;
+  storageBlocked?: boolean;
+  onDismissStorageBlocked?: () => void;
 }
 
 /** Shell présentation pur : reçoit l'état et les callbacks, ne connaît pas le
@@ -64,7 +67,7 @@ export function StudioShell(props: StudioShellProps) {
   return (
     <StringsContext.Provider value={t}>
     <div className="sv sv-shell" data-pane={pane}>
-      <Sidebar sessions={props.sessions} activeId={props.activeId} user={props.user} onSelect={selectMobile} onNew={() => { props.onNew(); setPane('chat'); }} onDelete={props.onDelete} />
+      <Sidebar sessions={props.sessions} activeId={props.activeId} user={props.user} storage={props.storage ?? null} onSelect={selectMobile} onNew={() => { props.onNew(); setPane('chat'); }} onDelete={props.onDelete} />
       <Chat
         title={active?.title ?? t.newProject}
         messages={props.messages} streaming={props.streaming} activity={props.activity}
@@ -93,6 +96,18 @@ export function StudioShell(props: StudioShellProps) {
             <p className="sv-modal__sub">{t.deployBlocked.body}</p>
             <div className="sv-modal__row">
               <button className="sv-btn sv-btn--primary" onClick={() => props.onDismissDeployBlocked?.()}>{t.deployBlocked.close}</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {props.storageBlocked && (
+        <div className="sv-modal" onClick={() => props.onDismissStorageBlocked?.()}>
+          <div className="sv-modal__panel" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
+            <h3 className="sv-modal__title">{t.storage.blockedTitle}</h3>
+            <p className="sv-modal__sub">{t.storage.blockedBody}</p>
+            <div className="sv-modal__row">
+              <a className="sv-btn sv-btn--primary" href={`/${props.lang || 'en'}/pricing`} target="_blank" rel="noreferrer">{t.upgrade}</a>
+              <button className="sv-btn sv-btn--ghost" onClick={() => props.onDismissStorageBlocked?.()}>{t.storage.close}</button>
             </div>
           </div>
         </div>

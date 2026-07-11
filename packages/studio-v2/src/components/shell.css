@@ -226,3 +226,12 @@
 .sv-optcard--danger .sv-optcard__t { color: #ff6a5e; }
 .sv-btn--danger { background: #e5584d; color: #fff; border: 0; }
 .sv-btn--danger:hover { background: #d3483e; }
+
+/* Storage gauge (Sidebar foot) — usage vs plan cap, warns at >=80%. */
+.sv-storage { padding: 10px 12px 6px; border-top: 1px solid var(--sv-line); display: flex; flex-direction: column; gap: 6px; }
+.sv-storage__head { display: flex; justify-content: space-between; align-items: baseline; font-size: 11px; color: var(--sv-text-3); }
+.sv-storage__num { color: var(--sv-text-2); font-variant-numeric: tabular-nums; }
+.sv-storage__bar { height: 5px; border-radius: 3px; background: var(--sv-line); overflow: hidden; }
+.sv-storage__bar > span { display: block; height: 100%; background: var(--sv-accent); border-radius: 3px; transition: width .3s ease; }
+.sv-storage--warn .sv-storage__bar > span { background: var(--sv-warn); }
+.sv-storage__warn { font-size: 11px; color: var(--sv-warn); }

@@ -57,6 +57,7 @@ export interface Strings {
     cancel: string; confirm: string; deleting: string;
   };
   deployBlocked: { title: string; body: string; close: string };
+  storage: { label: string; almostFull: string; blockedTitle: string; blockedBody: string; close: string };
 }
 
 const fr: Strings = {
@@ -139,6 +140,13 @@ const fr: Strings = {
     body: "Pour le moment, seuls les projets front-end (site statique ou application web) peuvent être publiés. Ce projet ressemble à un backend — le déploiement des backends arrivera plus tard.",
     close: 'Compris',
   },
+  storage: {
+    label: 'Stockage',
+    almostFull: 'Stockage bientôt plein',
+    blockedTitle: 'Limite de stockage atteinte',
+    blockedBody: "Tu as atteint la limite de stockage de ton offre. Supprime un projet pour libérer de l'espace, ou passe à une offre supérieure pour créer de nouveaux projets. Tes projets existants restent modifiables.",
+    close: 'Compris',
+  },
 };
 
 const en: Strings = {
@@ -219,6 +227,13 @@ const en: Strings = {
   deployBlocked: {
     title: 'This project can’t be published yet',
     body: 'For now, only front-end projects (a static site or web app) can be published. This one looks like a backend — backend hosting is coming later.',
+    close: 'Got it',
+  },
+  storage: {
+    label: 'Storage',
+    almostFull: 'Storage almost full',
+    blockedTitle: 'Storage limit reached',
+    blockedBody: "You've reached your plan's storage limit. Delete a project to free up space, or upgrade your plan to start new ones. Your existing projects stay editable.",
     close: 'Got it',
   },
 };

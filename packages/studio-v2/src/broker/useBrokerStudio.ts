@@ -108,6 +108,8 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   const [publishUrl, setPublishUrl] = useState<string | null>(null);
   const [publishing, setPublishing] = useState(false);
   const [deployBlocked, setDeployBlocked] = useState(false); // backend project → publish refused (modal)
+  const [storageBlocked, setStorageBlocked] = useState(false); // quota plein → nouvelle création refusée (modal)
+  const [storage, setStorage] = useState<{ usedBytes: number; limitBytes: number } | null>(null);
   const [downloading, setDownloading] = useState(false);
   const [ctxPercent, setCtxPercent] = useState<number | null>(null); // remplissage du contexte (jauge live)
   // Fichiers en attente : gardés EN MÉMOIRE, uploadés seulement à l'envoi du
@@ -137,6 +139,13 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     if (d?.sessions) setSessions(d.sessions.map(dtoToSession));
   }, [api]);
 
+  // Jauge de stockage du compte (usage + cap du plan). Rafraîchie au montage et
+  // après chaque tour (l'archive R2 grandit) → bannière ≥80%, modal à 100%.
+  const loadStorage = useCallback(async () => {
+    const d = await api.json<{ usedBytes: number; limitBytes: number }>('/api/broker/storage');
+    if (d && typeof d.limitBytes === 'number') setStorage({ usedBytes: d.usedBytes || 0, limitBytes: d.limitBytes });
+  }, [api]);
+
   const loadMessages = useCallback(async (sid: string) => {
     const d = await api.json<{ messages: ChatMessageDTO[] }>(`/api/broker/sessions/${sid}/messages`);
     const msgs = (d?.messages ?? []).map(dtoToMessage);
@@ -150,7 +159,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     setBaseMessages(msgs);
   }, [api]);
 
-  useEffect(() => { loadSessions(); }, [loadSessions]);
+  useEffect(() => { loadSessions(); loadStorage(); }, [loadSessions, loadStorage]);
 
   // Preview + file-tree : poll workspace-tree de la session active (contrat §4).
   const HIDDEN = new Set(['node_modules', '.pnpm-store', '.git', '.claude']);
@@ -271,7 +280,10 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
       loadMessages(sid);
     }
     loadSessions();
-  }, [loadMessages, loadSessions]);
+    // La taille R2 grandit après le tour (backup async côté broker) → on
+    // rafraîchit la jauge avec un léger délai pour laisser le backup finir.
+    setTimeout(() => { loadStorage(); }, 4000);
+  }, [loadMessages, loadSessions, loadStorage]);
 
   // Finalisation de secours quand le run se termine par une erreur SSE (le WS
   // n'émet pas toujours session_stream_closed dans ce cas).
@@ -389,6 +401,11 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     try {
       const r = await client.fetch(`/api/broker/sessions/${sid}/messages`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: body, language: lang, progressMode: 'default', suite: 'project', model: modelRef.current, taskforceModelProvider: DEFAULT_TF_PROVIDER, requestId: 'r' + Date.now() }) });
       if (r.status === 402) { setOutOfCredits(true); finalizeSoft(); setBaseMessages((m) => m.filter((x) => !x.id.startsWith('temp-'))); return; }
+      // 403 storage_limit : le broker refuse une NOUVELLE création (quota plein).
+      if (r.status === 403) {
+        const d = await r.json().catch(() => null);
+        if (d?.error === 'storage_limit') { setStorageBlocked(true); finalizeSoft(); setBaseMessages((m) => m.filter((x) => !x.id.startsWith('temp-'))); return; }
+      }
       if (r.body) {
         const reader = r.body.getReader(); const dec = new TextDecoder(); let buf = '';
         for (;;) {
@@ -452,8 +469,9 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     let ok = false;
     try { const r = await client.fetch(path, { method: 'DELETE' }); ok = r.ok; } catch { ok = false; }
     await loadSessions();
+    if (mode === 'project') loadStorage(); // deleting a project frees storage
     return ok;
-  }, [sessions, client, loadSessions, newProject]);
+  }, [sessions, client, loadSessions, loadStorage, newProject]);
 
   // messages affichés = persistés + message assistant live en cours
   const messages: Message[] = useMemo(() => {
@@ -469,5 +487,5 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   }, [baseMessages, live, liveError, streaming]);
 
   const attachments = pending.map((p) => ({ id: p.id, name: p.file.name }));
-  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, deployBlocked, dismissDeployBlocked: () => setDeployBlocked(false), canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, socketStatus: socket.status, select, newProject, send, stop, deleteSession, setModel, publish, download, refreshTree, reloadSessions: loadSessions };
+  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, deployBlocked, dismissDeployBlocked: () => setDeployBlocked(false), storage, storageBlocked, dismissStorageBlocked: () => setStorageBlocked(false), canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, socketStatus: socket.status, select, newProject, send, stop, deleteSession, setModel, publish, download, refreshTree, reloadSessions: loadSessions };
 }

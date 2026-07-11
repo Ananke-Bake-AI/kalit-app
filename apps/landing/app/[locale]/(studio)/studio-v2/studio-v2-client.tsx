@@ -88,6 +88,7 @@ export function StudioV2Client({ initialSessionId }: { initialSessionId?: string
       attachments={s.attachments} uploading={s.uploading} onAddFiles={s.addFiles} onRemoveAttachment={s.removeAttachment}
       outOfCredits={s.outOfCredits}
       deployBlocked={s.deployBlocked} onDismissDeployBlocked={s.dismissDeployBlocked}
+      storage={s.storage} storageBlocked={s.storageBlocked} onDismissStorageBlocked={s.dismissStorageBlocked}
     />
   )
 }
