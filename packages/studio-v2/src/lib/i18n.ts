@@ -64,6 +64,10 @@ export interface Strings {
     connect: string; connecting: string; active: string; pending: string;
     dnsHint: string; verifying: string; visit: string; remove: string; error: string;
   };
+  pub: {
+    publishing: string; publishingSub: string; okTitle: string; okSub: string; visit: string;
+    tooLargeTitle: string; tooLargeSub: string; errTitle: string; errSub: string; retry: string; close: string;
+  };
 }
 
 const fr: Strings = {
@@ -169,6 +173,19 @@ const fr: Strings = {
     remove: 'Retirer',
     error: "Impossible de connecter ce domaine.",
   },
+  pub: {
+    publishing: 'Publication…',
+    publishingSub: 'Déploiement de ton site, quelques secondes…',
+    okTitle: 'Site publié',
+    okSub: 'Ton site est en ligne. Tu peux maintenant lier un domaine personnalisé depuis le bouton « Domaine ».',
+    visit: 'Voir le site',
+    tooLargeTitle: 'Site trop volumineux',
+    tooLargeSub: 'Le déploiement fait {size} Mo (limite {limit} Mo). Réduis le poids des images pour pouvoir publier.',
+    errTitle: 'Échec de la publication',
+    errSub: "La publication a échoué. Réessaie dans un instant.",
+    retry: 'Réessayer',
+    close: 'Fermer',
+  },
 };
 
 const en: Strings = {
@@ -273,6 +290,19 @@ const en: Strings = {
     visit: 'Visit',
     remove: 'Remove',
     error: "Couldn't connect that domain.",
+  },
+  pub: {
+    publishing: 'Publishing…',
+    publishingSub: 'Deploying your site, this takes a few seconds…',
+    okTitle: 'Site published',
+    okSub: 'Your site is live. You can now link a custom domain from the “Domain” button.',
+    visit: 'View site',
+    tooLargeTitle: 'Site too large',
+    tooLargeSub: 'The deploy is {size} MB (limit {limit} MB). Reduce your image weight to publish.',
+    errTitle: 'Publish failed',
+    errSub: 'Publishing failed. Please try again in a moment.',
+    retry: 'Retry',
+    close: 'Close',
   },
 };
 

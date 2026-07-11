@@ -3,7 +3,8 @@ import type { FileNode, PreviewMode } from '../lib/types';
 import { IconCode, IconExpand, IconEye, IconFolder, IconFile, IconRefresh, IconLogo, IconDownload } from '../lib/icons';
 import { useStrings } from '../lib/i18n';
 import { DomainManager } from './DomainManager';
-import type { DomainState } from '../broker/useBrokerStudio';
+import { PublishModal } from './PublishModal';
+import type { DomainState, PublishResult } from '../broker/useBrokerStudio';
 
 // Icônes décoratives par suggestion (même ordre que t.suggestions, fr/en alignés).
 const SUG_ICONS = [
@@ -45,6 +46,8 @@ interface Props {
   domain?: DomainState;
   onConnectDomain?: (domain: string) => Promise<{ ok: boolean; error?: string }>;
   onRemoveDomain?: () => void;
+  publishResult?: PublishResult | null;
+  onClearPublishResult?: () => void;
 }
 
 function fmt(b?: number) {
@@ -114,10 +117,13 @@ function PreviewEmpty({ building, hasMessages, onSuggest }: { building?: boolean
   );
 }
 
-export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing, canPublish, onPublish, canDownload, downloading, onDownload, onRefresh, onOpen, building, hasMessages, onSuggest, domain, onConnectDomain, onRemoveDomain }: Props) {
+export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing, canPublish, onPublish, canDownload, downloading, onDownload, onRefresh, onOpen, building, hasMessages, onSuggest, domain, onConnectDomain, onRemoveDomain, publishResult, onClearPublishResult }: Props) {
   const t = useStrings();
   const [domainOpen, setDomainOpen] = useState(false);
+  const [publishOpen, setPublishOpen] = useState(false);
   const hasDomain = !!domain?.customDomain;
+  const doPublish = () => { setPublishOpen(true); onPublish(); };
+  const closePublish = () => { setPublishOpen(false); onClearPublishResult?.(); };
   return (
     <section className="sv-prev">
       <div className="sv-prev__bar">
@@ -126,7 +132,7 @@ export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing
         <div className="sv-prev__bar-r">
           {publishUrl
             ? <a className="sv-btn sv-live" href={publishUrl} target="_blank" rel="noreferrer" title={t.onlineSite}><span className="sv-live__dot" /> {t.online}</a>
-            : <button className="sv-btn sv-btn--primary" disabled={!canPublish || publishing} onClick={onPublish} title={!canPublish ? t.cantPublish : t.publish}>{publishing && <span className="sv-btn__spin" />}{publishing ? t.publishing : t.publish}</button>}
+            : <button className="sv-btn sv-btn--primary" disabled={!canPublish || publishing} onClick={doPublish} title={!canPublish ? t.cantPublish : t.publish}>{publishing && <span className="sv-btn__spin" />}{publishing ? t.publishing : t.publish}</button>}
           {publishUrl && onConnectDomain && onRemoveDomain && (
             <button className={'sv-btn sv-btn--ghost' + (hasDomain ? ' sv-btn--on' : '')} title={t.domain.manage} onClick={() => setDomainOpen(true)}>{t.domain.manage}</button>
           )}
@@ -149,6 +155,9 @@ export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing
           onRemove={() => { onRemoveDomain(); }}
           onClose={() => setDomainOpen(false)}
         />
+      )}
+      {publishOpen && (
+        <PublishModal publishing={publishing} result={publishResult ?? null} onClose={closePublish} onRetry={doPublish} />
       )}
     </section>
   );

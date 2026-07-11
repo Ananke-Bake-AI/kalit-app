@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Activity, FileNode, Message, PreviewMode, Session } from './lib/types';
-import type { DomainState } from './broker/useBrokerStudio';
+import type { DomainState, PublishResult } from './broker/useBrokerStudio';
 import { Sidebar } from './components/Sidebar';
 import { Chat } from './components/Chat';
 import { Preview } from './components/Preview';
@@ -53,6 +53,8 @@ export interface StudioShellProps {
   domain?: DomainState;
   onConnectDomain?: (domain: string) => Promise<{ ok: boolean; error?: string }>;
   onRemoveDomain?: () => void;
+  publishResult?: PublishResult | null;
+  onClearPublishResult?: () => void;
 }
 
 /** Shell présentation pur : reçoit l'état et les callbacks, ne connaît pas le
@@ -88,6 +90,7 @@ export function StudioShell(props: StudioShellProps) {
         onRefresh={props.onRefreshTree} onOpen={() => props.previewUrl && window.open(props.previewUrl, '_blank')}
         building={props.streaming} hasMessages={props.messages.length > 0} onSuggest={sendSuggest}
         domain={props.domain} onConnectDomain={props.onConnectDomain} onRemoveDomain={props.onRemoveDomain}
+        publishResult={props.publishResult} onClearPublishResult={props.onClearPublishResult}
       />
       <nav className="sv-mnav" aria-label={t.navigation}>
         <button aria-selected={pane === 'sessions'} onClick={() => setPane('sessions')}><IconFolder /> {t.navProjects}</button>

@@ -13,6 +13,7 @@ import { stringsFor, type Strings } from '../lib/i18n';
 
 export interface DnsRecord { type: string; name: string; value: string; }
 export interface DomainState { customDomain: string | null; status: string | null; dnsRecords: DnsRecord[] | null; }
+export interface PublishResult { phase: 'ok' | 'too_large' | 'error'; url?: string | null; sizeBytes?: number; limitBytes?: number; }
 interface PublishInfo { subdomainUrl?: string | null; customDomain?: string | null; customDomainStatus?: string | null; }
 
 interface ChatSessionDTO { id: string; title: string | null; model: string; isProcessing?: boolean; createdAt: number; updatedAt: number; projectId?: string; projectDeployed?: boolean; }
@@ -111,6 +112,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   const [projectId, setProjectId] = useState<string | null>(null);
   const [publishUrl, setPublishUrl] = useState<string | null>(null);
   const [publishing, setPublishing] = useState(false);
+  const [publishResult, setPublishResult] = useState<PublishResult | null>(null); // résultat du dernier publish (modal)
   const [deployBlocked, setDeployBlocked] = useState(false); // backend project → publish refused (modal)
   const [storageBlocked, setStorageBlocked] = useState(false); // quota plein → nouvelle création refusée (modal)
   const [storage, setStorage] = useState<{ usedBytes: number; limitBytes: number } | null>(null);
@@ -218,11 +220,22 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     setPublishing(true);
     const slug = (sessions.find((s) => s.id === activeRef.current)?.title || 'kalit')
       .toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'kalit';
+    setPublishResult(null);
     const r = await client.fetch(`/api/broker/project/${projectId}/publish`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'subdomain', slug }) }).catch(() => null);
-    if (r && r.ok) { const d = await r.json().catch(() => null); setPublishUrl((d?.data ?? d)?.subdomainUrl ?? null); }
-    // 422 = backend project → publishing is front-end only for now (broker
-    // returns { code: 'backend_not_supported' }). Surface an explanatory modal.
+    if (r && r.ok) {
+      const d = await r.json().catch(() => null);
+      const url = (d?.data ?? d)?.subdomainUrl ?? null;
+      setPublishUrl(url);
+      setPublishResult({ phase: 'ok', url });
+    }
+    // 422 = backend project → publishing is front-end only for now.
     else if (r && r.status === 422) { setDeployBlocked(true); }
+    // 413 = site over Vercel's 10 MB upload limit → show the size explicitly.
+    else if (r && r.status === 413) {
+      const j = await r.json().catch(() => null);
+      setPublishResult({ phase: 'too_large', sizeBytes: j?.sizeBytes, limitBytes: j?.limitBytes });
+    }
+    else { setPublishResult({ phase: 'error' }); }
     setPublishing(false);
   }, [projectId, client, sessions]);
 
@@ -532,5 +545,5 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   }, [baseMessages, live, liveError, streaming]);
 
   const attachments = pending.map((p) => ({ id: p.id, name: p.file.name }));
-  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, deployBlocked, dismissDeployBlocked: () => setDeployBlocked(false), storage, storageBlocked, dismissStorageBlocked: () => setStorageBlocked(false), domain, connectDomain, removeDomain, canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, socketStatus: socket.status, select, newProject, send, stop, deleteSession, setModel, publish, download, refreshTree, reloadSessions: loadSessions };
+  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, publishResult, clearPublishResult: () => setPublishResult(null), deployBlocked, dismissDeployBlocked: () => setDeployBlocked(false), storage, storageBlocked, dismissStorageBlocked: () => setStorageBlocked(false), domain, connectDomain, removeDomain, canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, socketStatus: socket.status, select, newProject, send, stop, deleteSession, setModel, publish, download, refreshTree, reloadSessions: loadSessions };
 }
