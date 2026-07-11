@@ -65,6 +65,7 @@ export const PLANS: PlanConfig[] = [
     features: [
       "Kalit Flow — pages and apps",
       "350 credits / month",
+      "Access to more intelligent models",
       "10 team members",
       "Deploy to production",
       "Priority support",
@@ -81,6 +82,7 @@ export const PLANS: PlanConfig[] = [
     features: [
       "Flow + Pentest + Search",
       "1,200 credits / month",
+      "Access to more intelligent models",
       "Unlimited team members",
       "Priority execution",
       "Pre-launch security scans",
