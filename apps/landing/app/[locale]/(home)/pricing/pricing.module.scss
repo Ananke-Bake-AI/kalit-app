@@ -204,15 +204,26 @@
 }
 
 // Relative-usage note pinned to the bottom of the card (just above the
-// CTA). margin-top:auto claims the free space so it sits with the CTA
-// even when feature lists differ in length; the "*" footnote expands the
-// "More usage*" label into the tier comparison (e.g. "5× more than Free").
+// CTA). margin-top:auto claims ALL the free space so the note+CTA cluster
+// sits at the bottom and aligns across cards even when feature lists
+// differ in length (Starter 5, Pro 6, Enterprise 7 rows). The "*" footnote
+// expands the "More usage*" label into the tier comparison.
+//
+// Only the note carries the auto margin — the CTA that follows it gets a
+// fixed gap (below). If BOTH had margin-top:auto the free space would be
+// split between them and the note would float mid-card (misaligned).
 .usageNote {
   margin-top: auto;
   padding-top: 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.1rem;
+}
+
+// When a usage note precedes the CTA, glue the CTA right under it instead
+// of letting its own margin-top:auto fight for the free space.
+.usageNote + .cta {
+  margin-top: 0.9rem;
 }
 
 .usageNoteLabel {
