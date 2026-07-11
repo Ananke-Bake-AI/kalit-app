@@ -24,6 +24,9 @@ export interface Strings {
   archived: string;
   answerFreely: string;
   thinking: string;
+  refinement: string;
+  toolDetails: string;
+  noArgs: string;
   ctxUsed: string;
   composerPlaceholder: string;
   attach: string;
@@ -101,6 +104,9 @@ const fr: Strings = {
   archived: 'archivé',
   answerFreely: 'ou réponds librement ci-dessous',
   thinking: 'réflexion',
+  refinement: 'Prompt affiné par le système — voir ce qui a été ajouté',
+  toolDetails: 'Voir les détails du tool call',
+  noArgs: '(aucun argument)',
   ctxUsed: 'Contexte utilisé',
   composerPlaceholder: 'Décris ce que tu veux construire…',
   attach: 'Joindre un fichier',
@@ -221,6 +227,9 @@ const en: Strings = {
   archived: 'archived',
   answerFreely: 'or reply freely below',
   thinking: 'thinking',
+  refinement: 'Prompt refined by the system — see what was added',
+  toolDetails: 'View tool call details',
+  noArgs: '(no arguments)',
   ctxUsed: 'Context used',
   composerPlaceholder: 'Describe what you want to build…',
   attach: 'Attach a file',

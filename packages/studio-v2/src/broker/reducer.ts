@@ -63,7 +63,15 @@ export class StreamReducer {
           if (choice) { this.segments.push(choice); this.onChange(); return 'ongoing'; }
         }
         const input = ev.input && typeof ev.input === 'object' ? JSON.stringify(ev.input) : String(ev.input ?? '');
-        this.segments.push({ kind: 'tool', name: String(ev.name ?? 'tool'), input: input.slice(0, 200), done: false });
+        this.segments.push({ kind: 'tool', name: String(ev.name ?? 'tool'), input: input.slice(0, 200), inputFull: input.slice(0, 20000), done: false });
+        this.onChange();
+        return 'ongoing';
+      }
+
+      case 'refinement': {
+        this.flushText();
+        const c = (ev as { content?: string }).content ?? '';
+        if (c) this.segments.push({ kind: 'refinement', content: c });
         this.onChange();
         return 'ongoing';
       }

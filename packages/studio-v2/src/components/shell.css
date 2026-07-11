@@ -76,6 +76,18 @@
 .sv-think__t { font-size: 12.5px; font-style: italic; color: var(--sv-text-2); white-space: pre-wrap; max-height: 150px; overflow-y: auto; }
 .sv-tool { display: inline-flex; align-items: center; gap: 7px; font: 12px var(--sv-mono); color: var(--sv-warn); background: var(--sv-surface); border: 1px solid var(--sv-line-soft); border-radius: var(--sv-r-sm); padding: 4px 9px; margin: 3px 0; }
 .sv-tool__arg { color: var(--sv-text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 320px; }
+/* Tool badge cliquable → ouvre la modal de détails. */
+.sv-tool--btn { cursor: pointer; text-align: left; }
+.sv-tool--btn:hover { border-color: var(--sv-warn); background: var(--sv-surface-2); }
+/* Accordéon "prompt affiné par le système" — fermé par défaut (<details>). */
+.sv-refine { border-left: 2px solid var(--sv-ok); background: var(--sv-surface); border-radius: 0 var(--sv-r-sm) var(--sv-r-sm) 0; margin: 6px 0; padding: 2px 0; }
+.sv-refine__sum { list-style: none; cursor: pointer; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--sv-text-3); padding: 6px 12px; user-select: none; }
+.sv-refine__sum::-webkit-details-marker { display: none; }
+.sv-refine[open] .sv-refine__sum { color: var(--sv-ok); }
+.sv-refine__body { font-size: 12.5px; color: var(--sv-text-2); padding: 2px 12px 10px; max-height: 320px; overflow-y: auto; }
+/* Modal de détails d'un tool call (réutilise .sv-modal / __panel / __x / __title). */
+.sv-modal__panel--wide { max-width: 680px; }
+.sv-modal__pre { margin: 12px 0 0; padding: 12px; background: var(--sv-surface); border: 1px solid var(--sv-line-soft); border-radius: var(--sv-r-sm); font: 12px/1.5 var(--sv-mono); color: var(--sv-text-2); white-space: pre-wrap; word-break: break-word; max-height: 60vh; overflow: auto; }
 .sv-err { display: block; margin: 4px 0; padding: 8px 11px; border-radius: var(--sv-r-sm); font-size: 13px; color: #ffd7d3; background: rgba(229,88,77,.10); border: 1px solid rgba(229,88,77,.32); }
 /* QCM (ask_choice) */
 .sv-choice { margin: 8px 0; padding: 12px; border: 1px solid var(--sv-line); border-radius: var(--sv-r); background: var(--sv-surface); }

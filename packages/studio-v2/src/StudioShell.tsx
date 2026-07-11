@@ -55,6 +55,7 @@ export interface StudioShellProps {
   onRemoveDomain?: () => void;
   publishResult?: PublishResult | null;
   onClearPublishResult?: () => void;
+  checkPromptQuality?: (text: string) => Promise<'none' | 'enrich' | 'rich' | null>;
 }
 
 /** Shell présentation pur : reçoit l'état et les callbacks, ne connaît pas le
@@ -82,6 +83,7 @@ export function StudioShell(props: StudioShellProps) {
         attachments={props.attachments} uploading={props.uploading}
         onAddFiles={props.onAddFiles} onRemoveAttachment={props.onRemoveAttachment}
         outOfCredits={props.outOfCredits} pricingHref={`/${props.lang || 'en'}/pricing`}
+        checkPromptQuality={props.checkPromptQuality}
       />
       <Preview
         mode={mode} onMode={setMode} previewUrl={props.previewUrl} tree={props.tree}

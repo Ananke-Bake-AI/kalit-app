@@ -31,8 +31,10 @@ function elToSegment(e: { type?: string; content?: string; name?: string; input?
     case 'thinking': return { kind: 'thinking', content: e.content ?? '' };
     case 'tool': {
       if (e.name === 'ask_choice') { const c = choiceFromInput(e.input); if (c) return c; }
-      return { kind: 'tool', name: e.name ?? 'tool', input: e.input ? JSON.stringify(e.input).slice(0, 200) : undefined, done: e.done ?? true };
+      const full = e.input ? JSON.stringify(e.input) : undefined;
+      return { kind: 'tool', name: e.name ?? 'tool', input: full?.slice(0, 200), inputFull: full?.slice(0, 20000), done: e.done ?? true };
     }
+    case 'refinement': return { kind: 'refinement', content: e.content ?? '' };
     case 'choice': return choiceFromInput(e);
     case 'file': return { kind: 'file', name: e.name ?? 'fichier', url: e.url ?? '', mimeType: e.mimeType };
     case 'error': return { kind: 'error', content: e.content ?? 'Erreur' };
@@ -53,7 +55,7 @@ function parseContent(content?: string): Segment[] {
 function dtoToMessage(d: ChatMessageDTO): Message {
   const segments: Segment[] = [];
   if (d.thinking) segments.push({ kind: 'thinking', content: d.thinking });
-  for (const t of d.tools ?? []) segments.push({ kind: 'tool', name: t.name, input: t.input ? JSON.stringify(t.input).slice(0, 200) : undefined, done: t.done ?? true });
+  for (const t of d.tools ?? []) { const full = t.input ? JSON.stringify(t.input) : undefined; segments.push({ kind: 'tool', name: t.name, input: full?.slice(0, 200), inputFull: full?.slice(0, 20000), done: t.done ?? true }); }
   segments.push(...parseContent(d.content));
   for (const f of d.files ?? []) segments.push({ kind: 'file', name: f.name, url: f.url, mimeType: f.mimeType });
   return { id: d.id, role: d.role === 'user' ? 'user' : 'assistant', segments };
@@ -545,5 +547,18 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   }, [baseMessages, live, liveError, streaming]);
 
   const attachments = pending.map((p) => ({ id: p.id, name: p.file.name }));
-  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, publishResult, clearPublishResult: () => setPublishResult(null), deployBlocked, dismissDeployBlocked: () => setDeployBlocked(false), storage, storageBlocked, dismissStorageBlocked: () => setStorageBlocked(false), domain, connectDomain, removeDomain, canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, socketStatus: socket.status, select, newProject, send, stop, deleteSession, setModel, publish, download, refreshTree, reloadSessions: loadSessions };
+
+  // Classification LIVE du prompt en cours d'écriture (halo du composer) : appelle
+  // le MÊME classifieur que le prompt-boost côté broker. Renvoie none/enrich/rich.
+  const checkPromptQuality = useCallback(async (text: string): Promise<'none' | 'enrich' | 'rich' | null> => {
+    const t = text.trim();
+    if (!t) return 'none';
+    const d = await api.json<{ level?: string }>('/api/broker/prompt-quality', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: t }),
+    });
+    const lv = d?.level;
+    return lv === 'enrich' || lv === 'rich' || lv === 'none' ? lv : null;
+  }, [api]);
+
+  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, publishResult, clearPublishResult: () => setPublishResult(null), deployBlocked, dismissDeployBlocked: () => setDeployBlocked(false), storage, storageBlocked, dismissStorageBlocked: () => setStorageBlocked(false), domain, connectDomain, removeDomain, canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, checkPromptQuality, socketStatus: socket.status, select, newProject, send, stop, deleteSession, setModel, publish, download, refreshTree, reloadSessions: loadSessions };
 }

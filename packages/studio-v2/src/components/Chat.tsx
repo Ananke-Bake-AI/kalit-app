@@ -4,7 +4,7 @@ import { IconAttach, IconSend, IconStop } from '../lib/icons';
 import { ModelSelector } from './ModelSelector';
 import { useStrings } from '../lib/i18n';
 import { Md } from '../lib/markdown';
-import { promptLevel, type PromptLevel } from '../lib/promptQuality';
+import { type PromptLevel } from '../lib/promptQuality';
 
 // Immersive/focus toggle: hides the global Kalit header + banners so the studio
 // fills the whole viewport. The focus state lives in the landing's
@@ -46,6 +46,7 @@ interface Props {
   onRemoveAttachment?: (id: string) => void;
   outOfCredits?: boolean;
   pricingHref?: string;
+  checkPromptQuality?: (text: string) => Promise<'none' | 'enrich' | 'rich' | null>;
 }
 
 function ChoiceView({ s, onAnswer }: { s: Extract<Segment, { kind: 'choice' }>; onAnswer: (t: string) => void }) {
@@ -80,14 +81,24 @@ function ChoiceView({ s, onAnswer }: { s: Extract<Segment, { kind: 'choice' }>; 
   );
 }
 
-function SegmentView({ s, onChoiceAnswer }: { s: Segment; onChoiceAnswer: (t: string) => void }) {
+function SegmentView({ s, onChoiceAnswer, onToolClick }: { s: Segment; onChoiceAnswer: (t: string) => void; onToolClick?: (s: Extract<Segment, { kind: 'tool' }>) => void }) {
   const st = useStrings();
   if (s.kind === 'text') return <div className="sv-msg__text sv-md"><Md text={s.content} /></div>;
   if (s.kind === 'thinking') return (
     <div className="sv-think"><div className="sv-think__l">{st.thinking}</div><div className="sv-think__t">{s.content}</div></div>
   );
+  // Refinement du prompt (enrichissement système) — accordéon FERMÉ par défaut.
+  if (s.kind === 'refinement') return (
+    <details className="sv-refine">
+      <summary className="sv-refine__sum">✨ {st.refinement}</summary>
+      <div className="sv-refine__body sv-md"><Md text={s.content} /></div>
+    </details>
+  );
+  // Clic sur un usage d'outil → modal avec les détails complets du tool call.
   if (s.kind === 'tool') return (
-    <div className="sv-tool">⚙ {s.name}{s.input ? <span className="sv-tool__arg">{s.input}</span> : null}{s.done ? ' ·' : '…'}</div>
+    <button type="button" className="sv-tool sv-tool--btn" title={st.toolDetails} onClick={() => onToolClick?.(s)}>
+      ⚙ {s.name}{s.input ? <span className="sv-tool__arg">{s.input}</span> : null}{s.done ? ' ·' : '…'}
+    </button>
   );
   if (s.kind === 'file') return <div className="sv-tool">↓ {s.name}</div>;
   if (s.kind === 'error') return <div className="sv-err">{s.content}</div>;
@@ -95,7 +106,7 @@ function SegmentView({ s, onChoiceAnswer }: { s: Segment; onChoiceAnswer: (t: st
   return null;
 }
 
-export function Chat({ title, messages, streaming, activity, model, onModelChange, onSend, onStop, onChoiceAnswer, ctxPercent, attachments = [], uploading, onAddFiles, onRemoveAttachment, outOfCredits, pricingHref }: Props) {
+export function Chat({ title, messages, streaming, activity, model, onModelChange, onSend, onStop, onChoiceAnswer, ctxPercent, attachments = [], uploading, onAddFiles, onRemoveAttachment, outOfCredits, pricingHref, checkPromptQuality }: Props) {
   const st = useStrings();
   const [val, setVal] = useState('');
   // Historique des prompts envoyés (terminal-style ↑/↓), persisté pour ne pas
@@ -112,11 +123,29 @@ export function Chat({ title, messages, streaming, activity, model, onModelChang
   const [haloOn, setHaloOn] = useState(true);
   useEffect(() => { try { setHaloOn(localStorage.getItem('sv-prompt-halo') !== '0'); } catch { /* ignore */ } }, []);
   const toggleHalo = () => setHaloOn((v) => { const n = !v; try { localStorage.setItem('sv-prompt-halo', n ? '1' : '0'); } catch { /* ignore */ } return n; });
-  const level: PromptLevel = haloOn ? promptLevel(val) : 'none';
+  // Halo piloté UNIQUEMENT par le modèle (classifieur broker), appelé en debounce
+  // 1s pendant la frappe — pas d'heuristique regex. Rien tant que le modèle n'a
+  // pas répondu (le halo apparaît ~1s après la pause de frappe).
+  const [modelLevel, setModelLevel] = useState<PromptLevel | null>(null);
+  useEffect(() => {
+    if (!haloOn || !checkPromptQuality) { setModelLevel(null); return; }
+    const t = val.trim();
+    if (!t) { setModelLevel('none'); return; }
+    let alive = true;
+    const id = setTimeout(async () => {
+      const lv = await checkPromptQuality(t);
+      if (!alive || lv == null) return;
+      setModelLevel(lv === 'enrich' ? 'low' : lv === 'rich' ? 'high' : 'none');
+    }, 1000);
+    return () => { alive = false; clearTimeout(id); };
+  }, [val, haloOn, checkPromptQuality]);
+  const level: PromptLevel = haloOn ? (modelLevel ?? 'none') : 'none';
   const feedRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
   const [, force] = useState(0);
+  // Modal des détails d'un tool call (clic sur un badge d'outil).
+  const [toolModal, setToolModal] = useState<{ name: string; input: string } | null>(null);
 
   const pickFiles = (fl: FileList | null) => { if (fl && fl.length && onAddFiles) onAddFiles(Array.from(fl)); };
   const onDrop = (e: DragEvent<HTMLElement>) => { e.preventDefault(); setDragging(false); pickFiles(e.dataTransfer.files); };
@@ -161,7 +190,7 @@ export function Chat({ title, messages, streaming, activity, model, onModelChang
             <div className="sv-msg__av">{m.role === 'user' ? 'V' : 'K'}</div>
             <div className="sv-msg__body">
               <div className="sv-msg__name">{m.role === 'user' ? st.you : 'Kalit'}</div>
-              {m.segments.map((s, i) => <SegmentView key={i} s={s} onChoiceAnswer={onChoiceAnswer} />)}
+              {m.segments.map((s, i) => <SegmentView key={i} s={s} onChoiceAnswer={onChoiceAnswer} onToolClick={(seg) => setToolModal({ name: seg.name, input: seg.inputFull || seg.input || st.noArgs })} />)}
             </div>
           </div>
         ))}
@@ -236,6 +265,16 @@ export function Chat({ title, messages, streaming, activity, model, onModelChang
           </div>
         </div>
       </div>
+
+      {toolModal && (
+        <div className="sv-modal" role="dialog" aria-modal="true" onClick={() => setToolModal(null)}>
+          <div className="sv-modal__panel sv-modal__panel--wide" onClick={(e) => e.stopPropagation()}>
+            <button className="sv-modal__x" onClick={() => setToolModal(null)} aria-label="close">×</button>
+            <h3 className="sv-modal__title">⚙ {toolModal.name}</h3>
+            <pre className="sv-modal__pre">{toolModal.input}</pre>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

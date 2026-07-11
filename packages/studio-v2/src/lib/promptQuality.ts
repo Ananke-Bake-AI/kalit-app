@@ -12,11 +12,15 @@ export type PromptLevel = 'none' | 'low' | 'mid' | 'high';
 // high  = already rich & directed (leave it alone) → green.
 export function promptLevel(text: string): PromptLevel {
   const p = text.trim();
-  if (!p || EDIT_SIGNAL.test(p)) return 'none';
+  if (!p) return 'none';
   // A web-artifact noun (site/landing/app…) is enough to read it as a build
   // request — a build verb is a bonus, not required ("une landing pour X"
-  // counts too). Kept in sync with broker/internal/commands/promptboost.go.
-  if (!ARTIFACT.test(p)) return 'none';
+  // counts too). An artifact OVERRIDES an edit/greeting word, so "salut, crée
+  // une landing page…" is not suppressed just for the "salut". Kept in sync
+  // with broker/internal/commands/promptboost.go (boostShouldSkip).
+  const hasArtifact = ARTIFACT.test(p);
+  if (EDIT_SIGNAL.test(p) && !hasArtifact) return 'none';
+  if (!hasArtifact) return 'none';
   const words = p.split(/\s+/).length;
   if (words < 20) return 'low';
   if (words < 45) return 'mid';
