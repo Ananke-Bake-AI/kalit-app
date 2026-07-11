@@ -107,6 +107,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   const [projectId, setProjectId] = useState<string | null>(null);
   const [publishUrl, setPublishUrl] = useState<string | null>(null);
   const [publishing, setPublishing] = useState(false);
+  const [deployBlocked, setDeployBlocked] = useState(false); // backend project → publish refused (modal)
   const [downloading, setDownloading] = useState(false);
   const [ctxPercent, setCtxPercent] = useState<number | null>(null); // remplissage du contexte (jauge live)
   // Fichiers en attente : gardés EN MÉMOIRE, uploadés seulement à l'envoi du
@@ -185,6 +186,9 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
       .toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'kalit';
     const r = await client.fetch(`/api/broker/project/${projectId}/publish`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'subdomain', slug }) }).catch(() => null);
     if (r && r.ok) { const d = await r.json().catch(() => null); setPublishUrl((d?.data ?? d)?.subdomainUrl ?? null); }
+    // 422 = backend project → publishing is front-end only for now (broker
+    // returns { code: 'backend_not_supported' }). Surface an explanatory modal.
+    else if (r && r.status === 422) { setDeployBlocked(true); }
     setPublishing(false);
   }, [projectId, client, sessions]);
 
@@ -465,5 +469,5 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   }, [baseMessages, live, liveError, streaming]);
 
   const attachments = pending.map((p) => ({ id: p.id, name: p.file.name }));
-  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, socketStatus: socket.status, select, newProject, send, stop, deleteSession, setModel, publish, download, refreshTree, reloadSessions: loadSessions };
+  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, deployBlocked, dismissDeployBlocked: () => setDeployBlocked(false), canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, socketStatus: socket.status, select, newProject, send, stop, deleteSession, setModel, publish, download, refreshTree, reloadSessions: loadSessions };
 }

@@ -44,6 +44,8 @@ export interface StudioShellProps {
   onAddFiles?: (files: File[]) => void;
   onRemoveAttachment?: (id: string) => void;
   outOfCredits?: boolean;
+  deployBlocked?: boolean;
+  onDismissDeployBlocked?: () => void;
 }
 
 /** Shell présentation pur : reçoit l'état et les callbacks, ne connaît pas le
@@ -84,6 +86,17 @@ export function StudioShell(props: StudioShellProps) {
         <button aria-selected={pane === 'chat'} onClick={() => setPane('chat')}><ChatIcon /> {t.navChat}</button>
         <button aria-selected={pane === 'preview'} onClick={() => setPane('preview')}><IconEye /> {t.navPreview}</button>
       </nav>
+      {props.deployBlocked && (
+        <div className="sv-modal" onClick={() => props.onDismissDeployBlocked?.()}>
+          <div className="sv-modal__panel" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
+            <h3 className="sv-modal__title">{t.deployBlocked.title}</h3>
+            <p className="sv-modal__sub">{t.deployBlocked.body}</p>
+            <div className="sv-modal__row">
+              <button className="sv-btn sv-btn--primary" onClick={() => props.onDismissDeployBlocked?.()}>{t.deployBlocked.close}</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
     </StringsContext.Provider>
   );
