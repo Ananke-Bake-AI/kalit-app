@@ -97,6 +97,15 @@ function SegmentView({ s, onChoiceAnswer }: { s: Segment; onChoiceAnswer: (t: st
 export function Chat({ title, messages, streaming, activity, model, onModelChange, onSend, onStop, onChoiceAnswer, ctxPercent, attachments = [], uploading, onAddFiles, onRemoveAttachment, outOfCredits, pricingHref }: Props) {
   const st = useStrings();
   const [val, setVal] = useState('');
+  // Historique des prompts envoyés (terminal-style ↑/↓), persisté pour ne pas
+  // les perdre au reload. histPos = -1 → brouillon courant ; 0..n → navigation.
+  const HIST_KEY = 'sv-prompt-history';
+  const histRef = useRef<string[]>([]);
+  const histPosRef = useRef(-1);
+  const draftRef = useRef('');
+  const taRef = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => { try { const h = JSON.parse(localStorage.getItem(HIST_KEY) || '[]'); if (Array.isArray(h)) histRef.current = h; } catch { /* ignore */ } }, []);
+  const caretToEnd = () => requestAnimationFrame(() => { const el = taRef.current; if (el) { el.selectionStart = el.selectionEnd = el.value.length; } });
   const feedRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
@@ -109,7 +118,16 @@ export function Chat({ title, messages, streaming, activity, model, onModelChang
   // heartbeat pour le temps écoulé de l'indicateur d'activité
   useEffect(() => { if (!activity) return; const t = setInterval(() => force((n) => n + 1), 1000); return () => clearInterval(t); }, [activity]);
 
-  const send = () => { const t = val.trim(); if ((!t && !attachments.length) || streaming) return; onSend(t); setVal(''); };
+  const send = () => {
+    const t = val.trim();
+    if ((!t && !attachments.length) || streaming) return;
+    if (t) {
+      const h = histRef.current;
+      if (h[0] !== t) { h.unshift(t); if (h.length > 20) h.length = 20; try { localStorage.setItem(HIST_KEY, JSON.stringify(h)); } catch { /* ignore */ } }
+    }
+    histPosRef.current = -1; draftRef.current = '';
+    onSend(t); setVal('');
+  };
   const elapsed = activity ? Math.floor((Date.now() - activity.since) / 1000) : 0;
 
   return (
@@ -171,8 +189,29 @@ export function Chat({ title, messages, streaming, activity, model, onModelChang
             </div>
           )}
           <textarea
-            value={val} onChange={(e) => setVal(e.target.value)}
-            onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }}
+            ref={taRef}
+            value={val} onChange={(e) => { setVal(e.target.value); histPosRef.current = -1; }}
+            onKeyDown={(e) => {
+              const ta = e.currentTarget;
+              if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); return; }
+              // ↑ = prompt précédent (seulement caret tout en haut → l'édition multi-ligne reste possible)
+              if (e.key === 'ArrowUp' && ta.selectionStart === 0 && ta.selectionEnd === 0) {
+                const h = histRef.current; if (!h.length) return;
+                if (histPosRef.current === -1) draftRef.current = val;
+                histPosRef.current = Math.min(histPosRef.current + 1, h.length - 1);
+                setVal(h[histPosRef.current]); caretToEnd(); e.preventDefault(); return;
+              }
+              // ↓ = revenir vers le brouillon
+              if (e.key === 'ArrowDown' && histPosRef.current >= 0) {
+                const h = histRef.current; histPosRef.current -= 1;
+                setVal(histPosRef.current < 0 ? draftRef.current : h[histPosRef.current]); caretToEnd(); e.preventDefault(); return;
+              }
+              // Ctrl/Cmd+Z sur composer vide → restaure le dernier prompt envoyé
+              if ((e.key === 'z' || e.key === 'Z') && (e.ctrlKey || e.metaKey) && !e.shiftKey && !val.trim()) {
+                const h = histRef.current; if (h.length) { setVal(h[0]); histPosRef.current = 0; draftRef.current = ''; caretToEnd(); e.preventDefault(); }
+                return;
+              }
+            }}
             placeholder={st.composerPlaceholder} rows={1}
           />
           <div className="sv-composer__row">
