@@ -30,6 +30,7 @@ export function ModelSelector({ value, onChange }: Props) {
                 <button key={m.id} className={'sv-model__opt' + (m.id === value ? ' sv-model__opt--on' : '')}
                   onClick={() => { onChange(m.id); setOpen(false); }}>
                   <span className={'sv-model__dot sv-model__dot--' + m.provider} /> {m.label}
+                  {m.pro && <span style={{ marginLeft: 'auto', fontSize: 10, fontWeight: 700, letterSpacing: '.04em', color: 'var(--sv-accent-2)', opacity: .8 }}>PRO</span>}
                 </button>
               ))}
             </div>

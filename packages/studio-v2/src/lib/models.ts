@@ -1,22 +1,13 @@
 // Modèles proposés dans le studio. `id` = ce qu'on envoie au broker.
-//  - "anthropic:claude-x" → Claude via l'abonnement OAuth du worker.
-//  - "cloud/<model>"       → routé vers la gateway kalit-model-server (Ollama Cloud).
-// Le broker mappe et passe le modèle au worker (le "/" déclenche la gateway).
-// Défaut = Opus 4.8 (ce que le worker exécute sans surcharge).
+//  - "anthropic:claude-x" → Claude via l'abonnement OAuth (premium) → réservé aux
+//    comptes Pro+ (flag `pro`). Le broker downgrade en kimi pour les comptes < Pro.
+//  - "cloud/<model>"       → routé vers la gateway kalit-model-server (Ollama Cloud),
+//    dispo pour tous. Défaut = kimi-2.5.
 
-export interface ModelDef { id: string; label: string; provider: 'ollama' | 'anthropic' | 'mistral' | 'openai'; }
+export interface ModelDef { id: string; label: string; provider: 'ollama' | 'anthropic' | 'mistral' | 'openai'; pro?: boolean; }
 export interface ModelGroup { label: string; models: ModelDef[]; }
 
 export const MODEL_GROUPS: ModelGroup[] = [
-  {
-    label: 'Claude (abonnement)',
-    models: [
-      { id: 'anthropic:claude-opus-4-8', label: 'claude-opus-4.8', provider: 'anthropic' },
-      { id: 'anthropic:claude-sonnet-4-6', label: 'claude-sonnet-4-6', provider: 'anthropic' },
-      { id: 'anthropic:claude-opus-4-6', label: 'claude-opus-4-6', provider: 'anthropic' },
-      { id: 'anthropic:claude-haiku-4-5-20251001', label: 'claude-haiku-4.5', provider: 'anthropic' },
-    ],
-  },
   {
     label: 'Ollama Cloud',
     models: [
@@ -32,8 +23,17 @@ export const MODEL_GROUPS: ModelGroup[] = [
       { id: 'cloud/gpt-oss:120b-cloud', label: 'gpt-oss 120b', provider: 'ollama' },
     ],
   },
+  {
+    label: 'Claude (Pro)',
+    models: [
+      { id: 'anthropic:claude-opus-4-8', label: 'claude-opus-4.8', provider: 'anthropic', pro: true },
+      { id: 'anthropic:claude-sonnet-4-6', label: 'claude-sonnet-4-6', provider: 'anthropic', pro: true },
+      { id: 'anthropic:claude-opus-4-6', label: 'claude-opus-4-6', provider: 'anthropic', pro: true },
+      { id: 'anthropic:claude-haiku-4-5-20251001', label: 'claude-haiku-4.5', provider: 'anthropic', pro: true },
+    ],
+  },
 ];
 
-export const DEFAULT_MODEL_ID = 'anthropic:claude-opus-4-8';
+export const DEFAULT_MODEL_ID = 'cloud/kimi-k2.5:cloud';
 export const ALL_MODELS = MODEL_GROUPS.flatMap((g) => g.models);
 export function labelFor(id: string): string { return ALL_MODELS.find((m) => m.id === id)?.label ?? id; }
