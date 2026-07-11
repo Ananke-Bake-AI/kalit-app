@@ -32,7 +32,7 @@ export const FREE_PLAN: PlanConfig = {
   maxMembers: 1,
   features: [
     "Full access for 14 days",
-    "15 credits included",
+    "15 credits / month",
     "Every suite included",
     "No credit card required",
   ],

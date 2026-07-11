@@ -27,6 +27,12 @@
       "enterprise": "Commencez avec Enterprise",
       "custom": "Parlez avec nous"
     },
+    "moreUsage": {
+      "label": "Plus d'usage*",
+      "starter": "* 5× plus que Free",
+      "pro": "* 5× plus que Starter",
+      "enterprise": "* 3× plus que Pro"
+    },
     "customPlanName": "Sur mesure",
     "customPriceLabel": "Sur mesure",
     "customFeatures": [

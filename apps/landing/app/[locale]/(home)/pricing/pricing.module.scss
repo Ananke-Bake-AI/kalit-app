@@ -126,10 +126,15 @@
   }
 }
 
+// The card uses glass-panel() which sets overflow:hidden (needed to clip
+// the backdrop blur to the rounded corners). A badge peeking ABOVE the top
+// edge (top:-0.6rem) therefore got clipped and vanished inside the card, so
+// we pin it just INSIDE the top-right corner instead — always visible.
 .popularBadge {
   position: absolute;
-  top: -0.6rem;
-  right: 1rem;
+  top: 0.8rem;
+  right: 0.8rem;
+  z-index: 1;
   background: var(--color-4);
   color: var(--bg);
   font-size: 0.7rem;
@@ -196,6 +201,29 @@
       -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M9 16.2l-3.5-3.6L4 14l5 5 11-11-1.5-1.4z'/></svg>") center/contain no-repeat;
     }
   }
+}
+
+// Relative-usage note pinned to the bottom of the card (just above the
+// CTA). margin-top:auto claims the free space so it sits with the CTA
+// even when feature lists differ in length; the "*" footnote expands the
+// "More usage*" label into the tier comparison (e.g. "5× more than Free").
+.usageNote {
+  margin-top: auto;
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.usageNoteLabel {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.usageNoteStar {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
 }
 
 .cta {

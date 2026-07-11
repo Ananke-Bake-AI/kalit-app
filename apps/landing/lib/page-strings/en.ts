@@ -42,6 +42,12 @@ export const EN_PAGE_STRINGS = {
       enterprise: "Start Enterprise",
       custom: "Talk to us"
     },
+    moreUsage: {
+      label: "More usage*",
+      starter: "* 5× more than Free",
+      pro: "* 5× more than Starter",
+      enterprise: "* 3× more than Pro"
+    },
     customPlanName: "Custom",
     customPriceLabel: "Custom",
     customFeatures: [

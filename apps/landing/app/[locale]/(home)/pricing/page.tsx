@@ -102,6 +102,14 @@ export default async function PricingPage({
                     <li key={f}>{f}</li>
                   ))}
                 </ul>
+                {p.moreUsage[key as keyof typeof p.moreUsage] && (
+                  <p className={s.usageNote}>
+                    <span className={s.usageNoteLabel}>{p.moreUsage.label}</span>
+                    <span className={s.usageNoteStar}>
+                      {p.moreUsage[key as keyof typeof p.moreUsage]}
+                    </span>
+                  </p>
+                )}
                 <PricingCta
                   planKey={plan.key}
                   label={p.planCtas[key]}

@@ -73,11 +73,6 @@ export const Nav = () => {
           </Link>
         </li>
         <li>
-          <Link href="/#try-now" className={s.link}>
-            {t("nav.tryNow")}
-          </Link>
-        </li>
-        <li>
           <Link href="/#why-kalit" className={s.link}>
             {t("nav.whyKalit")}
           </Link>
