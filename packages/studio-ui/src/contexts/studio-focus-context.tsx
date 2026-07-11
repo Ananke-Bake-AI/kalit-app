@@ -35,6 +35,21 @@ export function StudioFocusProvider({ children, initial, storageKey }: ProviderP
     })
   }, [storageKey])
 
+  // Cross-package bridge: the studio-v2 chat bar lives in a separate package
+  // and can't consume this context directly, so it toggles focus by firing a
+  // window event, and reads the current state from the one we broadcast back.
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    const onToggle = () => toggleFocus()
+    window.addEventListener("kalit:studio-focus-toggle", onToggle)
+    return () => window.removeEventListener("kalit:studio-focus-toggle", onToggle)
+  }, [toggleFocus])
+
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    window.dispatchEvent(new CustomEvent("kalit:studio-focus-state", { detail: focusMode }))
+  }, [focusMode])
+
   return (
     <StudioFocusContext.Provider value={{ focusMode, toggleFocus }}>
       {children}
