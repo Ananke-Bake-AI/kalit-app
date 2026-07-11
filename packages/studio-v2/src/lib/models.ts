@@ -29,7 +29,6 @@ export const MODEL_GROUPS: ModelGroup[] = [
       { id: 'anthropic:claude-opus-4-8', label: 'claude-opus-4.8', provider: 'anthropic', pro: true },
       { id: 'anthropic:claude-sonnet-4-6', label: 'claude-sonnet-4-6', provider: 'anthropic', pro: true },
       { id: 'anthropic:claude-opus-4-6', label: 'claude-opus-4-6', provider: 'anthropic', pro: true },
-      { id: 'anthropic:claude-haiku-4-5-20251001', label: 'claude-haiku-4.5', provider: 'anthropic', pro: true },
     ],
   },
 ];
