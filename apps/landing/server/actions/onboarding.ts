@@ -59,10 +59,10 @@ export async function completeOnboarding(input: OnboardingInput) {
               })),
               {
                 key: "monthly.credits",
-                // 5 credits ≈ 5 generations — a guided demo of the
-                // paid suites, not a free tier. After day 14 (trial
+                // 15 credits (5× less than Starter's 75) — a guided demo
+                // of the paid suites, not a free tier. After day 14 (trial
                 // expiry) they fall back to the FREE_PLAN allotment.
-                value: { amount: 5 },
+                value: { amount: 15 },
                 source: "TRIAL" as const,
                 expiresAt: trialExpiry,
               },

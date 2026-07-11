@@ -18,19 +18,21 @@ export interface PlanConfig {
 }
 
 // The "free" entry is the 14-DAY TRIAL, not a perpetual free tier. Signing up
-// grants full access to every suite + 5 credits for 14 days (see
-// server/actions/onboarding.ts); after that the org is hard-paywalled (0
-// credits, no suites — enforced in lib/entitlements.ts). The fields below are
-// display/lookup only; the real trial allocation is the onboarding grant.
+// grants full access to every suite + 15 credits for 14 days (see
+// server/actions/onboarding.ts) — i.e. 5× less than Starter's 75. After that
+// the org is hard-paywalled (0 credits, no suites — enforced in
+// lib/entitlements.ts). The fields below are display/lookup only; the real
+// trial allocation is the onboarding grant.
 export const FREE_PLAN: PlanConfig = {
   key: "free",
   name: "Free trial",
   monthlyPrice: 0,
   suites: ["flow"],
-  creditsPerMonth: 3,
+  creditsPerMonth: 15,
   maxMembers: 1,
   features: [
     "Full access for 14 days",
+    "15 credits included",
     "Every suite included",
     "No credit card required",
   ],

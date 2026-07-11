@@ -14,7 +14,7 @@ export interface ResolvedEntitlements {
 export async function resolveEntitlements(orgId: string): Promise<ResolvedEntitlements> {
   // Locked baseline — what an org gets with NO active subscription and NO
   // active trial. Every org is granted a 14-day TRIAL on onboarding; while it
-  // is live the TRIAL overrides below grant Flow + 5 credits, and a paid
+  // is live the TRIAL overrides below grant Flow + 15 credits, and a paid
   // subscription grants its plan. When the trial expires its entitlements drop
   // out of the override query (expiresAt filter), so the org falls back to
   // THIS: a hard paywall — zero credits and no suite access until they buy.
