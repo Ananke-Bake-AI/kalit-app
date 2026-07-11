@@ -222,10 +222,16 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   }, [socket]);
 
   const finalize = useCallback((sid: string) => {
-    turnActive.current = false;
     reducers.current.delete(sid);
-    setLive(null); setStreaming(false); setActivity(null);
-    if (sid === activeRef.current) { loadMessages(sid); }
+    // N'affecte l'état live GLOBAL (turnActive/streaming/activity/live, uniques)
+    // QUE si c'est la session affichée. Sinon une session qui finit en arrière-
+    // plan (multi-session) couperait le live de la session active → plus de
+    // thinking ni d'étiquette d'activité en temps réel.
+    if (sid === activeRef.current) {
+      turnActive.current = false;
+      setLive(null); setStreaming(false); setActivity(null);
+      loadMessages(sid);
+    }
     loadSessions();
   }, [loadMessages, loadSessions]);
 
@@ -359,9 +365,16 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     // On ne finalise QUE si le tour est réellement terminé (event 'done' vu).
     // POST coupé prématurément sans 'done' → laisser le WS piloter le live.
     if (sawDone) {
-      turnActive.current = false;
-      finalizeSoft();
-      if (sid) loadMessages(sid);   // sync l'état persisté (ex: QCM en attente de réponse)
+      reducers.current.delete(sid);
+      // Multi-session : ne touche au live global QUE si cette session est
+      // affichée. Sinon un tour qui finit en arrière-plan couperait le live de
+      // la session active. On met juste à jour la liste (statut) dans tous les cas.
+      if (sid === activeRef.current) {
+        turnActive.current = false;
+        finalizeSoft();
+        loadMessages(sid);   // sync l'état persisté (ex: QCM en attente de réponse)
+      }
+      loadSessions();
     }
   }, [pending, ensureSession, uploadPending, pushError, client, lang]);
 
