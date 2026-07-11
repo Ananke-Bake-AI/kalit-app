@@ -107,6 +107,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   const [projectId, setProjectId] = useState<string | null>(null);
   const [publishUrl, setPublishUrl] = useState<string | null>(null);
   const [publishing, setPublishing] = useState(false);
+  const [downloading, setDownloading] = useState(false);
   // Fichiers en attente : gardés EN MÉMOIRE, uploadés seulement à l'envoi du
   // message (évite de créer une session/workspace vide juste pour un upload).
   const [pending, setPending] = useState<{ id: string; file: File }[]>([]);
@@ -185,6 +186,26 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     if (r && r.ok) { const d = await r.json().catch(() => null); setPublishUrl((d?.data ?? d)?.subdomainUrl ?? null); }
     setPublishing(false);
   }, [projectId, client, sessions]);
+
+  // Download ZIP du projet. Passe par la route Next /api/repositories/<id>/download
+  // (auth NextAuth côté serveur + stream fiable) → blob → téléchargement navigateur.
+  const download = useCallback(async () => {
+    if (!projectId || downloading) return;
+    setDownloading(true);
+    try {
+      const r = await fetch(`/api/repositories/${projectId}/download`);
+      if (!r.ok) { setLiveError(r.status === 429 ? t.errors.rate : t.errors.generic); return; }
+      const blob = await r.blob();
+      const href = URL.createObjectURL(blob);
+      const slug = (sessions.find((s) => s.id === activeRef.current)?.title || 'project')
+        .toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'project';
+      const a = document.createElement('a');
+      a.href = href; a.download = slug + '.zip';
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(href);
+    } catch { setLiveError(t.errors.generic); }
+    finally { setDownloading(false); }
+  }, [projectId, downloading, sessions, t]);
   useEffect(() => {
     if (!activeId) { setTree([]); setPreviewUrl(null); return; }
     refreshTree();
@@ -414,5 +435,5 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   }, [baseMessages, live, liveError, streaming]);
 
   const attachments = pending.map((p) => ({ id: p.id, name: p.file.name }));
-  return { sessions, activeId, messages, streaming, activity, tree, previewUrl, model, publishUrl, publishing, canPublish: !!projectId, attachments, uploading, outOfCredits, addFiles, removeAttachment, socketStatus: socket.status, select, newProject, send, stop, deleteSession, setModel, publish, refreshTree, reloadSessions: loadSessions };
+  return { sessions, activeId, messages, streaming, activity, tree, previewUrl, model, publishUrl, publishing, canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, socketStatus: socket.status, select, newProject, send, stop, deleteSession, setModel, publish, download, refreshTree, reloadSessions: loadSessions };
 }

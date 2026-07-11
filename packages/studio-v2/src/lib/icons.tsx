@@ -33,3 +33,4 @@ export const IconAttach = (p: SVGProps<SVGSVGElement>) => (<svg {...base(p)}><pa
 export const IconDots = (p: SVGProps<SVGSVGElement>) => (<svg {...base(p)}><circle cx={12} cy={5} r={1.4} /><circle cx={12} cy={12} r={1.4} /><circle cx={12} cy={19} r={1.4} /></svg>);
 export const IconTrash = (p: SVGProps<SVGSVGElement>) => (<svg {...base(p)}><path d="M4 7h16M10 11v6M14 11v6M5 7l1 13a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-13M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" /></svg>);
 export const IconClose = (p: SVGProps<SVGSVGElement>) => (<svg {...base(p)}><path d="M6 6l12 12M18 6 6 18" /></svg>);
+export const IconDownload = (p: SVGProps<SVGSVGElement>) => (<svg {...base(p)}><path d="M12 3v12M7 10l5 5 5-5M5 21h14" /></svg>);

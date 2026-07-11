@@ -44,6 +44,7 @@ export interface Strings {
   errorLabel: string;
   upgrade: string;
   recents: string;
+  downloadZip: string;
   activity: {
     thinking: string; writing: string; write: string; edit: string; read: string;
     bash: string; task: string; browser: string; assets: string; tool: string;
@@ -106,6 +107,7 @@ const fr: Strings = {
   errorLabel: 'Erreur',
   upgrade: 'Passer à une offre supérieure',
   recents: 'Récents',
+  downloadZip: 'Télécharger le ZIP',
   activity: {
     thinking: 'réfléchit', writing: 'rédige la réponse', write: 'écrit un fichier',
     edit: 'modifie un fichier', read: 'lit un fichier', bash: 'exécute une commande',
@@ -182,6 +184,7 @@ const en: Strings = {
   errorLabel: 'Error',
   upgrade: 'Upgrade your plan',
   recents: 'Recents',
+  downloadZip: 'Download ZIP',
   activity: {
     thinking: 'thinking', writing: 'writing the response', write: 'writing a file',
     edit: 'editing a file', read: 'reading a file', bash: 'running a command',

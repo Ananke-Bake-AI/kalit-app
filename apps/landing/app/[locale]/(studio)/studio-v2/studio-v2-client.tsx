@@ -82,6 +82,7 @@ export function StudioV2Client({ initialSessionId }: { initialSessionId?: string
       streaming={s.streaming} activity={s.activity} tree={s.tree} previewUrl={s.previewUrl}
       user={user} model={s.model} onModelChange={s.setModel} lang={lang}
       publishUrl={s.publishUrl} publishing={s.publishing} canPublish={s.canPublish} onPublish={s.publish}
+      canDownload={s.canDownload} downloading={s.downloading} onDownload={s.download}
       onSelect={s.select} onNew={s.newProject} onDelete={s.deleteSession} onSend={s.send} onStop={s.stop}
       onRefreshTree={s.refreshTree}
       attachments={s.attachments} uploading={s.uploading} onAddFiles={s.addFiles} onRemoveAttachment={s.removeAttachment}

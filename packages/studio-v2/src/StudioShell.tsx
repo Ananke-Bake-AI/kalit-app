@@ -25,6 +25,9 @@ export interface StudioShellProps {
   publishing?: boolean;
   canPublish?: boolean;
   onPublish?: () => void;
+  canDownload?: boolean;
+  downloading?: boolean;
+  onDownload?: () => void;
   user: { name: string; credits?: number };
   ctxPercent?: number | null;
   model: string;
@@ -72,6 +75,7 @@ export function StudioShell(props: StudioShellProps) {
       <Preview
         mode={mode} onMode={setMode} previewUrl={props.previewUrl} tree={props.tree}
         publishUrl={props.publishUrl ?? null} publishing={!!props.publishing} canPublish={!!props.canPublish} onPublish={props.onPublish ?? (() => {})}
+        canDownload={!!props.canDownload} downloading={!!props.downloading} onDownload={props.onDownload ?? (() => {})}
         onRefresh={props.onRefreshTree} onOpen={() => props.previewUrl && window.open(props.previewUrl, '_blank')}
         building={props.streaming} hasMessages={props.messages.length > 0} onSuggest={sendSuggest}
       />
