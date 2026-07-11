@@ -89,6 +89,7 @@ export function StudioV2Client({ initialSessionId }: { initialSessionId?: string
       outOfCredits={s.outOfCredits}
       deployBlocked={s.deployBlocked} onDismissDeployBlocked={s.dismissDeployBlocked}
       storage={s.storage} storageBlocked={s.storageBlocked} onDismissStorageBlocked={s.dismissStorageBlocked}
+      domain={s.domain} onConnectDomain={s.connectDomain} onRemoveDomain={s.removeDomain}
     />
   )
 }

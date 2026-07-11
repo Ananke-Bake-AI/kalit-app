@@ -59,6 +59,11 @@ export interface Strings {
   deployBlocked: { title: string; body: string; close: string };
   storage: { label: string; almostFull: string; blockedTitle: string; blockedBody: string; close: string };
   fullscreen: string;
+  domain: {
+    manage: string; title: string; sub: string; placeholder: string;
+    connect: string; connecting: string; active: string; pending: string;
+    dnsHint: string; verifying: string; visit: string; remove: string; error: string;
+  };
 }
 
 const fr: Strings = {
@@ -149,6 +154,21 @@ const fr: Strings = {
     close: 'Compris',
   },
   fullscreen: 'Plein écran',
+  domain: {
+    manage: 'Domaine',
+    title: 'Domaine personnalisé',
+    sub: 'Relie ton propre nom de domaine à ce site publié.',
+    placeholder: 'exemple.com',
+    connect: 'Connecter',
+    connecting: 'Connexion…',
+    active: 'Actif',
+    pending: 'En attente',
+    dnsHint: 'Ajoute ces enregistrements chez ton registrar. La vérification peut prendre quelques minutes.',
+    verifying: 'Vérification du DNS en cours…',
+    visit: 'Visiter',
+    remove: 'Retirer',
+    error: "Impossible de connecter ce domaine.",
+  },
 };
 
 const en: Strings = {
@@ -239,6 +259,21 @@ const en: Strings = {
     close: 'Got it',
   },
   fullscreen: 'Fullscreen',
+  domain: {
+    manage: 'Domain',
+    title: 'Custom domain',
+    sub: 'Link your own domain name to this published site.',
+    placeholder: 'example.com',
+    connect: 'Connect',
+    connecting: 'Connecting…',
+    active: 'Active',
+    pending: 'Pending',
+    dnsHint: 'Add these records at your registrar. Verification can take a few minutes.',
+    verifying: 'Verifying DNS…',
+    visit: 'Visit',
+    remove: 'Remove',
+    error: "Couldn't connect that domain.",
+  },
 };
 
 const TABLE: Record<string, Strings> = { fr, en };

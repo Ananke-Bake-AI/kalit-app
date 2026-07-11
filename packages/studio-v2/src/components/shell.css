@@ -244,3 +244,17 @@
 /* Square icon button (fullscreen toggle in the chat bar). */
 .sv-iconbtn { width: 32px; height: 32px; padding: 0; display: inline-grid; place-items: center; flex-shrink: 0; }
 .sv-iconbtn svg { width: 15px; height: 15px; }
+
+/* Custom-domain manager modal. */
+.sv-domain__input { width: 100%; padding: 10px 12px; margin: 4px 0 2px; border: 1px solid var(--sv-line); border-radius: var(--sv-r-sm); background: var(--sv-surface-2); color: var(--sv-text); font: inherit; font-size: 14px; outline: none; }
+.sv-domain__input:focus { border-color: var(--sv-accent); }
+.sv-domain__status { display: flex; align-items: center; gap: 10px; margin: 6px 0 10px; font-size: 15px; }
+.sv-domain__badge { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; }
+.sv-domain__badge--ok { background: color-mix(in srgb, var(--sv-ok) 22%, transparent); color: var(--sv-ok); }
+.sv-domain__badge--pending { background: color-mix(in srgb, var(--sv-warn) 22%, transparent); color: var(--sv-warn); }
+.sv-domain__dns { display: flex; flex-direction: column; gap: 6px; margin: 8px 0 4px; }
+.sv-domain__rec { display: grid; grid-template-columns: 56px 90px 1fr; gap: 8px; align-items: center; padding: 8px 10px; background: var(--sv-surface-2); border: 1px solid var(--sv-line); border-radius: var(--sv-r-sm); font-family: var(--sv-mono, ui-monospace, monospace); font-size: 12px; }
+.sv-domain__type { font-weight: 700; color: var(--sv-accent-2); }
+.sv-domain__name { color: var(--sv-text-2); }
+.sv-domain__val { color: var(--sv-text); overflow-wrap: anywhere; }
+.sv-btn--on { border-color: var(--sv-accent); color: var(--sv-accent-2); }

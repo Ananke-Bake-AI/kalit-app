@@ -11,6 +11,10 @@ import { StreamReducer, choiceFromInput, type RawEvent } from './reducer';
 import { DEFAULT_MODEL_ID } from '../lib/models';
 import { stringsFor, type Strings } from '../lib/i18n';
 
+export interface DnsRecord { type: string; name: string; value: string; }
+export interface DomainState { customDomain: string | null; status: string | null; dnsRecords: DnsRecord[] | null; }
+interface PublishInfo { subdomainUrl?: string | null; customDomain?: string | null; customDomainStatus?: string | null; }
+
 interface ChatSessionDTO { id: string; title: string | null; model: string; isProcessing?: boolean; createdAt: number; updatedAt: number; projectId?: string; projectDeployed?: boolean; }
 interface ChatMessageDTO { id: string; role: string; content?: string; thinking?: string; tools?: Array<{ name: string; input?: unknown; done?: boolean }>; files?: Array<{ name: string; url: string; mimeType?: string }>; createdAt: number; }
 
@@ -110,6 +114,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   const [deployBlocked, setDeployBlocked] = useState(false); // backend project → publish refused (modal)
   const [storageBlocked, setStorageBlocked] = useState(false); // quota plein → nouvelle création refusée (modal)
   const [storage, setStorage] = useState<{ usedBytes: number; limitBytes: number } | null>(null);
+  const [domain, setDomain] = useState<DomainState>({ customDomain: null, status: null, dnsRecords: null });
   const [downloading, setDownloading] = useState(false);
   const [ctxPercent, setCtxPercent] = useState<number | null>(null); // remplissage du contexte (jauge live)
   // Fichiers en attente : gardés EN MÉMOIRE, uploadés seulement à l'envoi du
@@ -180,13 +185,33 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     setPreviewUrl(pid ? `/api/broker/project/${pid}/iframe` : null);
   }, [api, mapNode]);
 
-  // Publish : état courant du déploiement de la session active.
+  // Publish + custom domain : état courant du déploiement de la session active.
   useEffect(() => {
-    if (!projectId) { setPublishUrl(null); return; }
+    if (!projectId) { setPublishUrl(null); setDomain({ customDomain: null, status: null, dnsRecords: null }); return; }
     let stop = false;
-    api.json<{ subdomainUrl?: string | null }>(`/api/broker/project/${projectId}/publish`).then((d) => { if (!stop) setPublishUrl(d?.subdomainUrl ?? null); });
+    api.json<{ data?: PublishInfo } & PublishInfo>(`/api/broker/project/${projectId}/publish`).then((raw) => {
+      if (stop) return;
+      const d = raw?.data ?? raw;
+      setPublishUrl(d?.subdomainUrl ?? null);
+      setDomain((prev) => ({ customDomain: d?.customDomain ?? null, status: d?.customDomainStatus ?? null, dnsRecords: prev.dnsRecords }));
+    });
     return () => { stop = true; };
   }, [projectId, api]);
+
+  // Tant que le domaine est "pending", on re-poll le GET publish (le broker
+  // re-vérifie côté Vercel et bascule en "active" quand le DNS a propagé).
+  useEffect(() => {
+    if (!projectId || domain.status !== 'pending') return;
+    let stop = false;
+    const iv = setInterval(() => {
+      api.json<{ data?: PublishInfo } & PublishInfo>(`/api/broker/project/${projectId}/publish`).then((raw) => {
+        if (stop) return;
+        const d = raw?.data ?? raw;
+        setDomain((prev) => ({ ...prev, customDomain: d?.customDomain ?? null, status: d?.customDomainStatus ?? null }));
+      });
+    }, 15000);
+    return () => { stop = true; clearInterval(iv); };
+  }, [projectId, domain.status, api]);
 
   const publish = useCallback(async () => {
     if (!projectId) return;
@@ -200,6 +225,26 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     else if (r && r.status === 422) { setDeployBlocked(true); }
     setPublishing(false);
   }, [projectId, client, sessions]);
+
+  // Custom domain : lier le domaine de l'user au site publié (le broker
+  // l'attache au projet Vercel + renvoie les DNS à configurer, statut pending
+  // jusqu'à ce que Vercel vérifie). Retourne l'erreur éventuelle pour l'UI.
+  const connectDomain = useCallback(async (dom: string): Promise<{ ok: boolean; error?: string }> => {
+    if (!projectId) return { ok: false };
+    const r = await client.fetch(`/api/broker/project/${projectId}/publish`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'connect-domain', domain: dom }) }).catch(() => null);
+    const j = r ? await r.json().catch(() => null) : null;
+    if (r && r.ok && j?.data) {
+      setDomain({ customDomain: j.data.domain ?? dom, status: j.data.status ?? 'pending', dnsRecords: j.data.dnsRecords ?? null });
+      return { ok: true };
+    }
+    return { ok: false, error: j?.error };
+  }, [projectId, client]);
+
+  const removeDomain = useCallback(async () => {
+    if (!projectId) return;
+    await client.fetch(`/api/broker/project/${projectId}/publish`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'remove-domain' }) }).catch(() => {});
+    setDomain({ customDomain: null, status: null, dnsRecords: null });
+  }, [projectId, client]);
 
   // Download ZIP du projet. Passe par la route Next /api/repositories/<id>/download
   // (auth NextAuth côté serveur + stream fiable) → blob → téléchargement navigateur.
@@ -487,5 +532,5 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   }, [baseMessages, live, liveError, streaming]);
 
   const attachments = pending.map((p) => ({ id: p.id, name: p.file.name }));
-  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, deployBlocked, dismissDeployBlocked: () => setDeployBlocked(false), storage, storageBlocked, dismissStorageBlocked: () => setStorageBlocked(false), canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, socketStatus: socket.status, select, newProject, send, stop, deleteSession, setModel, publish, download, refreshTree, reloadSessions: loadSessions };
+  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, deployBlocked, dismissDeployBlocked: () => setDeployBlocked(false), storage, storageBlocked, dismissStorageBlocked: () => setStorageBlocked(false), domain, connectDomain, removeDomain, canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, socketStatus: socket.status, select, newProject, send, stop, deleteSession, setModel, publish, download, refreshTree, reloadSessions: loadSessions };
 }
