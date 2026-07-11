@@ -108,6 +108,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   const [publishUrl, setPublishUrl] = useState<string | null>(null);
   const [publishing, setPublishing] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  const [ctxPercent, setCtxPercent] = useState<number | null>(null); // remplissage du contexte (jauge live)
   // Fichiers en attente : gardés EN MÉMOIRE, uploadés seulement à l'envoi du
   // message (évite de créer une session/workspace vide juste pour un upload).
   const [pending, setPending] = useState<{ id: string; file: File }[]>([]);
@@ -224,10 +225,16 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
         // turnActive et faisait jeter toutes les frames suivantes → « pas de
         // texte bleu ». Une VRAIE fin de tour n'est jamais suivie d'un
         // session_event (le broker draine les events avant de fermer).
+        const ev = f.data as RawEvent;
+        // Event "context" : remplissage du contexte → jauge % live (pas un segment).
+        if (ev.type === 'context') {
+          const p = (ev as { percent?: number }).percent;
+          if (typeof p === 'number') setCtxPercent(p);
+          return;
+        }
         turnActive.current = true;
         const r = reducers.current.get(f.sessionId!) ?? new StreamReducer(() => {});
         reducers.current.set(f.sessionId!, r);
-        const ev = f.data as RawEvent;
         setStreaming(true);
         setActivity({ label: activityFor(ev, t.activity), since: Date.now() });
         const res = r.apply(ev);
@@ -347,8 +354,13 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     // l'UI paraît figée le temps du téléversement).
     turnActive.current = true;
     setLiveError(null); setOutOfCredits(false);
+    // /compact : compaction longue et silencieuse (le worker n'émet le marqueur
+    // qu'à la FIN) → on montre « résume la conversation… » dès le départ, sinon
+    // c'est un long "working" puis un flash à la fin.
+    const isCompact = text.trim() === '/compact';
+    const startLabel = isCompact ? t.activity.compacting : (items.length ? t.activity.uploading : t.activity.starting);
     setBaseMessages((m) => [...m, { id: 'temp-' + Date.now(), role: 'user', segments: [{ kind: 'text', content: text || (items.length ? '(fichiers joints)' : '') }] }]);
-    setStreaming(true); setActivity({ label: items.length ? t.activity.uploading : t.activity.starting, since: Date.now() });
+    setStreaming(true); setActivity({ label: startLabel, since: Date.now() });
     // Upload d'abord — le worker doit voir les fichiers. Échec → on stoppe et on
     // le dit (pas de faux « fichiers joints »).
     let names: string[] = [];
@@ -359,7 +371,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     const body = names.length
       ? `[${names.length} fichier(s) joint(s) par l'utilisateur, disponibles dans ./attachments/ : ${names.join(', ')}]\n\n${text}`
       : text;
-    setActivity({ label: t.activity.starting, since: Date.now() });
+    setActivity({ label: isCompact ? t.activity.compacting : t.activity.starting, since: Date.now() });
     // `sawDone` = le POST a reçu l'event terminal 'done'. S'il ne le voit PAS
     // (POST coupé par un timeout proxy sur un long tool call), on NE finalise
     // pas : sinon turnActive repasse false et le handler WS ignore toutes les
@@ -410,7 +422,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     setStreaming(false); setActivity(null);
   }, [activeId, client]);
 
-  const newProject = useCallback(() => { setActiveId(null); setBaseMessages([]); setLive(null); setStreaming(false); setActivity(null); setPending([]); setOutOfCredits(false); }, []);
+  const newProject = useCallback(() => { setActiveId(null); setBaseMessages([]); setLive(null); setStreaming(false); setActivity(null); setPending([]); setOutOfCredits(false); setCtxPercent(null); }, []);
 
   // Suppression d'une session. mode='session' → DELETE la session seule ; mode
   // ='project' → DELETE le projet lié (le broker cascade : deploy + archive R2 +
@@ -441,5 +453,5 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   }, [baseMessages, live, liveError, streaming]);
 
   const attachments = pending.map((p) => ({ id: p.id, name: p.file.name }));
-  return { sessions, activeId, messages, streaming, activity, tree, previewUrl, model, publishUrl, publishing, canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, socketStatus: socket.status, select, newProject, send, stop, deleteSession, setModel, publish, download, refreshTree, reloadSessions: loadSessions };
+  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, socketStatus: socket.status, select, newProject, send, stop, deleteSession, setModel, publish, download, refreshTree, reloadSessions: loadSessions };
 }

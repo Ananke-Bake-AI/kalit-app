@@ -79,7 +79,7 @@ export function StudioV2Client({ initialSessionId }: { initialSessionId?: string
   return (
     <StudioShell
       sessions={s.sessions} activeId={s.activeId} messages={s.messages}
-      streaming={s.streaming} activity={s.activity} tree={s.tree} previewUrl={s.previewUrl}
+      streaming={s.streaming} activity={s.activity} ctxPercent={s.ctxPercent} tree={s.tree} previewUrl={s.previewUrl}
       user={user} model={s.model} onModelChange={s.setModel} lang={lang}
       publishUrl={s.publishUrl} publishing={s.publishing} canPublish={s.canPublish} onPublish={s.publish}
       canDownload={s.canDownload} downloading={s.downloading} onDownload={s.download}
