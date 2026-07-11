@@ -218,7 +218,13 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     return socket.onFrame((f: Frame) => {
       if (f.sessionId && f.sessionId !== activeRef.current) return; // isolation par-session
       if (f.type === 'session_event') {
-        if (!turnActive.current) return; // frame tardive après fin de tour → ignorer
+        // Un session_event ⇒ le tour PRODUIT encore. On (ré)active le live —
+        // ça neutralise le session_stream_closed PARASITE que le broker émet à la
+        // re-souscription (retour sur une session active), qui sinon coupait
+        // turnActive et faisait jeter toutes les frames suivantes → « pas de
+        // texte bleu ». Une VRAIE fin de tour n'est jamais suivie d'un
+        // session_event (le broker draine les events avant de fermer).
+        turnActive.current = true;
         const r = reducers.current.get(f.sessionId!) ?? new StreamReducer(() => {});
         reducers.current.set(f.sessionId!, r);
         const ev = f.data as RawEvent;
