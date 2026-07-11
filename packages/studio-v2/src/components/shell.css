@@ -258,3 +258,19 @@
 .sv-domain__name { color: var(--sv-text-2); }
 .sv-domain__val { color: var(--sv-text); overflow-wrap: anywhere; }
 .sv-btn--on { border-color: var(--sv-accent); color: var(--sv-accent-2); }
+
+/* Prompt-quality halo : coloration live de la box selon la richesse du prompt.
+   low = ambre (succinct), mid = jaune-vert, high = vert (riche). Discret. */
+.sv-composer__box.sv-q--low  { box-shadow: 0 0 0 1px color-mix(in srgb, var(--sv-warn) 55%, transparent), 0 0 14px color-mix(in srgb, var(--sv-warn) 30%, transparent); }
+.sv-composer__box.sv-q--mid  { box-shadow: 0 0 0 1px color-mix(in srgb, #e6c74d 55%, transparent), 0 0 14px color-mix(in srgb, #e6c74d 28%, transparent); }
+.sv-composer__box.sv-q--high { box-shadow: 0 0 0 1px color-mix(in srgb, var(--sv-ok) 60%, transparent), 0 0 16px color-mix(in srgb, var(--sv-ok) 32%, transparent); }
+.sv-composer__box { transition: box-shadow .25s ease; }
+
+/* Toggle discret (point coloré = niveau courant ; clic = on/off). */
+.sv-qtoggle { display: inline-grid; place-items: center; width: 26px; height: 26px; border: 0; background: transparent; cursor: pointer; border-radius: var(--sv-r-sm); }
+.sv-qtoggle:hover { background: var(--sv-surface-2); }
+.sv-qtoggle__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--sv-line); box-shadow: none; transition: background .2s ease; }
+.sv-qtoggle--on .sv-qtoggle__dot { background: var(--sv-text-3); }
+.sv-qtoggle__dot.sv-q--low  { background: var(--sv-warn); }
+.sv-qtoggle__dot.sv-q--mid  { background: #e6c74d; }
+.sv-qtoggle__dot.sv-q--high { background: var(--sv-ok); }

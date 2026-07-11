@@ -4,6 +4,7 @@ import { IconAttach, IconSend, IconStop } from '../lib/icons';
 import { ModelSelector } from './ModelSelector';
 import { useStrings } from '../lib/i18n';
 import { Md } from '../lib/markdown';
+import { promptLevel, type PromptLevel } from '../lib/promptQuality';
 
 // Immersive/focus toggle: hides the global Kalit header + banners so the studio
 // fills the whole viewport. The focus state lives in the landing's
@@ -106,6 +107,12 @@ export function Chat({ title, messages, streaming, activity, model, onModelChang
   const taRef = useRef<HTMLTextAreaElement>(null);
   useEffect(() => { try { const h = JSON.parse(localStorage.getItem(HIST_KEY) || '[]'); if (Array.isArray(h)) histRef.current = h; } catch { /* ignore */ } }, []);
   const caretToEnd = () => requestAnimationFrame(() => { const el = taRef.current; if (el) { el.selectionStart = el.selectionEnd = el.value.length; } });
+  // Halo de qualité du prompt (indicateur live du détecteur de sous-spécif).
+  // Activable, défaut ON — persistance localStorage.
+  const [haloOn, setHaloOn] = useState(true);
+  useEffect(() => { try { setHaloOn(localStorage.getItem('sv-prompt-halo') !== '0'); } catch { /* ignore */ } }, []);
+  const toggleHalo = () => setHaloOn((v) => { const n = !v; try { localStorage.setItem('sv-prompt-halo', n ? '1' : '0'); } catch { /* ignore */ } return n; });
+  const level: PromptLevel = haloOn ? promptLevel(val) : 'none';
   const feedRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
@@ -175,7 +182,7 @@ export function Chat({ title, messages, streaming, activity, model, onModelChang
       )}
 
       <div className="sv-composer">
-        <div className="sv-composer__box">
+        <div className={'sv-composer__box' + (level !== 'none' ? ' sv-q--' + level : '')}>
           {(attachments.length > 0 || uploading) && (
             <div className="sv-atts">
               {attachments.map((a) => (
@@ -217,6 +224,9 @@ export function Chat({ title, messages, streaming, activity, model, onModelChang
           <div className="sv-composer__row">
             <button className="sv-btn sv-btn--ghost sv-btn--icon" title={st.attach} onClick={() => fileRef.current?.click()} disabled={!onAddFiles}><IconAttach /></button>
             <input ref={fileRef} type="file" multiple style={{ display: 'none' }} onChange={(e) => { pickFiles(e.target.files); e.target.value = ''; }} />
+            <button type="button" className={'sv-qtoggle' + (haloOn ? ' sv-qtoggle--on' : '')} onClick={toggleHalo} title={st.promptQuality + (haloOn && level !== 'none' ? ' — ' + st.promptLevels[level] : '')} aria-label={st.promptQuality}>
+              <span className={'sv-qtoggle__dot' + (haloOn && level !== 'none' ? ' sv-q--' + level : '')} />
+            </button>
             <div className="sv-composer__row-r">
               <span className="sv-kbd">⏎</span>
               {streaming

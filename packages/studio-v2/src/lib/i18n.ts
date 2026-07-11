@@ -59,6 +59,8 @@ export interface Strings {
   deployBlocked: { title: string; body: string; close: string };
   storage: { label: string; almostFull: string; blockedTitle: string; blockedBody: string; close: string };
   fullscreen: string;
+  promptQuality: string;
+  promptLevels: { low: string; mid: string; high: string };
   domain: {
     manage: string; title: string; sub: string; placeholder: string;
     connect: string; connecting: string; active: string; pending: string;
@@ -158,6 +160,8 @@ const fr: Strings = {
     close: 'Compris',
   },
   fullscreen: 'Plein écran',
+  promptQuality: 'Indicateur de richesse du prompt (clic pour activer/désactiver)',
+  promptLevels: { low: 'prompt succinct — ajoute du détail pour un meilleur rendu', mid: 'prompt correct — plus de direction = mieux', high: 'prompt riche — rendu optimal' },
   domain: {
     manage: 'Domaine',
     title: 'Domaine personnalisé',
@@ -276,6 +280,8 @@ const en: Strings = {
     close: 'Got it',
   },
   fullscreen: 'Fullscreen',
+  promptQuality: 'Prompt richness indicator (click to toggle)',
+  promptLevels: { low: 'thin prompt — add detail for a better result', mid: 'decent prompt — more direction helps', high: 'rich prompt — best result' },
   domain: {
     manage: 'Domain',
     title: 'Custom domain',
