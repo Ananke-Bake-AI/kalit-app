@@ -4,7 +4,7 @@
 //  - "cloud/<model>"       → routé vers la gateway kalit-model-server (Ollama Cloud),
 //    dispo pour tous. Défaut = kimi-2.5.
 
-export interface ModelDef { id: string; label: string; provider: 'ollama' | 'anthropic' | 'mistral' | 'openai'; pro?: boolean; }
+export interface ModelDef { id: string; label: string; provider: 'ollama' | 'anthropic' | 'mistral' | 'openai'; pro?: boolean; admin?: boolean; }
 export interface ModelGroup { label: string; models: ModelDef[]; }
 
 export const MODEL_GROUPS: ModelGroup[] = [
@@ -29,9 +29,19 @@ export const MODEL_GROUPS: ModelGroup[] = [
       { id: 'anthropic:claude-opus-4-8', label: 'claude-opus-4.8', provider: 'anthropic', pro: true },
       { id: 'anthropic:claude-sonnet-4-6', label: 'claude-sonnet-4-6', provider: 'anthropic', pro: true },
       { id: 'anthropic:claude-opus-4-6', label: 'claude-opus-4-6', provider: 'anthropic', pro: true },
+      // Admin-only (expérimental) — visible et sélectionnable uniquement par un admin.
+      { id: 'anthropic:claude-fable-5', label: 'claude-fable-5', provider: 'anthropic', pro: true, admin: true },
     ],
   },
 ];
+
+// Modèles visibles pour un user donné : les modèles admin-only sont masqués aux non-admins.
+export function modelGroupsFor(isAdmin: boolean): ModelGroup[] {
+  if (isAdmin) return MODEL_GROUPS;
+  return MODEL_GROUPS
+    .map((g) => ({ ...g, models: g.models.filter((m) => !m.admin) }))
+    .filter((g) => g.models.length > 0);
+}
 
 export const DEFAULT_MODEL_ID = 'cloud/kimi-k2.5:cloud';
 export const ALL_MODELS = MODEL_GROUPS.flatMap((g) => g.models);

@@ -1,11 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
-import { MODEL_GROUPS, labelFor } from '../lib/models';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { modelGroupsFor, labelFor } from '../lib/models';
 import { useStrings } from '../lib/i18n';
 
-interface Props { value: string; onChange: (id: string) => void; }
+interface Props { value: string; onChange: (id: string) => void; isAdmin?: boolean; }
 
-export function ModelSelector({ value, onChange }: Props) {
+export function ModelSelector({ value, onChange, isAdmin }: Props) {
   const st = useStrings();
+  const groups = useMemo(() => modelGroupsFor(!!isAdmin), [isAdmin]);
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -23,14 +24,16 @@ export function ModelSelector({ value, onChange }: Props) {
       </button>
       {open && (
         <div className="sv-model__menu">
-          {MODEL_GROUPS.map((g) => (
+          {groups.map((g) => (
             <div key={g.label}>
               <div className="sv-model__grp">{g.label}</div>
               {g.models.map((m) => (
                 <button key={m.id} className={'sv-model__opt' + (m.id === value ? ' sv-model__opt--on' : '')}
                   onClick={() => { onChange(m.id); setOpen(false); }}>
                   <span className={'sv-model__dot sv-model__dot--' + m.provider} /> {m.label}
-                  {m.pro && <span style={{ marginLeft: 'auto', fontSize: 10, fontWeight: 700, letterSpacing: '.04em', color: 'var(--sv-accent-2)', opacity: .8 }}>PRO</span>}
+                  {m.admin
+                    ? <span style={{ marginLeft: 'auto', fontSize: 10, fontWeight: 700, letterSpacing: '.04em', color: 'var(--sv-warn)', opacity: .85 }}>ADMIN</span>
+                    : m.pro && <span style={{ marginLeft: 'auto', fontSize: 10, fontWeight: 700, letterSpacing: '.04em', color: 'var(--sv-accent-2)', opacity: .8 }}>PRO</span>}
                 </button>
               ))}
             </div>

@@ -47,6 +47,7 @@ interface Props {
   outOfCredits?: boolean;
   pricingHref?: string;
   checkPromptQuality?: (text: string) => Promise<'none' | 'enrich' | 'rich' | null>;
+  isAdmin?: boolean;
 }
 
 function ChoiceView({ s, onAnswer }: { s: Extract<Segment, { kind: 'choice' }>; onAnswer: (t: string) => void }) {
@@ -106,7 +107,7 @@ function SegmentView({ s, onChoiceAnswer, onToolClick }: { s: Segment; onChoiceA
   return null;
 }
 
-export function Chat({ title, messages, streaming, activity, model, onModelChange, onSend, onStop, onChoiceAnswer, ctxPercent, attachments = [], uploading, onAddFiles, onRemoveAttachment, outOfCredits, pricingHref, checkPromptQuality }: Props) {
+export function Chat({ title, messages, streaming, activity, model, onModelChange, onSend, onStop, onChoiceAnswer, ctxPercent, attachments = [], uploading, onAddFiles, onRemoveAttachment, outOfCredits, pricingHref, checkPromptQuality, isAdmin }: Props) {
   const st = useStrings();
   const [val, setVal] = useState('');
   // Historique des prompts envoyés (terminal-style ↑/↓), persisté pour ne pas
@@ -179,7 +180,7 @@ export function Chat({ title, messages, streaming, activity, model, onModelChang
           {typeof ctxPercent === 'number' && (
             <span className="sv-chip" title={st.ctxUsed}>ctx {ctxPercent}%</span>
           )}
-          <ModelSelector value={model} onChange={onModelChange} />
+          <ModelSelector value={model} onChange={onModelChange} isAdmin={isAdmin} />
           <FullscreenBtn label={st.fullscreen} />
         </div>
       </div>
