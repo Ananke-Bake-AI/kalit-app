@@ -1,31 +1,39 @@
 /* ============================================================
    Studio v2 — design system
-   Sombre, dense, précis (repères: Linear / Vercel). Un seul accent.
+   Dense, précis (repères: Linear / Vercel). Un seul accent.
    Aucun dégradé violet générique, aucune ombre molle décorative.
+
+   Theming : LIGHT par défaut (le site kalit.ai est light-first). Le dark
+   suit `prefers-color-scheme` de l'utilisateur, ET est forcé par un choix
+   explicite (`html.dark` — le toggle du site — ou `[data-theme="dark"]`).
+   Un choix explicite `light` regagne même si l'OS est en dark. Tout le UI
+   (theme.css + shell.css) est piloté par ces variables → rien à toucher
+   ailleurs. Avant, `:root` était figé en dark → un visiteur en thème clair
+   se prenait un flash noir. Corrigé.
    ============================================================ */
 :root {
-  /* surfaces — échelle d'élévation froide, pas de noir pur */
-  --sv-bg:        #0b0d10;
-  --sv-surface:   #101318;
-  --sv-surface-2: #161a20;
-  --sv-raised:    #1c2128;
-  --sv-line:      #23282f;
-  --sv-line-soft: #1a1e24;
+  /* surfaces — clair, échelle d'élévation froide (pas de blanc pur partout) */
+  --sv-bg:        #ffffff;
+  --sv-surface:   #f7f8fa;
+  --sv-surface-2: #eef0f4;
+  --sv-raised:    #e5e8ee;
+  --sv-line:      #dde1e7;
+  --sv-line-soft: #eaecf0;
 
   /* texte */
-  --sv-text:      #e7ebf0;
-  --sv-text-2:    #a3adba;
-  --sv-text-3:    #6b7683;
-  --sv-text-inv:  #08131f;
+  --sv-text:      #0d1117;
+  --sv-text-2:    #55606d;
+  --sv-text-3:    #8b94a0;
+  --sv-text-inv:  #ffffff;
 
-  /* accent unique + sémantiques discrètes */
-  --sv-accent:    #4c8dff;
-  --sv-accent-2:  #6aa0ff;
-  --sv-accent-dim: rgba(76,141,255,.12);
-  --sv-accent-line: rgba(76,141,255,.28);
-  --sv-ok:        #3fb783;
-  --sv-warn:      #d99a2b;
-  --sv-err:       #e5584d;
+  /* accent unique + sémantiques discrètes (assombries pour tenir sur blanc) */
+  --sv-accent:    #2f6bed;
+  --sv-accent-2:  #1e5bd6;
+  --sv-accent-dim: rgba(47,107,237,.10);
+  --sv-accent-line: rgba(47,107,237,.30);
+  --sv-ok:        #12885a;
+  --sv-warn:      #b0781d;
+  --sv-err:       #d33a30;
 
   /* rayons — nets, cohérents */
   --sv-r-sm: 6px;
@@ -38,6 +46,53 @@
 
   /* espacement (échelle 4) */
   --sv-1: 4px; --sv-2: 8px; --sv-3: 12px; --sv-4: 16px; --sv-5: 24px; --sv-6: 32px; --sv-8: 48px;
+
+  color-scheme: light;
+}
+
+/* Palette DARK — mêmes valeurs qu'historiquement. Appliquée quand l'OS est en
+   dark (sauf choix explicite « light »), OU sur un choix explicite « dark ». */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light):not([data-theme="light"]) {
+    --sv-bg:        #0b0d10;
+    --sv-surface:   #101318;
+    --sv-surface-2: #161a20;
+    --sv-raised:    #1c2128;
+    --sv-line:      #23282f;
+    --sv-line-soft: #1a1e24;
+    --sv-text:      #e7ebf0;
+    --sv-text-2:    #a3adba;
+    --sv-text-3:    #6b7683;
+    --sv-text-inv:  #08131f;
+    --sv-accent:    #4c8dff;
+    --sv-accent-2:  #6aa0ff;
+    --sv-accent-dim: rgba(76,141,255,.12);
+    --sv-accent-line: rgba(76,141,255,.28);
+    --sv-ok:        #3fb783;
+    --sv-warn:      #d99a2b;
+    --sv-err:       #e5584d;
+    color-scheme: dark;
+  }
+}
+:root.dark, :root[data-theme="dark"] {
+  --sv-bg:        #0b0d10;
+  --sv-surface:   #101318;
+  --sv-surface-2: #161a20;
+  --sv-raised:    #1c2128;
+  --sv-line:      #23282f;
+  --sv-line-soft: #1a1e24;
+  --sv-text:      #e7ebf0;
+  --sv-text-2:    #a3adba;
+  --sv-text-3:    #6b7683;
+  --sv-text-inv:  #08131f;
+  --sv-accent:    #4c8dff;
+  --sv-accent-2:  #6aa0ff;
+  --sv-accent-dim: rgba(76,141,255,.12);
+  --sv-accent-line: rgba(76,141,255,.28);
+  --sv-ok:        #3fb783;
+  --sv-warn:      #d99a2b;
+  --sv-err:       #e5584d;
+  color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
