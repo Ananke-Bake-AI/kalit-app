@@ -123,9 +123,9 @@ export function Chat({ title, messages, streaming, activity, model, onModelChang
   const [haloOn, setHaloOn] = useState(true);
   useEffect(() => { try { setHaloOn(localStorage.getItem('sv-prompt-halo') !== '0'); } catch { /* ignore */ } }, []);
   const toggleHalo = () => setHaloOn((v) => { const n = !v; try { localStorage.setItem('sv-prompt-halo', n ? '1' : '0'); } catch { /* ignore */ } return n; });
-  // Halo piloté UNIQUEMENT par le modèle (classifieur broker), appelé en debounce
-  // 1s pendant la frappe — pas d'heuristique regex. Rien tant que le modèle n'a
-  // pas répondu (le halo apparaît ~1s après la pause de frappe).
+  // Halo piloté UNIQUEMENT par le modèle CPU du broker (classifieur lexical
+  // in-process, ~µs), appelé en debounce 500ms pendant la frappe. Rien tant que
+  // le modèle n'a pas répondu (le halo apparaît ~500ms après la pause de frappe).
   const [modelLevel, setModelLevel] = useState<PromptLevel | null>(null);
   useEffect(() => {
     if (!haloOn || !checkPromptQuality) { setModelLevel(null); return; }
@@ -136,7 +136,7 @@ export function Chat({ title, messages, streaming, activity, model, onModelChang
       const lv = await checkPromptQuality(t);
       if (!alive || lv == null) return;
       setModelLevel(lv === 'enrich' ? 'low' : lv === 'rich' ? 'high' : 'none');
-    }, 1000);
+    }, 500);
     return () => { alive = false; clearTimeout(id); };
   }, [val, haloOn, checkPromptQuality]);
   const level: PromptLevel = haloOn ? (modelLevel ?? 'none') : 'none';
