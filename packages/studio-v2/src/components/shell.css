@@ -1,6 +1,17 @@
-/* Shell 3 panneaux : sessions | conversation | aperçu */
-.sv-shell { display: grid; grid-template-columns: 248px minmax(380px, 1fr) minmax(420px, 1.15fr); height: 100%; min-height: 0; }
+/* Shell : sessions | conversation | ↔ | aperçu.
+   La colonne chat est pilotée par --sv-chat-w (posée en inline quand l'user a
+   redimensionné, cf. StudioShell) ; sans elle → largeur souple par défaut. La
+   variable inline ne force PAS la grille mobile (qui redéfinit la propriété en
+   1fr sans lire la variable). */
+.sv-shell { display: grid; grid-template-columns: 248px var(--sv-chat-w, minmax(380px, 1fr)) 6px minmax(360px, 1.15fr); height: 100%; min-height: 0; }
 .sv-shell > * { min-width: 0; min-height: 0; }
+
+/* Poignée de redimensionnement chat|preview (PC). 6px cliquables, trait révélé
+   au survol/drag. touch-action:none pour capter proprement le pointeur. */
+.sv-resizer { cursor: col-resize; position: relative; z-index: 5; touch-action: none; -webkit-user-select: none; user-select: none; }
+.sv-resizer::before { content: ""; position: absolute; inset: 0 2px; border-radius: 3px; background: var(--sv-line); opacity: 0; transition: opacity .15s, background .15s; }
+.sv-resizer:hover::before, .sv-resizer:active::before, .sv-resizer:focus-visible::before { opacity: 1; background: var(--sv-accent-line); }
+.sv-resizer:focus-visible { outline: none; }
 
 /* ── Sidebar sessions ── */
 .sv-side { display: flex; flex-direction: column; background: var(--sv-surface); border-right: 1px solid var(--sv-line); }
@@ -196,6 +207,8 @@
   .sv-shell > .sv-side, .sv-shell > .sv-chat, .sv-shell > .sv-prev {
     grid-row: 1; grid-column: 1; border-right: 0;
   }
+  /* Pas de redimensionnement en mono-panneau mobile. */
+  .sv-shell > .sv-resizer { display: none; }
   /* seul le panneau actif est visible */
   .sv-shell[data-pane="sessions"] > .sv-chat,
   .sv-shell[data-pane="sessions"] > .sv-prev,

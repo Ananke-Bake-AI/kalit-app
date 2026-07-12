@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent, type KeyboardEvent as ReactKeyboardEvent } from 'react';
 import type { Activity, FileNode, Message, PreviewMode, Session } from './lib/types';
 import type { DomainState, PublishResult } from './broker/useBrokerStudio';
 import { Sidebar } from './components/Sidebar';
@@ -10,6 +10,15 @@ import './styles/theme.css';
 import './components/shell.css';
 
 type MobilePane = 'sessions' | 'chat' | 'preview';
+
+// Séparateur chat|preview redimensionnable (PC uniquement). Largeur du chat
+// sauvée en localStorage. Sidebar = 248px fixe ; on garde un min visible des
+// deux côtés. En dessous de 860px (mobile mono-panneau) le resizer est masqué.
+const SPLIT_KEY = 'kalit.studio.split';
+const SIDEBAR_W = 248;
+const RESIZER_W = 6;
+const CHAT_MIN = 360;
+const PREVIEW_MIN = 360;
 const ChatIcon = (p: { width?: number; height?: number }) => (
   <svg width={p.width ?? 19} height={p.height ?? 19} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2Z" /></svg>
 );
@@ -72,9 +81,68 @@ export function StudioShell(props: StudioShellProps) {
   const selectMobile = (id: string) => { props.onSelect(id); setPane('chat'); };
   const sendSuggest = (text: string) => { props.onSend(text); setPane('chat'); };
 
+  // ── Redimensionnement du split chat|preview (PC) ──
+  const shellRef = useRef<HTMLDivElement>(null);
+  const [splitPx, setSplitPx] = useState<number | null>(null);
+  const dragging = useRef(false);
+  useEffect(() => {
+    try { const s = localStorage.getItem(SPLIT_KEY); if (s) { const n = parseInt(s, 10); if (Number.isFinite(n)) setSplitPx(n); } } catch { /* ignore */ }
+  }, []);
+  const clampSplit = (x: number): number => {
+    const el = shellRef.current;
+    const total = el ? el.getBoundingClientRect().width : window.innerWidth;
+    const max = total - SIDEBAR_W - RESIZER_W - PREVIEW_MIN;
+    return Math.max(CHAT_MIN, Math.min(x, Math.max(CHAT_MIN, max)));
+  };
+  const widthFromEvent = (clientX: number): number => {
+    const el = shellRef.current; if (!el) return CHAT_MIN;
+    return clampSplit(clientX - el.getBoundingClientRect().left - SIDEBAR_W);
+  };
+  const onResizeDown = (e: ReactPointerEvent) => {
+    if (window.innerWidth <= 860) return; // mono-panneau mobile : pas de resize
+    dragging.current = true;
+    (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
+    e.preventDefault();
+  };
+  const onResizeMove = (e: ReactPointerEvent) => {
+    if (!dragging.current) return;
+    // MAJ directe du DOM pendant le drag (fluide, sans re-render) ; commit au relâchement.
+    shellRef.current?.style.setProperty('--sv-chat-w', widthFromEvent(e.clientX) + 'px');
+  };
+  const commitResize = (e: ReactPointerEvent) => {
+    if (!dragging.current) return;
+    dragging.current = false;
+    (e.target as HTMLElement).releasePointerCapture?.(e.pointerId);
+    const w = widthFromEvent(e.clientX);
+    setSplitPx(w);
+    try { localStorage.setItem(SPLIT_KEY, String(w)); } catch { /* ignore */ }
+  };
+  const resetResize = () => {
+    setSplitPx(null);
+    shellRef.current?.style.removeProperty('--sv-chat-w');
+    try { localStorage.removeItem(SPLIT_KEY); } catch { /* ignore */ }
+  };
+  const onResizeKey = (e: ReactKeyboardEvent) => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    e.preventDefault();
+    const el = shellRef.current;
+    const cur = splitPx ?? (el ? el.getBoundingClientRect().width - SIDEBAR_W - RESIZER_W - PREVIEW_MIN : CHAT_MIN);
+    const w = clampSplit(cur + (e.key === 'ArrowRight' ? 24 : -24));
+    setSplitPx(w);
+    try { localStorage.setItem(SPLIT_KEY, String(w)); } catch { /* ignore */ }
+  };
+  const resizeHint = props.lang?.startsWith('fr')
+    ? 'Glisser pour redimensionner · double-clic pour réinitialiser'
+    : 'Drag to resize · double-click to reset';
+
   return (
     <StringsContext.Provider value={t}>
-    <div className="sv sv-shell" data-pane={pane}>
+    <div
+      className="sv sv-shell"
+      data-pane={pane}
+      ref={shellRef}
+      style={splitPx != null ? ({ '--sv-chat-w': splitPx + 'px' } as CSSProperties) : undefined}
+    >
       <Sidebar sessions={props.sessions} activeId={props.activeId} user={props.user} storage={props.storage ?? null} onSelect={selectMobile} onNew={() => { props.onNew(); setPane('chat'); }} onDelete={props.onDelete} />
       <Chat
         title={active?.title ?? t.newProject}
@@ -85,6 +153,20 @@ export function StudioShell(props: StudioShellProps) {
         onAddFiles={props.onAddFiles} onRemoveAttachment={props.onRemoveAttachment}
         outOfCredits={props.outOfCredits} pricingHref={`/${props.lang || 'en'}/pricing`}
         checkPromptQuality={props.checkPromptQuality} isAdmin={props.isAdmin}
+      />
+      <div
+        className="sv-resizer"
+        role="separator"
+        aria-orientation="vertical"
+        aria-label={resizeHint}
+        tabIndex={0}
+        title={resizeHint}
+        onPointerDown={onResizeDown}
+        onPointerMove={onResizeMove}
+        onPointerUp={commitResize}
+        onPointerCancel={commitResize}
+        onDoubleClick={resetResize}
+        onKeyDown={onResizeKey}
       />
       <Preview
         mode={mode} onMode={setMode} previewUrl={props.previewUrl} tree={props.tree}
