@@ -50,30 +50,12 @@
   color-scheme: light;
 }
 
-/* Palette DARK — mêmes valeurs qu'historiquement. Appliquée quand l'OS est en
-   dark (sauf choix explicite « light »), OU sur un choix explicite « dark ». */
-@media (prefers-color-scheme: dark) {
-  :root:not(.light):not([data-theme="light"]) {
-    --sv-bg:        #0b0d10;
-    --sv-surface:   #101318;
-    --sv-surface-2: #161a20;
-    --sv-raised:    #1c2128;
-    --sv-line:      #23282f;
-    --sv-line-soft: #1a1e24;
-    --sv-text:      #e7ebf0;
-    --sv-text-2:    #a3adba;
-    --sv-text-3:    #6b7683;
-    --sv-text-inv:  #08131f;
-    --sv-accent:    #4c8dff;
-    --sv-accent-2:  #6aa0ff;
-    --sv-accent-dim: rgba(76,141,255,.12);
-    --sv-accent-line: rgba(76,141,255,.28);
-    --sv-ok:        #3fb783;
-    --sv-warn:      #d99a2b;
-    --sv-err:       #e5584d;
-    color-scheme: dark;
-  }
-}
+/* Palette DARK — mêmes valeurs qu'historiquement. Appliquée UNIQUEMENT sur choix
+   explicite (`html.dark` = le toggle du site, ou `[data-theme="dark"]`). On NE
+   suit PAS `prefers-color-scheme` : le reste du site (kalit.ai) est light-first
+   piloté par la classe `.dark`, indépendant de l'OS. Suivre l'OS ici faisait
+   diverger le studio (dark sur OS sombre) du site resté light → « le light ne se
+   met pas sur le studio ». Défaut = light, comme le site. */
 :root.dark, :root[data-theme="dark"] {
   --sv-bg:        #0b0d10;
   --sv-surface:   #101318;
