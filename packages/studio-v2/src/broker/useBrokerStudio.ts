@@ -72,6 +72,26 @@ function dtoToMessage(d: ChatMessageDTO): Message {
 // Taskforce (build) sur openai : le broker's Anthropic est souvent en 429.
 const DEFAULT_TF_PROVIDER = 'openai';
 
+// Nom de pièce jointe sûr à référencer par l'agent. Un fichier déposé depuis un
+// Mac arrive en Unicode NFD (accents décomposés : é = e + ◌́) et avec des
+// apostrophes courbes (« Capture d’écran… »). Le broker sauvegarde le fichier
+// SOUS CE NOM EXACT, mais le LLM recompose/normalise le chemin quand il le
+// recopie dans un Read (’→', NFD→NFC) → ENOENT, il ne « voit » pas le screenshot.
+// On translittère donc en ASCII simple ([A-Za-z0-9._-]) et on se sert du MÊME nom
+// pour le multipart (donc le nom sur disque) ET pour la référence injectée dans
+// le message → l'agent lit ./attachments/<nom> sans ambiguïté.
+function safeAttachmentName(name: string): string {
+  const dot = name.lastIndexOf('.');
+  const ext = dot > 0 ? name.slice(dot + 1).toLowerCase().replace(/[^a-z0-9]/g, '') : '';
+  const base = (dot > 0 ? name.slice(0, dot) : name)
+    .normalize('NFKD').replace(/[̀-ͯ]/g, '') // enlève les accents combinants
+    .replace(/[‘’“”'"`]/g, '')     // enlève apostrophes/guillemets courbes
+    .replace(/[^A-Za-z0-9._-]+/g, '_')                 // espaces & autres → _
+    .replace(/_+/g, '_').replace(/^[_.-]+|[_.-]+$/g, '');
+  const safeBase = base || 'file';
+  return ext ? `${safeBase}.${ext}` : safeBase;
+}
+
 /** Traduit une erreur backend brute en message clair pour l'utilisateur. */
 function humanizeError(raw: string | undefined, e: Strings['errors']): string {
   const s = raw ?? '';
@@ -425,14 +445,26 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     const ctl = new AbortController();
     const timer = setTimeout(() => ctl.abort(), 120000);
     try {
+      // Noms ASCII sûrs (dédupliqués) — utilisés pour le multipart (= nom sur
+      // disque) ET renvoyés pour la référence injectée dans le message, afin que
+      // les deux coïncident exactement et soient lisibles par l'agent.
+      const seen = new Set<string>();
+      const safeNames = items.map((it) => {
+        let n = safeAttachmentName(it.file.name);
+        if (seen.has(n)) {
+          const d = n.lastIndexOf('.'); const b = d > 0 ? n.slice(0, d) : n; const e = d > 0 ? n.slice(d) : '';
+          let i = 2; while (seen.has(`${b}-${i}${e}`)) i++; n = `${b}-${i}${e}`;
+        }
+        seen.add(n); return n;
+      });
       const fd = new FormData();
       fd.append('sessionId', sid);
       fd.append('category', 'assets');
-      for (const it of items) fd.append('files', it.file);
+      items.forEach((it, i) => fd.append('files', it.file, safeNames[i]));
       const url = (brokerUrl ? brokerUrl.replace(/\/+$/, '') : '') + '/api/flow/upload';
       const r = await client.fetch(brokerUrl ? url : '/api/broker/upload', { method: 'POST', body: fd, signal: ctl.signal });
       if (!r.ok) throw new Error('upload ' + r.status);
-      return items.map((it) => it.file.name);
+      return safeNames;
     } finally {
       clearTimeout(timer);
       setUploading(false);
