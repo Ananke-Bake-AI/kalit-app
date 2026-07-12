@@ -273,7 +273,20 @@
 
 /* Prompt-quality halo : coloration live de la box selon la richesse du prompt.
    low = ambre (succinct), mid = jaune-vert, high = vert (riche). Discret. */
-.sv-composer__box.sv-q--low  { border-color: var(--sv-warn); box-shadow: 0 0 0 1px var(--sv-warn), 0 0 22px color-mix(in srgb, var(--sv-warn) 45%, transparent); }
+/* enrich = « le prompt VA être refined » → bordure dégradé multicolore ANIMÉE
+   (flow) plutôt qu'un simple ambre : ça matérialise visuellement le refinement
+   à venir, comme un effet en cours. */
+.sv-composer__box.sv-q--low {
+  border-color: transparent;
+  background:
+    linear-gradient(var(--sv-surface-2), var(--sv-surface-2)) padding-box,
+    linear-gradient(90deg, #ff8a3d, #6d5efc, #22d3ee, #6d5efc, #ff8a3d) border-box;
+  background-size: auto, 200% 100%;
+  animation: sv-q-flow 3s linear infinite;
+  box-shadow: 0 0 22px color-mix(in srgb, #6d5efc 30%, transparent);
+}
+@keyframes sv-q-flow { to { background-position: 0 0, 200% 0; } }
+@media (prefers-reduced-motion: reduce) { .sv-composer__box.sv-q--low { animation: none; } }
 .sv-composer__box.sv-q--mid  { border-color: #e6c74d; box-shadow: 0 0 0 1px #e6c74d, 0 0 22px color-mix(in srgb, #e6c74d 42%, transparent); }
 .sv-composer__box.sv-q--high { border-color: var(--sv-ok); box-shadow: 0 0 0 1px var(--sv-ok), 0 0 26px color-mix(in srgb, var(--sv-ok) 48%, transparent); }
 .sv-composer__box { transition: box-shadow .25s ease, border-color .25s ease; }
@@ -283,6 +296,6 @@
 .sv-qtoggle:hover { background: var(--sv-surface-2); }
 .sv-qtoggle__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--sv-line); box-shadow: none; transition: background .2s ease; }
 .sv-qtoggle--on .sv-qtoggle__dot { background: var(--sv-text-3); }
-.sv-qtoggle__dot.sv-q--low  { background: var(--sv-warn); }
+.sv-qtoggle__dot.sv-q--low  { background: linear-gradient(90deg, #ff8a3d, #6d5efc, #22d3ee); }
 .sv-qtoggle__dot.sv-q--mid  { background: #e6c74d; }
 .sv-qtoggle__dot.sv-q--high { background: var(--sv-ok); }
