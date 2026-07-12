@@ -52,13 +52,21 @@ function parseContent(content?: string): Segment[] {
   }
   return [{ kind: 'text', content }];
 }
+// Le refinement (« prompt affiné ») précède le travail de l'agent → il doit
+// s'afficher AVANT le thinking/les tools, même si le thinking est accumulé à
+// part et poussé en tête. On remonte donc les segments 'refinement' en premier.
+function hoistRefinement(segs: Segment[]): Segment[] {
+  const refine = segs.filter((s) => s.kind === 'refinement');
+  return refine.length ? [...refine, ...segs.filter((s) => s.kind !== 'refinement')] : segs;
+}
+
 function dtoToMessage(d: ChatMessageDTO): Message {
   const segments: Segment[] = [];
   if (d.thinking) segments.push({ kind: 'thinking', content: d.thinking });
   for (const t of d.tools ?? []) { const full = t.input ? JSON.stringify(t.input) : undefined; segments.push({ kind: 'tool', name: t.name, input: full?.slice(0, 200), inputFull: full?.slice(0, 20000), done: t.done ?? true }); }
   segments.push(...parseContent(d.content));
   for (const f of d.files ?? []) segments.push({ kind: 'file', name: f.name, url: f.url, mimeType: f.mimeType });
-  return { id: d.id, role: d.role === 'user' ? 'user' : 'assistant', segments };
+  return { id: d.id, role: d.role === 'user' ? 'user' : 'assistant', segments: hoistRefinement(segments) };
 }
 
 // Taskforce (build) sur openai : le broker's Anthropic est souvent en 429.
@@ -540,7 +548,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
       const liveSegs: Segment[] = [];
       if (live.thinking) liveSegs.push({ kind: 'thinking', content: live.thinking });
       liveSegs.push(...live.segments);
-      out.push({ id: 'live', role: 'assistant', segments: liveSegs });
+      out.push({ id: 'live', role: 'assistant', segments: hoistRefinement(liveSegs) });
     }
     if (liveError) out.push({ id: 'liveError', role: 'assistant', segments: [{ kind: 'error', content: liveError }] });
     return out;
