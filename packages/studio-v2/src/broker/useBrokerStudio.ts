@@ -467,6 +467,15 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
       ? `[${names.length} fichier(s) joint(s) par l'utilisateur, disponibles dans ./attachments/ : ${names.join(', ')}]\n\n${text}`
       : text;
     setActivity({ label: isCompact ? t.activity.compacting : t.activity.starting, since: Date.now() });
+    // Titre de session : le broker le pose au DÉBUT du POST (troncature du 1er
+    // message immédiatement, puis titre LLM propre ~1-3s plus tard, en async) et
+    // ne le diffuse que sur l'ancien wsHub — le user-ws que ce studio écoute ne
+    // porte aucune frame « titre/méta ». Sans ça la liste n'est rechargée qu'à la
+    // fin du tour (finalize) : sur un build long, « Sans titre » reste tout du
+    // long jusqu'à un reload manuel. On refetch donc peu après pour capter la
+    // troncature puis le titre LLM sans attendre la fin du tour.
+    setTimeout(() => { loadSessions(); }, 2500);
+    setTimeout(() => { loadSessions(); }, 8000);
     // `sawDone` = le POST a reçu l'event terminal 'done'. S'il ne le voit PAS
     // (POST coupé par un timeout proxy sur un long tool call), on NE finalise
     // pas : sinon turnActive repasse false et le handler WS ignore toutes les
@@ -515,7 +524,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
       }
       loadSessions();
     }
-  }, [pending, ensureSession, uploadPending, pushError, client, lang]);
+  }, [pending, ensureSession, uploadPending, pushError, client, lang, loadSessions]);
 
   const stop = useCallback(async () => {
     if (activeId) await client.fetch(`/api/broker/cancel/${activeId}`, { method: 'POST' }).catch(() => {});
