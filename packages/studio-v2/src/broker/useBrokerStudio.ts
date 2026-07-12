@@ -172,7 +172,11 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
       const answered = msgs.slice(i + 1).some((m) => m.role === 'user');
       for (const s of msgs[i].segments) if (s.kind === 'choice') s.answered = answered;
     }
-    setLive(null); // les messages persistés font foi → pas de doublon live
+    // Les messages persistés font foi. MAIS si un tour est en cours pour cette
+    // session (reducer vivant), on ré-affiche son contenu live au lieu de nuller
+    // (sinon le fetch async écraserait le live restauré au switch → écran figé).
+    const rr = reducers.current.get(sid);
+    setLive(rr ? { ...rr.render() } : null);
     setBaseMessages(msgs);
   }, [api]);
 
@@ -298,37 +302,41 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   // frames WS de la session active → reducer → état live
   useEffect(() => {
     return socket.onFrame((f: Frame) => {
-      if (f.sessionId && f.sessionId !== activeRef.current) return; // isolation par-session
+      // MULTI-SESSION : on alimente TOUJOURS le reducer de la session concernée,
+      // même en arrière-plan — sinon la session A gèle quand on regarde B et son
+      // contenu streamé est perdu au retour (bug historique). On ne met à jour
+      // l'état live AFFICHÉ (live/streaming/activity/ctx) QUE pour la session
+      // active. (Le broker n'émet plus de session_stream_closed parasite à la
+      // re-souscription — corrigé côté serveur, cf. bridgeRoomToWS.)
+      const isActive = !f.sessionId || f.sessionId === activeRef.current;
       if (f.type === 'session_event') {
-        // Un session_event ⇒ le tour PRODUIT encore. On (ré)active le live —
-        // ça neutralise le session_stream_closed PARASITE que le broker émet à la
-        // re-souscription (retour sur une session active), qui sinon coupait
-        // turnActive et faisait jeter toutes les frames suivantes → « pas de
-        // texte bleu ». Une VRAIE fin de tour n'est jamais suivie d'un
-        // session_event (le broker draine les events avant de fermer).
         const ev = f.data as RawEvent;
-        // Event "context" : remplissage du contexte → jauge % live (pas un segment).
+        // Event "context" : jauge de remplissage — pertinent seulement affiché.
         if (ev.type === 'context') {
-          const p = (ev as { percent?: number }).percent;
-          if (typeof p === 'number') setCtxPercent(p);
+          if (isActive) {
+            const p = (ev as { percent?: number }).percent;
+            if (typeof p === 'number') setCtxPercent(p);
+          }
           return;
         }
-        turnActive.current = true;
         const r = reducers.current.get(f.sessionId!) ?? new StreamReducer(() => {});
         reducers.current.set(f.sessionId!, r);
-        setStreaming(true);
-        setActivity({ label: activityFor(ev, t.activity), since: Date.now() });
         const res = r.apply(ev);
-        setLive({ ...r.render() });
+        if (isActive) {
+          turnActive.current = true;
+          setStreaming(true);
+          setActivity({ label: activityFor(ev, t.activity), since: Date.now() });
+          setLive({ ...r.render() });
+          if (ev.type === 'error') setLiveError(humanizeError(ev.content as string | undefined, t.errors));
+        }
         if (res === 'terminal') finalize(f.sessionId!);
-        // erreur véhiculée sur le WS aussi → message clair
-        if (ev.type === 'error') setLiveError(humanizeError(ev.content as string | undefined, t.errors));
       } else if (f.type === 'session_attached') {
-        // Reprise d'une session active (switch/reload) : ré-accepter les frames
-        // live et montrer l'activité immédiatement.
-        turnActive.current = true;
-        setStreaming(true);
-        setActivity((a) => a ?? { label: t.activity.working, since: Date.now() });
+        // Reprise d'une session active (switch/reload) : montrer l'activité.
+        if (isActive) {
+          turnActive.current = true;
+          setStreaming(true);
+          setActivity((a) => a ?? { label: t.activity.working, since: Date.now() });
+        }
       } else if (f.type === 'session_stream_closed') {
         finalize(f.sessionId!);
       }
@@ -369,11 +377,14 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     // si activeRef pointait encore sur l'ancienne session, la frame serait
     // filtrée et l'activité ne réapparaîtrait pas.
     activeRef.current = id;
-    // Session déjà en cours de génération (switch/reload) : on ré-accepte les
-    // frames WS live pour ré-afficher l'activité de l'agent au lieu de rester figé.
-    const running = sessions.find((x) => x.id === id)?.status === 'running';
+    // Session déjà en cours (switch/reload) : un reducer VIVANT pour cette session
+    // = un tour en cours qu'on a suivi en arrière-plan. On restaure son live
+    // IMMÉDIATEMENT (repaint instantané) au lieu de rester blanc jusqu'au prochain
+    // event — c'était le cœur du bug « plus de suivi au retour sur la session ».
+    const r = reducers.current.get(id);
+    const running = !!r || sessions.find((x) => x.id === id)?.status === 'running';
     turnActive.current = running;
-    setActiveId(id); setLive(null); setLiveError(null); setOutOfCredits(false);
+    setActiveId(id); setLive(r ? { ...r.render() } : null); setLiveError(null); setOutOfCredits(false);
     // Reflète le modèle réel de la session sélectionnée (sans écraser la
     // dernière sélection sauvegardée : un switch de session n'est pas un choix).
     const sm = sessions.find((x) => x.id === id)?.model;
