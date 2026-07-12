@@ -3,13 +3,12 @@
    Dense, précis (repères: Linear / Vercel). Un seul accent.
    Aucun dégradé violet générique, aucune ombre molle décorative.
 
-   Theming : LIGHT par défaut (le site kalit.ai est light-first). Le dark
-   suit `prefers-color-scheme` de l'utilisateur, ET est forcé par un choix
-   explicite (`html.dark` — le toggle du site — ou `[data-theme="dark"]`).
-   Un choix explicite `light` regagne même si l'OS est en dark. Tout le UI
-   (theme.css + shell.css) est piloté par ces variables → rien à toucher
-   ailleurs. Avant, `:root` était figé en dark → un visiteur en thème clair
-   se prenait un flash noir. Corrigé.
+   Theming : LIGHT par défaut, comme tout le site kalit.ai (light-first). Le dark
+   s'applique UNIQUEMENT sur la classe `.dark` posée sur <html> par le toggle du
+   site (theme-context), ou `[data-theme="dark"]`. On NE suit PAS l'OS
+   (`prefers-color-scheme`) : le site ne le fait pas non plus, donc le suivre ici
+   ferait diverger le studio du reste du site. Tout le UI (theme.css + shell.css)
+   est piloté par ces variables → rien à toucher ailleurs.
    ============================================================ */
 :root {
   /* surfaces — clair, échelle d'élévation froide (pas de blanc pur partout) */
