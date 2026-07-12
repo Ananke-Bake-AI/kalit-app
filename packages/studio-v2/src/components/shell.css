@@ -17,7 +17,10 @@
 .sv-sess__more svg { width: 16px; height: 16px; }
 .sv-sess:hover .sv-sess__more, .sv-sess--active .sv-sess__more, .sv-sess__more:focus-visible { opacity: 1; }
 .sv-sess__more:hover { background: var(--sv-raised); color: var(--sv-text); }
-.sv-sess--active { background: var(--sv-accent-dim); box-shadow: inset 2px 0 0 var(--sv-accent); }
+/* Session active : nettement distinctive (fond teinté accent + barre gauche vive)
+   — l'ancien accent-dim (12%) était trop subtil et proche du hover. */
+.sv-sess--active { background: color-mix(in srgb, var(--sv-accent) 16%, transparent); box-shadow: inset 3px 0 0 var(--sv-accent); }
+.sv-sess--active:hover { background: color-mix(in srgb, var(--sv-accent) 22%, transparent); }
 .sv-sess__title { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 450; color: var(--sv-text-2); }
 .sv-sess__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .sv-sess__run { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
