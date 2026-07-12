@@ -16,9 +16,9 @@ type MobilePane = 'sessions' | 'chat' | 'preview';
 // deux côtés. En dessous de 860px (mobile mono-panneau) le resizer est masqué.
 const SPLIT_KEY = 'kalit.studio.split';
 const SIDEBAR_W = 248;
-const RESIZER_W = 6;
-const CHAT_MIN = 360;
-const PREVIEW_MIN = 360;
+const RESIZER_W = 0; // colonne 0px : la poignée est un overlay, elle ne prend pas de place
+const CHAT_MIN = 380;
+const PREVIEW_MIN = 420;
 const ChatIcon = (p: { width?: number; height?: number }) => (
   <svg width={p.width ?? 19} height={p.height ?? 19} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2Z" /></svg>
 );
