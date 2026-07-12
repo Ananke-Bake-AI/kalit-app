@@ -13,6 +13,7 @@ import {
   revokeEntitlement,
   revokePlan
 } from "@/server/actions/admin"
+import { PLANS as PLAN_CONFIGS } from "@/lib/plans"
 import { useState, useTransition } from "react"
 import { toast } from "sonner"
 import s from "./organizations.module.scss"
@@ -121,10 +122,10 @@ export function OrgsClient({ initialData }: { initialData: OrgData }) {
             const suiteCount = activeEntitlements.filter((e) => e.key.startsWith("suite.") && e.key.endsWith(".access")).length
 
             // Detect plan: Stripe sub > manual entitlements > free.
-            // For manual entitlements we read monthly.credits (unique per plan:
-            // 100/500/2000) rather than counting suites — counting suites was
-            // wrong because Enterprise (3 suites) collided with the >=3 bucket
-            // for Pro and got mislabeled.
+            // For manual entitlements we match monthly.credits EXACTLY against the
+            // plan configs (@/lib/plans) — the single source of truth assignPlan
+            // writes from. Hardcoded thresholds drifted from the real amounts
+            // (75/350/1200) and mislabeled every plan by one tier.
             let planLabel = "Free"
             let planVariant: "success" | undefined = undefined
             if (org.subscriptions[0]) {
@@ -136,16 +137,11 @@ export function OrgsClient({ initialData }: { initialData: OrgData }) {
                 creditsEnt && typeof creditsEnt.value === "object" && creditsEnt.value !== null
                   ? Number((creditsEnt.value as { amount?: unknown }).amount) || 0
                   : 0
-              if (credits >= 2000) {
-                planLabel = "Enterprise (manual)"
+              const matched = credits > 0 ? PLAN_CONFIGS.find((p) => p.creditsPerMonth === credits) : undefined
+              if (matched) {
+                planLabel = `${matched.name} (manual)`
                 planVariant = "success"
-              } else if (credits >= 500) {
-                planLabel = "Pro (manual)"
-                planVariant = "success"
-              } else if (credits >= 100) {
-                planLabel = "Starter (manual)"
-                planVariant = "success"
-              } else if (suiteCount >= 1) {
+              } else if (credits > 0 || suiteCount >= 1) {
                 planLabel = "Manual"
                 planVariant = "success"
               }
