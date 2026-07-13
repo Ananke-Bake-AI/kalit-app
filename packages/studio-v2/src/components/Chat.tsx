@@ -102,28 +102,38 @@ function fmtCredits(n: number): string {
 
 // Pied de tour cliquable → modal avec le détail (token kalit + vrais tokens).
 function StatsFooter({ s }: { s: Extract<Segment, { kind: 'stats' }> }) {
+  const t = useStrings().stats;
   const [open, setOpen] = useState(false);
+  // Modèles gateway : seul l'input est remonté (sortie/cache à 0) → on masque le
+  // détail par type (trompeur : « 0 » ≠ « pas de sortie ») et on met une note.
+  const hasBreakdown = s.outputTokens > 0 || s.cacheReadTokens > 0 || s.cacheCreationTokens > 0;
   return (
     <>
-      <button type="button" className="sv-stats" onClick={() => setOpen(true)} title="Détails de la consommation">
+      <button type="button" className="sv-stats" onClick={() => setOpen(true)} title={t.details}>
         <span className="sv-stats__i">⏱ {fmtDuration(s.durationMs)}</span>
-        <span className="sv-stats__i">◆ {fmtCredits(s.credits)} token kalit</span>
+        <span className="sv-stats__i">◆ {fmtCredits(s.credits)} {t.unit}</span>
       </button>
       {open && (
         <div className="sv-modal" onClick={() => setOpen(false)}>
           <div className="sv-modal__panel" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
-            <h3 className="sv-modal__title">Consommation du tour</h3>
+            <h3 className="sv-modal__title">{t.title}</h3>
             <div className="sv-stats__grid">
-              <div className="sv-stats__row"><span>Token Kalit</span><b>{fmtCredits(s.credits)}</b></div>
-              <div className="sv-stats__row"><span>Durée du run</span><b>{fmtDuration(s.durationMs)}</b></div>
+              <div className="sv-stats__row"><span>{t.credits}</span><b>{fmtCredits(s.credits)}</b></div>
+              <div className="sv-stats__row"><span>{t.duration}</span><b>{fmtDuration(s.durationMs)}</b></div>
               <div className="sv-stats__sep" />
-              <div className="sv-stats__row"><span>Tokens réels (total)</span><b>{fmtTokens(s.tokens)}</b></div>
-              <div className="sv-stats__row sv-stats__sub"><span>· entrée</span><span>{fmtTokens(s.inputTokens)}</span></div>
-              <div className="sv-stats__row sv-stats__sub"><span>· sortie</span><span>{fmtTokens(s.outputTokens)}</span></div>
-              <div className="sv-stats__row sv-stats__sub"><span>· cache (lecture)</span><span>{fmtTokens(s.cacheReadTokens)}</span></div>
-              <div className="sv-stats__row sv-stats__sub"><span>· cache (écriture)</span><span>{fmtTokens(s.cacheCreationTokens)}</span></div>
+              <div className="sv-stats__row"><span>{t.realTotal}</span><b>{fmtTokens(s.tokens)}</b></div>
+              {hasBreakdown ? (
+                <>
+                  <div className="sv-stats__row sv-stats__sub"><span>{t.input}</span><span>{fmtTokens(s.inputTokens)}</span></div>
+                  <div className="sv-stats__row sv-stats__sub"><span>{t.output}</span><span>{fmtTokens(s.outputTokens)}</span></div>
+                  <div className="sv-stats__row sv-stats__sub"><span>{t.cacheRead}</span><span>{fmtTokens(s.cacheReadTokens)}</span></div>
+                  <div className="sv-stats__row sv-stats__sub"><span>{t.cacheWrite}</span><span>{fmtTokens(s.cacheCreationTokens)}</span></div>
+                </>
+              ) : (
+                <div className="sv-stats__note">{t.gateway}</div>
+              )}
             </div>
-            <div className="sv-modal__row"><button className="sv-btn sv-btn--primary" onClick={() => setOpen(false)}>Fermer</button></div>
+            <div className="sv-modal__row"><button className="sv-btn sv-btn--primary" onClick={() => setOpen(false)}>{t.close}</button></div>
           </div>
         </div>
       )}

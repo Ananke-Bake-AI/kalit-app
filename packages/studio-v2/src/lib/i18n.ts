@@ -73,6 +73,11 @@ export interface Strings {
     publishing: string; publishingSub: string; okTitle: string; okSub: string; visit: string;
     tooLargeTitle: string; tooLargeSub: string; errTitle: string; errSub: string; retry: string; close: string;
   };
+  stats: {
+    details: string; unit: string; title: string; credits: string; duration: string;
+    realTotal: string; input: string; output: string; cacheRead: string; cacheWrite: string;
+    gateway: string; close: string;
+  };
 }
 
 const fr: Strings = {
@@ -196,6 +201,20 @@ const fr: Strings = {
     retry: 'Réessayer',
     close: 'Fermer',
   },
+  stats: {
+    details: 'Détails de la consommation',
+    unit: 'token kalit',
+    title: 'Consommation du tour',
+    credits: 'Token Kalit',
+    duration: 'Durée du run',
+    realTotal: 'Tokens réels (total)',
+    input: '· entrée',
+    output: '· sortie',
+    cacheRead: '· cache (lecture)',
+    cacheWrite: '· cache (écriture)',
+    gateway: 'Détail par type non remonté par ce modèle.',
+    close: 'Fermer',
+  },
 };
 
 const en: Strings = {
@@ -317,6 +336,20 @@ const en: Strings = {
     errTitle: 'Publish failed',
     errSub: 'Publishing failed. Please try again in a moment.',
     retry: 'Retry',
+    close: 'Close',
+  },
+  stats: {
+    details: 'Consumption details',
+    unit: 'kalit tokens',
+    title: 'Turn usage',
+    credits: 'Kalit Tokens',
+    duration: 'Run duration',
+    realTotal: 'Real tokens (total)',
+    input: '· input',
+    output: '· output',
+    cacheRead: '· cache (read)',
+    cacheWrite: '· cache (write)',
+    gateway: 'Per-type breakdown not reported by this model.',
     close: 'Close',
   },
 };
