@@ -270,7 +270,7 @@
 .sv-modal__ico { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; background: rgba(229,88,77,.12); color: #e5584d; margin-bottom: 12px; }
 .sv-modal__ico svg { width: 20px; height: 20px; }
 .sv-modal__title { font-size: 15.5px; font-weight: 650; color: var(--sv-text); margin: 0 0 2px; }
-.sv-modal__sub { font-size: 13px; color: var(--sv-text-3); margin: 0 0 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sv-modal__sub { font-size: 13px; color: var(--sv-text-3); margin: 0 0 16px; line-height: 1.5; overflow-wrap: anywhere; }
 .sv-modal__hint { font-size: 13px; color: var(--sv-text-2); margin: 0 0 18px; }
 .sv-modal__row { display: flex; justify-content: flex-end; gap: 8px; }
 .sv-modal__opts { display: flex; flex-direction: column; gap: 10px; }
