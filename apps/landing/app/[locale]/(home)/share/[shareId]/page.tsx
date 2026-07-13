@@ -54,6 +54,10 @@ export default async function SharePage({
 
   const site = data.site || {}
   const messages = data.messages || []
+  // URL publique du screenshot (servi no-JWT par le broker). Utilisé en hero
+  // quand le projet n'est pas publié mais a un thumbnail capturé au partage.
+  const brokerPublic = (process.env.NEXT_PUBLIC_BROKER_URL || process.env.BROKER_URL || "").replace(/\/+$/, "")
+  const thumbUrl = site.hasThumbnail && brokerPublic ? `${brokerPublic}/api/flow/share/${shareId}/thumbnail.png` : null
 
   return (
     <main className="kshare">
@@ -76,6 +80,13 @@ export default async function SharePage({
             <a className="kshare__visit" href={site.url} target="_blank" rel="noreferrer nofollow">
               Voir le site en ligne ↗
             </a>
+          </section>
+        ) : thumbUrl ? (
+          <section className="kshare__artifact">
+            <div className="kshare__preview kshare__preview--img">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={thumbUrl} alt={data.title || "Aperçu du projet"} loading="lazy" />
+            </div>
           </section>
         ) : null}
 
@@ -122,6 +133,8 @@ const CSS = `
 .kshare__artifact { margin: 0 0 28px; }
 .kshare__preview { border: 1px solid #23282f; border-radius: 12px; overflow: hidden; background: #fff; aspect-ratio: 16 / 10; }
 .kshare__preview iframe { width: 100%; height: 100%; border: 0; }
+.kshare__preview--img { aspect-ratio: auto; background: #0f1216; }
+.kshare__preview--img img { width: 100%; height: auto; display: block; }
 .kshare__thumb { width: 100%; border: 1px solid #23282f; border-radius: 12px; display: block; }
 .kshare__visit { display: inline-block; margin-top: 10px; color: #6aa0ff; text-decoration: none; font-weight: 600; font-size: 14px; }
 .kshare__chat { display: flex; flex-direction: column; gap: 20px; }
