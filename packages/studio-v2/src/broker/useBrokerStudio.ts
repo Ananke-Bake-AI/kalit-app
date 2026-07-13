@@ -594,6 +594,17 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     return ok;
   }, [sessions, client, loadSessions, loadStorage, newProject]);
 
+  // Partage public read-only de la session active. action: 'share' crée/rafraîchit
+  // le lien (snapshot au moment de l'appel), 'unshare' révoque. Renvoie le shareId.
+  const shareSession = useCallback(async (action: 'share' | 'unshare'): Promise<{ shared: boolean; shareId?: string } | null> => {
+    const id = activeRef.current;
+    if (!id) return null;
+    const d = await api.json<{ shared: boolean; shareId?: string }>(`/api/broker/sessions/${id}/share`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action }),
+    });
+    return d;
+  }, [api]);
+
   // messages affichés = persistés + message assistant live en cours
   const messages: Message[] = useMemo(() => {
     const out = [...baseMessages];
@@ -621,5 +632,5 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     return lv === 'enrich' || lv === 'rich' || lv === 'none' ? lv : null;
   }, [api]);
 
-  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, publishResult, clearPublishResult: () => setPublishResult(null), deployBlocked, dismissDeployBlocked: () => setDeployBlocked(false), storage, storageBlocked, dismissStorageBlocked: () => setStorageBlocked(false), domain, connectDomain, removeDomain, canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, checkPromptQuality, socketStatus: socket.status, select, newProject, send, stop, deleteSession, setModel, publish, download, refreshTree, reloadSessions: loadSessions };
+  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, publishResult, clearPublishResult: () => setPublishResult(null), deployBlocked, dismissDeployBlocked: () => setDeployBlocked(false), storage, storageBlocked, dismissStorageBlocked: () => setStorageBlocked(false), domain, connectDomain, removeDomain, canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, checkPromptQuality, socketStatus: socket.status, select, newProject, send, stop, deleteSession, setModel, publish, download, refreshTree, reloadSessions: loadSessions, shareSession, canShare: !!activeId && messages.length > 0 };
 }

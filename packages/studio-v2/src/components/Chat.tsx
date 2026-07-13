@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type DragEvent } from 'react';
 import type { Activity, Message, Segment } from '../lib/types';
-import { IconAttach, IconSend, IconStop } from '../lib/icons';
+import { IconAttach, IconSend, IconStop, IconClose } from '../lib/icons';
 import { ModelSelector } from './ModelSelector';
 import { useStrings } from '../lib/i18n';
 import { Md } from '../lib/markdown';
@@ -48,6 +48,8 @@ interface Props {
   pricingHref?: string;
   checkPromptQuality?: (text: string) => Promise<'none' | 'enrich' | 'rich' | null>;
   isAdmin?: boolean;
+  onShare?: (action: 'share' | 'unshare') => Promise<{ shared: boolean; shareId?: string } | null>;
+  canShare?: boolean;
 }
 
 function ChoiceView({ s, onAnswer }: { s: Extract<Segment, { kind: 'choice' }>; onAnswer: (t: string) => void }) {
@@ -141,6 +143,55 @@ function StatsFooter({ s }: { s: Extract<Segment, { kind: 'stats' }> }) {
   );
 }
 
+// Modal de partage public : consentement → crée le lien → copie + révocation.
+function ShareModal({ onShare, onClose }: { onShare: (action: 'share' | 'unshare') => Promise<{ shared: boolean; shareId?: string } | null>; onClose: () => void }) {
+  const st = useStrings().share;
+  const [url, setUrl] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const create = async () => {
+    setBusy(true);
+    const r = await onShare('share');
+    setBusy(false);
+    if (r?.shareId) {
+      const link = `${window.location.origin}/share/${r.shareId}`;
+      setUrl(link);
+      try { await navigator.clipboard.writeText(link); setCopied(true); } catch { /* ignore */ }
+    }
+  };
+  const copy = async () => { if (!url) return; try { await navigator.clipboard.writeText(url); setCopied(true); setTimeout(() => setCopied(false), 1500); } catch { /* ignore */ } };
+  const unshare = async () => { setBusy(true); await onShare('unshare'); setBusy(false); onClose(); };
+  return (
+    <div className="sv-modal" onClick={onClose}>
+      <div className="sv-modal__panel" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
+        <button className="sv-modal__x" onClick={onClose} aria-label={st.close}><IconClose /></button>
+        <h3 className="sv-modal__title">{st.title}</h3>
+        {!url ? (
+          <>
+            <p className="sv-modal__sub">{st.consent}</p>
+            <div className="sv-modal__row">
+              <button className="sv-btn sv-btn--primary" disabled={busy} onClick={create}>{busy && <span className="sv-btn__spin" />}{st.create}</button>
+              <button className="sv-btn sv-btn--ghost" onClick={onClose}>{st.close}</button>
+            </div>
+          </>
+        ) : (
+          <>
+            <p className="sv-modal__sub">{copied ? st.copied : st.anyone}</p>
+            <div className="sv-share__link">
+              <input className="sv-domain__input" readOnly value={url} onFocus={(e) => e.currentTarget.select()} />
+              <button className="sv-btn sv-btn--primary" onClick={copy}>{copied ? st.copiedBtn : st.copy}</button>
+            </div>
+            <div className="sv-modal__row">
+              <a className="sv-btn sv-btn--ghost" href={url} target="_blank" rel="noreferrer">{st.open}</a>
+              <button className="sv-btn sv-btn--ghost" disabled={busy} onClick={unshare}>{st.stop}</button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function SegmentView({ s, onChoiceAnswer, onToolClick }: { s: Segment; onChoiceAnswer: (t: string) => void; onToolClick?: (s: Extract<Segment, { kind: 'tool' }>) => void }) {
   const st = useStrings();
   if (s.kind === 'text') return <div className="sv-msg__text sv-md"><Md text={s.content} /></div>;
@@ -168,7 +219,7 @@ function SegmentView({ s, onChoiceAnswer, onToolClick }: { s: Segment; onChoiceA
   return null;
 }
 
-export function Chat({ title, messages, streaming, activity, model, onModelChange, onSend, onStop, onChoiceAnswer, ctxPercent, attachments = [], uploading, onAddFiles, onRemoveAttachment, outOfCredits, pricingHref, checkPromptQuality, isAdmin }: Props) {
+export function Chat({ title, messages, streaming, activity, model, onModelChange, onSend, onStop, onChoiceAnswer, ctxPercent, attachments = [], uploading, onAddFiles, onRemoveAttachment, outOfCredits, pricingHref, checkPromptQuality, isAdmin, onShare, canShare }: Props) {
   const st = useStrings();
   const [val, setVal] = useState('');
   // Historique des prompts envoyés (terminal-style ↑/↓), persisté pour ne pas
@@ -208,6 +259,7 @@ export function Chat({ title, messages, streaming, activity, model, onModelChang
   const [, force] = useState(0);
   // Modal des détails d'un tool call (clic sur un badge d'outil).
   const [toolModal, setToolModal] = useState<{ name: string; input: string } | null>(null);
+  const [shareOpen, setShareOpen] = useState(false);
 
   const pickFiles = (fl: FileList | null) => { if (fl && fl.length && onAddFiles) onAddFiles(Array.from(fl)); };
   const onDrop = (e: DragEvent<HTMLElement>) => { e.preventDefault(); setDragging(false); pickFiles(e.dataTransfer.files); };
@@ -241,10 +293,17 @@ export function Chat({ title, messages, streaming, activity, model, onModelChang
           {typeof ctxPercent === 'number' && (
             <span className="sv-chip" title={st.ctxUsed}>ctx {ctxPercent}%</span>
           )}
+          {onShare && canShare && (
+            <button className="sv-btn sv-btn--ghost sv-chat__share" onClick={() => setShareOpen(true)} title={st.share.button}>
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 15V3m0 0L8 7m4-4 4 4" /><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7" /></svg>
+              {st.share.button}
+            </button>
+          )}
           <ModelSelector value={model} onChange={onModelChange} isAdmin={isAdmin} />
           <FullscreenBtn label={st.fullscreen} />
         </div>
       </div>
+      {shareOpen && onShare && <ShareModal onShare={onShare} onClose={() => setShareOpen(false)} />}
 
       <div className="sv-feed" ref={feedRef}>
         {messages.map((m) => (

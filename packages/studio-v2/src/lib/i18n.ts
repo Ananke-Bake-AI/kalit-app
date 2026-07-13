@@ -81,6 +81,10 @@ export interface Strings {
     realTotal: string; input: string; output: string; cacheRead: string; cacheWrite: string;
     gateway: string; close: string;
   };
+  share: {
+    button: string; title: string; consent: string; create: string; anyone: string;
+    copied: string; copy: string; copiedBtn: string; open: string; stop: string; close: string;
+  };
 }
 
 const fr: Strings = {
@@ -221,6 +225,19 @@ const fr: Strings = {
     gateway: 'Détail par type non remonté par ce modèle.',
     close: 'Fermer',
   },
+  share: {
+    button: 'Partager',
+    title: 'Partager cette conversation',
+    consent: "Tout le contenu de cette conversation jusqu'à maintenant deviendra visible par quiconque a le lien. Les tours suivants resteront privés.",
+    create: 'Créer un lien public',
+    anyone: 'Toute personne disposant de ce lien peut voir cette conversation.',
+    copied: 'Lien public copié dans le presse-papiers.',
+    copy: 'Copier',
+    copiedBtn: 'Copié',
+    open: 'Ouvrir',
+    stop: 'Arrêter le partage',
+    close: 'Fermer',
+  },
 };
 
 const en: Strings = {
@@ -359,6 +376,19 @@ const en: Strings = {
     cacheRead: '· cache (read)',
     cacheWrite: '· cache (write)',
     gateway: 'Per-type breakdown not reported by this model.',
+    close: 'Close',
+  },
+  share: {
+    button: 'Share',
+    title: 'Share this conversation',
+    consent: 'Everything in this conversation up to now will be visible to anyone with the link. Later turns stay private.',
+    create: 'Create public link',
+    anyone: 'Anyone with this link can see this conversation.',
+    copied: 'Public link copied to your clipboard.',
+    copy: 'Copy',
+    copiedBtn: 'Copied',
+    open: 'Open',
+    stop: 'Stop sharing',
     close: 'Close',
   },
 };

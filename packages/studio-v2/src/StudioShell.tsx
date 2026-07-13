@@ -66,6 +66,8 @@ export interface StudioShellProps {
   onClearPublishResult?: () => void;
   checkPromptQuality?: (text: string) => Promise<'none' | 'enrich' | 'rich' | null>;
   isAdmin?: boolean;
+  onShare?: (action: 'share' | 'unshare') => Promise<{ shared: boolean; shareId?: string } | null>;
+  canShare?: boolean;
 }
 
 /** Shell présentation pur : reçoit l'état et les callbacks, ne connaît pas le
@@ -153,6 +155,7 @@ export function StudioShell(props: StudioShellProps) {
         onAddFiles={props.onAddFiles} onRemoveAttachment={props.onRemoveAttachment}
         outOfCredits={props.outOfCredits} pricingHref={`/${props.lang || 'en'}/pricing`}
         checkPromptQuality={props.checkPromptQuality} isAdmin={props.isAdmin}
+        onShare={props.onShare} canShare={props.canShare}
       />
       <div
         className="sv-resizer"
