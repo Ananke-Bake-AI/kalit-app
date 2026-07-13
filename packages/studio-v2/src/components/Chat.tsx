@@ -94,6 +94,42 @@ function fmtTokens(n: number): string {
   if (n < 1e6) return `${(n / 1000).toFixed(1)}k`;
   return `${(n / 1e6).toFixed(2)}M`;
 }
+// Token kalit (crédits facturés) : nombre lisible, 2 décimales max sans zéros inutiles.
+function fmtCredits(n: number): string {
+  if (n >= 1000) return fmtTokens(Math.round(n));
+  return Number(n.toFixed(2)).toString();
+}
+
+// Pied de tour cliquable → modal avec le détail (token kalit + vrais tokens).
+function StatsFooter({ s }: { s: Extract<Segment, { kind: 'stats' }> }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button type="button" className="sv-stats" onClick={() => setOpen(true)} title="Détails de la consommation">
+        <span className="sv-stats__i">⏱ {fmtDuration(s.durationMs)}</span>
+        <span className="sv-stats__i">◆ {fmtCredits(s.credits)} token kalit</span>
+      </button>
+      {open && (
+        <div className="sv-modal" onClick={() => setOpen(false)}>
+          <div className="sv-modal__panel" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
+            <h3 className="sv-modal__title">Consommation du tour</h3>
+            <div className="sv-stats__grid">
+              <div className="sv-stats__row"><span>Token Kalit</span><b>{fmtCredits(s.credits)}</b></div>
+              <div className="sv-stats__row"><span>Durée du run</span><b>{fmtDuration(s.durationMs)}</b></div>
+              <div className="sv-stats__sep" />
+              <div className="sv-stats__row"><span>Tokens réels (total)</span><b>{fmtTokens(s.tokens)}</b></div>
+              <div className="sv-stats__row sv-stats__sub"><span>· entrée</span><span>{fmtTokens(s.inputTokens)}</span></div>
+              <div className="sv-stats__row sv-stats__sub"><span>· sortie</span><span>{fmtTokens(s.outputTokens)}</span></div>
+              <div className="sv-stats__row sv-stats__sub"><span>· cache (lecture)</span><span>{fmtTokens(s.cacheReadTokens)}</span></div>
+              <div className="sv-stats__row sv-stats__sub"><span>· cache (écriture)</span><span>{fmtTokens(s.cacheCreationTokens)}</span></div>
+            </div>
+            <div className="sv-modal__row"><button className="sv-btn sv-btn--primary" onClick={() => setOpen(false)}>Fermer</button></div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
 
 function SegmentView({ s, onChoiceAnswer, onToolClick }: { s: Segment; onChoiceAnswer: (t: string) => void; onToolClick?: (s: Extract<Segment, { kind: 'tool' }>) => void }) {
   const st = useStrings();
@@ -117,13 +153,8 @@ function SegmentView({ s, onChoiceAnswer, onToolClick }: { s: Segment; onChoiceA
   if (s.kind === 'file') return <div className="sv-tool">↓ {s.name}</div>;
   if (s.kind === 'error') return <div className="sv-err">{s.content}</div>;
   if (s.kind === 'choice') return <ChoiceView s={s} onAnswer={onChoiceAnswer} />;
-  // Pied de tour : consommation (tokens) + durée totale du run. Discret.
-  if (s.kind === 'stats') return (
-    <div className="sv-stats" title="Consommation et durée de ce tour">
-      <span className="sv-stats__i">⏱ {fmtDuration(s.durationMs)}</span>
-      {s.tokens > 0 && <span className="sv-stats__i">◆ {fmtTokens(s.tokens)} tokens</span>}
-    </div>
-  );
+  // Pied de tour cliquable : token kalit + durée, clic → détail.
+  if (s.kind === 'stats') return <StatsFooter s={s} />;
   return null;
 }
 
