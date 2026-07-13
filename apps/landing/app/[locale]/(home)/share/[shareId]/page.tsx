@@ -54,9 +54,16 @@ export default async function SharePage({
 
   const site = data.site || {}
   const messages = data.messages || []
-  // URL publique du screenshot (servi no-JWT par le broker). Utilisé en hero
-  // quand le projet n'est pas publié mais a un thumbnail capturé au partage.
   const brokerPublic = (process.env.NEXT_PUBLIC_BROKER_URL || process.env.BROKER_URL || "").replace(/\/+$/, "")
+  // Preview live (comme le studio) : site déployé si publié, sinon la RAM preview
+  // publique/embeddable du projet. C'est le vrai rendu interactif, pas une image.
+  const liveUrl = site.published && site.url
+    ? site.url
+    : site.projectId && brokerPublic
+      ? `${brokerPublic}/api/flow/ram-preview/${site.projectId}/`
+      : null
+  // Screenshot (servi no-JWT par le broker) — utilisé en poster derrière l'iframe
+  // le temps que la preview charge/restore, et en fallback si pas de preview live.
   const thumbUrl = site.hasThumbnail && brokerPublic ? `${brokerPublic}/api/flow/share/${shareId}/thumbnail.png` : null
 
   return (
@@ -72,13 +79,16 @@ export default async function SharePage({
       <div className="kshare__wrap">
         <h1 className="kshare__title">{data.title || "Conversation"}</h1>
 
-        {site.published && site.url ? (
+        {liveUrl ? (
           <section className="kshare__artifact">
-            <div className="kshare__preview">
-              <iframe src={site.url} title="preview" loading="lazy" />
+            <div
+              className="kshare__preview"
+              style={thumbUrl ? { backgroundImage: `url(${thumbUrl})`, backgroundSize: "cover", backgroundPosition: "top center" } : undefined}
+            >
+              <iframe src={liveUrl} title="preview" loading="lazy" />
             </div>
-            <a className="kshare__visit" href={site.url} target="_blank" rel="noreferrer nofollow">
-              Voir le site en ligne ↗
+            <a className="kshare__visit" href={liveUrl} target="_blank" rel="noreferrer nofollow">
+              {site.published ? "Voir le site en ligne ↗" : "Ouvrir la preview ↗"}
             </a>
           </section>
         ) : thumbUrl ? (
