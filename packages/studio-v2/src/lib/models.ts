@@ -17,6 +17,7 @@ export const MODEL_GROUPS: ModelGroup[] = [
       { id: 'cloud/qwen3-coder:480b-cloud', label: 'qwen3-coder 480b', provider: 'ollama' },
       { id: 'cloud/deepseek-v3.2:cloud', label: 'deepseek-v3.2', provider: 'ollama' },
       { id: 'cloud/deepseek-v4-pro:cloud', label: 'deepseek-v4-pro', provider: 'ollama' },
+      { id: 'cloud/deepseek-v4-flash:cloud', label: 'deepseek-v4-flash', provider: 'ollama' },
       { id: 'cloud/glm-5:cloud', label: 'glm-5', provider: 'ollama' },
       { id: 'cloud/minimax-m3:cloud', label: 'minimax-m3', provider: 'ollama' },
       { id: 'cloud/minimax-m2.5:cloud', label: 'minimax-m2.5', provider: 'ollama' },
