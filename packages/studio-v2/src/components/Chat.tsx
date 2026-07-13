@@ -82,6 +82,19 @@ function ChoiceView({ s, onAnswer }: { s: Extract<Segment, { kind: 'choice' }>; 
   );
 }
 
+// Durée d'un tour : "8s" / "2m14s" (jamais de sous-seconde, peu utile ici).
+function fmtDuration(ms: number): string {
+  const s = Math.max(0, Math.round(ms / 1000));
+  if (s < 60) return `${s}s`;
+  return `${Math.floor(s / 60)}m${String(s % 60).padStart(2, '0')}s`;
+}
+// Tokens : 850 / 45.2k / 1.20M.
+function fmtTokens(n: number): string {
+  if (n < 1000) return String(n);
+  if (n < 1e6) return `${(n / 1000).toFixed(1)}k`;
+  return `${(n / 1e6).toFixed(2)}M`;
+}
+
 function SegmentView({ s, onChoiceAnswer, onToolClick }: { s: Segment; onChoiceAnswer: (t: string) => void; onToolClick?: (s: Extract<Segment, { kind: 'tool' }>) => void }) {
   const st = useStrings();
   if (s.kind === 'text') return <div className="sv-msg__text sv-md"><Md text={s.content} /></div>;
@@ -104,6 +117,13 @@ function SegmentView({ s, onChoiceAnswer, onToolClick }: { s: Segment; onChoiceA
   if (s.kind === 'file') return <div className="sv-tool">↓ {s.name}</div>;
   if (s.kind === 'error') return <div className="sv-err">{s.content}</div>;
   if (s.kind === 'choice') return <ChoiceView s={s} onAnswer={onChoiceAnswer} />;
+  // Pied de tour : consommation (tokens) + durée totale du run. Discret.
+  if (s.kind === 'stats') return (
+    <div className="sv-stats" title="Consommation et durée de ce tour">
+      <span className="sv-stats__i">⏱ {fmtDuration(s.durationMs)}</span>
+      {s.tokens > 0 && <span className="sv-stats__i">◆ {fmtTokens(s.tokens)} tokens</span>}
+    </div>
+  );
   return null;
 }
 

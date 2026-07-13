@@ -22,6 +22,7 @@ export type Segment =
   | { kind: 'file'; name: string; url: string; mimeType?: string }
   | { kind: 'error'; content: string }
   | { kind: 'refinement'; content: string }
+  | { kind: 'stats'; tokens: number; durationMs: number }
   | { kind: 'choice'; question: string; options: ChoiceOption[]; multiSelect?: boolean; freeform?: boolean; answered?: boolean };
 
 export interface Message {

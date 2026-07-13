@@ -25,7 +25,7 @@ function dtoToSession(d: ChatSessionDTO): Session {
 // Le message assistant persisté stocke ses segments comme un tableau JSON
 // SÉRIALISÉ dans `content` (ex: '[{"type":"text",...},{"type":"tool",...}]').
 // Le message user a un `content` texte simple. On gère les deux.
-function elToSegment(e: { type?: string; content?: string; name?: string; input?: unknown; done?: boolean; url?: string; mimeType?: string }): Segment | null {
+function elToSegment(e: { type?: string; content?: string; name?: string; input?: unknown; done?: boolean; url?: string; mimeType?: string; tokens?: number; durationMs?: number }): Segment | null {
   switch (e.type) {
     case 'text': return { kind: 'text', content: e.content ?? '' };
     case 'thinking': return { kind: 'thinking', content: e.content ?? '' };
@@ -35,6 +35,7 @@ function elToSegment(e: { type?: string; content?: string; name?: string; input?
       return { kind: 'tool', name: e.name ?? 'tool', input: full?.slice(0, 200), inputFull: full?.slice(0, 20000), done: e.done ?? true };
     }
     case 'refinement': return { kind: 'refinement', content: e.content ?? '' };
+    case 'turn_stats': return { kind: 'stats', tokens: e.tokens ?? 0, durationMs: e.durationMs ?? 0 };
     case 'choice': return choiceFromInput(e);
     case 'file': return { kind: 'file', name: e.name ?? 'fichier', url: e.url ?? '', mimeType: e.mimeType };
     case 'error': return { kind: 'error', content: e.content ?? 'Erreur' };
