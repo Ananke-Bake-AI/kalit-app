@@ -140,6 +140,17 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     setModelState(id);
     try { localStorage.setItem('kalit.studio.model', id); } catch { /* ignore */ }
   }, []);
+  // Mode Precision (opt-in) : contrat + QA visuelle 2-étages côté worker. Coûteux
+  // en tokens → off par défaut ; le broker l'enforce Pro+/admin quoi qu'il arrive.
+  const [precision, setPrecisionState] = useState<boolean>(false);
+  const precisionRef = useRef(precision); precisionRef.current = precision;
+  useEffect(() => {
+    try { if (localStorage.getItem('kalit.studio.precision') === '1') setPrecisionState(true); } catch { /* ignore */ }
+  }, []);
+  const setPrecision = useCallback((on: boolean) => {
+    setPrecisionState(on);
+    try { localStorage.setItem('kalit.studio.precision', on ? '1' : '0'); } catch { /* ignore */ }
+  }, []);
   const [projectId, setProjectId] = useState<string | null>(null);
   const [publishUrl, setPublishUrl] = useState<string | null>(null);
   const [publishing, setPublishing] = useState(false);
@@ -520,7 +531,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     // notamment `error` (sinon échec silencieux) et `done` (finalisation de
     // secours si le WS n'a pas émis session_stream_closed).
     try {
-      const r = await client.fetch(`/api/broker/sessions/${sid}/messages`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: body, language: lang, progressMode: 'default', suite: 'project', model: modelRef.current, taskforceModelProvider: DEFAULT_TF_PROVIDER, requestId: 'r' + Date.now() }) });
+      const r = await client.fetch(`/api/broker/sessions/${sid}/messages`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: body, language: lang, progressMode: 'default', suite: 'project', model: modelRef.current, precision: precisionRef.current, taskforceModelProvider: DEFAULT_TF_PROVIDER, requestId: 'r' + Date.now() }) });
       if (r.status === 402) { setOutOfCredits(true); finalizeSoft(); setBaseMessages((m) => m.filter((x) => !x.id.startsWith('temp-'))); return; }
       // 403 storage_limit : le broker refuse une NOUVELLE création (quota plein).
       if (r.status === 403) {
@@ -632,5 +643,5 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     return lv === 'enrich' || lv === 'rich' || lv === 'none' ? lv : null;
   }, [api]);
 
-  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, publishResult, clearPublishResult: () => setPublishResult(null), deployBlocked, dismissDeployBlocked: () => setDeployBlocked(false), storage, storageBlocked, dismissStorageBlocked: () => setStorageBlocked(false), domain, connectDomain, removeDomain, canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, checkPromptQuality, socketStatus: socket.status, select, newProject, send, stop, deleteSession, setModel, publish, download, refreshTree, reloadSessions: loadSessions, shareSession, canShare: !!activeId && messages.length > 0 };
+  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, publishResult, clearPublishResult: () => setPublishResult(null), deployBlocked, dismissDeployBlocked: () => setDeployBlocked(false), storage, storageBlocked, dismissStorageBlocked: () => setStorageBlocked(false), domain, connectDomain, removeDomain, canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, checkPromptQuality, socketStatus: socket.status, select, newProject, send, stop, deleteSession, setModel, precision, setPrecision, publish, download, refreshTree, reloadSessions: loadSessions, shareSession, canShare: !!activeId && messages.length > 0 };
 }

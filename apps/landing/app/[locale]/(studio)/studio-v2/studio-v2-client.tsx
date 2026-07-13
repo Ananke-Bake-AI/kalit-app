@@ -88,6 +88,7 @@ export function StudioV2Client({ initialSessionId }: { initialSessionId?: string
       attachments={s.attachments} uploading={s.uploading} onAddFiles={s.addFiles} onRemoveAttachment={s.removeAttachment}
       outOfCredits={s.outOfCredits} checkPromptQuality={s.checkPromptQuality}
       isAdmin={(session?.user as { isAdmin?: boolean } | undefined)?.isAdmin === true}
+      precision={s.precision} onPrecisionChange={s.setPrecision}
       deployBlocked={s.deployBlocked} onDismissDeployBlocked={s.dismissDeployBlocked}
       storage={s.storage} storageBlocked={s.storageBlocked} onDismissStorageBlocked={s.dismissStorageBlocked}
       domain={s.domain} onConnectDomain={s.connectDomain} onRemoveDomain={s.removeDomain}

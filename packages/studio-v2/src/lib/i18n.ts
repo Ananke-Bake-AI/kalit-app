@@ -65,6 +65,7 @@ export interface Strings {
   deployBlocked: { title: string; body: string; close: string };
   storage: { label: string; almostFull: string; blockedTitle: string; blockedBody: string; close: string };
   fullscreen: string;
+  precision: { label: string; hint: string };
   promptQuality: string;
   promptLevels: { low: string; mid: string; high: string };
   domain: {
@@ -181,6 +182,7 @@ const fr: Strings = {
     close: 'Compris',
   },
   fullscreen: 'Plein écran',
+  precision: { label: 'Precision', hint: 'Mode Precision (Pro) — vérification visuelle de chaque composant pour un rendu quasi sans bug. Plus lent et plus coûteux.' },
   promptQuality: 'Indicateur de richesse du prompt (clic pour activer/désactiver)',
   promptLevels: { low: 'prompt succinct — ajoute du détail pour un meilleur rendu', mid: 'prompt correct — plus de direction = mieux', high: 'prompt riche — rendu optimal' },
   domain: {
@@ -334,6 +336,7 @@ const en: Strings = {
     close: 'Got it',
   },
   fullscreen: 'Fullscreen',
+  precision: { label: 'Precision', hint: 'Precision mode (Pro) — visually verifies every component for a near-zero-bug render. Slower and more expensive.' },
   promptQuality: 'Prompt richness indicator (click to toggle)',
   promptLevels: { low: 'thin prompt — add detail for a better result', mid: 'decent prompt — more direction helps', high: 'rich prompt — best result' },
   domain: {

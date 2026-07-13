@@ -48,6 +48,8 @@ interface Props {
   pricingHref?: string;
   checkPromptQuality?: (text: string) => Promise<'none' | 'enrich' | 'rich' | null>;
   isAdmin?: boolean;
+  precision?: boolean;
+  onPrecisionChange?: (on: boolean) => void;
   onShare?: (action: 'share' | 'unshare') => Promise<{ shared: boolean; shareId?: string } | null>;
   canShare?: boolean;
 }
@@ -219,7 +221,7 @@ function SegmentView({ s, onChoiceAnswer, onToolClick }: { s: Segment; onChoiceA
   return null;
 }
 
-export function Chat({ title, messages, streaming, activity, model, onModelChange, onSend, onStop, onChoiceAnswer, ctxPercent, attachments = [], uploading, onAddFiles, onRemoveAttachment, outOfCredits, pricingHref, checkPromptQuality, isAdmin, onShare, canShare }: Props) {
+export function Chat({ title, messages, streaming, activity, model, onModelChange, onSend, onStop, onChoiceAnswer, ctxPercent, attachments = [], uploading, onAddFiles, onRemoveAttachment, outOfCredits, pricingHref, checkPromptQuality, isAdmin, precision, onPrecisionChange, onShare, canShare }: Props) {
   const st = useStrings();
   const [val, setVal] = useState('');
   // Historique des prompts envoyés (terminal-style ↑/↓), persisté pour ne pas
@@ -300,6 +302,17 @@ export function Chat({ title, messages, streaming, activity, model, onModelChang
             </button>
           )}
           <ModelSelector value={model} onChange={onModelChange} isAdmin={isAdmin} />
+          {onPrecisionChange && (
+            <button
+              className={'sv-btn sv-btn--ghost sv-chat__precision' + (precision ? ' sv-chat__precision--on' : '')}
+              onClick={() => onPrecisionChange(!precision)}
+              title={st.precision.hint}
+              aria-pressed={!!precision}
+            >
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="3.5" /><path d="M12 2v3M12 19v3M2 12h3M19 12h3" strokeLinecap="round" /></svg>
+              {st.precision.label}
+            </button>
+          )}
           <FullscreenBtn label={st.fullscreen} />
         </div>
       </div>

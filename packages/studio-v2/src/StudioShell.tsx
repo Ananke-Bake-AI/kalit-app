@@ -66,6 +66,8 @@ export interface StudioShellProps {
   onClearPublishResult?: () => void;
   checkPromptQuality?: (text: string) => Promise<'none' | 'enrich' | 'rich' | null>;
   isAdmin?: boolean;
+  precision?: boolean;
+  onPrecisionChange?: (on: boolean) => void;
   onShare?: (action: 'share' | 'unshare') => Promise<{ shared: boolean; shareId?: string } | null>;
   canShare?: boolean;
 }
@@ -155,6 +157,7 @@ export function StudioShell(props: StudioShellProps) {
         onAddFiles={props.onAddFiles} onRemoveAttachment={props.onRemoveAttachment}
         outOfCredits={props.outOfCredits} pricingHref={`/${props.lang || 'en'}/pricing`}
         checkPromptQuality={props.checkPromptQuality} isAdmin={props.isAdmin}
+        precision={props.precision} onPrecisionChange={props.onPrecisionChange}
         onShare={props.onShare} canShare={props.canShare}
       />
       <div
