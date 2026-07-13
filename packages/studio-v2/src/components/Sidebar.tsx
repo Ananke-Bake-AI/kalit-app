@@ -21,15 +21,42 @@ function fmtBytes(n: number): string {
   return n + ' B';
 }
 
+const IconPin = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 17v5" /><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z" />
+  </svg>
+);
+const IconPinOff = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 17v5" /><path d="M15 9.34V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H7.89" /><path d="m2 2 20 20" /><path d="M9 9v1.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h11" />
+  </svg>
+);
+
+// Sessions épinglées : stockées en localStorage (préférence par navigateur).
+const PIN_KEY = 'kalit.studio.pinned';
+function loadPinned(): Set<string> {
+  try { const s = localStorage.getItem(PIN_KEY); if (s) return new Set(JSON.parse(s) as string[]); } catch { /* ignore */ }
+  return new Set();
+}
+
 export function Sidebar({ sessions, activeId, user, storage, onSelect, onNew, onDelete }: Props) {
   const st = useStrings();
   const [q, setQ] = useState('');
   const [deleting, setDeleting] = useState<Session | null>(null);
   const [busy, setBusy] = useState(false);
+  const [pinned, setPinned] = useState<Set<string>>(() => (typeof window !== 'undefined' ? loadPinned() : new Set()));
+  const togglePin = (id: string) => setPinned((prev) => {
+    const next = new Set(prev);
+    if (next.has(id)) next.delete(id); else next.add(id);
+    try { localStorage.setItem(PIN_KEY, JSON.stringify([...next])); } catch { /* ignore */ }
+    return next;
+  });
   const filtered = useMemo(
     () => sessions.filter((s) => s.title.toLowerCase().includes(q.toLowerCase())).sort((a, b) => b.updatedAt - a.updatedAt),
     [sessions, q],
   );
+  const pinnedList = useMemo(() => filtered.filter((s) => pinned.has(s.id)), [filtered, pinned]);
+  const recentList = useMemo(() => filtered.filter((s) => !pinned.has(s.id)), [filtered, pinned]);
 
   const doDelete = (mode: 'session' | 'project') => {
     if (!deleting) return;
@@ -38,6 +65,34 @@ export function Sidebar({ sessions, activeId, user, storage, onSelect, onNew, on
     // La suppression est optimiste côté hook ; on ferme aussitôt.
     setBusy(false);
     setDeleting(null);
+  };
+
+  const renderSession = (s: Session) => {
+    const isPinned = pinned.has(s.id);
+    return (
+      <div key={s.id} className={'sv-sess' + (s.id === activeId ? ' sv-sess--active' : '')} onClick={() => onSelect(s.id)}>
+        <div className="sv-sess__title">
+          {s.status === 'running' && <span className="sv-dot sv-dot--run sv-sess__run" title={st.running} />}
+          <span className="sv-sess__name">{s.title}</span>
+        </div>
+        <button
+          className={'sv-sess__pin' + (isPinned ? ' sv-sess__pin--on' : '')}
+          title={isPinned ? st.unpin : st.pin}
+          aria-label={isPinned ? st.unpin : st.pin}
+          onClick={(e) => { e.stopPropagation(); togglePin(s.id); }}
+        >
+          {isPinned ? <IconPinOff /> : <IconPin />}
+        </button>
+        <button
+          className="sv-sess__more"
+          title={st.del.confirm}
+          aria-label={st.del.confirm}
+          onClick={(e) => { e.stopPropagation(); setDeleting(s); }}
+        >
+          <IconDots />
+        </button>
+      </div>
+    );
   };
 
   return (
@@ -54,25 +109,19 @@ export function Sidebar({ sessions, activeId, user, storage, onSelect, onNew, on
         </div>
       </div>
       <div className="sv-side__list">
-        {filtered.length === 0
-          ? <div className="sv-side__group">{st.noProjects}</div>
-          : <div className="sv-side__group">{st.recents}</div>}
-        {filtered.map((s) => (
-          <div key={s.id} className={'sv-sess' + (s.id === activeId ? ' sv-sess--active' : '')} onClick={() => onSelect(s.id)}>
-            <div className="sv-sess__title">
-              {s.status === 'running' && <span className="sv-dot sv-dot--run sv-sess__run" title={st.running} />}
-              <span className="sv-sess__name">{s.title}</span>
-            </div>
-            <button
-              className="sv-sess__more"
-              title={st.del.confirm}
-              aria-label={st.del.confirm}
-              onClick={(e) => { e.stopPropagation(); setDeleting(s); }}
-            >
-              <IconDots />
-            </button>
-          </div>
-        ))}
+        {filtered.length === 0 && <div className="sv-side__group">{st.noProjects}</div>}
+        {pinnedList.length > 0 && (
+          <>
+            <div className="sv-side__group">{st.pinned}</div>
+            {pinnedList.map(renderSession)}
+          </>
+        )}
+        {recentList.length > 0 && (
+          <>
+            <div className="sv-side__group">{st.recents}</div>
+            {recentList.map(renderSession)}
+          </>
+        )}
       </div>
       {storage && storage.limitBytes > 0 && (() => {
         const pct = Math.min(100, Math.round((storage.usedBytes / storage.limitBytes) * 100));

@@ -47,6 +47,9 @@ export interface Strings {
   errorLabel: string;
   upgrade: string;
   recents: string;
+  pinned: string;
+  pin: string;
+  unpin: string;
   downloadZip: string;
   activity: {
     thinking: string; writing: string; write: string; edit: string; read: string;
@@ -132,6 +135,9 @@ const fr: Strings = {
   errorLabel: 'Erreur',
   upgrade: 'Passer à une offre supérieure',
   recents: 'Récents',
+  pinned: 'Épinglés',
+  pin: 'Épingler',
+  unpin: 'Désépingler',
   downloadZip: 'Télécharger le ZIP',
   activity: {
     thinking: 'réfléchit', writing: 'rédige la réponse', write: 'écrit un fichier',
@@ -269,6 +275,9 @@ const en: Strings = {
   errorLabel: 'Error',
   upgrade: 'Upgrade your plan',
   recents: 'Recents',
+  pinned: 'Pinned',
+  pin: 'Pin',
+  unpin: 'Unpin',
   downloadZip: 'Download ZIP',
   activity: {
     thinking: 'thinking', writing: 'writing the response', write: 'writing a file',

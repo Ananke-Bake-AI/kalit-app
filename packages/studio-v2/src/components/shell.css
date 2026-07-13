@@ -34,6 +34,13 @@
 .sv-sess__more svg { width: 16px; height: 16px; }
 .sv-sess:hover .sv-sess__more, .sv-sess--active .sv-sess__more, .sv-sess__more:focus-visible { opacity: 1; }
 .sv-sess__more:hover { background: var(--sv-raised); color: var(--sv-text); }
+/* Bouton épingler : révélé au survol comme le menu ; toujours visible (accent) si épinglé. */
+.sv-sess__pin { flex-shrink: 0; width: 26px; height: 26px; display: grid; place-items: center; border: 0; background: transparent; color: var(--sv-text-3); border-radius: var(--sv-r-sm); cursor: pointer; opacity: 0; transition: opacity .12s, background .12s, color .12s; }
+.sv-sess__pin svg { width: 15px; height: 15px; }
+.sv-sess:hover .sv-sess__pin, .sv-sess--active .sv-sess__pin, .sv-sess__pin:focus-visible { opacity: 1; }
+.sv-sess__pin:hover { background: var(--sv-raised); color: var(--sv-text); }
+.sv-sess__pin--on { opacity: 1; color: var(--sv-accent); }
+.sv-sess__pin--on:hover { color: var(--sv-accent-2); }
 /* Session active : nettement distinctive (fond teinté accent + barre gauche vive)
    — l'ancien accent-dim (12%) était trop subtil et proche du hover. */
 .sv-sess--active { background: color-mix(in srgb, var(--sv-accent) 16%, transparent); box-shadow: inset 3px 0 0 var(--sv-accent); }
