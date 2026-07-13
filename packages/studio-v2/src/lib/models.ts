@@ -25,6 +25,15 @@ export const MODEL_GROUPS: ModelGroup[] = [
     ],
   },
   {
+    label: 'DeepSeek',
+    models: [
+      // API DeepSeek native (platform.deepseek.com) via la gateway → provider "deepseek".
+      // Facturé au vrai coût par token (≠ modèles Ollama Cloud d'abonnement ci-dessus).
+      { id: 'deepseek/deepseek-chat', label: 'deepseek-chat', provider: 'openai' },
+      { id: 'deepseek/deepseek-reasoner', label: 'deepseek-reasoner', provider: 'openai' },
+    ],
+  },
+  {
     label: 'Claude (Pro)',
     models: [
       { id: 'anthropic:claude-opus-4-8', label: 'claude-opus-4.8', provider: 'anthropic', pro: true },
