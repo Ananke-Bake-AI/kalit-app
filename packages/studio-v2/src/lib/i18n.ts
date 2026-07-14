@@ -8,6 +8,7 @@ export interface Strings {
   files: string;
   publish: string;
   republish: string;
+  queuedLabel: string;
   publishing: string;
   online: string;
   onlineSite: string;
@@ -95,6 +96,7 @@ const fr: Strings = {
   files: 'Fichiers',
   publish: 'Publier',
   republish: 'Republier',
+  queuedLabel: '{n} en file — partira après le tour en cours',
   publishing: 'Publication…',
   online: 'en ligne',
   onlineSite: 'Site en ligne',
@@ -251,6 +253,7 @@ const en: Strings = {
   files: 'Files',
   publish: 'Publish',
   republish: 'Republish',
+  queuedLabel: '{n} queued — will send after the current turn',
   publishing: 'Publishing…',
   online: 'live',
   onlineSite: 'Live site',

@@ -52,6 +52,9 @@ interface Props {
   onPrecisionChange?: (on: boolean) => void;
   onShare?: (action: 'share' | 'unshare') => Promise<{ shared: boolean; shareId?: string } | null>;
   canShare?: boolean;
+  queued?: string[];
+  onQueuePrompt?: (text: string) => void;
+  onCancelQueued?: (i: number) => void;
 }
 
 function ChoiceView({ s, onAnswer }: { s: Extract<Segment, { kind: 'choice' }>; onAnswer: (t: string) => void }) {
@@ -221,7 +224,7 @@ function SegmentView({ s, onChoiceAnswer, onToolClick }: { s: Segment; onChoiceA
   return null;
 }
 
-export function Chat({ title, messages, streaming, activity, model, onModelChange, onSend, onStop, onChoiceAnswer, ctxPercent, attachments = [], uploading, onAddFiles, onRemoveAttachment, outOfCredits, pricingHref, checkPromptQuality, isAdmin, precision, onPrecisionChange, onShare, canShare }: Props) {
+export function Chat({ title, messages, streaming, activity, model, onModelChange, onSend, onStop, onChoiceAnswer, ctxPercent, attachments = [], uploading, onAddFiles, onRemoveAttachment, outOfCredits, pricingHref, checkPromptQuality, isAdmin, precision, onPrecisionChange, onShare, canShare, queued = [], onQueuePrompt, onCancelQueued }: Props) {
   const st = useStrings();
   const [val, setVal] = useState('');
   // Historique des prompts envoyés (terminal-style ↑/↓), persisté pour ne pas
@@ -272,7 +275,14 @@ export function Chat({ title, messages, streaming, activity, model, onModelChang
 
   const send = () => {
     const t = val.trim();
-    if ((!t && !attachments.length) || streaming) return;
+    if (!t && !attachments.length) return;
+    // Tour en cours → on EMPILE le prompt (file d'attente) au lieu de bloquer.
+    // Il partira automatiquement à la fin du tour courant. (v1 : texte uniquement ;
+    // les pièces jointes ne s'empilent pas.)
+    if (streaming) {
+      if (t && onQueuePrompt) { onQueuePrompt(t); setVal(''); }
+      return;
+    }
     if (t) {
       const h = histRef.current;
       if (h[0] !== t) { h.unshift(t); if (h.length > 20) h.length = 20; try { localStorage.setItem(HIST_KEY, JSON.stringify(h)); } catch { /* ignore */ } }
@@ -345,6 +355,17 @@ export function Chat({ title, messages, streaming, activity, model, onModelChang
       )}
 
       <div className="sv-composer">
+        {queued.length > 0 && (
+          <div className="sv-queue" role="list" aria-label={st.queuedLabel}>
+            <span className="sv-queue__hd">{st.queuedLabel.replace('{n}', String(queued.length))}</span>
+            {queued.map((q, i) => (
+              <span key={i} role="listitem" className="sv-queue__item" title={q}>
+                <span className="sv-queue__n">{q}</span>
+                <button className="sv-queue__x" aria-label={st.del.cancel} onClick={() => onCancelQueued?.(i)}><IconClose width={11} height={11} /></button>
+              </span>
+            ))}
+          </div>
+        )}
         <div className={'sv-composer__box' + (level !== 'none' ? ' sv-q--' + level : '')}>
           {(attachments.length > 0 || uploading) && (
             <div className="sv-atts">

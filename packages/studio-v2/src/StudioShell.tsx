@@ -48,6 +48,9 @@ export interface StudioShellProps {
   onDelete: (id: string, mode: 'session' | 'project') => void;
   onSend: (text: string) => void;
   onStop: () => void;
+  queued?: string[];
+  onQueuePrompt?: (text: string) => void;
+  onCancelQueued?: (i: number) => void;
   onRefreshTree: () => void;
   attachments?: { id: string; name: string }[];
   uploading?: boolean;
@@ -153,6 +156,7 @@ export function StudioShell(props: StudioShellProps) {
         messages={props.messages} streaming={props.streaming} activity={props.activity}
         ctxPercent={props.ctxPercent} model={props.model} onModelChange={props.onModelChange}
         onSend={props.onSend} onStop={props.onStop} onChoiceAnswer={props.onSend}
+        queued={props.queued} onQueuePrompt={props.onQueuePrompt} onCancelQueued={props.onCancelQueued}
         attachments={props.attachments} uploading={props.uploading}
         onAddFiles={props.onAddFiles} onRemoveAttachment={props.onRemoveAttachment}
         outOfCredits={props.outOfCredits} pricingHref={`/${props.lang || 'en'}/pricing`}

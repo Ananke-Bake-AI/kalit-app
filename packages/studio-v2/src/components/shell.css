@@ -152,6 +152,12 @@
 .sv-activity__t { color: var(--sv-text-3); margin-left: auto; font-variant-numeric: tabular-nums; }
 @keyframes sv-pulse2 { 0%,100% { opacity: .35; transform: scale(.8); } 50% { opacity: 1; transform: scale(1.15); } }
 .sv-composer { border-top: 1px solid var(--sv-line-soft); padding: var(--sv-3); flex-shrink: 0; }
+.sv-queue { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 8px; }
+.sv-queue__hd { font-size: 11px; font-weight: 600; letter-spacing: .01em; color: var(--sv-accent-2, var(--sv-text-2)); width: 100%; margin-bottom: 2px; }
+.sv-queue__item { display: inline-flex; align-items: center; gap: 6px; max-width: 260px; padding: 4px 4px 4px 9px; font-size: 12px; color: var(--sv-text-2); background: color-mix(in srgb, var(--sv-accent, #6d5efc) 10%, transparent); border: 1px solid color-mix(in srgb, var(--sv-accent, #6d5efc) 32%, transparent); border-radius: 999px; }
+.sv-queue__n { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sv-queue__x { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border: none; background: transparent; color: var(--sv-text-3, var(--sv-text-2)); cursor: pointer; border-radius: 50%; flex-shrink: 0; }
+.sv-queue__x:hover { color: var(--sv-text); background: color-mix(in srgb, var(--sv-text) 12%, transparent); }
 /* Pièces jointes en attente */
 .sv-atts { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
 .sv-att { display: inline-flex; align-items: center; gap: 6px; max-width: 200px; padding: 4px 6px 4px 8px; font-size: 12px; color: var(--sv-text-2); background: var(--sv-raised); border: 1px solid var(--sv-line); border-radius: var(--sv-r-sm); }

@@ -84,6 +84,7 @@ export function StudioV2Client({ initialSessionId }: { initialSessionId?: string
       publishUrl={s.publishUrl} publishing={s.publishing} canPublish={s.canPublish} onPublish={s.publish}
       canDownload={s.canDownload} downloading={s.downloading} onDownload={s.download}
       onSelect={s.select} onNew={s.newProject} onDelete={s.deleteSession} onSend={s.send} onStop={s.stop}
+      queued={s.queued} onQueuePrompt={s.enqueuePrompt} onCancelQueued={s.cancelQueued}
       onRefreshTree={s.refreshTree}
       attachments={s.attachments} uploading={s.uploading} onAddFiles={s.addFiles} onRemoveAttachment={s.removeAttachment}
       outOfCredits={s.outOfCredits} checkPromptQuality={s.checkPromptQuality}

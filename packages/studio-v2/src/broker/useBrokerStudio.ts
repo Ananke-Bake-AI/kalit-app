@@ -124,6 +124,19 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   const [baseMessages, setBaseMessages] = useState<Message[]>([]); // persistés
   const [live, setLive] = useState<{ segments: Segment[]; thinking: string } | null>(null);
   const [streaming, setStreaming] = useState(false);
+  // File d'attente de prompts (Phase 2·a) : envoyer pendant un tour n'échoue plus,
+  // ça empile ; on draine le suivant à la fin du tour (effet plus bas). Client-side
+  // et scopé à la session active → vidée au changement de session.
+  const [queued, setQueued] = useState<string[]>([]);
+  const queuedRef = useRef<string[]>([]);
+  useEffect(() => { queuedRef.current = queued; }, [queued]);
+  const enqueuePrompt = useCallback((text: string) => {
+    const t = text.trim();
+    if (t) setQueued((q) => [...q, t]);
+  }, []);
+  const cancelQueued = useCallback((i: number) => {
+    setQueued((q) => q.filter((_, idx) => idx !== i));
+  }, []);
   const [activity, setActivity] = useState<Activity | null>(null);
   const [liveError, setLiveError] = useState<string | null>(null); // survit à loadMessages
   const [tree, setTree] = useState<FileNode[]>([]);
@@ -416,6 +429,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   }, []);
 
   const select = useCallback((id: string) => {
+    setQueued([]); // la file d'attente est scopée à la session active
     // activeRef mis à jour SYNCHRONEMENT : sur une re-souscription (curseur > 0),
     // le broker envoie session_attached immédiatement (sans session_context) —
     // si activeRef pointait encore sur l'ancienne session, la frame serait
@@ -582,12 +596,25 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     }
   }, [pending, ensureSession, uploadPending, pushError, client, lang, loadSessions]);
 
+  // Drain la file d'attente : quand le tour se termine (streaming → false) et qu'il
+  // reste des prompts empilés, on envoie le suivant. sendRef évite un cycle de deps
+  // (send dépend de beaucoup d'états). Petit délai pour laisser la finalisation poser.
+  const sendRef = useRef(send);
+  useEffect(() => { sendRef.current = send; }, [send]);
+  useEffect(() => {
+    if (streaming || queuedRef.current.length === 0) return;
+    const next = queuedRef.current[0];
+    setQueued((q) => q.slice(1));
+    const id = setTimeout(() => sendRef.current(next), 250);
+    return () => clearTimeout(id);
+  }, [streaming]);
+
   const stop = useCallback(async () => {
     if (activeId) await client.fetch(`/api/broker/cancel/${activeId}`, { method: 'POST' }).catch(() => {});
     setStreaming(false); setActivity(null);
   }, [activeId, client]);
 
-  const newProject = useCallback(() => { setActiveId(null); setBaseMessages([]); setLive(null); setStreaming(false); setActivity(null); setPending([]); setOutOfCredits(false); setCtxPercent(null); }, []);
+  const newProject = useCallback(() => { setActiveId(null); setBaseMessages([]); setLive(null); setStreaming(false); setActivity(null); setPending([]); setQueued([]); setOutOfCredits(false); setCtxPercent(null); }, []);
 
   // Suppression d'une session. mode='session' → DELETE la session seule ; mode
   // ='project' → DELETE le projet lié (le broker cascade : deploy + archive R2 +
@@ -655,5 +682,5 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     return lv === 'enrich' || lv === 'rich' || lv === 'none' ? lv : null;
   }, [api]);
 
-  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, publishResult, clearPublishResult: () => setPublishResult(null), deployBlocked, dismissDeployBlocked: () => setDeployBlocked(false), storage, storageBlocked, dismissStorageBlocked: () => setStorageBlocked(false), domain, connectDomain, removeDomain, canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, checkPromptQuality, socketStatus: socket.status, select, newProject, send, stop, deleteSession, setModel, precision, setPrecision, publish, download, refreshTree, reloadSessions: loadSessions, shareSession, canShare: !!activeId && messages.length > 0 };
+  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, publishResult, clearPublishResult: () => setPublishResult(null), deployBlocked, dismissDeployBlocked: () => setDeployBlocked(false), storage, storageBlocked, dismissStorageBlocked: () => setStorageBlocked(false), domain, connectDomain, removeDomain, canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, checkPromptQuality, socketStatus: socket.status, queued, enqueuePrompt, cancelQueued, select, newProject, send, stop, deleteSession, setModel, precision, setPrecision, publish, download, refreshTree, reloadSessions: loadSessions, shareSession, canShare: !!activeId && messages.length > 0 };
 }
