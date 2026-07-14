@@ -130,9 +130,21 @@ export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing
         <span className={'sv-tab' + (mode === 'preview' ? ' sv-tab--on' : '')} onClick={() => onMode('preview')}><IconEye width={14} height={14} style={{ verticalAlign: '-2px', marginRight: 5 }} />{t.preview}</span>
         <span className={'sv-tab' + (mode === 'files' ? ' sv-tab--on' : '')} onClick={() => onMode('files')}><IconCode width={14} height={14} style={{ verticalAlign: '-2px', marginRight: 5 }} />{t.files}</span>
         <div className="sv-prev__bar-r">
-          {publishUrl
-            ? <a className="sv-btn sv-live" href={publishUrl} target="_blank" rel="noreferrer" title={t.onlineSite}><span className="sv-live__dot" /> {t.online}</a>
-            : <button className="sv-btn sv-btn--primary" disabled={!canPublish || publishing} onClick={doPublish} title={!canPublish ? t.cantPublish : t.publish}>{publishing && <span className="sv-btn__spin" />}{publishing ? t.publishing : t.publish}</button>}
+          {/* Publié → lien "Online" (voir le site live) + bouton "Republier" (re-déployer
+              les changements). Non publié → juste le bouton "Publier". Les deux coexistent
+              quand c'est publié : on garde toujours l'accès au re-déploiement. */}
+          {publishUrl && (
+            <a className="sv-btn sv-live" href={publishUrl} target="_blank" rel="noreferrer" title={t.onlineSite}><span className="sv-live__dot" /> {t.online}</a>
+          )}
+          <button
+            className="sv-btn sv-btn--primary"
+            disabled={!canPublish || publishing}
+            onClick={doPublish}
+            title={!canPublish ? t.cantPublish : publishUrl ? t.republish : t.publish}
+          >
+            {publishing && <span className="sv-btn__spin" />}
+            {publishing ? t.publishing : publishUrl ? t.republish : t.publish}
+          </button>
           {publishUrl && onConnectDomain && onRemoveDomain && (
             <button className={'sv-btn sv-btn--ghost' + (hasDomain ? ' sv-btn--on' : '')} title={t.domain.manage} onClick={() => setDomainOpen(true)}>{t.domain.manage}</button>
           )}

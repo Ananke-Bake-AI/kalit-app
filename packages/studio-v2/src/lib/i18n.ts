@@ -7,6 +7,7 @@ export interface Strings {
   preview: string;
   files: string;
   publish: string;
+  republish: string;
   publishing: string;
   online: string;
   onlineSite: string;
@@ -93,6 +94,7 @@ const fr: Strings = {
   preview: 'Aperçu',
   files: 'Fichiers',
   publish: 'Publier',
+  republish: 'Republier',
   publishing: 'Publication…',
   online: 'en ligne',
   onlineSite: 'Site en ligne',
@@ -248,6 +250,7 @@ const en: Strings = {
   preview: 'Preview',
   files: 'Files',
   publish: 'Publish',
+  republish: 'Republish',
   publishing: 'Publishing…',
   online: 'live',
   onlineSite: 'Live site',

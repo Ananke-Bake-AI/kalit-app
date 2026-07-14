@@ -14,7 +14,7 @@ import { stringsFor, type Strings } from '../lib/i18n';
 export interface DnsRecord { type: string; name: string; value: string; }
 export interface DomainState { customDomain: string | null; status: string | null; dnsRecords: DnsRecord[] | null; }
 export interface PublishResult { phase: 'ok' | 'too_large' | 'error'; url?: string | null; sizeBytes?: number; limitBytes?: number; }
-interface PublishInfo { subdomainUrl?: string | null; customDomain?: string | null; customDomainStatus?: string | null; }
+interface PublishInfo { subdomain?: string | null; subdomainUrl?: string | null; customDomain?: string | null; customDomainStatus?: string | null; }
 
 interface ChatSessionDTO { id: string; title: string | null; model: string; isProcessing?: boolean; createdAt: number; updatedAt: number; projectId?: string; projectDeployed?: boolean; }
 interface ChatMessageDTO { id: string; role: string; content?: string; thinking?: string; tools?: Array<{ name: string; input?: unknown; done?: boolean }>; files?: Array<{ name: string; url: string; mimeType?: string }>; createdAt: number; }
@@ -153,6 +153,12 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   }, []);
   const [projectId, setProjectId] = useState<string | null>(null);
   const [publishUrl, setPublishUrl] = useState<string | null>(null);
+  // Slug du sous-domaine déjà publié. Un RE-publish doit le réutiliser tel quel —
+  // sinon on re-dérive du titre (qui a pu changer) et on déploierait sur une
+  // NOUVELLE URL en orphelinant l'ancienne. Ref pour le lire dans le callback publish.
+  const [subdomain, setSubdomain] = useState<string | null>(null);
+  const subdomainRef = useRef<string | null>(null);
+  useEffect(() => { subdomainRef.current = subdomain; }, [subdomain]);
   const [publishing, setPublishing] = useState(false);
   const [publishResult, setPublishResult] = useState<PublishResult | null>(null); // résultat du dernier publish (modal)
   const [deployBlocked, setDeployBlocked] = useState(false); // backend project → publish refused (modal)
@@ -235,12 +241,13 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
 
   // Publish + custom domain : état courant du déploiement de la session active.
   useEffect(() => {
-    if (!projectId) { setPublishUrl(null); setDomain({ customDomain: null, status: null, dnsRecords: null }); return; }
+    if (!projectId) { setPublishUrl(null); setSubdomain(null); setDomain({ customDomain: null, status: null, dnsRecords: null }); return; }
     let stop = false;
     api.json<{ data?: PublishInfo } & PublishInfo>(`/api/broker/project/${projectId}/publish`).then((raw) => {
       if (stop) return;
       const d = raw?.data ?? raw;
       setPublishUrl(d?.subdomainUrl ?? null);
+      setSubdomain(d?.subdomain ?? null);
       setDomain((prev) => ({ customDomain: d?.customDomain ?? null, status: d?.customDomainStatus ?? null, dnsRecords: prev.dnsRecords }));
     });
     return () => { stop = true; };
@@ -264,14 +271,19 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   const publish = useCallback(async () => {
     if (!projectId) return;
     setPublishing(true);
-    const slug = (sessions.find((s) => s.id === activeRef.current)?.title || 'kalit')
-      .toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'kalit';
+    // RE-publish : r\u00e9utiliser le sous-domaine d\u00e9j\u00e0 publi\u00e9 (URL stable). Sinon
+    // (1\u00e8re publication) le d\u00e9river du titre de session.
+    const slug = subdomainRef.current
+      || (sessions.find((s) => s.id === activeRef.current)?.title || 'kalit')
+        .toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'kalit';
     setPublishResult(null);
     const r = await client.fetch(`/api/broker/project/${projectId}/publish`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'subdomain', slug }) }).catch(() => null);
     if (r && r.ok) {
       const d = await r.json().catch(() => null);
-      const url = (d?.data ?? d)?.subdomainUrl ?? null;
+      const payload = (d?.data ?? d);
+      const url = payload?.subdomainUrl ?? null;
       setPublishUrl(url);
+      setSubdomain(payload?.subdomain ?? slug);
       setPublishResult({ phase: 'ok', url });
     }
     // 422 = backend project → publishing is front-end only for now.
