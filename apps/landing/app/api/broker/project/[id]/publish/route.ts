@@ -62,6 +62,11 @@ export async function POST(
     success?: boolean
     data?: unknown
     error?: string
+    // 413 "site too large" carries the real size — the studio shows it so the
+    // user knows how much to trim. Must be forwarded (was dropped → "0 MB").
+    code?: string
+    sizeBytes?: number
+    limitBytes?: number
   }
   const payload = body && typeof body === "object" && "data" in body ? body.data : body
 
@@ -76,7 +81,17 @@ export async function POST(
   }
 
   return NextResponse.json(
-    res.ok ? { success: true, data: payload } : { success: false, error: body?.error || "Failed" },
+    res.ok
+      ? { success: true, data: payload }
+      : {
+          success: false,
+          error: body?.error || "Failed",
+          // Forward the too-large size fields so the studio shows the real MB
+          // instead of "0 MB" (413 = site over Vercel's 10 MB upload limit).
+          ...(body?.code ? { code: body.code } : {}),
+          ...(typeof body?.sizeBytes === "number" ? { sizeBytes: body.sizeBytes } : {}),
+          ...(typeof body?.limitBytes === "number" ? { limitBytes: body.limitBytes } : {}),
+        },
     { status: res.status },
   )
 }
