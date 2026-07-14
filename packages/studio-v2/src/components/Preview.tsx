@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import type { FileNode, PreviewMode } from '../lib/types';
-import { IconCode, IconExpand, IconEye, IconFolder, IconFile, IconRefresh, IconLogo, IconDownload } from '../lib/icons';
+import { IconCode, IconExpand, IconEye, IconFolder, IconFile, IconRefresh, IconLogo, IconDownload, IconUsers } from '../lib/icons';
 import { useStrings } from '../lib/i18n';
 import { DomainManager } from './DomainManager';
+import { ShareDialog } from './ShareDialog';
 import { PublishModal } from './PublishModal';
-import type { DomainState, PublishResult } from '../broker/useBrokerStudio';
+import type { DomainState, PublishResult, ProjectInvite } from '../broker/useBrokerStudio';
 
 // Icônes décoratives par suggestion (même ordre que t.suggestions, fr/en alignés).
 const SUG_ICONS = [
@@ -48,6 +49,10 @@ interface Props {
   onRemoveDomain?: () => void;
   publishResult?: PublishResult | null;
   onClearPublishResult?: () => void;
+  canShareProject?: boolean;
+  onCreateInvite?: (opts: { role: 'viewer' | 'editor'; email?: string }) => Promise<{ token: string; url: string } | null>;
+  onListInvites?: () => Promise<ProjectInvite[]>;
+  onRevokeInvite?: (token: string) => Promise<boolean>;
 }
 
 function fmt(b?: number) {
@@ -117,10 +122,12 @@ function PreviewEmpty({ building, hasMessages, onSuggest }: { building?: boolean
   );
 }
 
-export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing, canPublish, onPublish, canDownload, downloading, onDownload, onRefresh, onOpen, building, hasMessages, onSuggest, domain, onConnectDomain, onRemoveDomain, publishResult, onClearPublishResult }: Props) {
+export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing, canPublish, onPublish, canDownload, downloading, onDownload, onRefresh, onOpen, building, hasMessages, onSuggest, domain, onConnectDomain, onRemoveDomain, publishResult, onClearPublishResult, canShareProject, onCreateInvite, onListInvites, onRevokeInvite }: Props) {
   const t = useStrings();
   const [domainOpen, setDomainOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
   const [publishOpen, setPublishOpen] = useState(false);
+  const canShare = !!canShareProject && !!onCreateInvite && !!onListInvites && !!onRevokeInvite;
   const hasDomain = !!domain?.customDomain;
   const doPublish = () => { setPublishOpen(true); onPublish(); };
   const closePublish = () => { setPublishOpen(false); onClearPublishResult?.(); };
@@ -145,6 +152,9 @@ export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing
             {publishing && <span className="sv-btn__spin" />}
             {publishing ? t.publishing : publishUrl ? t.republish : t.publish}
           </button>
+          {canShare && (
+            <button className="sv-btn sv-btn--ghost" title={t.invite.title} onClick={() => setShareOpen(true)}><IconUsers width={15} height={15} style={{ verticalAlign: '-3px', marginRight: 5 }} />{t.invite.button}</button>
+          )}
           {publishUrl && onConnectDomain && onRemoveDomain && (
             <button className={'sv-btn sv-btn--ghost' + (hasDomain ? ' sv-btn--on' : '')} title={t.domain.manage} onClick={() => setDomainOpen(true)}>{t.domain.manage}</button>
           )}
@@ -166,6 +176,14 @@ export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing
           onConnect={onConnectDomain}
           onRemove={() => { onRemoveDomain(); }}
           onClose={() => setDomainOpen(false)}
+        />
+      )}
+      {shareOpen && canShare && (
+        <ShareDialog
+          onCreate={onCreateInvite!}
+          onList={onListInvites!}
+          onRevoke={onRevokeInvite!}
+          onClose={() => setShareOpen(false)}
         />
       )}
       {publishOpen && (

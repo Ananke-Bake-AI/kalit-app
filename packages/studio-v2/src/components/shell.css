@@ -326,6 +326,30 @@
 .sv-domain__cf { margin: 8px 0 0; padding: 8px 10px; font-size: 12px; line-height: 1.5; color: var(--sv-text-2); background: color-mix(in srgb, #f5a623 12%, transparent); border: 1px solid color-mix(in srgb, #f5a623 35%, transparent); border-radius: var(--sv-r-sm); }
 .sv-btn--on { border-color: var(--sv-accent); color: var(--sv-accent-2); }
 
+/* Dialog « travailler à plusieurs » : choix du rôle, e-mail, lien d'invitation
+   + liste des invitations actives. Réutilise .sv-modal / .sv-domain__input. */
+.sv-invite__roles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 4px 0 12px; }
+.sv-invite__role { display: flex; flex-direction: column; gap: 3px; text-align: left; padding: 10px 12px; border: 1px solid var(--sv-line); border-radius: var(--sv-r-sm); background: var(--sv-surface-2); color: var(--sv-text); cursor: pointer; }
+.sv-invite__role:hover { border-color: color-mix(in srgb, var(--sv-accent) 45%, var(--sv-line)); }
+.sv-invite__role--on { border-color: var(--sv-accent); background: color-mix(in srgb, var(--sv-accent) 10%, transparent); }
+.sv-invite__role-name { font-size: 13px; font-weight: 600; }
+.sv-invite__role-hint { font-size: 11px; line-height: 1.35; color: var(--sv-text-2); }
+.sv-invite__field { display: block; }
+.sv-invite__label { font-size: 12px; color: var(--sv-text-2); }
+.sv-invite__ready { margin: 10px 0 2px; }
+.sv-invite__linkrow { display: flex; gap: 8px; align-items: center; }
+.sv-invite__link { flex: 1; min-width: 0; font-family: var(--sv-mono, ui-monospace, monospace); font-size: 12px; }
+.sv-invite__list { margin-top: 16px; border-top: 1px solid var(--sv-line); padding-top: 12px; }
+.sv-invite__list-h { font-size: 12px; font-weight: 600; color: var(--sv-text-2); margin-bottom: 8px; }
+.sv-invite__empty { font-size: 13px; color: var(--sv-text-3, var(--sv-text-2)); }
+.sv-invite__item { display: flex; align-items: center; gap: 8px; padding: 6px 0; }
+.sv-invite__item-main { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; font-size: 13px; }
+.sv-invite__tag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; flex-shrink: 0; }
+.sv-invite__tag--viewer { background: color-mix(in srgb, var(--sv-text) 12%, transparent); color: var(--sv-text-2); }
+.sv-invite__tag--editor { background: color-mix(in srgb, var(--sv-accent) 20%, transparent); color: var(--sv-accent-2); }
+.sv-invite__who { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--sv-text-2); }
+.sv-invite__uses { margin-left: auto; font-size: 12px; color: var(--sv-text-3, var(--sv-text-2)); font-variant-numeric: tabular-nums; flex-shrink: 0; }
+
 /* Prompt-quality halo : coloration live de la box selon la richesse du prompt.
    low = ambre (succinct), mid = jaune-vert, high = vert (riche). Discret. */
 /* enrich = « le prompt VA être refined » → bordure dégradé multicolore ANIMÉE

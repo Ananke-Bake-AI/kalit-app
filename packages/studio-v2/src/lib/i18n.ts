@@ -88,6 +88,12 @@ export interface Strings {
     button: string; title: string; consent: string; create: string; anyone: string;
     copied: string; copy: string; copiedBtn: string; open: string; stop: string; close: string;
   };
+  invite: {
+    button: string; title: string; sub: string; roleLabel: string; viewer: string; editor: string;
+    viewerHint: string; editorHint: string; emailLabel: string; emailPlaceholder: string;
+    create: string; creating: string; linkReady: string; copy: string; copied: string;
+    activeTitle: string; noInvites: string; revoke: string; anyoneCan: string; boundTo: string; close: string;
+  };
 }
 
 const fr: Strings = {
@@ -245,6 +251,29 @@ const fr: Strings = {
     stop: 'Arrêter le partage',
     close: 'Fermer',
   },
+  invite: {
+    button: 'Inviter',
+    title: 'Travailler à plusieurs',
+    sub: 'Invite quelqu’un à collaborer sur ce projet. Il pourra l’ouvrir depuis son propre compte.',
+    roleLabel: 'Rôle',
+    viewer: 'Lecture',
+    editor: 'Édition',
+    viewerHint: 'Peut voir le projet et son aperçu.',
+    editorHint: 'Peut voir et modifier le projet.',
+    emailLabel: 'E-mail (optionnel)',
+    emailPlaceholder: 'lié à cette adresse, ou vide pour un lien ouvert',
+    create: 'Créer le lien',
+    creating: 'Création…',
+    linkReady: 'Lien d’invitation prêt — envoie-le à ton collaborateur :',
+    copy: 'Copier',
+    copied: 'Copié',
+    activeTitle: 'Invitations actives',
+    noInvites: 'Aucune invitation active.',
+    revoke: 'Révoquer',
+    anyoneCan: 'Toute personne avec le lien',
+    boundTo: 'Réservé à',
+    close: 'Fermer',
+  },
 };
 
 const en: Strings = {
@@ -400,6 +429,29 @@ const en: Strings = {
     copiedBtn: 'Copied',
     open: 'Open',
     stop: 'Stop sharing',
+    close: 'Close',
+  },
+  invite: {
+    button: 'Invite',
+    title: 'Work together',
+    sub: 'Invite someone to collaborate on this project. They’ll be able to open it from their own account.',
+    roleLabel: 'Role',
+    viewer: 'Viewer',
+    editor: 'Editor',
+    viewerHint: 'Can view the project and its preview.',
+    editorHint: 'Can view and edit the project.',
+    emailLabel: 'Email (optional)',
+    emailPlaceholder: 'bind to this address, or leave empty for an open link',
+    create: 'Create link',
+    creating: 'Creating…',
+    linkReady: 'Invite link ready — send it to your collaborator:',
+    copy: 'Copy',
+    copied: 'Copied',
+    activeTitle: 'Active invitations',
+    noInvites: 'No active invitations.',
+    revoke: 'Revoke',
+    anyoneCan: 'Anyone with the link',
+    boundTo: 'Bound to',
     close: 'Close',
   },
 };

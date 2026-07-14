@@ -14,6 +14,9 @@ import { stringsFor, type Strings } from '../lib/i18n';
 export interface DnsRecord { type: string; name: string; value: string; }
 export interface DomainState { customDomain: string | null; status: string | null; dnsRecords: DnsRecord[] | null; }
 export interface PublishResult { phase: 'ok' | 'too_large' | 'error'; url?: string | null; sizeBytes?: number; limitBytes?: number; }
+// Une invitation de partage de projet (collaboration à plusieurs). token = l'id
+// de l'invite, url = le lien à envoyer, uses/maxUses = compteur d'acceptations.
+export interface ProjectInvite { token: string; email: string; role: string; maxUses: number; uses: number; url: string; }
 interface PublishInfo { subdomain?: string | null; subdomainUrl?: string | null; customDomain?: string | null; customDomainStatus?: string | null; }
 
 interface ChatSessionDTO { id: string; title: string | null; model: string; isProcessing?: boolean; createdAt: number; updatedAt: number; projectId?: string; projectDeployed?: boolean; }
@@ -329,6 +332,32 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     await client.fetch(`/api/broker/project/${projectId}/publish`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'remove-domain' }) }).catch(() => {});
     setDomain({ customDomain: null, status: null, dnsRecords: null });
   }, [projectId, client]);
+
+  // ── Collaboration : invitations de projet (travailler à plusieurs) ──
+  // Un invité qui ouvre le lien et l'accepte devient membre (viewer/editor) du
+  // MÊME projet (workspace partagé, clé external_project_id). Créer/lister/révoquer
+  // sont réservés au propriétaire côté broker ; on passe par le proxy Next signé.
+  const createInvite = useCallback(async (
+    opts: { role?: 'viewer' | 'editor'; email?: string; maxUses?: number; ttlHours?: number } = {},
+  ): Promise<{ token: string; url: string } | null> => {
+    if (!projectId) return null;
+    const d = await api.json<{ data?: { token: string; url: string } }>('/api/broker/invite/create', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ projectId, role: opts.role || 'viewer', email: opts.email || undefined, maxUses: opts.maxUses, ttlHours: opts.ttlHours }),
+    });
+    return d?.data ?? null;
+  }, [projectId, api]);
+
+  const listInvites = useCallback(async (): Promise<ProjectInvite[]> => {
+    if (!projectId) return [];
+    const d = await api.json<{ data?: { invites?: ProjectInvite[] } }>(`/api/broker/invite/list?projectId=${projectId}`);
+    return d?.data?.invites ?? [];
+  }, [projectId, api]);
+
+  const revokeInvite = useCallback(async (token: string): Promise<boolean> => {
+    const r = await client.fetch(`/api/broker/invite/${token}/revoke`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' }).catch(() => null);
+    return !!(r && r.ok);
+  }, [client]);
 
   // Download ZIP du projet. Passe par la route Next /api/repositories/<id>/download
   // (auth NextAuth côté serveur + stream fiable) → blob → téléchargement navigateur.
@@ -682,5 +711,5 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     return lv === 'enrich' || lv === 'rich' || lv === 'none' ? lv : null;
   }, [api]);
 
-  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, publishResult, clearPublishResult: () => setPublishResult(null), deployBlocked, dismissDeployBlocked: () => setDeployBlocked(false), storage, storageBlocked, dismissStorageBlocked: () => setStorageBlocked(false), domain, connectDomain, removeDomain, canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, checkPromptQuality, socketStatus: socket.status, queued, enqueuePrompt, cancelQueued, select, newProject, send, stop, deleteSession, setModel, precision, setPrecision, publish, download, refreshTree, reloadSessions: loadSessions, shareSession, canShare: !!activeId && messages.length > 0 };
+  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, publishResult, clearPublishResult: () => setPublishResult(null), deployBlocked, dismissDeployBlocked: () => setDeployBlocked(false), storage, storageBlocked, dismissStorageBlocked: () => setStorageBlocked(false), domain, connectDomain, removeDomain, canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, checkPromptQuality, socketStatus: socket.status, queued, enqueuePrompt, cancelQueued, select, newProject, send, stop, deleteSession, setModel, precision, setPrecision, publish, download, refreshTree, reloadSessions: loadSessions, shareSession, canShare: !!activeId && messages.length > 0, canShareProject: !!projectId, createInvite, listInvites, revokeInvite };
 }
