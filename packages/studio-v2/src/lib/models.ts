@@ -38,7 +38,7 @@ export const MODEL_GROUPS: ModelGroup[] = [
     // `runpod/*`. Offre premium payante — facturé au tier Opus (cf. billing.go).
     label: 'Permissive models',
     models: [
-      { id: 'runpod/qwen-instruct', label: 'Qwen 3.5 9B — uncensored', provider: 'openai' },
+      { id: 'runpod/qwen-instruct', label: 'Qwen2.5-Coder 32B — uncensored', provider: 'openai' },
     ],
   },
   {
