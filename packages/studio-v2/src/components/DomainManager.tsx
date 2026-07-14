@@ -74,6 +74,7 @@ export function DomainManager({ domain, onConnect, onRemove, onClose }: Props) {
                     </div>
                   ))}
                 </div>
+                <p className="sv-domain__cf">⚠️ {st.domain.cloudflareHint}</p>
               </>
             ) : domain.status === 'pending' ? (
               <p className="sv-modal__sub">{st.domain.verifying}</p>

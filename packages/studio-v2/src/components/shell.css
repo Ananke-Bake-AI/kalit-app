@@ -317,6 +317,7 @@
 .sv-domain__type { font-weight: 700; color: var(--sv-accent-2); }
 .sv-domain__name { color: var(--sv-text-2); }
 .sv-domain__val { color: var(--sv-text); overflow-wrap: anywhere; }
+.sv-domain__cf { margin: 8px 0 0; padding: 8px 10px; font-size: 12px; line-height: 1.5; color: var(--sv-text-2); background: color-mix(in srgb, #f5a623 12%, transparent); border: 1px solid color-mix(in srgb, #f5a623 35%, transparent); border-radius: var(--sv-r-sm); }
 .sv-btn--on { border-color: var(--sv-accent); color: var(--sv-accent-2); }
 
 /* Prompt-quality halo : coloration live de la box selon la richesse du prompt.

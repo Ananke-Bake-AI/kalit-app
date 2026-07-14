@@ -71,7 +71,7 @@ export interface Strings {
   domain: {
     manage: string; title: string; sub: string; placeholder: string;
     connect: string; connecting: string; active: string; pending: string;
-    dnsHint: string; verifying: string; visit: string; remove: string; error: string;
+    dnsHint: string; cloudflareHint: string; verifying: string; visit: string; remove: string; error: string;
   };
   pub: {
     publishing: string; publishingSub: string; okTitle: string; okSub: string; visit: string;
@@ -195,6 +195,7 @@ const fr: Strings = {
     active: 'Actif',
     pending: 'En attente',
     dnsHint: 'Ajoute ces enregistrements chez ton registrar. La vérification peut prendre quelques minutes.',
+    cloudflareHint: 'Domaine derrière Cloudflare ? Passe l’enregistrement en « DNS only » (nuage gris), ou mets SSL/TLS sur « Full » — sinon tu auras une boucle de redirection (ERR_TOO_MANY_REDIRECTS).',
     verifying: 'Vérification du DNS en cours…',
     visit: 'Visiter',
     remove: 'Retirer',
@@ -349,6 +350,7 @@ const en: Strings = {
     active: 'Active',
     pending: 'Pending',
     dnsHint: 'Add these records at your registrar. Verification can take a few minutes.',
+    cloudflareHint: 'Domain behind Cloudflare? Set the record to “DNS only” (grey cloud), or switch SSL/TLS to “Full” — otherwise you’ll get a redirect loop (ERR_TOO_MANY_REDIRECTS).',
     verifying: 'Verifying DNS…',
     visit: 'Visit',
     remove: 'Remove',
