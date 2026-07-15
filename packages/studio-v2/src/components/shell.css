@@ -275,6 +275,10 @@
 .sv-actfeed__body b { color: var(--sv-accent-2); font-weight: 600; }
 .sv-actfeed__verb { color: var(--sv-text-2); }
 .sv-actfeed__detail { color: var(--sv-text-3); }
+/* Vignettes (screenshot Playwright, images find-assets) — éphémères. */
+.sv-actfeed__thumbs { display: flex; gap: 6px; padding: 2px 8px 6px 31px; flex-wrap: wrap; }
+.sv-actfeed__thumb { height: 46px; width: auto; max-width: 84px; object-fit: cover; border-radius: 6px;
+  border: 1px solid var(--sv-line); background: var(--sv-surface-2); }
 /* Tip rotatif */
 .sv-tip { width: min(460px, 94%); background: var(--sv-raised); border: 1px solid var(--sv-line);
   border-left: 2px solid var(--sv-accent); border-radius: var(--sv-r); padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; }

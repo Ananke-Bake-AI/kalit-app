@@ -17,11 +17,13 @@ function treeHasSite(nodes: FileNode[]): boolean {
   let count = 0;
   const walk = (ns: FileNode[]): boolean => {
     for (const n of ns) {
-      if (!n.dir) {
-        if (/\.html?$/i.test(n.name)) return true;
-        if (!/^\./.test(n.name)) count++;
+      if (n.dir) {
+        if (n.name === '.feed' || n.name === '.playwright-mcp') continue; // artefacts de suivi, pas le site
+        if (n.children && walk(n.children)) return true;
+        continue;
       }
-      if (n.children && walk(n.children)) return true;
+      if (/\.html?$/i.test(n.name)) return true;
+      if (!/^\./.test(n.name)) count++;
     }
     return false;
   };

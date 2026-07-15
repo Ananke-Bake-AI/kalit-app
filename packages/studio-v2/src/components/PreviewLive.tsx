@@ -45,17 +45,28 @@ function ActivityRows({ steps, max = 4 }: { steps: ActivityStep[]; max?: number 
       {shown.map((s) => {
         const { verb, target, detail } = stepText(s, t);
         return (
-          <div key={s.key} className={'sv-actfeed__row' + (s.status === 'running' ? ' sv-actfeed__row--now' : '')}>
-            <span className="sv-actfeed__st">
-              {s.status === 'running' ? <span className="sv-actfeed__dot" />
-                : s.status === 'error' ? <span className="sv-actfeed__x">✕</span>
-                : <span className="sv-actfeed__chk">✓</span>}
-            </span>
-            <span className="sv-actfeed__body">
-              <span className="sv-actfeed__verb">{verb}</span>
-              {target && <> <b>{target}</b></>}
-              {detail && <span className="sv-actfeed__detail"> {detail}</span>}
-            </span>
+          <div key={s.key}>
+            <div className={'sv-actfeed__row' + (s.status === 'running' ? ' sv-actfeed__row--now' : '')}>
+              <span className="sv-actfeed__st">
+                {s.status === 'running' ? <span className="sv-actfeed__dot" />
+                  : s.status === 'error' ? <span className="sv-actfeed__x">✕</span>
+                  : <span className="sv-actfeed__chk">✓</span>}
+              </span>
+              <span className="sv-actfeed__body">
+                <span className="sv-actfeed__verb">{verb}</span>
+                {target && <> <b>{target}</b></>}
+                {detail && <span className="sv-actfeed__detail"> {detail}</span>}
+              </span>
+            </div>
+            {s.thumbs && s.thumbs.length > 0 && (
+              <div className="sv-actfeed__thumbs">
+                {s.thumbs.map((u, k) => (
+                  // Vignettes éphémères (RAM) : masquées silencieusement si l'URL rate.
+                  <img key={k} className="sv-actfeed__thumb" src={u} alt="" loading="lazy"
+                    onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
+                ))}
+              </div>
+            )}
           </div>
         );
       })}

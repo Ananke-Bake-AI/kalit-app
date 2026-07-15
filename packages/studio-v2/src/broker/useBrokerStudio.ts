@@ -252,7 +252,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   }, [api]);
 
   // Preview + file-tree : poll workspace-tree de la session active (contrat §4).
-  const HIDDEN = new Set(['node_modules', '.pnpm-store', '.git', '.claude']);
+  const HIDDEN = new Set(['node_modules', '.pnpm-store', '.git', '.claude', '.feed', '.playwright-mcp']);
   const mapNode = useCallback((n: { name: string; path: string; type?: string; size?: number; children?: unknown[] }): FileNode => {
     const dir = n.type === 'directory' || Array.isArray(n.children);
     const collapsed = dir && HIDDEN.has(n.name);

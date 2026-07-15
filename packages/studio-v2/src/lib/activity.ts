@@ -15,6 +15,20 @@ export interface ActivityStep {
   target?: string;   // fichier / URL / commande / requête
   detail?: string;   // « 2,3 ko », « 14 images »…
   status: 'running' | 'done' | 'error';
+  thumbs?: string[]; // vignettes (screenshot Playwright, images find-assets)
+}
+
+// Le worker peut annexer des URLs de vignettes au texte du tool_result via un
+// marqueur __THUMBS__:[...]. Éphémères (RAM), affichées best-effort (onError→masquer).
+function extractThumbs(result?: string): string[] | undefined {
+  if (!result) return undefined;
+  const m = result.match(/__THUMBS__:(\[[^\]]*\])/);
+  if (!m) return undefined;
+  try {
+    const arr = JSON.parse(m[1]);
+    if (Array.isArray(arr)) { const urls = arr.filter((u) => typeof u === 'string' && u).slice(0, 6); return urls.length ? urls : undefined; }
+  } catch { /* ignore */ }
+  return undefined;
 }
 
 // Extraction robuste d'un champ string d'un JSON possiblement tronqué à 200 car.
@@ -111,7 +125,11 @@ export function deriveActivity(
   for (const seg of segments) {
     if (seg.kind === 'tool') {
       const st = stepFromTool(seg, toolIdx++, sizeOf);
-      if (st) steps.push(st);
+      if (st) {
+        const thumbs = extractThumbs(seg.result);
+        if (thumbs) st.thumbs = thumbs;
+        steps.push(st);
+      }
     }
   }
   if (thinkingActive && steps.every((s) => s.status !== 'running')) {
