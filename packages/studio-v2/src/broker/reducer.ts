@@ -86,9 +86,19 @@ export class StreamReducer {
       }
 
       case 'tool_result': {
+        // On conserve le texte du résultat (≤300 car côté worker) sur le segment
+        // tool : sert au feed d'activité (« 14 images trouvées », erreurs…). Jeté
+        // jusqu'ici. `text` ou `content` selon la source ; `isError` si échec.
+        const resText = (ev as { text?: string; content?: string }).text ?? (ev as { content?: string }).content;
+        const isErr = (ev as { isError?: boolean }).isError === true;
         for (let i = this.segments.length - 1; i >= 0; i--) {
           const s = this.segments[i];
-          if (s.kind === 'tool' && !s.done) { s.done = true; break; }
+          if (s.kind === 'tool' && !s.done) {
+            s.done = true;
+            if (typeof resText === 'string' && resText) s.result = resText;
+            if (isErr) s.isError = true;
+            break;
+          }
         }
         this.onChange();
         return 'ongoing';

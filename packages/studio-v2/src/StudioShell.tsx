@@ -70,6 +70,7 @@ export interface StudioShellProps {
   onRemoveDomain?: () => void;
   publishResult?: PublishResult | null;
   onClearPublishResult?: () => void;
+  previewActivity?: { steps: import('./lib/activity').ActivityStep[]; fileWrite: boolean };
   checkPromptQuality?: (text: string) => Promise<'none' | 'enrich' | 'rich' | null>;
   isAdmin?: boolean;
   precision?: boolean;
@@ -192,6 +193,8 @@ export function StudioShell(props: StudioShellProps) {
         canDownload={!!props.canDownload} downloading={!!props.downloading} onDownload={props.onDownload ?? (() => {})}
         onRefresh={props.onRefreshTree} onOpen={() => props.previewUrl && window.open(props.previewUrl, '_blank')}
         building={props.streaming} hasMessages={props.messages.length > 0} onSuggest={sendSuggest}
+        activitySteps={props.previewActivity?.steps} fileWrite={props.previewActivity?.fileWrite}
+        onFocusChat={() => setPane('chat')}
         domain={props.domain} onConnectDomain={props.onConnectDomain} onRemoveDomain={props.onRemoveDomain}
         publishResult={props.publishResult} onClearPublishResult={props.onClearPublishResult}
         canShareProject={props.canShareProject} onCreateInvite={props.onCreateInvite} onListInvites={props.onListInvites} onRevokeInvite={props.onRevokeInvite}

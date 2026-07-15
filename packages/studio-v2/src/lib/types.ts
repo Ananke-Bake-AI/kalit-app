@@ -19,7 +19,7 @@ export interface ChoiceOption { label: string; description?: string; }
 export type Segment =
   | { kind: 'text'; content: string }
   | { kind: 'thinking'; content: string }
-  | { kind: 'tool'; name: string; input?: string; inputFull?: string; done?: boolean }
+  | { kind: 'tool'; name: string; input?: string; inputFull?: string; done?: boolean; result?: string; isError?: boolean }
   | { kind: 'file'; name: string; url: string; mimeType?: string }
   | { kind: 'error'; content: string }
   | { kind: 'refinement'; content: string }

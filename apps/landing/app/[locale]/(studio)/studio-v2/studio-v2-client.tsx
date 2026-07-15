@@ -95,6 +95,7 @@ export function StudioV2Client({ initialSessionId }: { initialSessionId?: string
       storage={s.storage} storageBlocked={s.storageBlocked} onDismissStorageBlocked={s.dismissStorageBlocked}
       domain={s.domain} onConnectDomain={s.connectDomain} onRemoveDomain={s.removeDomain}
       publishResult={s.publishResult} onClearPublishResult={s.clearPublishResult}
+      previewActivity={s.previewActivity}
       onShare={s.shareSession} canShare={s.canShare}
       canShareProject={s.canShareProject} onCreateInvite={s.createInvite} onListInvites={s.listInvites} onRevokeInvite={s.revokeInvite}
     />

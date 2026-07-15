@@ -43,6 +43,16 @@ export interface Strings {
   modelUnavailable: string;
   modelOffline: string;
   sharedProject: string;
+  previewTips: string[];
+  preview2: {
+    noSiteTitle: string; noSiteSub: string; describeCta: string; examplesCta: string;
+    buildingTitle: string; buildingSub: string; activityLabel: string; comingUp: string;
+    modifying: string; updated: string; respondingChat: string; tipLabel: string;
+  };
+  act: {
+    think: string; write: string; edit: string; read: string; bash: string; search: string;
+    navigate: string; screenshot: string; resize: string; console: string; assets: string; task: string; tool: string;
+  };
   validate: string;
   running: string;
   stop: string;
@@ -149,6 +159,35 @@ const fr: Strings = {
   modelUnavailable: 'Modèle indisponible pour le moment',
   modelOffline: 'indispo',
   sharedProject: 'Projet partagé avec toi',
+  previewTips: [
+    "Colle l'URL d'un site que tu aimes : l'agent peut s'en inspirer pour le style.",
+    'Sois précis sur le style et l\'audience — « épuré, pour du B2B tech » bat « joli site ».',
+    'Glisse-dépose tes images dans le chat, elles sont intégrées automatiquement.',
+    'Dis « ajoute une section FAQ » (ou tarifs, contact…) pour itérer sans tout redécrire.',
+    'Après publication, connecte ton propre nom de domaine en quelques minutes.',
+    'Une couleur ou une mise en page ne te plaît pas ? Dis-le simplement, pas besoin de recommencer.',
+    'Invite un collaborateur en lecture ou en édition pour bosser à plusieurs sur le projet.',
+    'Tu peux continuer à écrire pendant que l\'agent travaille — ton message partira juste après.',
+  ],
+  preview2: {
+    noSiteTitle: 'Pas encore de site pour ce projet',
+    noSiteSub: 'L\'agent t\'a répondu dans le chat. Quand tu es prêt·e, décris le site à construire et il apparaîtra ici en direct.',
+    describeCta: 'Décrire mon site',
+    examplesCta: 'Voir des exemples',
+    buildingTitle: 'Génération en cours',
+    buildingSub: 'L\'aperçu apparaîtra tout seul dès que le site est servable.',
+    activityLabel: 'Activité de l\'agent',
+    comingUp: '{n} à venir',
+    modifying: 'L\'agent modifie ton site',
+    updated: 'Aperçu à jour',
+    respondingChat: 'L\'agent te répond dans le chat',
+    tipLabel: 'Astuce',
+  },
+  act: {
+    think: 'Réfléchit…', write: 'Écrit', edit: 'Modifie', read: 'Lit', bash: 'Lance', search: 'Cherche',
+    navigate: 'Regarde', screenshot: 'Capture l\'aperçu', resize: 'Teste en', console: 'Vérifie la console',
+    assets: 'Cherche des images', task: 'Délègue à', tool: 'Outil',
+  },
   validate: 'Valider',
   running: 'en cours',
   stop: 'Stop',
@@ -334,6 +373,35 @@ const en: Strings = {
   modelUnavailable: 'Model currently unavailable',
   modelOffline: 'offline',
   sharedProject: 'Shared with you',
+  previewTips: [
+    "Paste the URL of a site you like — the agent can draw inspiration from its style.",
+    'Be specific about style and audience — "clean, for a B2B tech audience" beats "make it nice".',
+    'Drag and drop your images into the chat — they get placed automatically.',
+    'Say "add an FAQ section" (or pricing, contact…) to iterate without rewriting everything.',
+    'Once published, connect your own domain name in just a few minutes.',
+    'Not sold on a color or layout? Just say so — no need to start over.',
+    'Invite a collaborator as viewer or editor to work on the project together.',
+    'You can keep typing while the agent works — your message sends right after.',
+  ],
+  preview2: {
+    noSiteTitle: 'Nothing to preview for this project yet',
+    noSiteSub: 'The agent replied in the chat. When you\'re ready, describe the site to build and it\'ll appear here live.',
+    describeCta: 'Describe my site',
+    examplesCta: 'See examples',
+    buildingTitle: 'Generating',
+    buildingSub: 'Your preview will appear on its own as soon as the site is servable.',
+    activityLabel: 'Agent activity',
+    comingUp: '{n} coming up',
+    modifying: 'The agent is editing your site',
+    updated: 'Preview updated',
+    respondingChat: 'The agent is replying in the chat',
+    tipLabel: 'Tip',
+  },
+  act: {
+    think: 'Thinking…', write: 'Writes', edit: 'Edits', read: 'Reads', bash: 'Runs', search: 'Searches',
+    navigate: 'Looks at', screenshot: 'Captures the preview', resize: 'Tests at', console: 'Checks the console',
+    assets: 'Searches images', task: 'Delegates to', tool: 'Tool',
+  },
   validate: 'Confirm',
   running: 'running',
   stop: 'Stop',

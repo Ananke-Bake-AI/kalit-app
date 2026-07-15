@@ -6,7 +6,27 @@ import { DomainManager } from './DomainManager';
 import { ShareDialog } from './ShareDialog';
 import { Menu, type MenuItem } from './Menu';
 import { PublishModal } from './PublishModal';
+import { BuildingView, NoSiteView, ActivityStrip } from './PreviewLive';
+import type { ActivityStep } from '../lib/activity';
 import type { DomainState, PublishResult, ProjectInvite } from '../broker/useBrokerStudio';
+
+// Un site servable existe-t-il dans le workspace ? previewUrl est non-null dès que
+// le projet existe (même 0 fichier) → mauvais signal. La vérité = l'arbre contient
+// un fichier HTML (ou assez de fichiers). Sinon on montre l'état build/vide.
+function treeHasSite(nodes: FileNode[]): boolean {
+  let count = 0;
+  const walk = (ns: FileNode[]): boolean => {
+    for (const n of ns) {
+      if (!n.dir) {
+        if (/\.html?$/i.test(n.name)) return true;
+        if (!/^\./.test(n.name)) count++;
+      }
+      if (n.children && walk(n.children)) return true;
+    }
+    return false;
+  };
+  return walk(nodes) || count >= 4;
+}
 
 // Icônes décoratives par suggestion (même ordre que t.suggestions, fr/en alignés).
 const SUG_ICONS = [
@@ -54,6 +74,9 @@ interface Props {
   onCreateInvite?: (opts: { role: 'viewer' | 'editor'; email?: string }) => Promise<{ token: string; url: string } | null>;
   onListInvites?: () => Promise<ProjectInvite[]>;
   onRevokeInvite?: (token: string) => Promise<boolean>;
+  activitySteps?: ActivityStep[];   // feed live « ce que fait l'agent »
+  fileWrite?: boolean;              // le tour en cours écrit-il des fichiers ?
+  onFocusChat?: () => void;         // CTA « Décrire mon site » → focus le chat
 }
 
 function fmt(b?: number) {
@@ -123,13 +146,14 @@ function PreviewEmpty({ building, hasMessages, onSuggest }: { building?: boolean
   );
 }
 
-export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing, canPublish, onPublish, canDownload, downloading, onDownload, onRefresh, onOpen, building, hasMessages, onSuggest, domain, onConnectDomain, onRemoveDomain, publishResult, onClearPublishResult, canShareProject, onCreateInvite, onListInvites, onRevokeInvite }: Props) {
+export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing, canPublish, onPublish, canDownload, downloading, onDownload, onRefresh, onOpen, building, hasMessages, onSuggest, domain, onConnectDomain, onRemoveDomain, publishResult, onClearPublishResult, canShareProject, onCreateInvite, onListInvites, onRevokeInvite, activitySteps = [], fileWrite = false, onFocusChat }: Props) {
   const t = useStrings();
   const [domainOpen, setDomainOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [publishOpen, setPublishOpen] = useState(false);
   const canShare = !!canShareProject && !!onCreateInvite && !!onListInvites && !!onRevokeInvite;
   const hasDomain = !!domain?.customDomain;
+  const hasSiteNow = treeHasSite(tree);
   const doPublish = () => { setPublishOpen(true); onPublish(); };
   const closePublish = () => { setPublishOpen(false); onClearPublishResult?.(); };
 
@@ -173,9 +197,20 @@ export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing
         </div>
       </div>
       {mode === 'preview' ? (
-        previewUrl
-          ? <div className="sv-prev__body"><iframe className="sv-prev__frame" src={previewUrl} title="preview" /></div>
-          : <PreviewEmpty building={building} hasMessages={hasMessages} onSuggest={onSuggest} />
+        // Un site servable existe → iframe (+ bande d'activité si un tour tourne :
+        // modification par-dessus le site, ou « répond dans le chat »). Sinon :
+        // build en cours → vue live (ghost + feed) ; tour fini sans fichier →
+        // « pas encore de site » ; rien du tout → accueil + suggestions.
+        hasSiteNow
+          ? <div className="sv-prev__body">
+              <iframe className="sv-prev__frame" src={previewUrl ?? undefined} title="preview" />
+              {building && <ActivityStrip steps={activitySteps} fileWrite={fileWrite} />}
+            </div>
+          : building
+            ? <BuildingView steps={activitySteps} />
+            : hasMessages
+              ? <NoSiteView onFocusChat={onFocusChat} />
+              : <PreviewEmpty building={false} hasMessages={false} onSuggest={onSuggest} />
       ) : (
         tree.length ? <div className="sv-tree"><Tree nodes={tree} /></div> : <div className="sv-empty">{t.noFiles}</div>
       )}

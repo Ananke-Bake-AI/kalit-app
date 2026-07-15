@@ -9,6 +9,7 @@ import type { BrokerClient } from './client';
 import { useBrokerSocket, type Frame } from './socket';
 import { StreamReducer, choiceFromInput, type RawEvent } from './reducer';
 import { DEFAULT_MODEL_ID, modelGroupsFor, type ModelGroup } from '../lib/models';
+import { deriveActivity, hasFileActivity, flattenSizes } from '../lib/activity';
 import { stringsFor, type Strings } from '../lib/i18n';
 
 export interface DnsRecord { type: string; name: string; value: string; }
@@ -739,6 +740,21 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     return out;
   }, [baseMessages, live, liveError, streaming]);
 
+  // Feed d'activité live pour l'aperçu : dérivé des segments tool déjà reçus
+  // (Write/Bash/browser/find-assets…) + la taille des fichiers depuis l'arbre.
+  // fileWrite = le tour a-t-il écrit un fichier (déclencheur build vs conversation).
+  const previewActivity = useMemo(() => {
+    const sizes = flattenSizes(tree as unknown as { path: string; size?: number; children?: unknown[] }[]);
+    const byName = new Map<string, number>();
+    for (const [p, sz] of sizes) byName.set(p.split('/').pop() || p, sz);
+    const sizeOf = (fp: string) => sizes.get(fp) ?? byName.get(fp.split('/').pop() || fp);
+    const segs = (streaming && live ? live.segments : []) as Segment[];
+    return {
+      steps: deriveActivity(segs, sizeOf, !!(live && live.thinking) && streaming),
+      fileWrite: hasFileActivity(segs),
+    };
+  }, [live, tree, streaming]);
+
   const attachments = pending.map((p) => ({ id: p.id, name: p.file.name }));
 
   // Classification LIVE du prompt en cours d'écriture (halo du composer) : appelle
@@ -753,5 +769,5 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     return lv === 'enrich' || lv === 'rich' || lv === 'none' ? lv : null;
   }, [api]);
 
-  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, publishResult, clearPublishResult: () => setPublishResult(null), deployBlocked, dismissDeployBlocked: () => setDeployBlocked(false), storage, storageBlocked, dismissStorageBlocked: () => setStorageBlocked(false), domain, connectDomain, removeDomain, canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, checkPromptQuality, socketStatus: socket.status, queued, enqueuePrompt, cancelQueued, select, newProject, send, stop, deleteSession, setModel, modelGroups, precision, setPrecision, publish, download, refreshTree, reloadSessions: loadSessions, shareSession, canShare: !!activeId && messages.length > 0, canShareProject: !!projectId, createInvite, listInvites, revokeInvite, renameSession };
+  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, publishResult, clearPublishResult: () => setPublishResult(null), deployBlocked, dismissDeployBlocked: () => setDeployBlocked(false), storage, storageBlocked, dismissStorageBlocked: () => setStorageBlocked(false), domain, connectDomain, removeDomain, canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, checkPromptQuality, socketStatus: socket.status, queued, enqueuePrompt, cancelQueued, select, newProject, send, stop, deleteSession, setModel, modelGroups, previewActivity, precision, setPrecision, publish, download, refreshTree, reloadSessions: loadSessions, shareSession, canShare: !!activeId && messages.length > 0, canShareProject: !!projectId, createInvite, listInvites, revokeInvite, renameSession };
 }
