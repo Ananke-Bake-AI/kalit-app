@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
 import type { Session } from '../lib/types';
-import { IconLogo, IconPlus, IconSearch, IconDots, IconTrash, IconClose, IconEdit } from '../lib/icons';
+import { IconLogo, IconPlus, IconSearch, IconDots, IconTrash, IconClose, IconEdit, IconUsers } from '../lib/icons';
 import { useStrings } from '../lib/i18n';
 import { Menu, type MenuItem } from './Menu';
 
@@ -81,16 +81,24 @@ export function Sidebar({ sessions, activeId, user, storage, onSelect, onNew, on
 
   const renderSession = (s: Session) => {
     const isPinned = pinned.has(s.id);
-    const items: MenuItem[] = [
-      { key: 'rename', label: st.menu.rename, icon: <IconEdit />, onClick: () => startRename(s) },
-      { key: 'pin', label: isPinned ? st.unpin : st.pin, icon: isPinned ? <IconPinOff /> : <IconPin />, onClick: () => togglePin(s.id) },
-      { key: 'delete', label: st.del.confirm, icon: <IconTrash />, danger: true, separatorBefore: true, onClick: () => setDeleting(s) },
-    ];
+    // Session PARTAGÉE (l'user est invité, pas propriétaire) : renommer/supprimer
+    // sont des actions du propriétaire (gated côté broker) → on n'expose que l'épingle
+    // (locale). Sinon menu complet.
+    const items: MenuItem[] = s.shared
+      ? [
+          { key: 'pin', label: isPinned ? st.unpin : st.pin, icon: isPinned ? <IconPinOff /> : <IconPin />, onClick: () => togglePin(s.id) },
+        ]
+      : [
+          { key: 'rename', label: st.menu.rename, icon: <IconEdit />, onClick: () => startRename(s) },
+          { key: 'pin', label: isPinned ? st.unpin : st.pin, icon: isPinned ? <IconPinOff /> : <IconPin />, onClick: () => togglePin(s.id) },
+          { key: 'delete', label: st.del.confirm, icon: <IconTrash />, danger: true, separatorBefore: true, onClick: () => setDeleting(s) },
+        ];
     const editing = renaming === s.id;
     return (
       <div key={s.id} className={'sv-sess' + (s.id === activeId ? ' sv-sess--active' : '')} onClick={() => !editing && onSelect(s.id)}>
         <div className="sv-sess__title">
           {s.status === 'running' && <span className="sv-dot sv-dot--run sv-sess__run" title={st.running} />}
+          {s.shared && !editing && <span className="sv-sess__team" title={st.sharedProject} aria-label={st.sharedProject}><IconUsers /></span>}
           {editing ? (
             <input
               ref={renameRef}

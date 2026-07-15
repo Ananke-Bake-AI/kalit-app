@@ -41,6 +41,9 @@
 .sv-sess__pin:hover { background: var(--sv-raised); color: var(--sv-text); }
 .sv-sess__pin--on { opacity: 1; color: var(--sv-accent); }
 .sv-sess__pin--on:hover { color: var(--sv-accent-2); }
+/* Badge « projet partagé/team » : session dont l'user est invité (pas propriétaire). */
+.sv-sess__team { flex-shrink: 0; display: inline-grid; place-items: center; color: var(--sv-accent-2, var(--sv-accent)); }
+.sv-sess__team svg { width: 13px; height: 13px; }
 /* Petit repère « épinglé » (le pin est désormais une action du menu ⋯). */
 .sv-sess__pinmark { flex-shrink: 0; display: grid; place-items: center; color: var(--sv-accent); }
 .sv-sess__pinmark svg { width: 13px; height: 13px; }

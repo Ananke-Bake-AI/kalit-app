@@ -42,6 +42,7 @@ export interface Strings {
   menu: { more: string; rename: string; share: string; domain: string; download: string; invite: string; openTab: string; refresh: string };
   modelUnavailable: string;
   modelOffline: string;
+  sharedProject: string;
   validate: string;
   running: string;
   stop: string;
@@ -147,6 +148,7 @@ const fr: Strings = {
   menu: { more: 'Options', rename: 'Renommer', share: 'Partager', domain: 'Gérer le domaine…', download: 'Télécharger le .zip', invite: 'Inviter des collaborateurs…', openTab: 'Ouvrir dans un onglet', refresh: 'Rafraîchir l’aperçu' },
   modelUnavailable: 'Modèle indisponible pour le moment',
   modelOffline: 'indispo',
+  sharedProject: 'Projet partagé avec toi',
   validate: 'Valider',
   running: 'en cours',
   stop: 'Stop',
@@ -331,6 +333,7 @@ const en: Strings = {
   menu: { more: 'Options', rename: 'Rename', share: 'Share', domain: 'Manage domain…', download: 'Download .zip', invite: 'Invite collaborators…', openTab: 'Open in new tab', refresh: 'Refresh preview' },
   modelUnavailable: 'Model currently unavailable',
   modelOffline: 'offline',
+  sharedProject: 'Shared with you',
   validate: 'Confirm',
   running: 'running',
   stop: 'Stop',

@@ -19,11 +19,11 @@ export interface PublishResult { phase: 'ok' | 'too_large' | 'error'; url?: stri
 export interface ProjectInvite { token: string; email: string; role: string; maxUses: number; uses: number; url: string; }
 interface PublishInfo { subdomain?: string | null; subdomainUrl?: string | null; customDomain?: string | null; customDomainStatus?: string | null; }
 
-interface ChatSessionDTO { id: string; title: string | null; model: string; isProcessing?: boolean; createdAt: number; updatedAt: number; projectId?: string; projectDeployed?: boolean; }
+interface ChatSessionDTO { id: string; title: string | null; model: string; isProcessing?: boolean; createdAt: number; updatedAt: number; projectId?: string; projectDeployed?: boolean; shared?: boolean; }
 interface ChatMessageDTO { id: string; role: string; content?: string; thinking?: string; tools?: Array<{ name: string; input?: unknown; done?: boolean }>; files?: Array<{ name: string; url: string; mimeType?: string }>; createdAt: number; authorUserId?: string; authorName?: string; }
 
 function dtoToSession(d: ChatSessionDTO): Session {
-  return { id: d.id, title: d.title || 'Sans titre', status: d.isProcessing ? 'running' : 'idle', model: d.model, updatedAt: d.updatedAt || d.createdAt || 0, projectId: d.projectId, projectDeployed: d.projectDeployed };
+  return { id: d.id, title: d.title || 'Sans titre', status: d.isProcessing ? 'running' : 'idle', model: d.model, updatedAt: d.updatedAt || d.createdAt || 0, projectId: d.projectId, projectDeployed: d.projectDeployed, shared: d.shared };
 }
 // Le message assistant persisté stocke ses segments comme un tableau JSON
 // SÉRIALISÉ dans `content` (ex: '[{"type":"text",...},{"type":"tool",...}]').

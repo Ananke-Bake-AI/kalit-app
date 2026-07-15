@@ -12,6 +12,7 @@ export interface Session {
   updatedAt: number;
   projectId?: string;       // flow_projects.id lié (null = session sans projet)
   projectDeployed?: boolean; // le projet lié a un site publié
+  shared?: boolean;         // session partagée (l'user est membre, pas propriétaire) → projet d'équipe
 }
 
 export interface ChoiceOption { label: string; description?: string; }
