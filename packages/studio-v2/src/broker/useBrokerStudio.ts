@@ -120,7 +120,7 @@ function activityFor(ev: RawEvent, a: Strings['activity']): string {
   return a.working;
 }
 
-export function useBrokerStudio(client: BrokerClient, lang: string = 'en', brokerUrl: string = '') {
+export function useBrokerStudio(client: BrokerClient, lang: string = 'en', brokerUrl: string = '', meId?: string) {
   const t = useMemo(() => stringsFor(lang), [lang]);
   const [sessions, setSessions] = useState<Session[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -402,6 +402,21 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
           if (isActive) {
             const p = (ev as { percent?: number }).percent;
             if (typeof p === 'number') setCtxPercent(p);
+          }
+          return;
+        }
+        // COLLABORATION : prompt d'un autre participant, diffusé par le broker AVANT
+        // la réponse. On l'insère dans baseMessages (donc avant l'assistant live) →
+        // bon ordre. On ignore le sien (déjà affiché en optimiste) et les doublons.
+        if (ev.type === 'user_message') {
+          const uid = (ev as { authorUserId?: string }).authorUserId;
+          if (isActive && uid && uid !== meId) {
+            const mid = (ev as { id?: string }).id ?? 'um-' + String(Date.now());
+            const content = (ev as { content?: string }).content ?? '';
+            const an = (ev as { authorName?: string }).authorName;
+            setBaseMessages((m) => m.some((x) => x.id === mid)
+              ? m
+              : [...m, { id: mid, role: 'user', segments: [{ kind: 'text', content }], authorUserId: uid, authorName: an }]);
           }
           return;
         }

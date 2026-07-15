@@ -34,7 +34,8 @@ export function StudioV2Client({ initialSessionId }: { initialSessionId?: string
     fileUrlPrefix: { from: "/api/flow/", to: "/api/broker/" },
   }), [wsBaseUrl])
 
-  const s = useBrokerStudio(client, lang, wsBaseUrl)
+  const meId = (session?.user as { id?: string } | undefined)?.id
+  const s = useBrokerStudio(client, lang, wsBaseUrl, meId)
   const user = { name: session?.user?.name || session?.user?.email || "" }
 
   // Deep-link : sélectionne la session de l'URL au 1er rendu (une seule fois).
@@ -80,7 +81,7 @@ export function StudioV2Client({ initialSessionId }: { initialSessionId?: string
     <StudioShell
       sessions={s.sessions} activeId={s.activeId} messages={s.messages}
       streaming={s.streaming} activity={s.activity} ctxPercent={s.ctxPercent} tree={s.tree} previewUrl={s.previewUrl}
-      user={user} meId={(session?.user as { id?: string } | undefined)?.id} model={s.model} onModelChange={s.setModel} lang={lang}
+      user={user} meId={meId} model={s.model} onModelChange={s.setModel} lang={lang}
       publishUrl={s.publishUrl} publishing={s.publishing} canPublish={s.canPublish} onPublish={s.publish}
       canDownload={s.canDownload} downloading={s.downloading} onDownload={s.download}
       onSelect={s.select} onNew={s.newProject} onDelete={s.deleteSession} onSend={s.send} onStop={s.stop}
