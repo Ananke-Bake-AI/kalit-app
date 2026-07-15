@@ -41,20 +41,20 @@ function ActivityRows({ steps, max = 4 }: { steps: ActivityStep[]; max?: number 
   const t = useStrings();
   const shown = steps.slice(-max);
   return (
-    <div className="sv-feed__rows">
+    <div className="sv-actfeed__rows">
       {shown.map((s) => {
         const { verb, target, detail } = stepText(s, t);
         return (
-          <div key={s.key} className={'sv-feed__row' + (s.status === 'running' ? ' sv-feed__row--now' : '')}>
-            <span className="sv-feed__st">
-              {s.status === 'running' ? <span className="sv-feed__dot" />
-                : s.status === 'error' ? <span className="sv-feed__x">✕</span>
-                : <span className="sv-feed__chk">✓</span>}
+          <div key={s.key} className={'sv-actfeed__row' + (s.status === 'running' ? ' sv-actfeed__row--now' : '')}>
+            <span className="sv-actfeed__st">
+              {s.status === 'running' ? <span className="sv-actfeed__dot" />
+                : s.status === 'error' ? <span className="sv-actfeed__x">✕</span>
+                : <span className="sv-actfeed__chk">✓</span>}
             </span>
-            <span className="sv-feed__body">
-              <span className="sv-feed__verb">{verb}</span>
+            <span className="sv-actfeed__body">
+              <span className="sv-actfeed__verb">{verb}</span>
               {target && <> <b>{target}</b></>}
-              {detail && <span className="sv-feed__detail"> {detail}</span>}
+              {detail && <span className="sv-actfeed__detail"> {detail}</span>}
             </span>
           </div>
         );
@@ -94,10 +94,10 @@ export function BuildingView({ steps }: { steps: ActivityStep[] }) {
       <div className="sv-welcome__glow" aria-hidden />
       <GhostSite lit={litCount} />
       <div className="sv-prev__livehd">
-        <span className="sv-feed__dot" /> {t.preview2.buildingTitle}
+        <span className="sv-actfeed__dot" /> {t.preview2.buildingTitle}
       </div>
-      <div className="sv-feed">
-        <div className="sv-feed__h"><span>{t.preview2.activityLabel}</span></div>
+      <div className="sv-actfeed">
+        <div className="sv-actfeed__h"><span>{t.preview2.activityLabel}</span></div>
         <ActivityRows steps={steps} />
       </div>
     </div>
@@ -134,7 +134,7 @@ export function ActivityStrip({ steps, fileWrite }: { steps: ActivityStep[]; fil
   const label = fileWrite ? t.preview2.modifying : t.preview2.respondingChat;
   return (
     <div className="sv-strip">
-      <span className="sv-strip__live"><span className="sv-feed__dot" /> {label}</span>
+      <span className="sv-strip__live"><span className="sv-actfeed__dot" /> {label}</span>
       {last && fileWrite && (() => {
         const { verb, target } = stepText(last, t);
         return <span className="sv-strip__last">{verb}{target ? <> <b>{target}</b></> : null}</span>;
