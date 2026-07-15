@@ -78,9 +78,42 @@ const STRIPE_FIELDS: Array<{
   },
 ]
 
-export function SettingsClient({ initialStripe }: { initialStripe: SettingMeta[] }) {
+// Meta (Facebook) Conversions API slots. Keep in sync with lib/settings.ts
+// META_KEYS. Only the access token is a secret — the Pixel ID is public and
+// lives in code.
+const META_FIELDS: Array<{
+  key: string
+  label: string
+  hint: string
+  placeholder: string
+  destructive?: boolean
+}> = [
+  {
+    key: "META_CAPI_ACCESS_TOKEN",
+    label: "Meta CAPI access token",
+    hint: "System-User token from Events Manager → Settings → Conversions API. Enables the server-side Purchase event that dedups (via the Stripe session id) against the browser Pixel. Leave unset and only the browser Pixel fires.",
+    placeholder: "EAAG… (System-User token)",
+    destructive: true,
+  },
+  {
+    key: "META_CAPI_TEST_CODE",
+    label: "Meta CAPI test event code (optional)",
+    hint: "TEST##### from Events Manager → Test Events. When set, server events show up under Test Events for validation — clear it for production so events count normally.",
+    placeholder: "TEST12345",
+  },
+]
+
+export function SettingsClient({
+  initialStripe,
+  initialMeta,
+}: {
+  initialStripe: SettingMeta[]
+  initialMeta: SettingMeta[]
+}) {
   const [meta, setMeta] = useState<Record<string, SettingMeta>>(
-    Object.fromEntries(initialStripe.map((m) => [m.key, m])),
+    Object.fromEntries(
+      [...initialStripe, ...initialMeta].map((m) => [m.key, m]),
+    ),
   )
 
   return (
@@ -105,6 +138,23 @@ export function SettingsClient({ initialStripe }: { initialStripe: SettingMeta[]
 
         <div className={s.fields}>
           {STRIPE_FIELDS.map((f) => (
+            <SettingRow
+              key={f.key}
+              field={f}
+              meta={meta[f.key] || { key: f.key, set: false, updatedAt: null, updatedBy: null }}
+              onChanged={(next) => setMeta((prev) => ({ ...prev, [f.key]: next }))}
+            />
+          ))}
+        </div>
+      </SurfacePanel>
+
+      <SurfacePanel
+        spaced
+        title="Meta Conversions API"
+        subtitle="Server-side purchase tracking. Sends a Purchase event straight from the Stripe webhook to Meta — a higher-recall twin of the browser Pixel, deduped by the Stripe session id so it never double-counts."
+      >
+        <div className={s.fields}>
+          {META_FIELDS.map((f) => (
             <SettingRow
               key={f.key}
               field={f}

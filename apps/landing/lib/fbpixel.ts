@@ -18,9 +18,20 @@ declare global {
   }
 }
 
-export function fbqTrack(event: string, params?: Record<string, unknown>): void {
+export function fbqTrack(
+  event: string,
+  params?: Record<string, unknown>,
+  eventID?: string,
+): void {
   if (typeof window === "undefined" || typeof window.fbq !== "function") return
-  if (params && Object.keys(params).length) window.fbq("track", event, params)
+  // The 4th arg is Meta's options object; `eventID` there (NOT in params) is
+  // the server↔browser dedup key. Passing it in params would send it as
+  // custom data and would NOT dedup.
+  const opts = eventID ? { eventID } : undefined
+  const hasParams = params && Object.keys(params).length > 0
+  if (hasParams && opts) window.fbq("track", event, params, opts)
+  else if (hasParams) window.fbq("track", event, params)
+  else if (opts) window.fbq("track", event, {}, opts)
   else window.fbq("track", event)
 }
 
@@ -84,7 +95,11 @@ export function forwardEventToPixel(event: string, params: Record<string, unknow
   if (standard === "Purchase") {
     const value = typeof params.value === "number" ? params.value : undefined
     const currency = typeof params.currency === "string" ? params.currency : DEFAULT_CURRENCY
-    fbqTrack("Purchase", { currency, ...(value != null ? { value } : {}) })
+    // `eventID` (when present) dedups this browser event against the server-side
+    // CAPI Purchase fired from the Stripe webhook — both carry the Stripe
+    // Checkout Session id. Kept out of custom data; passed as the fbq option.
+    const eventID = typeof params.eventID === "string" ? params.eventID : undefined
+    fbqTrack("Purchase", { currency, ...(value != null ? { value } : {}) }, eventID)
     return
   }
 

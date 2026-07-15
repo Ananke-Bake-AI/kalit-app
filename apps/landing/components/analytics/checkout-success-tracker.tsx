@@ -25,6 +25,11 @@ export function CheckoutSuccessTracker() {
     const amount = searchParams.get("amount")
     const value = searchParams.get("value")
     const currency = searchParams.get("currency") || "USD"
+    // Stripe substitutes {CHECKOUT_SESSION_ID} in the success_url with the real
+    // session id (subscription checkouts only). We pass it as the Meta Pixel
+    // `eventID` so this browser Purchase dedups against the server-side CAPI
+    // Purchase fired from the Stripe webhook (both use the same session id).
+    const eventID = searchParams.get("session_id") || undefined
     // Paid conversion. A subscription checkout → `subscription_started`; a
     // one-off credit-pack purchase → `purchase_completed`. Both map to the
     // Meta `Purchase` standard event (carrying value/currency for ROAS).
@@ -34,6 +39,8 @@ export function CheckoutSuccessTracker() {
       ...(amount ? { credits: Number(amount) } : {}),
       // Monetary value → Meta Pixel Purchase (ROAS) + GA4.
       ...(value ? { value: Number(value), currency } : {}),
+      // Dedup key for the server-side CAPI twin (Meta only; harmless to GA4/GTM).
+      ...(eventID ? { eventID } : {}),
     })
   }, [searchParams, pathname])
 

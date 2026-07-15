@@ -1,11 +1,33 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
+import { cookies, headers } from "next/headers"
 import { auth } from "@/lib/auth"
 import { APP_URL } from "@/lib/config"
 import { prisma } from "@/lib/prisma"
 import { getStripe } from "@/lib/stripe"
 import { getCreditPack, getPlan, resolveCreditPackPriceId, resolveStripePriceId } from "@/lib/plans"
+
+/**
+ * Read Meta Conversions API match data available on the current request:
+ * the _fbp/_fbc first-party cookies (set by the browser Pixel) plus the real
+ * client IP and user-agent. Returned as string-only key/values suitable for
+ * Stripe Checkout metadata (values are capped well under Stripe's 500-char
+ * limit). Only present keys are included so we never write empty metadata.
+ */
+async function collectCapiMatchData(): Promise<Record<string, string>> {
+  const [cookieStore, hdrs] = await Promise.all([cookies(), headers()])
+  const out: Record<string, string> = {}
+  const fbp = cookieStore.get("_fbp")?.value
+  const fbc = cookieStore.get("_fbc")?.value
+  if (fbp) out.fbp = fbp
+  if (fbc) out.fbc = fbc
+  const ip = (hdrs.get("x-forwarded-for") || "").split(",")[0].trim()
+  if (ip) out.capiIp = ip
+  const ua = hdrs.get("user-agent")
+  if (ua) out.capiUa = ua.slice(0, 480)
+  return out
+}
 
 export async function createCheckoutSession(planKey: string) {
   const session = await auth()
@@ -46,18 +68,30 @@ export async function createCheckoutSession(planKey: string) {
     })
   }
 
+  // Capture Meta match-data at checkout-create time. This server action runs
+  // in response to the user's click, so the _fbp/_fbc first-party cookies and
+  // the real client IP/UA are all here — unlike the Stripe webhook, whose
+  // request comes from Stripe. We stash them in the Checkout metadata so the
+  // webhook can attach them to the server-side CAPI Purchase event.
+  const capiMeta = await collectCapiMatchData()
+
   const checkoutSession = await stripe.checkout.sessions.create({
     customer: customerId,
     mode: "subscription",
     line_items: [{ price: priceId, quantity: 1 }],
+    // `{CHECKOUT_SESSION_ID}` is substituted by Stripe with the real session
+    // id on redirect. The browser Pixel reads it as its Purchase `eventID`,
+    // and the webhook uses the same id as the CAPI `event_id` — that shared
+    // key is what lets Meta dedup the two events into one conversion.
     success_url: new URL(
-      `/dashboard?checkout=success&type=subscription&plan=${plan.key}&value=${plan.monthlyPrice / 100}&currency=USD`,
+      `/dashboard?checkout=success&type=subscription&plan=${plan.key}&value=${plan.monthlyPrice / 100}&currency=USD&session_id={CHECKOUT_SESSION_ID}`,
       APP_URL
     ).toString(),
     cancel_url: new URL("/settings/billing?checkout=canceled", APP_URL).toString(),
     metadata: {
       orgId: org.id,
       planKey: plan.key,
+      ...capiMeta,
     },
     subscription_data: {
       metadata: {

@@ -125,6 +125,32 @@ export const STRIPE_KEYS = {
 
 export const ALL_STRIPE_KEYS = Object.values(STRIPE_KEYS)
 
+// ── Meta (Facebook) Conversions API ─────────────────────────
+//
+// Server-side purchase tracking. The public Pixel ID lives in code
+// (lib/fbpixel.ts) — only the CAPI access token is a secret, stored here
+// so it can be rotated from /admin/settings without a redeploy. The
+// optional test-event code routes events to Events Manager → Test Events
+// for validation; leave it unset in production.
+export const META_KEYS = {
+  CAPI_TOKEN: "META_CAPI_ACCESS_TOKEN",
+  CAPI_TEST_CODE: "META_CAPI_TEST_CODE",
+} as const
+
+export const ALL_META_KEYS = Object.values(META_KEYS)
+
+// Every writable app-setting key — the admin write/clear allowlist checks
+// against this so newly-added groups don't get silently rejected.
+export const ALL_SETTING_KEYS = [...ALL_STRIPE_KEYS, ...ALL_META_KEYS]
+
+export async function getMetaCapiAccessToken(): Promise<string | null> {
+  return getSetting(META_KEYS.CAPI_TOKEN)
+}
+
+export async function getMetaCapiTestCode(): Promise<string | null> {
+  return getSetting(META_KEYS.CAPI_TEST_CODE)
+}
+
 export async function getStripeSecretKey(): Promise<string | null> {
   return getSetting(STRIPE_KEYS.SECRET)
 }

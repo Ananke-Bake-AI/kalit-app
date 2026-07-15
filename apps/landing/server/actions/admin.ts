@@ -751,9 +751,12 @@ export async function deleteBugReport(id: string) {
 
 export async function getAppSettings() {
   await requireAdmin()
-  const { ALL_STRIPE_KEYS, listSettingsMeta } = await import("@/lib/settings")
-  const stripeKeys = await listSettingsMeta(ALL_STRIPE_KEYS as unknown as string[])
-  return { stripeKeys }
+  const { ALL_STRIPE_KEYS, ALL_META_KEYS, listSettingsMeta } = await import("@/lib/settings")
+  const [stripeKeys, metaKeys] = await Promise.all([
+    listSettingsMeta(ALL_STRIPE_KEYS as unknown as string[]),
+    listSettingsMeta(ALL_META_KEYS as unknown as string[]),
+  ])
+  return { stripeKeys, metaKeys }
 }
 
 export async function setAppSetting(key: string, value: string) {
@@ -765,8 +768,8 @@ export async function setAppSetting(key: string, value: string) {
   // Allowlist guard: only let the admin write keys we explicitly expose
   // here. Without this, a typo on the client would silently create a
   // dead AppSetting row that no one reads.
-  const { ALL_STRIPE_KEYS, setSetting } = await import("@/lib/settings")
-  if (!(ALL_STRIPE_KEYS as readonly string[]).includes(key)) {
+  const { ALL_SETTING_KEYS, setSetting } = await import("@/lib/settings")
+  if (!(ALL_SETTING_KEYS as readonly string[]).includes(key)) {
     return { error: `Unknown setting key: ${key}` }
   }
   try {
@@ -779,8 +782,8 @@ export async function setAppSetting(key: string, value: string) {
 
 export async function clearAppSetting(key: string) {
   await requireAdmin()
-  const { ALL_STRIPE_KEYS, clearSetting } = await import("@/lib/settings")
-  if (!(ALL_STRIPE_KEYS as readonly string[]).includes(key)) {
+  const { ALL_SETTING_KEYS, clearSetting } = await import("@/lib/settings")
+  if (!(ALL_SETTING_KEYS as readonly string[]).includes(key)) {
     return { error: `Unknown setting key: ${key}` }
   }
   try {

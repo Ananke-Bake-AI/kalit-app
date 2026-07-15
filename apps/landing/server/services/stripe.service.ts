@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma"
-import { getCreditPack, getPlanByPriceId } from "@/lib/plans"
+import { APP_URL } from "@/lib/config"
+import { getCreditPack, getPlan, getPlanByPriceId } from "@/lib/plans"
+import { sendMetaPurchaseEvent } from "@/lib/meta-capi"
 
 /**
  * Stripe API 2025+ (incl. 2026-02-25.clover) moved billing-period fields
@@ -84,6 +86,28 @@ export async function handleCheckoutCompleted(session: any) {
   })
 
   await provisionEntitlements(orgId, planKey)
+
+  // Server-side Meta CAPI Purchase — the redundant, higher-recall twin of the
+  // browser Pixel event. `event_id: session.id` is the SAME id the browser
+  // Pixel uses (passed to it via the success_url's {CHECKOUT_SESSION_ID}), so
+  // Meta dedups the pair into one conversion. Never let a marketing pixel
+  // failure break subscription provisioning — hence the isolated try/catch.
+  try {
+    const plan = getPlan(planKey)
+    await sendMetaPurchaseEvent({
+      eventId: session.id,
+      value: plan ? plan.monthlyPrice / 100 : undefined,
+      currency: (session.currency || "usd").toUpperCase(),
+      email: session.customer_details?.email || session.customer_email || null,
+      fbp: session.metadata?.fbp || null,
+      fbc: session.metadata?.fbc || null,
+      clientIp: session.metadata?.capiIp || null,
+      clientUserAgent: session.metadata?.capiUa || null,
+      eventSourceUrl: new URL("/dashboard?checkout=success", APP_URL).toString(),
+    })
+  } catch (err) {
+    console.error("[stripe] Meta CAPI Purchase dispatch failed:", (err as Error).message)
+  }
 }
 
 export async function handleSubscriptionUpdated(sub: any) {
