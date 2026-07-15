@@ -1,7 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import type { Session } from '../lib/types';
-import { IconLogo, IconPlus, IconSearch, IconDots, IconTrash, IconClose } from '../lib/icons';
+import { IconLogo, IconPlus, IconSearch, IconDots, IconTrash, IconClose, IconEdit } from '../lib/icons';
 import { useStrings } from '../lib/i18n';
+import { Menu, type MenuItem } from './Menu';
 
 interface Props {
   sessions: Session[];
@@ -11,6 +12,7 @@ interface Props {
   onSelect: (id: string) => void;
   onNew: () => void;
   onDelete: (id: string, mode: 'session' | 'project') => void;
+  onRename?: (id: string, title: string) => Promise<boolean> | void;
 }
 
 // Compact byte formatter for the storage gauge (e.g. "44 MB", "1.2 GB").
@@ -39,11 +41,21 @@ function loadPinned(): Set<string> {
   return new Set();
 }
 
-export function Sidebar({ sessions, activeId, user, storage, onSelect, onNew, onDelete }: Props) {
+export function Sidebar({ sessions, activeId, user, storage, onSelect, onNew, onDelete, onRename }: Props) {
   const st = useStrings();
   const [q, setQ] = useState('');
   const [deleting, setDeleting] = useState<Session | null>(null);
   const [busy, setBusy] = useState(false);
+  // Renommage inline : id de la session en cours d'édition + brouillon du titre.
+  const [renaming, setRenaming] = useState<string | null>(null);
+  const [draft, setDraft] = useState('');
+  const renameRef = useRef<HTMLInputElement>(null);
+  const startRename = (s: Session) => { setRenaming(s.id); setDraft(s.title); requestAnimationFrame(() => renameRef.current?.select()); };
+  const commitRename = (s: Session) => {
+    const t = draft.trim();
+    setRenaming(null);
+    if (t && t !== s.title) onRename?.(s.id, t);
+  };
   const [pinned, setPinned] = useState<Set<string>>(() => (typeof window !== 'undefined' ? loadPinned() : new Set()));
   const togglePin = (id: string) => setPinned((prev) => {
     const next = new Set(prev);
@@ -69,28 +81,40 @@ export function Sidebar({ sessions, activeId, user, storage, onSelect, onNew, on
 
   const renderSession = (s: Session) => {
     const isPinned = pinned.has(s.id);
+    const items: MenuItem[] = [
+      { key: 'rename', label: st.menu.rename, icon: <IconEdit />, onClick: () => startRename(s) },
+      { key: 'pin', label: isPinned ? st.unpin : st.pin, icon: isPinned ? <IconPinOff /> : <IconPin />, onClick: () => togglePin(s.id) },
+      { key: 'delete', label: st.del.confirm, icon: <IconTrash />, danger: true, separatorBefore: true, onClick: () => setDeleting(s) },
+    ];
+    const editing = renaming === s.id;
     return (
-      <div key={s.id} className={'sv-sess' + (s.id === activeId ? ' sv-sess--active' : '')} onClick={() => onSelect(s.id)}>
+      <div key={s.id} className={'sv-sess' + (s.id === activeId ? ' sv-sess--active' : '')} onClick={() => !editing && onSelect(s.id)}>
         <div className="sv-sess__title">
           {s.status === 'running' && <span className="sv-dot sv-dot--run sv-sess__run" title={st.running} />}
-          <span className="sv-sess__name">{s.title}</span>
+          {editing ? (
+            <input
+              ref={renameRef}
+              className="sv-sess__rename"
+              value={draft}
+              autoFocus
+              onClick={(e) => e.stopPropagation()}
+              onChange={(e) => setDraft(e.target.value)}
+              onBlur={() => commitRename(s)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') { e.preventDefault(); commitRename(s); }
+                else if (e.key === 'Escape') { e.preventDefault(); setRenaming(null); }
+              }}
+            />
+          ) : (
+            <span className="sv-sess__name">{s.title}</span>
+          )}
         </div>
-        <button
-          className={'sv-sess__pin' + (isPinned ? ' sv-sess__pin--on' : '')}
-          title={isPinned ? st.unpin : st.pin}
-          aria-label={isPinned ? st.unpin : st.pin}
-          onClick={(e) => { e.stopPropagation(); togglePin(s.id); }}
-        >
-          {isPinned ? <IconPinOff /> : <IconPin />}
-        </button>
-        <button
-          className="sv-sess__more"
-          title={st.del.confirm}
-          aria-label={st.del.confirm}
-          onClick={(e) => { e.stopPropagation(); setDeleting(s); }}
-        >
-          <IconDots />
-        </button>
+        {isPinned && !editing && <span className="sv-sess__pinmark" title={st.pinned} aria-hidden><IconPin /></span>}
+        {!editing && (
+          <Menu items={items} className="sv-sess__more" title={st.menu.more} ariaLabel={st.menu.more} align="right">
+            <IconDots />
+          </Menu>
+        )}
       </div>
     );
   };

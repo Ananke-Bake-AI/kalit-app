@@ -41,6 +41,29 @@
 .sv-sess__pin:hover { background: var(--sv-raised); color: var(--sv-text); }
 .sv-sess__pin--on { opacity: 1; color: var(--sv-accent); }
 .sv-sess__pin--on:hover { color: var(--sv-accent-2); }
+/* Petit repère « épinglé » (le pin est désormais une action du menu ⋯). */
+.sv-sess__pinmark { flex-shrink: 0; display: grid; place-items: center; color: var(--sv-accent); }
+.sv-sess__pinmark svg { width: 13px; height: 13px; }
+.sv-sess:hover .sv-sess__pinmark { display: none; } /* laisse la place au ⋯ au survol */
+/* Renommage inline dans la ligne de session. */
+.sv-sess__rename { flex: 1; min-width: 0; padding: 2px 6px; border: 1px solid var(--sv-accent); border-radius: 6px; background: var(--sv-surface-2); color: var(--sv-text); font: inherit; font-size: 14px; outline: none; }
+
+/* ── Popover « ⋯ » réutilisable (sessions + toolbar preview) ─────────────
+   Liste rapide ancrée au déclencheur (position: fixed calculée en JS), sans
+   overlay plein écran. Item = icône + libellé ; item destructif en rouge, isolé
+   par un séparateur. */
+.sv-menu { min-width: 208px; padding: 6px; background: var(--sv-raised, var(--sv-surface-2)); border: 1px solid var(--sv-line); border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,.38), 0 2px 8px rgba(0,0,0,.25); animation: sv-menu-in .12s ease; }
+@keyframes sv-menu-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+.sv-menu__item { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 10px; border: 0; background: transparent; color: var(--sv-text); font: inherit; font-size: 13.5px; text-align: left; border-radius: 8px; cursor: pointer; }
+.sv-menu__item:hover:not(:disabled) { background: color-mix(in srgb, var(--sv-text) 8%, transparent); }
+.sv-menu__item:disabled { opacity: .45; cursor: default; }
+.sv-menu__ico { display: inline-grid; place-items: center; flex-shrink: 0; color: var(--sv-text-2); }
+.sv-menu__ico svg { width: 16px; height: 16px; }
+.sv-menu__lbl { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sv-menu__item--danger { color: var(--sv-danger, #f56565); }
+.sv-menu__item--danger .sv-menu__ico { color: var(--sv-danger, #f56565); }
+.sv-menu__item--danger:hover:not(:disabled) { background: color-mix(in srgb, var(--sv-danger, #f56565) 14%, transparent); }
+.sv-menu__sep { height: 1px; margin: 6px 4px; background: var(--sv-line); }
 /* Session active : nettement distinctive (fond teinté accent + barre gauche vive)
    — l'ancien accent-dim (12%) était trop subtil et proche du hover. */
 .sv-sess--active { background: color-mix(in srgb, var(--sv-accent) 16%, transparent); box-shadow: inset 3px 0 0 var(--sv-accent); }

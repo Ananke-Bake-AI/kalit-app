@@ -688,6 +688,19 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     return ok;
   }, [sessions, client, loadSessions, loadStorage, newProject]);
 
+  // Renomme une session (menu « ⋯ » de la sidebar). PATCH le titre côté broker
+  // puis met à jour l'état local optimistiquement. Retourne false sur échec.
+  const renameSession = useCallback(async (id: string, title: string): Promise<boolean> => {
+    const t = title.trim();
+    if (!id || !t) return false;
+    setSessions((list) => list.map((s) => (s.id === id ? { ...s, title: t } : s)));
+    const r = await client.fetch(`/api/broker/sessions/${id}`, {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: t }),
+    }).catch(() => null);
+    if (!r || !r.ok) { loadSessions(); return false; } // resync si l'écriture a échoué
+    return true;
+  }, [client, loadSessions]);
+
   // Partage public read-only de la session active. action: 'share' crée/rafraîchit
   // le lien (snapshot au moment de l'appel), 'unshare' révoque. Renvoie le shareId.
   const shareSession = useCallback(async (action: 'share' | 'unshare'): Promise<{ shared: boolean; shareId?: string } | null> => {
@@ -726,5 +739,5 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     return lv === 'enrich' || lv === 'rich' || lv === 'none' ? lv : null;
   }, [api]);
 
-  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, publishResult, clearPublishResult: () => setPublishResult(null), deployBlocked, dismissDeployBlocked: () => setDeployBlocked(false), storage, storageBlocked, dismissStorageBlocked: () => setStorageBlocked(false), domain, connectDomain, removeDomain, canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, checkPromptQuality, socketStatus: socket.status, queued, enqueuePrompt, cancelQueued, select, newProject, send, stop, deleteSession, setModel, precision, setPrecision, publish, download, refreshTree, reloadSessions: loadSessions, shareSession, canShare: !!activeId && messages.length > 0, canShareProject: !!projectId, createInvite, listInvites, revokeInvite };
+  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, publishResult, clearPublishResult: () => setPublishResult(null), deployBlocked, dismissDeployBlocked: () => setDeployBlocked(false), storage, storageBlocked, dismissStorageBlocked: () => setStorageBlocked(false), domain, connectDomain, removeDomain, canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, checkPromptQuality, socketStatus: socket.status, queued, enqueuePrompt, cancelQueued, select, newProject, send, stop, deleteSession, setModel, precision, setPrecision, publish, download, refreshTree, reloadSessions: loadSessions, shareSession, canShare: !!activeId && messages.length > 0, canShareProject: !!projectId, createInvite, listInvites, revokeInvite, renameSession };
 }

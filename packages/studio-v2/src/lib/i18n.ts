@@ -39,6 +39,7 @@ export interface Strings {
   navigation: string;
   you: string;
   collaborator: string;
+  menu: { more: string; rename: string; share: string; domain: string; download: string; invite: string; openTab: string; refresh: string };
   validate: string;
   running: string;
   stop: string;
@@ -141,6 +142,7 @@ const fr: Strings = {
   navigation: 'Navigation',
   you: 'Vous',
   collaborator: 'Collaborateur',
+  menu: { more: 'Options', rename: 'Renommer', share: 'Partager', domain: 'Gérer le domaine…', download: 'Télécharger le .zip', invite: 'Inviter des collaborateurs…', openTab: 'Ouvrir dans un onglet', refresh: 'Rafraîchir l’aperçu' },
   validate: 'Valider',
   running: 'en cours',
   stop: 'Stop',
@@ -322,6 +324,7 @@ const en: Strings = {
   navigation: 'Navigation',
   you: 'You',
   collaborator: 'Collaborator',
+  menu: { more: 'Options', rename: 'Rename', share: 'Share', domain: 'Manage domain…', download: 'Download .zip', invite: 'Invite collaborators…', openTab: 'Open in new tab', refresh: 'Refresh preview' },
   validate: 'Confirm',
   running: 'running',
   stop: 'Stop',

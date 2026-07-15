@@ -47,6 +47,7 @@ export interface StudioShellProps {
   onSelect: (id: string) => void;
   onNew: () => void;
   onDelete: (id: string, mode: 'session' | 'project') => void;
+  onRename?: (id: string, title: string) => Promise<boolean> | void;
   onSend: (text: string) => void;
   onStop: () => void;
   queued?: string[];
@@ -155,7 +156,7 @@ export function StudioShell(props: StudioShellProps) {
       ref={shellRef}
       style={splitPx != null ? ({ '--sv-chat-w': splitPx + 'px' } as CSSProperties) : undefined}
     >
-      <Sidebar sessions={props.sessions} activeId={props.activeId} user={props.user} storage={props.storage ?? null} onSelect={selectMobile} onNew={() => { props.onNew(); setPane('chat'); }} onDelete={props.onDelete} />
+      <Sidebar sessions={props.sessions} activeId={props.activeId} user={props.user} storage={props.storage ?? null} onSelect={selectMobile} onNew={() => { props.onNew(); setPane('chat'); }} onDelete={props.onDelete} onRename={props.onRename} />
       <Chat
         title={active?.title ?? t.newProject}
         messages={props.messages} streaming={props.streaming} activity={props.activity}

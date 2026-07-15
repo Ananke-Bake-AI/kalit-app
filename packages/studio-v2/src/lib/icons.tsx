@@ -35,3 +35,5 @@ export const IconTrash = (p: SVGProps<SVGSVGElement>) => (<svg {...base(p)}><pat
 export const IconClose = (p: SVGProps<SVGSVGElement>) => (<svg {...base(p)}><path d="M6 6l12 12M18 6 6 18" /></svg>);
 export const IconDownload = (p: SVGProps<SVGSVGElement>) => (<svg {...base(p)}><path d="M12 3v12M7 10l5 5 5-5M5 21h14" /></svg>);
 export const IconUsers = (p: SVGProps<SVGSVGElement>) => (<svg {...base(p)}><circle cx={9} cy={8} r={3.2} /><path d="M3.5 20a5.5 5.5 0 0 1 11 0M16 5.2a3.2 3.2 0 0 1 0 6.1M18 20a5.5 5.5 0 0 0-3.2-5" /></svg>);
+export const IconEdit = (p: SVGProps<SVGSVGElement>) => (<svg {...base(p)}><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>);
+export const IconGlobe = (p: SVGProps<SVGSVGElement>) => (<svg {...base(p)}><circle cx={12} cy={12} r={9} /><path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3Z" /></svg>);

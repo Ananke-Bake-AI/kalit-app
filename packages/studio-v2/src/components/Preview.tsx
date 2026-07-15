@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import type { FileNode, PreviewMode } from '../lib/types';
-import { IconCode, IconExpand, IconEye, IconFolder, IconFile, IconRefresh, IconLogo, IconDownload, IconUsers } from '../lib/icons';
+import { IconCode, IconExpand, IconEye, IconFolder, IconFile, IconRefresh, IconLogo, IconDownload, IconUsers, IconGlobe, IconDots } from '../lib/icons';
 import { useStrings } from '../lib/i18n';
 import { DomainManager } from './DomainManager';
 import { ShareDialog } from './ShareDialog';
+import { Menu, type MenuItem } from './Menu';
 import { PublishModal } from './PublishModal';
 import type { DomainState, PublishResult, ProjectInvite } from '../broker/useBrokerStudio';
 
@@ -131,6 +132,14 @@ export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing
   const hasDomain = !!domain?.customDomain;
   const doPublish = () => { setPublishOpen(true); onPublish(); };
   const closePublish = () => { setPublishOpen(false); onClearPublishResult?.(); };
+
+  // Menu overflow « ⋯ » : Inviter (collab) · Gérer le domaine (si publié) ·
+  // Télécharger le .zip. Actions à basse fréquence sorties de la barre.
+  const overflow: MenuItem[] = [];
+  if (canShare) overflow.push({ key: 'invite', label: t.menu.invite, icon: <IconUsers />, onClick: () => setShareOpen(true) });
+  if (publishUrl && onConnectDomain && onRemoveDomain) overflow.push({ key: 'domain', label: hasDomain ? domain!.customDomain! : t.menu.domain, icon: <IconGlobe />, onClick: () => setDomainOpen(true) });
+  if (onDownload) overflow.push({ key: 'download', label: t.menu.download, icon: <IconDownload />, disabled: !canDownload || downloading, onClick: onDownload });
+
   return (
     <section className="sv-prev">
       <div className="sv-prev__bar">
@@ -152,15 +161,15 @@ export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing
             {publishing && <span className="sv-btn__spin" />}
             {publishing ? t.publishing : publishUrl ? t.republish : t.publish}
           </button>
-          {canShare && (
-            <button className="sv-btn sv-btn--ghost" title={t.invite.title} onClick={() => setShareOpen(true)}><IconUsers width={15} height={15} style={{ verticalAlign: '-3px', marginRight: 5 }} />{t.invite.button}</button>
+          <button className="sv-btn sv-btn--ghost sv-btn--icon" title={t.refresh} aria-label={t.refresh} onClick={onRefresh}><IconRefresh /></button>
+          <button className="sv-btn sv-btn--ghost sv-btn--icon" title={t.openTab} aria-label={t.openTab} onClick={onOpen}><IconExpand /></button>
+          {/* Menu « ⋯ » : actions ponctuelles (collaboration, domaine, export) hors
+              de la boucle d'itération quotidienne → une seule entrée au lieu de 3 boutons. */}
+          {overflow.length > 0 && (
+            <Menu items={overflow} className="sv-btn sv-btn--ghost sv-btn--icon" title={t.menu.more} ariaLabel={t.menu.more} align="right">
+              <IconDots />
+            </Menu>
           )}
-          {publishUrl && onConnectDomain && onRemoveDomain && (
-            <button className={'sv-btn sv-btn--ghost' + (hasDomain ? ' sv-btn--on' : '')} title={t.domain.manage} onClick={() => setDomainOpen(true)}>{t.domain.manage}</button>
-          )}
-          <button className="sv-btn sv-btn--ghost sv-btn--icon" title={t.downloadZip} aria-label={t.downloadZip} disabled={!canDownload || downloading} onClick={onDownload}>{downloading ? <span className="sv-btn__spin" /> : <IconDownload />}</button>
-          <button className="sv-btn sv-btn--ghost sv-btn--icon" title={t.refresh} onClick={onRefresh}><IconRefresh /></button>
-          <button className="sv-btn sv-btn--ghost sv-btn--icon" title={t.openTab} onClick={onOpen}><IconExpand /></button>
         </div>
       </div>
       {mode === 'preview' ? (
