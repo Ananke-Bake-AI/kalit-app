@@ -7,17 +7,26 @@ import { APP_URL } from "@/lib/config"
 import { prisma } from "@/lib/prisma"
 import { getStripe } from "@/lib/stripe"
 import { getCreditPack, getPlan, resolveCreditPackPriceId, resolveStripePriceId } from "@/lib/plans"
+import { parseGaClientId, parseGaSessionId, GA4_STREAM_COOKIE } from "@/lib/ga4-mp"
 
 /**
- * Read Meta Conversions API match data available on the current request:
- * the _fbp/_fbc first-party cookies (set by the browser Pixel) plus the real
- * client IP and user-agent. Returned as string-only key/values suitable for
- * Stripe Checkout metadata (values are capped well under Stripe's 500-char
- * limit). Only present keys are included so we never write empty metadata.
+ * Read ad-platform match/attribution data available on the current request,
+ * for the server-side conversion events fired later from the Stripe webhook:
+ *
+ *   Meta CAPI — the _fbp/_fbc first-party cookies + real client IP/UA.
+ *   GA4 MP    — the client_id (from `_ga`) + session_id (from `_ga_<stream>`),
+ *               which GA4 needs to attribute the purchase to the user's
+ *               session (and thus to their Google Ads click).
+ *
+ * Returned as string-only key/values for Stripe Checkout metadata (all capped
+ * well under Stripe's 500-char limit). Only present keys are included so we
+ * never write empty metadata. This runs in the user's request context, so the
+ * cookies/headers are the real client's — the webhook can't read them itself.
  */
-async function collectCapiMatchData(): Promise<Record<string, string>> {
+async function collectAdTrackingData(): Promise<Record<string, string>> {
   const [cookieStore, hdrs] = await Promise.all([cookies(), headers()])
   const out: Record<string, string> = {}
+  // Meta
   const fbp = cookieStore.get("_fbp")?.value
   const fbc = cookieStore.get("_fbc")?.value
   if (fbp) out.fbp = fbp
@@ -26,6 +35,11 @@ async function collectCapiMatchData(): Promise<Record<string, string>> {
   if (ip) out.capiIp = ip
   const ua = hdrs.get("user-agent")
   if (ua) out.capiUa = ua.slice(0, 480)
+  // GA4
+  const gaCid = parseGaClientId(cookieStore.get("_ga")?.value)
+  const gaSid = parseGaSessionId(cookieStore.get(GA4_STREAM_COOKIE)?.value)
+  if (gaCid) out.gaCid = gaCid
+  if (gaSid) out.gaSid = gaSid
   return out
 }
 
@@ -68,12 +82,13 @@ export async function createCheckoutSession(planKey: string) {
     })
   }
 
-  // Capture Meta match-data at checkout-create time. This server action runs
-  // in response to the user's click, so the _fbp/_fbc first-party cookies and
-  // the real client IP/UA are all here — unlike the Stripe webhook, whose
-  // request comes from Stripe. We stash them in the Checkout metadata so the
-  // webhook can attach them to the server-side CAPI Purchase event.
-  const capiMeta = await collectCapiMatchData()
+  // Capture ad-platform match/attribution data at checkout-create time. This
+  // server action runs in response to the user's click, so the _fbp/_fbc and
+  // _ga cookies plus the real client IP/UA are all here — unlike the Stripe
+  // webhook, whose request comes from Stripe. We stash them in the Checkout
+  // metadata so the webhook can attach them to the server-side conversion
+  // events (Meta CAPI Purchase + GA4 Measurement Protocol purchase).
+  const capiMeta = await collectAdTrackingData()
 
   const checkoutSession = await stripe.checkout.sessions.create({
     customer: customerId,

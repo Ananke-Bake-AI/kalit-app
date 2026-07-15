@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma"
 import { APP_URL } from "@/lib/config"
 import { getCreditPack, getPlan, getPlanByPriceId } from "@/lib/plans"
 import { sendMetaPurchaseEvent } from "@/lib/meta-capi"
+import { sendGa4Purchase } from "@/lib/ga4-mp"
 
 /**
  * Stripe API 2025+ (incl. 2026-02-25.clover) moved billing-period fields
@@ -87,26 +88,49 @@ export async function handleCheckoutCompleted(session: any) {
 
   await provisionEntitlements(orgId, planKey)
 
-  // Server-side Meta CAPI Purchase — the redundant, higher-recall twin of the
-  // browser Pixel event. `event_id: session.id` is the SAME id the browser
-  // Pixel uses (passed to it via the success_url's {CHECKOUT_SESSION_ID}), so
-  // Meta dedups the pair into one conversion. Never let a marketing pixel
-  // failure break subscription provisioning — hence the isolated try/catch.
+  // ── Server-side conversion events ──────────────────────────────
+  // Fired straight from the webhook (no browser → ad-blocker/ITP proof). Each
+  // is isolated in its own try/catch so a marketing-pixel failure can never
+  // break subscription provisioning. All keyed on `session.id` — the SAME id
+  // the browser events use — so each platform dedups server↔browser.
+  const plan = getPlan(planKey)
+  const value = plan ? plan.monthlyPrice / 100 : undefined
+  const currency = (session.currency || "usd").toUpperCase()
+  const eventSourceUrl = new URL("/dashboard?checkout=success", APP_URL).toString()
+
+  // Meta CAPI Purchase — dedups against the browser Pixel via event_id = session.id.
   try {
-    const plan = getPlan(planKey)
     await sendMetaPurchaseEvent({
       eventId: session.id,
-      value: plan ? plan.monthlyPrice / 100 : undefined,
-      currency: (session.currency || "usd").toUpperCase(),
+      value,
+      currency,
       email: session.customer_details?.email || session.customer_email || null,
       fbp: session.metadata?.fbp || null,
       fbc: session.metadata?.fbc || null,
       clientIp: session.metadata?.capiIp || null,
       clientUserAgent: session.metadata?.capiUa || null,
-      eventSourceUrl: new URL("/dashboard?checkout=success", APP_URL).toString(),
+      eventSourceUrl,
     })
   } catch (err) {
     console.error("[stripe] Meta CAPI Purchase dispatch failed:", (err as Error).message)
+  }
+
+  // GA4 Measurement Protocol `purchase` — feeds GA4 + (via the GA4↔Ads import)
+  // Google Ads. Attributed to the user's GA4 session via client_id from `_ga`.
+  try {
+    if (session.metadata?.gaCid) {
+      await sendGa4Purchase({
+        clientId: session.metadata.gaCid,
+        sessionId: session.metadata?.gaSid || null,
+        transactionId: session.id,
+        value,
+        currency,
+        itemName: plan?.name || planKey,
+        eventSourceUrl,
+      })
+    }
+  } catch (err) {
+    console.error("[stripe] GA4 MP purchase dispatch failed:", (err as Error).message)
   }
 }
 

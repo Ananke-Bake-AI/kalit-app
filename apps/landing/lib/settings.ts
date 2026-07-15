@@ -139,9 +139,22 @@ export const META_KEYS = {
 
 export const ALL_META_KEYS = Object.values(META_KEYS)
 
+// ── Google Analytics 4 — Measurement Protocol ───────────────
+//
+// Server-side `purchase` events sent from the Stripe webhook straight to
+// GA4 (which feeds Google Ads via the GA4↔Ads conversion import). The
+// Measurement ID (G-816EPS8GX8) is public and lives in code — only the
+// Measurement Protocol API secret is a secret, stored here. Generate it in
+// GA4 Admin → Data Streams → (web stream) → Measurement Protocol API secrets.
+export const GA_KEYS = {
+  MP_API_SECRET: "GA4_MP_API_SECRET",
+} as const
+
+export const ALL_GA_KEYS = Object.values(GA_KEYS)
+
 // Every writable app-setting key — the admin write/clear allowlist checks
 // against this so newly-added groups don't get silently rejected.
-export const ALL_SETTING_KEYS = [...ALL_STRIPE_KEYS, ...ALL_META_KEYS]
+export const ALL_SETTING_KEYS = [...ALL_STRIPE_KEYS, ...ALL_META_KEYS, ...ALL_GA_KEYS]
 
 export async function getMetaCapiAccessToken(): Promise<string | null> {
   return getSetting(META_KEYS.CAPI_TOKEN)
@@ -149,6 +162,10 @@ export async function getMetaCapiAccessToken(): Promise<string | null> {
 
 export async function getMetaCapiTestCode(): Promise<string | null> {
   return getSetting(META_KEYS.CAPI_TEST_CODE)
+}
+
+export async function getGa4MpApiSecret(): Promise<string | null> {
+  return getSetting(GA_KEYS.MP_API_SECRET)
 }
 
 export async function getStripeSecretKey(): Promise<string | null> {

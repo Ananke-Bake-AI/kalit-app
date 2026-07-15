@@ -103,16 +103,37 @@ const META_FIELDS: Array<{
   },
 ]
 
+// Google Analytics 4 / Google Ads slots. Keep in sync with lib/settings.ts
+// GA_KEYS. The Measurement ID is public and lives in code — only the
+// Measurement Protocol API secret is sensitive.
+const GA_FIELDS: Array<{
+  key: string
+  label: string
+  hint: string
+  placeholder: string
+  destructive?: boolean
+}> = [
+  {
+    key: "GA4_MP_API_SECRET",
+    label: "GA4 Measurement Protocol API secret",
+    hint: "From GA4 Admin → Data Streams → (web stream) → Measurement Protocol API secrets. Enables the server-side `purchase` event fired from the Stripe webhook, which also feeds Google Ads via the GA4↔Ads conversion import. Leave unset and only the browser gtag fires.",
+    placeholder: "xxxxxxxx (MP secret)",
+    destructive: true,
+  },
+]
+
 export function SettingsClient({
   initialStripe,
   initialMeta,
+  initialGa,
 }: {
   initialStripe: SettingMeta[]
   initialMeta: SettingMeta[]
+  initialGa: SettingMeta[]
 }) {
   const [meta, setMeta] = useState<Record<string, SettingMeta>>(
     Object.fromEntries(
-      [...initialStripe, ...initialMeta].map((m) => [m.key, m]),
+      [...initialStripe, ...initialMeta, ...initialGa].map((m) => [m.key, m]),
     ),
   )
 
@@ -155,6 +176,23 @@ export function SettingsClient({
       >
         <div className={s.fields}>
           {META_FIELDS.map((f) => (
+            <SettingRow
+              key={f.key}
+              field={f}
+              meta={meta[f.key] || { key: f.key, set: false, updatedAt: null, updatedBy: null }}
+              onChanged={(next) => setMeta((prev) => ({ ...prev, [f.key]: next }))}
+            />
+          ))}
+        </div>
+      </SurfacePanel>
+
+      <SurfacePanel
+        spaced
+        title="Google Analytics 4 / Google Ads"
+        subtitle="Server-side purchase tracking via the GA4 Measurement Protocol. Fires a `purchase` from the Stripe webhook — the ad-blocker-proof source of truth for GA4 revenue, and (through the GA4↔Ads conversion import) for Google Ads bidding."
+      >
+        <div className={s.fields}>
+          {GA_FIELDS.map((f) => (
             <SettingRow
               key={f.key}
               field={f}

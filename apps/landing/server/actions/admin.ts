@@ -751,12 +751,13 @@ export async function deleteBugReport(id: string) {
 
 export async function getAppSettings() {
   await requireAdmin()
-  const { ALL_STRIPE_KEYS, ALL_META_KEYS, listSettingsMeta } = await import("@/lib/settings")
-  const [stripeKeys, metaKeys] = await Promise.all([
+  const { ALL_STRIPE_KEYS, ALL_META_KEYS, ALL_GA_KEYS, listSettingsMeta } = await import("@/lib/settings")
+  const [stripeKeys, metaKeys, gaKeys] = await Promise.all([
     listSettingsMeta(ALL_STRIPE_KEYS as unknown as string[]),
     listSettingsMeta(ALL_META_KEYS as unknown as string[]),
+    listSettingsMeta(ALL_GA_KEYS as unknown as string[]),
   ])
-  return { stripeKeys, metaKeys }
+  return { stripeKeys, metaKeys, gaKeys }
 }
 
 export async function setAppSetting(key: string, value: string) {
