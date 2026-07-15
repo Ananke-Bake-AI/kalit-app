@@ -43,7 +43,9 @@ function stepFromTool(
   sizeOf: (path: string) => number | undefined,
 ): ActivityStep | null {
   const name = s.name || '';
-  const input = s.input || '';
+  // inputFull = version la moins tronquée (le worker envoie ≤600, inputFull la garde) ;
+  // input est re-tronqué à 200 par le reducer.
+  const input = s.inputFull || s.input || '';
   const status: ActivityStep['status'] = s.isError ? 'error' : s.done ? 'done' : 'running';
   const key = 'a' + idx;
   const low = name.toLowerCase();
