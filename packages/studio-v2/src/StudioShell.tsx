@@ -39,6 +39,7 @@ export interface StudioShellProps {
   downloading?: boolean;
   onDownload?: () => void;
   user: { name: string; credits?: number };
+  meId?: string; // id de l'utilisateur courant (attribution des messages partagés)
   ctxPercent?: number | null;
   model: string;
   lang?: string;
@@ -161,6 +162,7 @@ export function StudioShell(props: StudioShellProps) {
         ctxPercent={props.ctxPercent} model={props.model} onModelChange={props.onModelChange}
         onSend={props.onSend} onStop={props.onStop} onChoiceAnswer={props.onSend}
         queued={props.queued} onQueuePrompt={props.onQueuePrompt} onCancelQueued={props.onCancelQueued}
+        meId={props.meId}
         attachments={props.attachments} uploading={props.uploading}
         onAddFiles={props.onAddFiles} onRemoveAttachment={props.onRemoveAttachment}
         outOfCredits={props.outOfCredits} pricingHref={`/${props.lang || 'en'}/pricing`}

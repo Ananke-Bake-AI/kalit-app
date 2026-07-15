@@ -20,7 +20,7 @@ export interface ProjectInvite { token: string; email: string; role: string; max
 interface PublishInfo { subdomain?: string | null; subdomainUrl?: string | null; customDomain?: string | null; customDomainStatus?: string | null; }
 
 interface ChatSessionDTO { id: string; title: string | null; model: string; isProcessing?: boolean; createdAt: number; updatedAt: number; projectId?: string; projectDeployed?: boolean; }
-interface ChatMessageDTO { id: string; role: string; content?: string; thinking?: string; tools?: Array<{ name: string; input?: unknown; done?: boolean }>; files?: Array<{ name: string; url: string; mimeType?: string }>; createdAt: number; }
+interface ChatMessageDTO { id: string; role: string; content?: string; thinking?: string; tools?: Array<{ name: string; input?: unknown; done?: boolean }>; files?: Array<{ name: string; url: string; mimeType?: string }>; createdAt: number; authorUserId?: string; authorName?: string; }
 
 function dtoToSession(d: ChatSessionDTO): Session {
   return { id: d.id, title: d.title || 'Sans titre', status: d.isProcessing ? 'running' : 'idle', model: d.model, updatedAt: d.updatedAt || d.createdAt || 0, projectId: d.projectId, projectDeployed: d.projectDeployed };
@@ -70,7 +70,7 @@ function dtoToMessage(d: ChatMessageDTO): Message {
   for (const t of d.tools ?? []) { const full = t.input ? JSON.stringify(t.input) : undefined; segments.push({ kind: 'tool', name: t.name, input: full?.slice(0, 200), inputFull: full?.slice(0, 20000), done: t.done ?? true }); }
   segments.push(...parseContent(d.content));
   for (const f of d.files ?? []) segments.push({ kind: 'file', name: f.name, url: f.url, mimeType: f.mimeType });
-  return { id: d.id, role: d.role === 'user' ? 'user' : 'assistant', segments: hoistRefinement(segments) };
+  return { id: d.id, role: d.role === 'user' ? 'user' : 'assistant', segments: hoistRefinement(segments), authorUserId: d.authorUserId, authorName: d.authorName };
 }
 
 // Taskforce (build) sur openai : le broker's Anthropic est souvent en 429.

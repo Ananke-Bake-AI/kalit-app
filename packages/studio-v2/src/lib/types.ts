@@ -29,6 +29,10 @@ export interface Message {
   id: string;
   role: 'user' | 'assistant';
   segments: Segment[];
+  // Collaboration : auteur d'un message user (id + nom d'affichage). Absent =
+  // message de l'utilisateur courant (rendu « You »).
+  authorUserId?: string;
+  authorName?: string;
 }
 
 export type PreviewMode = 'preview' | 'files';

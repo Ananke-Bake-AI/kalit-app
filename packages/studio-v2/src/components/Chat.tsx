@@ -55,6 +55,7 @@ interface Props {
   queued?: string[];
   onQueuePrompt?: (text: string) => void;
   onCancelQueued?: (i: number) => void;
+  meId?: string; // id de l'utilisateur courant → attribution des messages partagés
 }
 
 function ChoiceView({ s, onAnswer }: { s: Extract<Segment, { kind: 'choice' }>; onAnswer: (t: string) => void }) {
@@ -224,7 +225,7 @@ function SegmentView({ s, onChoiceAnswer, onToolClick }: { s: Segment; onChoiceA
   return null;
 }
 
-export function Chat({ title, messages, streaming, activity, model, onModelChange, onSend, onStop, onChoiceAnswer, ctxPercent, attachments = [], uploading, onAddFiles, onRemoveAttachment, outOfCredits, pricingHref, checkPromptQuality, isAdmin, precision, onPrecisionChange, onShare, canShare, queued = [], onQueuePrompt, onCancelQueued }: Props) {
+export function Chat({ title, messages, streaming, activity, model, onModelChange, onSend, onStop, onChoiceAnswer, ctxPercent, attachments = [], uploading, onAddFiles, onRemoveAttachment, outOfCredits, pricingHref, checkPromptQuality, isAdmin, precision, onPrecisionChange, onShare, canShare, queued = [], onQueuePrompt, onCancelQueued, meId }: Props) {
   const st = useStrings();
   const [val, setVal] = useState('');
   // Historique des prompts envoyés (terminal-style ↑/↓), persisté pour ne pas
@@ -329,15 +330,22 @@ export function Chat({ title, messages, streaming, activity, model, onModelChang
       {shareOpen && onShare && <ShareModal onShare={onShare} onClose={() => setShareOpen(false)} />}
 
       <div className="sv-feed" ref={feedRef}>
-        {messages.map((m) => (
-          <div key={m.id} className={'sv-msg ' + (m.role === 'user' ? 'sv-msg--user' : 'sv-msg--asst')}>
-            <div className="sv-msg__av">{m.role === 'user' ? 'V' : 'K'}</div>
+        {messages.map((m) => {
+          // Attribution collaborative : un message user d'un AUTRE membre (author
+          // renseigné et ≠ moi) porte son nom/initiale ; sinon « You ».
+          const other = m.role === 'user' && !!m.authorUserId && !!meId && m.authorUserId !== meId;
+          const who = m.role !== 'user' ? 'Kalit' : other ? (m.authorName || st.collaborator) : st.you;
+          const av = m.role !== 'user' ? 'K' : other ? (m.authorName || '?').trim().charAt(0).toUpperCase() || '·' : 'V';
+          return (
+          <div key={m.id} className={'sv-msg ' + (m.role === 'user' ? 'sv-msg--user' : 'sv-msg--asst') + (other ? ' sv-msg--other' : '')}>
+            <div className="sv-msg__av">{av}</div>
             <div className="sv-msg__body">
-              <div className="sv-msg__name">{m.role === 'user' ? st.you : 'Kalit'}</div>
+              <div className="sv-msg__name">{who}</div>
               {m.segments.map((s, i) => <SegmentView key={i} s={s} onChoiceAnswer={onChoiceAnswer} onToolClick={(seg) => setToolModal({ name: seg.name, input: seg.inputFull || seg.input || st.noArgs })} />)}
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
 
       {activity && (

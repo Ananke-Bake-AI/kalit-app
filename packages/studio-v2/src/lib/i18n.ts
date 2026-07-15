@@ -38,6 +38,7 @@ export interface Strings {
   navPreview: string;
   navigation: string;
   you: string;
+  collaborator: string;
   validate: string;
   running: string;
   stop: string;
@@ -139,6 +140,7 @@ const fr: Strings = {
   navPreview: 'Aperçu',
   navigation: 'Navigation',
   you: 'Vous',
+  collaborator: 'Collaborateur',
   validate: 'Valider',
   running: 'en cours',
   stop: 'Stop',
@@ -319,6 +321,7 @@ const en: Strings = {
   navPreview: 'Preview',
   navigation: 'Navigation',
   you: 'You',
+  collaborator: 'Collaborator',
   validate: 'Confirm',
   running: 'running',
   stop: 'Stop',
