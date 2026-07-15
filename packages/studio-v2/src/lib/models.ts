@@ -3,8 +3,13 @@
 //    comptes Pro+ (flag `pro`). Le broker downgrade en kimi pour les comptes < Pro.
 //  - "cloud/<model>"       → routé vers la gateway kalit-model-server (Ollama Cloud),
 //    dispo pour tous. Défaut = kimi-2.5.
+//
+// SOURCE DE VÉRITÉ = le broker (GET /api/broker/models) : il renvoie ce catalogue
+// annoté d'un flag `available` (calculé sans appeler les modèles). La liste
+// ci-dessous n'est plus qu'un FALLBACK affiché tant que le fetch n'a pas répondu
+// (ou s'il échoue). Garder en phase avec broker/internal/models/catalog.go.
 
-export interface ModelDef { id: string; label: string; provider: 'ollama' | 'anthropic' | 'mistral' | 'openai'; pro?: boolean; admin?: boolean; }
+export interface ModelDef { id: string; label: string; provider: 'ollama' | 'anthropic' | 'mistral' | 'openai'; pro?: boolean; admin?: boolean; available?: boolean; }
 export interface ModelGroup { label: string; models: ModelDef[]; }
 
 export const MODEL_GROUPS: ModelGroup[] = [

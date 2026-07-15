@@ -42,6 +42,7 @@ export interface StudioShellProps {
   meId?: string; // id de l'utilisateur courant (attribution des messages partagés)
   ctxPercent?: number | null;
   model: string;
+  modelGroups?: import('./lib/models').ModelGroup[];
   lang?: string;
   onModelChange: (id: string) => void;
   onSelect: (id: string) => void;
@@ -160,7 +161,7 @@ export function StudioShell(props: StudioShellProps) {
       <Chat
         title={active?.title ?? t.newProject}
         messages={props.messages} streaming={props.streaming} activity={props.activity}
-        ctxPercent={props.ctxPercent} model={props.model} onModelChange={props.onModelChange}
+        ctxPercent={props.ctxPercent} model={props.model} modelGroups={props.modelGroups} onModelChange={props.onModelChange}
         onSend={props.onSend} onStop={props.onStop} onChoiceAnswer={props.onSend}
         queued={props.queued} onQueuePrompt={props.onQueuePrompt} onCancelQueued={props.onCancelQueued}
         meId={props.meId}

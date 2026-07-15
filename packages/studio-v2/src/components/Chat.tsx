@@ -35,6 +35,7 @@ interface Props {
   streaming: boolean;
   activity: Activity | null;
   model: string;
+  modelGroups?: import('../lib/models').ModelGroup[];
   onModelChange: (id: string) => void;
   onSend: (text: string) => void;
   onStop: () => void;
@@ -225,7 +226,7 @@ function SegmentView({ s, onChoiceAnswer, onToolClick }: { s: Segment; onChoiceA
   return null;
 }
 
-export function Chat({ title, messages, streaming, activity, model, onModelChange, onSend, onStop, onChoiceAnswer, ctxPercent, attachments = [], uploading, onAddFiles, onRemoveAttachment, outOfCredits, pricingHref, checkPromptQuality, isAdmin, precision, onPrecisionChange, onShare, canShare, queued = [], onQueuePrompt, onCancelQueued, meId }: Props) {
+export function Chat({ title, messages, streaming, activity, model, modelGroups, onModelChange, onSend, onStop, onChoiceAnswer, ctxPercent, attachments = [], uploading, onAddFiles, onRemoveAttachment, outOfCredits, pricingHref, checkPromptQuality, isAdmin, precision, onPrecisionChange, onShare, canShare, queued = [], onQueuePrompt, onCancelQueued, meId }: Props) {
   const st = useStrings();
   const [val, setVal] = useState('');
   // Historique des prompts envoyés (terminal-style ↑/↓), persisté pour ne pas
@@ -312,7 +313,7 @@ export function Chat({ title, messages, streaming, activity, model, onModelChang
               {st.share.button}
             </button>
           )}
-          <ModelSelector value={model} onChange={onModelChange} isAdmin={isAdmin} />
+          <ModelSelector value={model} onChange={onModelChange} isAdmin={isAdmin} groups={modelGroups} />
           {onPrecisionChange && (
             <button
               className={'sv-btn sv-btn--ghost sv-chat__precision' + (precision ? ' sv-chat__precision--on' : '')}

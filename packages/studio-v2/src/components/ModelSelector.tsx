@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { modelGroupsFor, labelFor } from '../lib/models';
+import { modelGroupsFor, labelFor, type ModelGroup } from '../lib/models';
 import { useStrings } from '../lib/i18n';
 
-interface Props { value: string; onChange: (id: string) => void; isAdmin?: boolean; }
+interface Props { value: string; onChange: (id: string) => void; isAdmin?: boolean; groups?: ModelGroup[]; }
 
-export function ModelSelector({ value, onChange, isAdmin }: Props) {
+export function ModelSelector({ value, onChange, isAdmin, groups: groupsProp }: Props) {
   const st = useStrings();
-  const groups = useMemo(() => modelGroupsFor(!!isAdmin), [isAdmin]);
+  // Liste fournie par le broker (avec dispo) si dispo, sinon fallback local.
+  const groups = useMemo(() => groupsProp ?? modelGroupsFor(!!isAdmin), [groupsProp, isAdmin]);
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -27,15 +28,23 @@ export function ModelSelector({ value, onChange, isAdmin }: Props) {
           {groups.map((g) => (
             <div key={g.label}>
               <div className="sv-model__grp">{g.label}</div>
-              {g.models.map((m) => (
-                <button key={m.id} className={'sv-model__opt' + (m.id === value ? ' sv-model__opt--on' : '')}
-                  onClick={() => { onChange(m.id); setOpen(false); }}>
+              {g.models.map((m) => {
+                // available absent (fallback) = supposé dispo ; false = grisé/non sélectionnable.
+                const unavailable = m.available === false;
+                return (
+                <button key={m.id} disabled={unavailable}
+                  className={'sv-model__opt' + (m.id === value ? ' sv-model__opt--on' : '') + (unavailable ? ' sv-model__opt--off' : '')}
+                  title={unavailable ? st.modelUnavailable : undefined}
+                  onClick={() => { if (!unavailable) { onChange(m.id); setOpen(false); } }}>
                   <span className={'sv-model__dot sv-model__dot--' + m.provider} /> {m.label}
-                  {m.admin
-                    ? <span style={{ marginLeft: 'auto', fontSize: 10, fontWeight: 700, letterSpacing: '.04em', color: 'var(--sv-warn)', opacity: .85 }}>ADMIN</span>
-                    : m.pro && <span style={{ marginLeft: 'auto', fontSize: 10, fontWeight: 700, letterSpacing: '.04em', color: 'var(--sv-accent-2)', opacity: .8 }}>PRO</span>}
+                  {unavailable
+                    ? <span className="sv-model__tag sv-model__tag--off">{st.modelOffline}</span>
+                    : m.admin
+                    ? <span className="sv-model__tag" style={{ color: 'var(--sv-warn)' }}>ADMIN</span>
+                    : m.pro && <span className="sv-model__tag" style={{ color: 'var(--sv-accent-2)' }}>PRO</span>}
                 </button>
-              ))}
+                );
+              })}
             </div>
           ))}
         </div>

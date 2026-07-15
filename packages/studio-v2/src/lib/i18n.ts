@@ -40,6 +40,8 @@ export interface Strings {
   you: string;
   collaborator: string;
   menu: { more: string; rename: string; share: string; domain: string; download: string; invite: string; openTab: string; refresh: string };
+  modelUnavailable: string;
+  modelOffline: string;
   validate: string;
   running: string;
   stop: string;
@@ -143,6 +145,8 @@ const fr: Strings = {
   you: 'Vous',
   collaborator: 'Collaborateur',
   menu: { more: 'Options', rename: 'Renommer', share: 'Partager', domain: 'Gérer le domaine…', download: 'Télécharger le .zip', invite: 'Inviter des collaborateurs…', openTab: 'Ouvrir dans un onglet', refresh: 'Rafraîchir l’aperçu' },
+  modelUnavailable: 'Modèle indisponible pour le moment',
+  modelOffline: 'indispo',
   validate: 'Valider',
   running: 'en cours',
   stop: 'Stop',
@@ -325,6 +329,8 @@ const en: Strings = {
   you: 'You',
   collaborator: 'Collaborator',
   menu: { more: 'Options', rename: 'Rename', share: 'Share', domain: 'Manage domain…', download: 'Download .zip', invite: 'Invite collaborators…', openTab: 'Open in new tab', refresh: 'Refresh preview' },
+  modelUnavailable: 'Model currently unavailable',
+  modelOffline: 'offline',
   validate: 'Confirm',
   running: 'running',
   stop: 'Stop',

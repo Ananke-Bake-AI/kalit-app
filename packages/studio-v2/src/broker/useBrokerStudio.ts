@@ -8,7 +8,7 @@ import type { Activity, FileNode, Message, Segment, Session } from '../lib/types
 import type { BrokerClient } from './client';
 import { useBrokerSocket, type Frame } from './socket';
 import { StreamReducer, choiceFromInput, type RawEvent } from './reducer';
-import { DEFAULT_MODEL_ID } from '../lib/models';
+import { DEFAULT_MODEL_ID, modelGroupsFor, type ModelGroup } from '../lib/models';
 import { stringsFor, type Strings } from '../lib/i18n';
 
 export interface DnsRecord { type: string; name: string; value: string; }
@@ -156,6 +156,11 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     setModelState(id);
     try { localStorage.setItem('kalit.studio.model', id); } catch { /* ignore */ }
   }, []);
+  // Catalogue des modèles : source de vérité = le broker (GET /api/broker/models),
+  // qui renvoie la liste filtrée (admin) + un flag `available` par modèle (calculé
+  // sans appeler les modèles). Fallback local tant que le fetch n'a pas répondu.
+  // Le fetch lui-même est plus bas (après la définition de `api`).
+  const [modelGroups, setModelGroups] = useState<ModelGroup[]>(() => modelGroupsFor(false));
   // Mode Precision (opt-in) : contrat + QA visuelle 2-étages côté worker. Coûteux
   // en tokens → off par défaut ; le broker l'enforce Pro+/admin quoi qu'il arrive.
   const [precision, setPrecisionState] = useState<boolean>(false);
@@ -235,6 +240,15 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   }, [api]);
 
   useEffect(() => { loadSessions(); loadStorage(); }, [loadSessions, loadStorage]);
+
+  // Catalogue des modèles + disponibilité, servi par le broker. Une fois au mount.
+  useEffect(() => {
+    let stop = false;
+    api.json<{ groups?: ModelGroup[] }>('/api/broker/models').then((d) => {
+      if (!stop && d?.groups && d.groups.length) setModelGroups(d.groups);
+    });
+    return () => { stop = true; };
+  }, [api]);
 
   // Preview + file-tree : poll workspace-tree de la session active (contrat §4).
   const HIDDEN = new Set(['node_modules', '.pnpm-store', '.git', '.claude']);
@@ -739,5 +753,5 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     return lv === 'enrich' || lv === 'rich' || lv === 'none' ? lv : null;
   }, [api]);
 
-  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, publishResult, clearPublishResult: () => setPublishResult(null), deployBlocked, dismissDeployBlocked: () => setDeployBlocked(false), storage, storageBlocked, dismissStorageBlocked: () => setStorageBlocked(false), domain, connectDomain, removeDomain, canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, checkPromptQuality, socketStatus: socket.status, queued, enqueuePrompt, cancelQueued, select, newProject, send, stop, deleteSession, setModel, precision, setPrecision, publish, download, refreshTree, reloadSessions: loadSessions, shareSession, canShare: !!activeId && messages.length > 0, canShareProject: !!projectId, createInvite, listInvites, revokeInvite, renameSession };
+  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, publishResult, clearPublishResult: () => setPublishResult(null), deployBlocked, dismissDeployBlocked: () => setDeployBlocked(false), storage, storageBlocked, dismissStorageBlocked: () => setStorageBlocked(false), domain, connectDomain, removeDomain, canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, checkPromptQuality, socketStatus: socket.status, queued, enqueuePrompt, cancelQueued, select, newProject, send, stop, deleteSession, setModel, modelGroups, precision, setPrecision, publish, download, refreshTree, reloadSessions: loadSessions, shareSession, canShare: !!activeId && messages.length > 0, canShareProject: !!projectId, createInvite, listInvites, revokeInvite, renameSession };
 }
