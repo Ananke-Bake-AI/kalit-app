@@ -113,6 +113,7 @@ export interface Strings {
     title: string; sub: string; loading: string; connectedHint: string; disconnect: string;
     needApp: string; notConfigured: string; installApp: string; account: string; searchRepo: string;
     loadingRepos: string; noRepos: string; privateBadge: string; manageRepos: string; connectFailed: string;
+    importCta: string; willImport: string; remove: string;
   };
   theme: { toggle: string; light: string; dark: string };
 }
@@ -345,6 +346,9 @@ const fr: Strings = {
     privateBadge: 'privé',
     manageRepos: 'Gérer les dépôts…',
     connectFailed: 'La connexion a échoué. Réessaie.',
+    importCta: 'Importer un dépôt GitHub',
+    willImport: 'sera importé et cloné à ton premier message',
+    remove: 'Retirer',
   },
   theme: { toggle: 'Changer de thème', light: 'Thème clair', dark: 'Thème sombre' },
 };
@@ -577,6 +581,9 @@ const en: Strings = {
     privateBadge: 'private',
     manageRepos: 'Manage repositories…',
     connectFailed: 'Connection failed. Please try again.',
+    importCta: 'Import a GitHub repository',
+    willImport: 'will be imported and cloned on your first message',
+    remove: 'Remove',
   },
   theme: { toggle: 'Toggle theme', light: 'Light theme', dark: 'Dark theme' },
 };

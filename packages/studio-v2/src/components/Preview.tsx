@@ -9,7 +9,7 @@ import { Menu, type MenuItem } from './Menu';
 import { PublishModal } from './PublishModal';
 import { BuildingView, NoSiteView, ActivityStrip } from './PreviewLive';
 import type { ActivityStep } from '../lib/activity';
-import type { DomainState, PublishResult, ProjectInvite, GithubApi } from '../broker/useBrokerStudio';
+import type { DomainState, PublishResult, ProjectInvite, GithubApi, PendingRepo } from '../broker/useBrokerStudio';
 
 // Un site servable existe-t-il dans le workspace ? previewUrl est non-null dès que
 // le projet existe (même 0 fichier) → mauvais signal. La vérité = l'arbre contient
@@ -78,6 +78,8 @@ interface Props {
   onListInvites?: () => Promise<ProjectInvite[]>;
   onRevokeInvite?: (token: string) => Promise<boolean>;
   github?: GithubApi;               // connecter un repo GitHub au projet
+  pendingRepo?: PendingRepo | null; // repo choisi sur l'accueil (import), cloné au 1er prompt
+  onSetPendingRepo?: (r: PendingRepo | null) => void;
   activitySteps?: ActivityStep[];   // feed live « ce que fait l'agent »
   fileWrite?: boolean;              // le tour en cours écrit-il des fichiers ?
   onFocusChat?: () => void;         // CTA « Décrire mon site » → focus le chat
@@ -108,8 +110,9 @@ function Tree({ nodes, depth = 0 }: { nodes: FileNode[]; depth?: number }) {
 }
 
 /** État du panneau quand il n'y a pas encore d'aperçu à montrer. */
-function PreviewEmpty({ building, hasMessages, onSuggest }: { building?: boolean; hasMessages?: boolean; onSuggest?: (p: string) => void }) {
+function PreviewEmpty({ building, hasMessages, onSuggest, github, pendingRepo, onSetPendingRepo }: { building?: boolean; hasMessages?: boolean; onSuggest?: (p: string) => void; github?: GithubApi; pendingRepo?: PendingRepo | null; onSetPendingRepo?: (r: PendingRepo | null) => void }) {
   const t = useStrings();
+  const [pickOpen, setPickOpen] = useState(false);
 
   // L'agent travaille (ou a commencé) mais aucun fichier servable encore.
   if (building || hasMessages) {
@@ -145,12 +148,35 @@ function PreviewEmpty({ building, hasMessages, onSuggest }: { building?: boolean
             </button>
           ))}
         </div>
+        {/* Démarrer depuis un repo GitHub : on choisit ici, le repo sera cloné au
+            1er prompt (le projet n'existe pas encore). */}
+        {github && onSetPendingRepo && (
+          <div className="sv-welcome__import">
+            {pendingRepo ? (
+              <div className="sv-gh__repo-row">
+                <span className="sv-gh__dot" />
+                <div className="sv-gh__repo-main">
+                  <span className="sv-gh__repo-name">{pendingRepo.repoFullName}</span>
+                  <span className="sv-gh__repo-hint">{t.github.willImport}</span>
+                </div>
+                <button className="sv-btn sv-btn--ghost sv-btn--sm" onClick={() => onSetPendingRepo(null)}>{t.github.remove}</button>
+              </div>
+            ) : (
+              <button type="button" className="sv-btn sv-btn--ghost sv-welcome__importbtn" onClick={() => setPickOpen(true)}>
+                <IconGit width={16} height={16} /> {t.github.importCta}
+              </button>
+            )}
+          </div>
+        )}
       </div>
+      {pickOpen && github && (
+        <GitHubConnect github={github} onPick={(r) => onSetPendingRepo?.(r)} onClose={() => setPickOpen(false)} />
+      )}
     </div>
   );
 }
 
-export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing, canPublish, onPublish, canDownload, downloading, onDownload, onRefresh, onOpen, building, hasMessages, onSuggest, domain, onConnectDomain, onRemoveDomain, publishResult, onClearPublishResult, canShareProject, onCreateInvite, onListInvites, onRevokeInvite, github, activitySteps = [], fileWrite = false, onFocusChat }: Props) {
+export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing, canPublish, onPublish, canDownload, downloading, onDownload, onRefresh, onOpen, building, hasMessages, onSuggest, domain, onConnectDomain, onRemoveDomain, publishResult, onClearPublishResult, canShareProject, onCreateInvite, onListInvites, onRevokeInvite, github, pendingRepo, onSetPendingRepo, activitySteps = [], fileWrite = false, onFocusChat }: Props) {
   const t = useStrings();
   const [domainOpen, setDomainOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
@@ -216,7 +242,7 @@ export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing
             ? <BuildingView steps={activitySteps} />
             : hasMessages
               ? <NoSiteView onFocusChat={onFocusChat} />
-              : <PreviewEmpty building={false} hasMessages={false} onSuggest={onSuggest} />
+              : <PreviewEmpty building={false} hasMessages={false} onSuggest={onSuggest} github={github} pendingRepo={pendingRepo} onSetPendingRepo={onSetPendingRepo} />
       ) : (
         tree.length ? <div className="sv-tree"><Tree nodes={tree} /></div> : <div className="sv-empty">{t.noFiles}</div>
       )}

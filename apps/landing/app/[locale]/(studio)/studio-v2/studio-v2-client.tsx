@@ -97,7 +97,7 @@ export function StudioV2Client({ initialSessionId }: { initialSessionId?: string
       publishResult={s.publishResult} onClearPublishResult={s.clearPublishResult}
       previewActivity={s.previewActivity}
       onShare={s.shareSession} canShare={s.canShare}
-      canShareProject={s.canShareProject} onCreateInvite={s.createInvite} onListInvites={s.listInvites} onRevokeInvite={s.revokeInvite} github={s.github}
+      canShareProject={s.canShareProject} onCreateInvite={s.createInvite} onListInvites={s.listInvites} onRevokeInvite={s.revokeInvite} github={s.github} pendingRepo={s.pendingRepo} setPendingRepo={s.setPendingRepo}
     />
   )
 }

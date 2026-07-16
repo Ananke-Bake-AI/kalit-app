@@ -566,3 +566,8 @@
 .sv-theme { display: inline-flex; align-items: center; gap: 7px; padding: 6px 10px; font: inherit; font-size: 12.5px; color: var(--sv-text-2); background: transparent; border: 1px solid var(--sv-line); border-radius: var(--sv-r-sm); cursor: pointer; }
 .sv-theme:hover { color: var(--sv-text); background: var(--sv-surface-2); border-color: var(--sv-line); }
 .sv-theme svg { flex: none; }
+
+/* --- Import « démarrer depuis un repo » sur l'écran d'accueil --- */
+.sv-welcome__import { margin-top: 18px; display: flex; justify-content: center; }
+.sv-welcome__importbtn { display: inline-flex; align-items: center; gap: 8px; }
+.sv-welcome__import .sv-gh__repo-row { max-width: 420px; width: 100%; }

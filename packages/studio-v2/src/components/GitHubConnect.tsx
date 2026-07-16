@@ -6,12 +6,15 @@ import type { GithubApi, GithubInstallation, GithubRepo, GithubLink } from '../b
 interface Props {
   github: GithubApi;
   onClose: () => void;
+  // Mode « pick » (écran d'accueil, pas encore de projet) : au lieu de lier tout
+  // de suite, on renvoie le repo choisi (stocké en pending, lié au 1er prompt).
+  onPick?: (repo: { repoFullName: string; defaultBranch: string; installationId: string }) => void;
 }
 
 // Dialog « Connecter GitHub » : lie un repo de l'utilisateur au projet. Le broker
 // clone le repo au tour suivant et l'agent peut livrer via une pull request. Le
 // token GitHub reste 100% côté broker — ici on ne choisit qu'un repo.
-export function GitHubConnect({ github, onClose }: Props) {
+export function GitHubConnect({ github, onClose, onPick }: Props) {
   const st = useStrings();
   const g = st.github;
   const [phase, setPhase] = useState<'loading' | 'connected' | 'need-app' | 'pick'>('loading');
@@ -26,8 +29,11 @@ export function GitHubConnect({ github, onClose }: Props) {
 
   const load = useCallback(async () => {
     setErr('');
-    const status = await github.status();
-    if (status?.connected) { setLink(status); setPhase('connected'); return; }
+    // Mode pick (accueil) : pas de session → on saute le statut, on va choisir.
+    if (!onPick) {
+      const status = await github.status();
+      if (status?.connected) { setLink(status); setPhase('connected'); return; }
+    }
     const inst = await github.installations();
     if (!inst.configured) { setErr(g.notConfigured); setPhase('need-app'); return; }
     if (inst.installations.length === 0) { setPhase('need-app'); return; }
@@ -35,7 +41,7 @@ export function GitHubConnect({ github, onClose }: Props) {
     const first = inst.installations[0].installationId;
     setInstallId(first);
     setPhase('pick');
-  }, [github, g.notConfigured]);
+  }, [github, g.notConfigured, onPick]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -62,6 +68,8 @@ export function GitHubConnect({ github, onClose }: Props) {
 
   const connect = async (repo: GithubRepo) => {
     if (busy) return;
+    // Mode pick : on ne lie pas (pas de projet encore) — on renvoie le choix.
+    if (onPick) { onPick({ repoFullName: repo.fullName, defaultBranch: repo.defaultBranch, installationId: installId }); onClose(); return; }
     setBusy(true); setErr('');
     const res = await github.connect({ repoFullName: repo.fullName, defaultBranch: repo.defaultBranch, installationId: installId });
     setBusy(false);

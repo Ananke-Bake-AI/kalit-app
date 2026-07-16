@@ -21,6 +21,7 @@ export interface ProjectInvite { token: string; email: string; role: string; max
 export interface GithubLink { connected: boolean; repoFullName?: string; defaultBranch?: string; mode?: string; authKind?: string; }
 export interface GithubInstallation { installationId: string; accountLogin: string; accountType?: string; }
 export interface GithubRepo { fullName: string; owner: string; defaultBranch: string; private: boolean; name?: string; description?: string | null; }
+export interface PendingRepo { repoFullName: string; defaultBranch: string; installationId: string; }
 export interface GithubApi {
   status: () => Promise<GithubLink | null>;
   installations: () => Promise<{ configured: boolean; installations: GithubInstallation[] }>;
@@ -185,6 +186,12 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     try { localStorage.setItem('kalit.studio.precision', on ? '1' : '0'); } catch { /* ignore */ }
   }, []);
   const [projectId, setProjectId] = useState<string | null>(null);
+  // Import « démarrer depuis un repo » : repo choisi sur l'écran d'accueil AVANT
+  // qu'un projet existe. Envoyé avec le 1er message (send) → le broker le lie puis
+  // le clone. Effacé après le 1er envoi.
+  const [pendingRepo, setPendingRepo] = useState<PendingRepo | null>(null);
+  const pendingRepoRef = useRef<PendingRepo | null>(null);
+  pendingRepoRef.current = pendingRepo;
   const [publishUrl, setPublishUrl] = useState<string | null>(null);
   // Slug du sous-domaine déjà publié. Un RE-publish doit le réutiliser tel quel —
   // sinon on re-dérive du titre (qui a pu changer) et on déploierait sur une
@@ -677,7 +684,13 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     // notamment `error` (sinon échec silencieux) et `done` (finalisation de
     // secours si le WS n'a pas émis session_stream_closed).
     try {
-      const r = await client.fetch(`/api/broker/sessions/${sid}/messages`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: body, language: lang, progressMode: 'default', suite: 'project', model: modelRef.current, precision: precisionRef.current, taskforceModelProvider: DEFAULT_TF_PROVIDER, requestId: 'r' + Date.now() }) });
+      // Import « démarrer depuis un repo » : on joint le repo choisi sur l'écran
+      // d'accueil au 1er message → le broker le lie AVANT le tour (donc avant le
+      // clone). On l'efface tout de suite : il ne s'applique qu'à ce 1er envoi.
+      const pr = pendingRepoRef.current;
+      if (pr) setPendingRepo(null);
+      const connectRepo = pr ? { host: 'github.com', repoFullName: pr.repoFullName, defaultBranch: pr.defaultBranch, authKind: 'github_app', installationId: Number(pr.installationId), mode: 'pr' } : undefined;
+      const r = await client.fetch(`/api/broker/sessions/${sid}/messages`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: body, language: lang, progressMode: 'default', suite: 'project', model: modelRef.current, precision: precisionRef.current, taskforceModelProvider: DEFAULT_TF_PROVIDER, requestId: 'r' + Date.now(), connectRepo }) });
       if (r.status === 402) { setOutOfCredits(true); finalizeSoft(); setBaseMessages((m) => m.filter((x) => !x.id.startsWith('temp-'))); return; }
       // 403 storage_limit : le broker refuse une NOUVELLE création (quota plein).
       if (r.status === 403) {
@@ -835,5 +848,5 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     return lv === 'enrich' || lv === 'rich' || lv === 'none' ? lv : null;
   }, [api]);
 
-  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, publishResult, clearPublishResult: () => setPublishResult(null), deployBlocked, dismissDeployBlocked: () => setDeployBlocked(false), storage, storageBlocked, dismissStorageBlocked: () => setStorageBlocked(false), domain, connectDomain, removeDomain, canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, checkPromptQuality, socketStatus: socket.status, queued, enqueuePrompt, cancelQueued, select, newProject, send, stop, deleteSession, setModel, modelGroups, previewActivity, precision, setPrecision, publish, download, refreshTree, reloadSessions: loadSessions, shareSession, canShare: !!activeId && messages.length > 0, canShareProject: !!projectId, createInvite, listInvites, revokeInvite, github, renameSession };
+  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, publishResult, clearPublishResult: () => setPublishResult(null), deployBlocked, dismissDeployBlocked: () => setDeployBlocked(false), storage, storageBlocked, dismissStorageBlocked: () => setStorageBlocked(false), domain, connectDomain, removeDomain, canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, checkPromptQuality, socketStatus: socket.status, queued, enqueuePrompt, cancelQueued, select, newProject, send, stop, deleteSession, setModel, modelGroups, previewActivity, precision, setPrecision, publish, download, refreshTree, reloadSessions: loadSessions, shareSession, canShare: !!activeId && messages.length > 0, canShareProject: !!projectId, createInvite, listInvites, revokeInvite, github, pendingRepo, setPendingRepo, renameSession };
 }
