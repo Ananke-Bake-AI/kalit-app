@@ -20,3 +20,12 @@
   flex-direction: column;
   overflow: hidden;
 }
+
+.chrome {
+  // Mobile : le studio est un shell plein écran piné au viewport (cf. shell.css).
+  // Le header global Kalit se superposerait par-dessus → on masque la chrome du
+  // site sur petit écran ; la navigation studio se fait via sa barre mobile.
+  @media (max-width: 860px) {
+    display: none;
+  }
+}

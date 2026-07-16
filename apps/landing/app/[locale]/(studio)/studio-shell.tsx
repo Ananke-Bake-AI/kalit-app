@@ -47,11 +47,11 @@ function StudioShellInner({ children, session }: { children: ReactNode; session:
           studio experience. Project routes are always chrome-free because
           the editor renders its own fullscreen shell. */}
       {!hideSiteChrome && (
-        <>
+        <div className={s.chrome}>
           <Header initialSession={session} />
           <EmailBanner initialSession={session} />
           {emailVerified ? <TrialBanner /> : null}
-        </>
+        </div>
       )}
       <main className={s.main}>{children}</main>
       {/* Discord CTA stays mounted even in focus mode — it sits in the
