@@ -192,7 +192,7 @@ export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing
             {publishing ? t.publishing : publishUrl ? t.republish : t.publish}
           </button>
           <button className="sv-btn sv-btn--ghost sv-btn--icon" title={t.refresh} aria-label={t.refresh} onClick={onRefresh}><IconRefresh /></button>
-          <button className="sv-btn sv-btn--ghost sv-btn--icon" title={t.openTab} aria-label={t.openTab} onClick={onOpen}><IconExpand /></button>
+          <button className="sv-btn sv-btn--ghost sv-btn--icon sv-prev__open" title={t.openTab} aria-label={t.openTab} onClick={onOpen}><IconExpand /></button>
           {/* Menu « ⋯ » : actions ponctuelles (collaboration, domaine, export) hors
               de la boucle d'itération quotidienne → une seule entrée au lieu de 3 boutons. */}
           {overflow.length > 0 && (
