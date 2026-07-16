@@ -734,7 +734,12 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     setStreaming(false); setActivity(null);
   }, [activeId, client]);
 
-  const newProject = useCallback(() => { setActiveId(null); setBaseMessages([]); setLive(null); setStreaming(false); setActivity(null); setPending([]); setQueued([]); setOutOfCredits(false); setCtxPercent(null); }, []);
+  // IMPORTANT : on efface AUSSI projectId ici. Sinon un « New project » garde le
+  // projectId stale du projet précédent → canPublish/le menu « Connecter GitHub »
+  // restent actifs et le fallback resolveGitSession lie le repo à l'ANCIEN projet.
+  // Sur un projet neuf il n'y a pas encore de projet/session : la connexion git
+  // n'apparaît qu'après le 1er prompt (quand le projet existe vraiment).
+  const newProject = useCallback(() => { setActiveId(null); setProjectId(null); setTree([]); setPreviewUrl(null); setBaseMessages([]); setLive(null); setStreaming(false); setActivity(null); setPending([]); setQueued([]); setOutOfCredits(false); setCtxPercent(null); }, []);
 
   // Suppression d'une session. mode='session' → DELETE la session seule ; mode
   // ='project' → DELETE le projet lié (le broker cascade : deploy + archive R2 +
