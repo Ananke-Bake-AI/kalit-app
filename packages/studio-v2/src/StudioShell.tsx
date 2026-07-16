@@ -114,6 +114,10 @@ export function StudioShell(props: StudioShellProps) {
       if (!vv) return;
       root.style.setProperty('--sv-vh', Math.round(vv.height) + 'px');
       root.style.setProperty('--sv-voff', Math.round(vv.offsetTop) + 'px');
+      // Clavier ouvert ≈ le visualViewport perd >120px vs l'écran. On pose une
+      // classe pour masquer la barre de nav du bas (qui sinon chevauche le prompt
+      // quand on tape) — la nav ne sert pas pendant la saisie.
+      document.body.classList.toggle('sv-kbd', (window.innerHeight - vv.height) > 120);
     };
     const applySoon = () => { apply(); requestAnimationFrame(apply); setTimeout(apply, 250); };
     applySoon();
@@ -128,6 +132,7 @@ export function StudioShell(props: StudioShellProps) {
       window.removeEventListener('focusout', applySoon);
       window.removeEventListener('orientationchange', applySoon);
       document.body.classList.remove('sv-studio-lock');
+      document.body.classList.remove('sv-kbd');
       root.style.removeProperty('--sv-vh');
       root.style.removeProperty('--sv-voff');
     };
