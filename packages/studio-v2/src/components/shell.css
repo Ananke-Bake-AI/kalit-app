@@ -360,9 +360,16 @@
      porté par le conteneur .root (studio-shell.module.scss), qui contient AUSSI le
      header du site → pas de superposition. Ici le shell remplit juste .main. */
   body.sv-studio-lock { position: fixed; inset: 0; width: 100%; overflow: hidden; }
+  /* .sv-shell est un enfant flex de .main (studio-shell.module) qui a désormais
+     une hauteur RÉDUITE par le header (en flux). `height:100%` d'un enfant de
+     flex-item ne résout pas fiablement → le shell gardait ~la pleine hauteur et
+     débordait sous l'écran. On le fait REMPLIR .main via flex → il tient toujours
+     dans l'espace restant, la .sv-feed scrolle en interne, composer + mnav visibles. */
   .sv-shell {
     grid-template-columns: 1fr; grid-template-rows: 1fr auto;
-    height: 100%;
+    flex: 1;
+    min-height: 0;
+    height: auto;
     overflow: hidden;
   }
   .sv-shell > .sv-side, .sv-shell > .sv-chat, .sv-shell > .sv-prev {
