@@ -63,9 +63,9 @@ export function GitHubConnect({ github, onClose }: Props) {
   const connect = async (repo: GithubRepo) => {
     if (busy) return;
     setBusy(true); setErr('');
-    const ok = await github.connect({ repoFullName: repo.fullName, defaultBranch: repo.defaultBranch, installationId: installId });
+    const res = await github.connect({ repoFullName: repo.fullName, defaultBranch: repo.defaultBranch, installationId: installId });
     setBusy(false);
-    if (!ok) { setErr(g.connectFailed); return; }
+    if (!res.ok) { setErr(res.error ? `${g.connectFailed} (${res.error})` : g.connectFailed); return; }
     setLink({ connected: true, repoFullName: repo.fullName, defaultBranch: repo.defaultBranch });
     setPhase('connected');
   };

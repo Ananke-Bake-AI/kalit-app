@@ -97,22 +97,39 @@ export function StudioShell(props: StudioShellProps) {
   const selectMobile = (id: string) => { props.onSelect(id); setPane('chat'); };
   const sendSuggest = (text: string) => { props.onSend(text); setPane('chat'); };
 
-  // Clavier virtuel mobile : 100dvh NE rétrécit PAS quand le clavier s'ouvre (iOS)
-  // → le layout déborde, puis laisse un vide béant à la fermeture. On pilote la
-  // hauteur du shell sur celle du visualViewport (la zone réellement visible,
-  // clavier exclu) via --sv-vh, restaurée quand le clavier se referme.
+  // Clavier virtuel mobile (iOS surtout). `100dvh` NE rétrécit PAS à l'ouverture du
+  // clavier (WebKit n'implémente pas `interactive-widget`), et iOS scrolle le <body>
+  // pour révéler le champ SANS toujours le remettre à 0 à la fermeture → vide béant.
+  // Fix robuste (recherche + 3 agents) :
+  //  1) lock du <body> (position:fixed via .sv-studio-lock, CSS mobile) → le body ne
+  //     scrolle plus, donc aucun offset résiduel à restaurer ;
+  //  2) shell piloté sur le visualViewport : hauteur (--sv-vh) ET position verticale
+  //     (--sv-voff = offsetTop) → il colle à la zone réellement visible ;
+  //  3) ré-application différée (rAF + timeout) et au focusout : sur iOS le resize de
+  //     FERMETURE arrive avec une valeur encore réduite (stale) → on relit après.
   useEffect(() => {
     const vv = typeof window !== 'undefined' ? window.visualViewport : null;
-    if (!vv) return;
     const root = document.documentElement;
-    const apply = () => { root.style.setProperty('--sv-vh', Math.round(vv.height) + 'px'); };
-    apply();
-    vv.addEventListener('resize', apply);
-    vv.addEventListener('scroll', apply);
+    const apply = () => {
+      if (!vv) return;
+      root.style.setProperty('--sv-vh', Math.round(vv.height) + 'px');
+      root.style.setProperty('--sv-voff', Math.round(vv.offsetTop) + 'px');
+    };
+    const applySoon = () => { apply(); requestAnimationFrame(apply); setTimeout(apply, 250); };
+    applySoon();
+    document.body.classList.add('sv-studio-lock');
+    vv?.addEventListener('resize', apply);
+    vv?.addEventListener('scroll', apply);
+    window.addEventListener('focusout', applySoon);
+    window.addEventListener('orientationchange', applySoon);
     return () => {
-      vv.removeEventListener('resize', apply);
-      vv.removeEventListener('scroll', apply);
+      vv?.removeEventListener('resize', apply);
+      vv?.removeEventListener('scroll', apply);
+      window.removeEventListener('focusout', applySoon);
+      window.removeEventListener('orientationchange', applySoon);
+      document.body.classList.remove('sv-studio-lock');
       root.style.removeProperty('--sv-vh');
+      root.style.removeProperty('--sv-voff');
     };
   }, []);
 

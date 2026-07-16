@@ -25,7 +25,7 @@ export interface GithubApi {
   status: () => Promise<GithubLink | null>;
   installations: () => Promise<{ configured: boolean; installations: GithubInstallation[] }>;
   repos: (installationId: string) => Promise<GithubRepo[]>;
-  connect: (opts: { repoFullName: string; defaultBranch: string; installationId: string }) => Promise<boolean>;
+  connect: (opts: { repoFullName: string; defaultBranch: string; installationId: string }) => Promise<{ ok: boolean; error?: string }>;
   disconnect: () => Promise<boolean>;
   installUrl: string;
 }
@@ -401,13 +401,21 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
       const d = await api.json<{ repos?: GithubRepo[] }>(`/api/github/repos?installationId=${encodeURIComponent(installationId)}`);
       return d?.repos ?? [];
     },
-    connect: async (opts: { repoFullName: string; defaultBranch: string; installationId: string }): Promise<boolean> => {
-      const sid = activeRef.current; if (!sid) return false;
-      const r = await client.fetch(`/api/broker/sessions/${sid}/connect-repo`, {
-        method: 'PUT', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ host: 'github.com', repoFullName: opts.repoFullName, defaultBranch: opts.defaultBranch, authKind: 'github_app', installationId: Number(opts.installationId), mode: 'pr' }),
-      }).catch(() => null);
-      return !!(r && r.ok);
+    connect: async (opts: { repoFullName: string; defaultBranch: string; installationId: string }): Promise<{ ok: boolean; error?: string }> => {
+      const sid = activeRef.current;
+      if (!sid) return { ok: false, error: 'no active session — open a project first' };
+      try {
+        const r = await client.fetch(`/api/broker/sessions/${sid}/connect-repo`, {
+          method: 'PUT', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ host: 'github.com', repoFullName: opts.repoFullName, defaultBranch: opts.defaultBranch, authKind: 'github_app', installationId: Number(opts.installationId), mode: 'pr' }),
+        });
+        if (r.ok) return { ok: true };
+        let msg = 'HTTP ' + r.status;
+        try { const j = await r.json(); if (j?.error) msg = j.error as string; } catch { /* no json */ }
+        return { ok: false, error: msg };
+      } catch (e) {
+        return { ok: false, error: e instanceof Error ? e.message : 'request failed' };
+      }
     },
     disconnect: async (): Promise<boolean> => {
       const sid = activeRef.current; if (!sid) return false;

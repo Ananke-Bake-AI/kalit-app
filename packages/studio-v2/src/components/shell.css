@@ -354,9 +354,19 @@
      — the 1fr row then collapses to content height and .sv-feed (flex:1;
      overflow-y:auto) never gets a bounded parent, so the chat can't scroll.
      100dvh pins it to the visible viewport so the feed scrolls internally. */
-  /* height : --sv-vh (hauteur visualViewport, pilotée en JS pour gérer le clavier
-     virtuel) avec repli 100dvh puis 100vh pour les navigateurs sans l'API. */
-  .sv-shell { grid-template-columns: 1fr; grid-template-rows: 1fr auto; height: 100vh; height: 100dvh; height: var(--sv-vh, 100dvh); overflow: hidden; }
+  /* Le <body> est verrouillé (position:fixed) pendant que le studio est monté →
+     il ne peut plus scroller, donc iOS ne laisse aucun offset résiduel après le
+     clavier. Le shell est PINÉ au viewport (position:fixed inset:0) et suit la zone
+     visible : hauteur = --sv-vh, décalage vertical = --sv-voff (offsetTop du
+     visualViewport). Replis 100dvh/100vh sans l'API. */
+  body.sv-studio-lock { position: fixed; inset: 0; width: 100%; overflow: hidden; }
+  .sv-shell {
+    position: fixed; top: 0; left: 0; right: 0;
+    grid-template-columns: 1fr; grid-template-rows: 1fr auto;
+    height: 100vh; height: 100dvh; height: var(--sv-vh, 100dvh);
+    transform: translateY(var(--sv-voff, 0px));
+    overflow: hidden;
+  }
   .sv-shell > .sv-side, .sv-shell > .sv-chat, .sv-shell > .sv-prev {
     grid-row: 1; grid-column: 1; border-right: 0;
   }
