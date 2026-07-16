@@ -11,6 +11,23 @@
   flex-direction: column;
   background: var(--body);
   overflow: hidden;
+
+  // Mobile : on PINE tout le conteneur studio (header + studio) au viewport et on
+  // le pilote sur le visualViewport (hauteur --sv-vh, décalage --sv-voff, posés en
+  // JS par StudioShell). Le <body> est verrouillé (.sv-studio-lock) → aucun scroll
+  // résiduel après le clavier. Le header reste DANS ce conteneur, en flux au-dessus
+  // du studio → plus de superposition, et il reste visible.
+  @media (max-width: 860px) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    height: 100dvh;
+    height: var(--sv-vh, 100dvh);
+    max-height: none;
+    transform: translateY(var(--sv-voff, 0px));
+  }
 }
 
 .main {
@@ -21,11 +38,8 @@
   overflow: hidden;
 }
 
+// .chrome enveloppe le header + bannières du site — plus masqué en mobile (le
+// header reste visible) ; il vit au-dessus du studio dans .root pinné.
 .chrome {
-  // Mobile : le studio est un shell plein écran piné au viewport (cf. shell.css).
-  // Le header global Kalit se superposerait par-dessus → on masque la chrome du
-  // site sur petit écran ; la navigation studio se fait via sa barre mobile.
-  @media (max-width: 860px) {
-    display: none;
-  }
+  flex-shrink: 0;
 }
