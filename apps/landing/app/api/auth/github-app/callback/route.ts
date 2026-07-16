@@ -25,7 +25,14 @@ export async function GET(req: NextRequest) {
   if (!installationId) {
     return htmlResponse(renderError("Missing installation_id from GitHub."))
   }
-  if (!stateCookie || !stateParam || stateCookie !== stateParam) {
+  // CSRF check is best-effort: reject ONLY on an explicit state mismatch. A
+  // MISSING cookie must not block a legitimate install — it drops routinely when
+  // Safari/ITP strips it on the cross-site popup return, when the cookie's 10-min
+  // TTL expires while the user picks repos, or when the user installs straight
+  // from GitHub (no /install round-trip, so no cookie was ever set). The session
+  // above already authenticates the user; a mismatch (not an absence) is the only
+  // real CSRF signal, so that's all we reject on.
+  if (stateCookie && stateParam && stateCookie !== stateParam) {
     return htmlResponse(renderError("Invalid install state — please try again."))
   }
 
