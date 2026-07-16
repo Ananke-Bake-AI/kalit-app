@@ -19,14 +19,17 @@
   // du studio → plus de superposition, et il reste visible.
   @media (max-width: 860px) {
     position: fixed;
-    top: 0;
+    // On décale via `top` (et PAS `transform`) : un transform sur .root en ferait
+    // le containing-block des descendants position:fixed (menus ⋯, modals) et,
+    // combiné au header position:sticky, déclenche un glitch WebKit où le header
+    // se rend par-dessus le studio. `top` donne le même rendu sans ces effets.
+    top: var(--sv-voff, 0px);
     left: 0;
     right: 0;
     height: 100vh;
     height: 100dvh;
     height: var(--sv-vh, 100dvh);
     max-height: none;
-    transform: translateY(var(--sv-voff, 0px));
   }
 }
 
@@ -42,4 +45,22 @@
 // header reste visible) ; il vit au-dessus du studio dans .root pinné.
 .chrome {
   flex-shrink: 0;
+
+  // Dans le .root pinné rien ne scrolle au-dessus du header → le position:sticky
+  // du header ne sert à rien ici et ne fait que risquer les glitches WebKit
+  // (sticky sous ancêtre transformé). On le force en flux normal pour qu'il se
+  // pose simplement au-dessus de .main, sans jamais chevaucher. :global pour
+  // atteindre le <header> partagé sans toucher son comportement sur le reste du site.
+  @media (max-width: 860px) {
+    // Le <header> du site est position:sticky; z-index:900 (header.module.scss).
+    // Dans .root (position:fixed + overflow:hidden) ce sticky se détache sur iOS
+    // Safari et son z-index le peint PAR-DESSUS les barres du studio
+    // (.sv-chat__bar / .sv-prev__bar, statiques). On le remet en flux normal + on
+    // annule son stacking-context → il se pose au-dessus de .main sans chevaucher.
+    // .chrome header = spécificité (0,1,1) > .header (0,1,0), donc pas de !important.
+    :global(header) {
+      position: static;
+      z-index: auto;
+    }
+  }
 }
