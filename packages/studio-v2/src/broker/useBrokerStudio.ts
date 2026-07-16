@@ -209,6 +209,16 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   const reducers = useRef<Map<string, StreamReducer>>(new Map());
   const activeRef = useRef<string | null>(null);
   activeRef.current = activeId;
+  // Refs stables pour résoudre la session d'un repo git même quand activeId a été
+  // remis à null alors que le projet, lui, persiste (cas mobile/deep-link) : on
+  // retrouve la session via son projectId.
+  const sessionsRef = useRef(sessions);
+  sessionsRef.current = sessions;
+  const projectIdRef = useRef<string | null>(null);
+  projectIdRef.current = projectId;
+  // Session pour les ops git : activeId, sinon la session du projet courant.
+  const resolveGitSession = (): string | null =>
+    activeRef.current || sessionsRef.current.find((s) => s.projectId === projectIdRef.current)?.id || null;
   // Tour en cours: on n'accepte les frames WS (live) que pendant un tour actif.
   // Empêche les frames tardives de reconstruire le live APRÈS le chargement des
   // messages persistés → sinon doublons (live + persisté).
@@ -390,7 +400,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   // reste 100% côté broker ; ici on ne manipule que des métadonnées.
   const github = useMemo(() => ({
     status: async (): Promise<GithubLink | null> => {
-      const sid = activeRef.current; if (!sid) return null;
+      const sid = resolveGitSession(); if (!sid) return null;
       return await api.json<GithubLink>(`/api/broker/sessions/${sid}/connect-repo`);
     },
     installations: async (): Promise<{ configured: boolean; installations: GithubInstallation[] }> => {
@@ -402,7 +412,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
       return d?.repos ?? [];
     },
     connect: async (opts: { repoFullName: string; defaultBranch: string; installationId: string }): Promise<{ ok: boolean; error?: string }> => {
-      const sid = activeRef.current;
+      const sid = resolveGitSession();
       if (!sid) return { ok: false, error: 'no active session — open a project first' };
       try {
         const r = await client.fetch(`/api/broker/sessions/${sid}/connect-repo`, {
@@ -418,7 +428,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
       }
     },
     disconnect: async (): Promise<boolean> => {
-      const sid = activeRef.current; if (!sid) return false;
+      const sid = resolveGitSession(); if (!sid) return false;
       const r = await client.fetch(`/api/broker/sessions/${sid}/connect-repo`, { method: 'DELETE' }).catch(() => null);
       return !!(r && r.ok);
     },
