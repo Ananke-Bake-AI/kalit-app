@@ -114,6 +114,7 @@ export interface Strings {
     needApp: string; notConfigured: string; installApp: string; account: string; searchRepo: string;
     loadingRepos: string; noRepos: string; privateBadge: string; manageRepos: string; connectFailed: string;
   };
+  theme: { toggle: string; light: string; dark: string };
 }
 
 const fr: Strings = {
@@ -345,6 +346,7 @@ const fr: Strings = {
     manageRepos: 'Gérer les dépôts…',
     connectFailed: 'La connexion a échoué. Réessaie.',
   },
+  theme: { toggle: 'Changer de thème', light: 'Thème clair', dark: 'Thème sombre' },
 };
 
 const en: Strings = {
@@ -576,6 +578,7 @@ const en: Strings = {
     manageRepos: 'Manage repositories…',
     connectFailed: 'Connection failed. Please try again.',
   },
+  theme: { toggle: 'Toggle theme', light: 'Light theme', dark: 'Dark theme' },
 };
 
 const TABLE: Record<string, Strings> = { fr, en };

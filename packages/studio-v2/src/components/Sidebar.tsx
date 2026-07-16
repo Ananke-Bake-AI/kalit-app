@@ -3,6 +3,7 @@ import type { Session } from '../lib/types';
 import { IconLogo, IconPlus, IconSearch, IconDots, IconTrash, IconClose, IconEdit, IconUsers } from '../lib/icons';
 import { useStrings } from '../lib/i18n';
 import { Menu, type MenuItem } from './Menu';
+import { ThemeToggle } from './ThemeToggle';
 
 interface Props {
   sessions: Session[];
@@ -169,9 +170,10 @@ export function Sidebar({ sessions, activeId, user, storage, onSelect, onNew, on
           </div>
         );
       })()}
-      {typeof user.credits === 'number' && (
-        <div className="sv-side__foot"><span className="sv-credits">{user.credits}</span></div>
-      )}
+      <div className="sv-side__foot sv-side__foot--controls">
+        <ThemeToggle />
+        {typeof user.credits === 'number' && <span className="sv-credits">{user.credits}</span>}
+      </div>
 
       {deleting && (
         <div className="sv-modal" onClick={() => !busy && setDeleting(null)}>

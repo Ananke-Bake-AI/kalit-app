@@ -384,9 +384,10 @@
   .sv-side { border-right: 0; }
 
   /* --- Headers compacts + utilisables sur mobile --- */
-  /* Barres chat/preview : moins de padding, gap serré, jamais de débordement
-     horizontal (les enfants qui dépassent se scrollent en interne, pas la barre). */
-  .sv-chat__bar, .sv-prev__bar { padding: 8px 10px; gap: 6px; overflow: hidden; }
+  /* Barres chat/preview : moins de padding, gap serré. PAS d'overflow:hidden ici —
+     ça clipperait les dropdowns qui descendent sous la barre (sélecteur de modèle,
+     menu ⋯). La sécurité horizontale vient des enfants qui shrink/tronquent. */
+  .sv-chat__bar, .sv-prev__bar { padding: 8px 10px; gap: 6px; }
   .sv-chat__bar-r, .sv-prev__bar-r { gap: 5px; min-width: 0; }
   /* Boutons plus compacts (mais toujours tapables ≥30px de haut). */
   .sv-prev__bar .sv-btn, .sv-chat__bar .sv-btn { height: 32px; }
@@ -399,6 +400,11 @@
   .sv-live { max-width: 40vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   /* Titre de session : occupe l'espace restant et tronque. */
   .sv-chat__title { flex: 1; min-width: 0; }
+
+  /* iOS zoome sur un champ dont le font-size < 16px au focus (→ « chaos » : la
+     page se zoome et le layout part). On force ≥16px sur TOUT champ focusable en
+     mobile : le prompt du chat, et les inputs/select des dialogs. */
+  .sv-composer textarea, .sv-domain__input, input, select, textarea { font-size: 16px; }
 }
 
 /* Bannière crédits épuisés : au-dessus du composer, message + CTA upgrade. */
@@ -527,3 +533,9 @@
 .sv-gh__badge { flex: none; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--sv-ink-3, #8a90a2); border: 1px solid var(--sv-line, #232838); border-radius: 5px; padding: 1px 6px; }
 .sv-gh__foot { display: flex; justify-content: flex-end; }
 .sv-btn--sm { padding: 4px 10px; font-size: 12px; }
+
+/* --- Theme toggle (sidebar footer, surtout utile en mobile) --- */
+.sv-side__foot--controls { justify-content: space-between; }
+.sv-theme { display: inline-flex; align-items: center; gap: 7px; padding: 6px 10px; font: inherit; font-size: 12.5px; color: var(--sv-text-2); background: transparent; border: 1px solid var(--sv-line); border-radius: var(--sv-r-sm); cursor: pointer; }
+.sv-theme:hover { color: var(--sv-text); background: var(--sv-surface-2); border-color: var(--sv-line); }
+.sv-theme svg { flex: none; }
