@@ -354,7 +354,9 @@
      — the 1fr row then collapses to content height and .sv-feed (flex:1;
      overflow-y:auto) never gets a bounded parent, so the chat can't scroll.
      100dvh pins it to the visible viewport so the feed scrolls internally. */
-  .sv-shell { grid-template-columns: 1fr; grid-template-rows: 1fr auto; height: 100vh; height: 100dvh; overflow: hidden; }
+  /* height : --sv-vh (hauteur visualViewport, pilotée en JS pour gérer le clavier
+     virtuel) avec repli 100dvh puis 100vh pour les navigateurs sans l'API. */
+  .sv-shell { grid-template-columns: 1fr; grid-template-rows: 1fr auto; height: 100vh; height: 100dvh; height: var(--sv-vh, 100dvh); overflow: hidden; }
   .sv-shell > .sv-side, .sv-shell > .sv-chat, .sv-shell > .sv-prev {
     grid-row: 1; grid-column: 1; border-right: 0;
   }

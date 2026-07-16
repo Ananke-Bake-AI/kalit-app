@@ -97,6 +97,25 @@ export function StudioShell(props: StudioShellProps) {
   const selectMobile = (id: string) => { props.onSelect(id); setPane('chat'); };
   const sendSuggest = (text: string) => { props.onSend(text); setPane('chat'); };
 
+  // Clavier virtuel mobile : 100dvh NE rétrécit PAS quand le clavier s'ouvre (iOS)
+  // → le layout déborde, puis laisse un vide béant à la fermeture. On pilote la
+  // hauteur du shell sur celle du visualViewport (la zone réellement visible,
+  // clavier exclu) via --sv-vh, restaurée quand le clavier se referme.
+  useEffect(() => {
+    const vv = typeof window !== 'undefined' ? window.visualViewport : null;
+    if (!vv) return;
+    const root = document.documentElement;
+    const apply = () => { root.style.setProperty('--sv-vh', Math.round(vv.height) + 'px'); };
+    apply();
+    vv.addEventListener('resize', apply);
+    vv.addEventListener('scroll', apply);
+    return () => {
+      vv.removeEventListener('resize', apply);
+      vv.removeEventListener('scroll', apply);
+      root.style.removeProperty('--sv-vh');
+    };
+  }, []);
+
   // ── Redimensionnement du split chat|preview (PC) ──
   const shellRef = useRef<HTMLDivElement>(null);
   const [splitPx, setSplitPx] = useState<number | null>(null);
