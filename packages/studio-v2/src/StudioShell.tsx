@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent, type KeyboardEvent as ReactKeyboardEvent } from 'react';
 import type { Activity, FileNode, Message, PreviewMode, Session } from './lib/types';
-import type { DomainState, PublishResult, ProjectInvite } from './broker/useBrokerStudio';
+import type { DomainState, PublishResult, ProjectInvite, GithubApi } from './broker/useBrokerStudio';
 import { Sidebar } from './components/Sidebar';
 import { Chat } from './components/Chat';
 import { Preview } from './components/Preview';
@@ -81,6 +81,7 @@ export interface StudioShellProps {
   onCreateInvite?: (opts: { role: 'viewer' | 'editor'; email?: string }) => Promise<{ token: string; url: string } | null>;
   onListInvites?: () => Promise<ProjectInvite[]>;
   onRevokeInvite?: (token: string) => Promise<boolean>;
+  github?: GithubApi;
 }
 
 /** Shell présentation pur : reçoit l'état et les callbacks, ne connaît pas le
@@ -197,7 +198,7 @@ export function StudioShell(props: StudioShellProps) {
         onFocusChat={() => setPane('chat')}
         domain={props.domain} onConnectDomain={props.onConnectDomain} onRemoveDomain={props.onRemoveDomain}
         publishResult={props.publishResult} onClearPublishResult={props.onClearPublishResult}
-        canShareProject={props.canShareProject} onCreateInvite={props.onCreateInvite} onListInvites={props.onListInvites} onRevokeInvite={props.onRevokeInvite}
+        canShareProject={props.canShareProject} onCreateInvite={props.onCreateInvite} onListInvites={props.onListInvites} onRevokeInvite={props.onRevokeInvite} github={props.github}
       />
       <nav className="sv-mnav" aria-label={t.navigation}>
         <button aria-selected={pane === 'sessions'} onClick={() => setPane('sessions')}><IconFolder /> {t.navProjects}</button>

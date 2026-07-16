@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import type { FileNode, PreviewMode } from '../lib/types';
-import { IconCode, IconExpand, IconEye, IconFolder, IconFile, IconRefresh, IconLogo, IconDownload, IconUsers, IconGlobe, IconDots } from '../lib/icons';
+import { IconCode, IconExpand, IconEye, IconFolder, IconFile, IconRefresh, IconLogo, IconDownload, IconUsers, IconGlobe, IconDots, IconGit } from '../lib/icons';
 import { useStrings } from '../lib/i18n';
 import { DomainManager } from './DomainManager';
 import { ShareDialog } from './ShareDialog';
+import { GitHubConnect } from './GitHubConnect';
 import { Menu, type MenuItem } from './Menu';
 import { PublishModal } from './PublishModal';
 import { BuildingView, NoSiteView, ActivityStrip } from './PreviewLive';
 import type { ActivityStep } from '../lib/activity';
-import type { DomainState, PublishResult, ProjectInvite } from '../broker/useBrokerStudio';
+import type { DomainState, PublishResult, ProjectInvite, GithubApi } from '../broker/useBrokerStudio';
 
 // Un site servable existe-t-il dans le workspace ? previewUrl est non-null dès que
 // le projet existe (même 0 fichier) → mauvais signal. La vérité = l'arbre contient
@@ -76,6 +77,7 @@ interface Props {
   onCreateInvite?: (opts: { role: 'viewer' | 'editor'; email?: string }) => Promise<{ token: string; url: string } | null>;
   onListInvites?: () => Promise<ProjectInvite[]>;
   onRevokeInvite?: (token: string) => Promise<boolean>;
+  github?: GithubApi;               // connecter un repo GitHub au projet
   activitySteps?: ActivityStep[];   // feed live « ce que fait l'agent »
   fileWrite?: boolean;              // le tour en cours écrit-il des fichiers ?
   onFocusChat?: () => void;         // CTA « Décrire mon site » → focus le chat
@@ -148,10 +150,11 @@ function PreviewEmpty({ building, hasMessages, onSuggest }: { building?: boolean
   );
 }
 
-export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing, canPublish, onPublish, canDownload, downloading, onDownload, onRefresh, onOpen, building, hasMessages, onSuggest, domain, onConnectDomain, onRemoveDomain, publishResult, onClearPublishResult, canShareProject, onCreateInvite, onListInvites, onRevokeInvite, activitySteps = [], fileWrite = false, onFocusChat }: Props) {
+export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing, canPublish, onPublish, canDownload, downloading, onDownload, onRefresh, onOpen, building, hasMessages, onSuggest, domain, onConnectDomain, onRemoveDomain, publishResult, onClearPublishResult, canShareProject, onCreateInvite, onListInvites, onRevokeInvite, github, activitySteps = [], fileWrite = false, onFocusChat }: Props) {
   const t = useStrings();
   const [domainOpen, setDomainOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  const [githubOpen, setGithubOpen] = useState(false);
   const [publishOpen, setPublishOpen] = useState(false);
   const canShare = !!canShareProject && !!onCreateInvite && !!onListInvites && !!onRevokeInvite;
   const hasDomain = !!domain?.customDomain;
@@ -163,6 +166,7 @@ export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing
   // Télécharger le .zip. Actions à basse fréquence sorties de la barre.
   const overflow: MenuItem[] = [];
   if (canShare) overflow.push({ key: 'invite', label: t.menu.invite, icon: <IconUsers />, onClick: () => setShareOpen(true) });
+  if (github && canPublish) overflow.push({ key: 'github', label: t.menu.github, icon: <IconGit />, onClick: () => setGithubOpen(true) });
   if (publishUrl && onConnectDomain && onRemoveDomain) overflow.push({ key: 'domain', label: hasDomain ? domain!.customDomain! : t.menu.domain, icon: <IconGlobe />, onClick: () => setDomainOpen(true) });
   if (onDownload) overflow.push({ key: 'download', label: t.menu.download, icon: <IconDownload />, disabled: !canDownload || downloading, onClick: onDownload });
 
@@ -231,6 +235,9 @@ export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing
           onRevoke={onRevokeInvite!}
           onClose={() => setShareOpen(false)}
         />
+      )}
+      {githubOpen && github && (
+        <GitHubConnect github={github} onClose={() => setGithubOpen(false)} />
       )}
       {publishOpen && (
         <PublishModal publishing={publishing} result={publishResult ?? null} onClose={closePublish} onRetry={doPublish} />

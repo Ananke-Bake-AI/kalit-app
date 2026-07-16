@@ -18,6 +18,17 @@ export interface PublishResult { phase: 'ok' | 'too_large' | 'error'; url?: stri
 // Une invitation de partage de projet (collaboration à plusieurs). token = l'id
 // de l'invite, url = le lien à envoyer, uses/maxUses = compteur d'acceptations.
 export interface ProjectInvite { token: string; email: string; role: string; maxUses: number; uses: number; url: string; }
+export interface GithubLink { connected: boolean; repoFullName?: string; defaultBranch?: string; mode?: string; authKind?: string; }
+export interface GithubInstallation { installationId: string; accountLogin: string; accountType?: string; }
+export interface GithubRepo { fullName: string; owner: string; defaultBranch: string; private: boolean; name?: string; description?: string | null; }
+export interface GithubApi {
+  status: () => Promise<GithubLink | null>;
+  installations: () => Promise<{ configured: boolean; installations: GithubInstallation[] }>;
+  repos: (installationId: string) => Promise<GithubRepo[]>;
+  connect: (opts: { repoFullName: string; defaultBranch: string; installationId: string }) => Promise<boolean>;
+  disconnect: () => Promise<boolean>;
+  installUrl: string;
+}
 interface PublishInfo { subdomain?: string | null; subdomainUrl?: string | null; customDomain?: string | null; customDomainStatus?: string | null; }
 
 interface ChatSessionDTO { id: string; title: string | null; model: string; isProcessing?: boolean; createdAt: number; updatedAt: number; projectId?: string; projectDeployed?: boolean; shared?: boolean; }
@@ -373,6 +384,38 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     const r = await client.fetch(`/api/broker/invite/${token}/revoke`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' }).catch(() => null);
     return !!(r && r.ok);
   }, [client]);
+
+  // GitHub — lier un repo au projet (broker, session-keyed) + lister les
+  // installations/repos de l'user (routes landing /api/github/*). Le token git
+  // reste 100% côté broker ; ici on ne manipule que des métadonnées.
+  const github = useMemo(() => ({
+    status: async (): Promise<GithubLink | null> => {
+      const sid = activeRef.current; if (!sid) return null;
+      return await api.json<GithubLink>(`/api/broker/sessions/${sid}/connect-repo`);
+    },
+    installations: async (): Promise<{ configured: boolean; installations: GithubInstallation[] }> => {
+      const d = await api.json<{ configured: boolean; installations: GithubInstallation[] }>('/api/github/installations');
+      return d ?? { configured: false, installations: [] };
+    },
+    repos: async (installationId: string): Promise<GithubRepo[]> => {
+      const d = await api.json<{ repos?: GithubRepo[] }>(`/api/github/repos?installationId=${encodeURIComponent(installationId)}`);
+      return d?.repos ?? [];
+    },
+    connect: async (opts: { repoFullName: string; defaultBranch: string; installationId: string }): Promise<boolean> => {
+      const sid = activeRef.current; if (!sid) return false;
+      const r = await client.fetch(`/api/broker/sessions/${sid}/connect-repo`, {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ host: 'github.com', repoFullName: opts.repoFullName, defaultBranch: opts.defaultBranch, authKind: 'github_app', installationId: Number(opts.installationId), mode: 'pr' }),
+      }).catch(() => null);
+      return !!(r && r.ok);
+    },
+    disconnect: async (): Promise<boolean> => {
+      const sid = activeRef.current; if (!sid) return false;
+      const r = await client.fetch(`/api/broker/sessions/${sid}/connect-repo`, { method: 'DELETE' }).catch(() => null);
+      return !!(r && r.ok);
+    },
+    installUrl: '/api/auth/github-app/install',
+  }), [api, client]);
 
   // Download ZIP du projet. Passe par la route Next /api/repositories/<id>/download
   // (auth NextAuth côté serveur + stream fiable) → blob → téléchargement navigateur.
@@ -769,5 +812,5 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     return lv === 'enrich' || lv === 'rich' || lv === 'none' ? lv : null;
   }, [api]);
 
-  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, publishResult, clearPublishResult: () => setPublishResult(null), deployBlocked, dismissDeployBlocked: () => setDeployBlocked(false), storage, storageBlocked, dismissStorageBlocked: () => setStorageBlocked(false), domain, connectDomain, removeDomain, canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, checkPromptQuality, socketStatus: socket.status, queued, enqueuePrompt, cancelQueued, select, newProject, send, stop, deleteSession, setModel, modelGroups, previewActivity, precision, setPrecision, publish, download, refreshTree, reloadSessions: loadSessions, shareSession, canShare: !!activeId && messages.length > 0, canShareProject: !!projectId, createInvite, listInvites, revokeInvite, renameSession };
+  return { sessions, activeId, messages, streaming, activity, ctxPercent, tree, previewUrl, model, publishUrl, publishing, publishResult, clearPublishResult: () => setPublishResult(null), deployBlocked, dismissDeployBlocked: () => setDeployBlocked(false), storage, storageBlocked, dismissStorageBlocked: () => setStorageBlocked(false), domain, connectDomain, removeDomain, canPublish: !!projectId, canDownload: !!projectId, downloading, attachments, uploading, outOfCredits, addFiles, removeAttachment, checkPromptQuality, socketStatus: socket.status, queued, enqueuePrompt, cancelQueued, select, newProject, send, stop, deleteSession, setModel, modelGroups, previewActivity, precision, setPrecision, publish, download, refreshTree, reloadSessions: loadSessions, shareSession, canShare: !!activeId && messages.length > 0, canShareProject: !!projectId, createInvite, listInvites, revokeInvite, github, renameSession };
 }

@@ -39,7 +39,7 @@ export interface Strings {
   navigation: string;
   you: string;
   collaborator: string;
-  menu: { more: string; rename: string; share: string; domain: string; download: string; invite: string; openTab: string; refresh: string };
+  menu: { more: string; rename: string; share: string; domain: string; download: string; invite: string; github: string; openTab: string; refresh: string };
   modelUnavailable: string;
   modelOffline: string;
   sharedProject: string;
@@ -109,6 +109,11 @@ export interface Strings {
     create: string; creating: string; linkReady: string; copy: string; copied: string;
     activeTitle: string; noInvites: string; revoke: string; anyoneCan: string; boundTo: string; close: string;
   };
+  github: {
+    title: string; sub: string; loading: string; connectedHint: string; disconnect: string;
+    needApp: string; notConfigured: string; installApp: string; account: string; searchRepo: string;
+    loadingRepos: string; noRepos: string; privateBadge: string; manageRepos: string; connectFailed: string;
+  };
 }
 
 const fr: Strings = {
@@ -155,7 +160,7 @@ const fr: Strings = {
   navigation: 'Navigation',
   you: 'Vous',
   collaborator: 'Collaborateur',
-  menu: { more: 'Options', rename: 'Renommer', share: 'Partager', domain: 'Gérer le domaine…', download: 'Télécharger le .zip', invite: 'Inviter des collaborateurs…', openTab: 'Ouvrir dans un onglet', refresh: 'Rafraîchir l’aperçu' },
+  menu: { more: 'Options', rename: 'Renommer', share: 'Partager', domain: 'Gérer le domaine…', download: 'Télécharger le .zip', invite: 'Inviter des collaborateurs…', github: 'Connecter GitHub…', openTab: 'Ouvrir dans un onglet', refresh: 'Rafraîchir l’aperçu' },
   modelUnavailable: 'Modèle indisponible pour le moment',
   modelOffline: 'indispo',
   sharedProject: 'Projet partagé avec toi',
@@ -323,6 +328,23 @@ const fr: Strings = {
     boundTo: 'Réservé à',
     close: 'Fermer',
   },
+  github: {
+    title: 'Connecter un dépôt GitHub',
+    sub: 'Lie un dépôt à ce projet : l’agent pourra livrer ton code via une pull request. Kalit gère l’authentification, tu ne fournis aucun token.',
+    loading: 'Chargement…',
+    connectedHint: 'L’agent livrera sur la branche {branch} via une pull request.',
+    disconnect: 'Déconnecter',
+    needApp: 'Installe l’app GitHub Kalit sur le dépôt de ton choix pour le connecter.',
+    notConfigured: 'L’intégration GitHub n’est pas configurée sur ce serveur.',
+    installApp: 'Installer l’app GitHub',
+    account: 'Compte',
+    searchRepo: 'Rechercher un dépôt…',
+    loadingRepos: 'Chargement des dépôts…',
+    noRepos: 'Aucun dépôt accessible. Ajoute-en via « Gérer les dépôts ».',
+    privateBadge: 'privé',
+    manageRepos: 'Gérer les dépôts…',
+    connectFailed: 'La connexion a échoué. Réessaie.',
+  },
 };
 
 const en: Strings = {
@@ -369,7 +391,7 @@ const en: Strings = {
   navigation: 'Navigation',
   you: 'You',
   collaborator: 'Collaborator',
-  menu: { more: 'Options', rename: 'Rename', share: 'Share', domain: 'Manage domain…', download: 'Download .zip', invite: 'Invite collaborators…', openTab: 'Open in new tab', refresh: 'Refresh preview' },
+  menu: { more: 'Options', rename: 'Rename', share: 'Share', domain: 'Manage domain…', download: 'Download .zip', invite: 'Invite collaborators…', github: 'Connect GitHub…', openTab: 'Open in new tab', refresh: 'Refresh preview' },
   modelUnavailable: 'Model currently unavailable',
   modelOffline: 'offline',
   sharedProject: 'Shared with you',
@@ -536,6 +558,23 @@ const en: Strings = {
     anyoneCan: 'Anyone with the link',
     boundTo: 'Bound to',
     close: 'Close',
+  },
+  github: {
+    title: 'Connect a GitHub repository',
+    sub: 'Link a repo to this project so the agent can deliver your code as a pull request. Kalit handles authentication — you never provide a token.',
+    loading: 'Loading…',
+    connectedHint: 'The agent will deliver to the {branch} branch as a pull request.',
+    disconnect: 'Disconnect',
+    needApp: 'Install the Kalit GitHub app on the repository you want, then connect it.',
+    notConfigured: 'GitHub integration is not configured on this server.',
+    installApp: 'Install GitHub app',
+    account: 'Account',
+    searchRepo: 'Search a repository…',
+    loadingRepos: 'Loading repositories…',
+    noRepos: 'No accessible repositories. Add some via “Manage repositories”.',
+    privateBadge: 'private',
+    manageRepos: 'Manage repositories…',
+    connectFailed: 'Connection failed. Please try again.',
   },
 };
 

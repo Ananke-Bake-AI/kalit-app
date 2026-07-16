@@ -491,3 +491,22 @@
 .sv-qtoggle__dot.sv-q--low  { background: linear-gradient(90deg, #ff8a3d, #6d5efc, #22d3ee); }
 .sv-qtoggle__dot.sv-q--mid  { background: #e6c74d; }
 .sv-qtoggle__dot.sv-q--high { background: var(--sv-ok); }
+
+/* --- GitHub connect dialog --- */
+.sv-gh__empty { padding: 18px 4px; color: var(--sv-ink-3, #8a90a2); font-size: 13px; text-align: center; }
+.sv-gh__connected { display: flex; flex-direction: column; gap: 14px; }
+.sv-gh__repo-row { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border: 1px solid var(--sv-line, #232838); border-radius: 10px; background: var(--sv-panel-2, #171b25); }
+.sv-gh__dot { width: 8px; height: 8px; border-radius: 50%; background: #46c98b; box-shadow: 0 0 8px #46c98b; flex: none; }
+.sv-gh__repo-main { display: flex; flex-direction: column; min-width: 0; }
+.sv-gh__repo-name { font-weight: 600; font-family: ui-monospace, monospace; font-size: 13px; overflow: hidden; text-overflow: ellipsis; }
+.sv-gh__repo-hint { font-size: 12px; color: var(--sv-ink-3, #8a90a2); }
+.sv-gh__needapp { display: flex; flex-direction: column; gap: 12px; }
+.sv-gh__pick { display: flex; flex-direction: column; gap: 10px; }
+.sv-gh__list { display: flex; flex-direction: column; gap: 4px; max-height: 320px; overflow-y: auto; margin: 2px 0; }
+.sv-gh__item { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; text-align: left; padding: 9px 12px; border: 1px solid var(--sv-line, #232838); border-radius: 8px; background: transparent; color: inherit; cursor: pointer; font-size: 13px; }
+.sv-gh__item:hover:not(:disabled) { background: var(--sv-panel-2, #171b25); border-color: var(--sv-accent, #4c9dff); }
+.sv-gh__item:disabled { opacity: .5; cursor: default; }
+.sv-gh__item-name { font-family: ui-monospace, monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sv-gh__badge { flex: none; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--sv-ink-3, #8a90a2); border: 1px solid var(--sv-line, #232838); border-radius: 5px; padding: 1px 6px; }
+.sv-gh__foot { display: flex; justify-content: flex-end; }
+.sv-btn--sm { padding: 4px 10px; font-size: 12px; }
