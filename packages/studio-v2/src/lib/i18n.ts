@@ -73,7 +73,7 @@ export interface Strings {
     bash: string; task: string; browser: string; assets: string; tool: string;
     working: string; starting: string; uploading: string; compacting: string;
   };
-  errors: { rate: string; credits: string; timeout: string; generic: string; upload: string };
+  errors: { rate: string; credits: string; timeout: string; cyber: string; overloaded: string; provider: string; auth: string; contextFull: string; oom: string; network: string; refusalGeneric: string; invalidModel: string; infra: string; clone: string; generic: string; upload: string };
   del: {
     title: string; sessionOnly: string; sessionOnlyHint: string;
     projectToo: string; projectTooHint: string; plainHint: string;
@@ -221,6 +221,17 @@ const fr: Strings = {
     rate: 'Le service est momentanément saturé (limite de débit). Réessaie dans quelques instants.',
     credits: 'Crédits insuffisants pour lancer ce projet.',
     timeout: 'Le service met trop de temps à répondre. Réessaie.',
+    cyber: '{model} a bloqué ce projet : son garde-fou de sécurité le considère comme un sujet cybersécurité. Essaie un autre modèle (via le sélecteur) ou un projet différent.',
+    overloaded: 'Le service Claude est temporairement surchargé. Réessaie dans un instant.',
+    provider: 'Le fournisseur du modèle sélectionné est momentanément indisponible. Réessaie ou choisis un autre modèle.',
+    auth: "Problème d'authentification côté service — ce n'est pas ta faute. On corrige ; réessaie dans quelques minutes ou contacte le support.",
+    contextFull: 'Le projet est devenu trop volumineux pour ce modèle. Démarre un nouveau projet ou choisis un modèle à plus grande fenêtre de contexte.',
+    oom: 'La génération a dépassé la mémoire disponible. Simplifie la demande ou découpe-la en étapes.',
+    network: 'Problème réseau temporaire pendant la génération. Réessaie.',
+    refusalGeneric: '{model} a refusé cette demande (garde-fou de sécurité). Reformule ou essaie un autre modèle.',
+    invalidModel: "Ce modèle ne supporte pas cette opération (ex. images). Choisis un autre modèle.",
+    infra: "Erreur d'infrastructure au lancement de la génération. Réessaie ; si ça persiste, contacte le support.",
+    clone: 'Impossible de cloner le dépôt (accès refusé ou dépôt introuvable). Vérifie la connexion GitHub.',
     generic: 'Une erreur est survenue pendant la génération. Réessaie.',
     upload: "L'upload des fichiers a échoué (réseau ou fichier trop lourd). Réessaie.",
   },
@@ -456,6 +467,17 @@ const en: Strings = {
     rate: 'The service is momentarily saturated (rate limit). Try again in a moment.',
     credits: 'Not enough credits to start this project.',
     timeout: 'The service is taking too long to respond. Try again.',
+    cyber: '{model} blocked this project: its safety guardrail flags it as a cybersecurity topic. Try a different model (via the selector) or another project.',
+    overloaded: 'Claude is temporarily overloaded. Try again in a moment.',
+    provider: "The selected model's provider is momentarily unavailable. Retry or pick another model.",
+    auth: "Service-side authentication problem — not on your end. We're on it; retry shortly or contact support.",
+    contextFull: 'This project has grown too large for this model. Start a new project or pick a larger-context model.',
+    oom: 'The build ran out of memory. Simplify the request or split it into steps.',
+    network: 'Temporary network problem during generation. Try again.',
+    refusalGeneric: '{model} declined this request (safety guardrail). Rephrase or try another model.',
+    invalidModel: "This model doesn't support this operation (e.g. images). Pick another model.",
+    infra: 'Infrastructure error starting the build. Retry; if it persists, contact support.',
+    clone: "Couldn't clone the repository (access denied or not found). Check the GitHub connection.",
     generic: 'An error occurred during generation. Try again.',
     upload: 'File upload failed (network or file too large). Try again.',
   },

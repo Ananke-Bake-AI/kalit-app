@@ -109,11 +109,46 @@ function safeAttachmentName(name: string): string {
   return ext ? `${safeBase}.${ext}` : safeBase;
 }
 
-/** Traduit une erreur backend brute en message clair pour l'utilisateur. */
-function humanizeError(raw: string | undefined, e: Strings['errors']): string {
+/** Résout le libellé lisible d'un modèle depuis son id (ex. `anthropic:claude-opus-4-8`
+ *  → « Opus 4.8 »). Fallback : la partie après « : » de l'id, puis l'id brut. */
+function modelLabel(groups: ModelGroup[], id: string | undefined): string {
+  if (!id) return '';
+  for (const g of groups) {
+    for (const m of g.models) if (m.id === id) return m.label;
+  }
+  const i = id.indexOf(':');
+  return i >= 0 ? id.slice(i + 1) : id;
+}
+
+/** Traduit une erreur backend brute en message clair pour l'utilisateur. `model`
+ *  est le libellé du modèle qui a tourné (injecté dans les messages de refus).
+ *  Ordre = du plus spécifique au plus générique : un pattern large (50x, refus)
+ *  ne doit jamais avaler un pattern précis (401, 529, contexte plein, OOM). */
+function humanizeError(raw: string | undefined, e: Strings['errors'], model?: string): string {
   const s = raw ?? '';
+  const m = model || 'Le modèle';
+  // Échec de clone git — préfixé « clone: » côté broker, donc sans ambiguïté.
+  if (/^clone:|clone failed|repository not found|could not read username|authentication failed for/i.test(s)) return e.clone;
+  // Auth service (token OAuth expiré/rotaté) → bloque TOUS les users : dire que
+  // retry est vain, c'est global. Avant le pattern 50x large.
+  if (/401|authentication_error|invalid.{0,3}(api.?key|x-api-key)|oauth.{0,20}(expired|invalid)|invalid bearer|unauthorized/i.test(s)) return e.auth;
+  // 529 overloaded (capacité serveur) ≠ 429 rate-limit (quota user). 529 d'abord.
+  if (/529|overloaded/i.test(s)) return e.overloaded;
   if (/429|rate.?limit/i.test(s)) return e.rate;
   if (/402|credit/i.test(s)) return e.credits;
+  // Contexte plein (surtout lite/gateway sans compaction) — avant 50x/refus.
+  if (/prompt is too long|context_length_exceeded|context (window )?(exceed|too long)|maximum.{0,15}context|too many tokens/i.test(s)) return e.contextFull;
+  // OOM worker (cap 1536m) : « ram build: exit status 137 ». Avant 50x.
+  if (/exit status 137|out of memory|\boom(-| )?kill/i.test(s)) return e.oom;
+  // Provider/gateway 5xx ou upstream down (modèles cloud/*, runpod/*).
+  if (/50[0234]\b|api_error|internal server|bad gateway|service unavailable|upstream|fetch failed|gateway http/i.test(s)) return e.provider;
+  if (/econnreset|etimedout|econnrefused|socket hang up|\bnetwork\b|terminated/i.test(s)) return e.network;
+  if (/invalid_request|does not support image|image input|400 bad request/i.test(s)) return e.invalidModel;
+  // Refus de sécurité : cyber (nommé) en premier, puis refus générique.
+  if (/safety measures|cybersecurity|cyber verification|cyber safeguard/i.test(s)) return e.cyber.replace('{model}', m);
+  if (/stop_reason.{0,10}refusal|refusal|declined|cannot assist|can'?t help with|\bsafety\b/i.test(s)) return e.refusalGeneric.replace('{model}', m);
+  // Infra Docker (spawn worker, image manquante, conflit de nom, exit 125).
+  if (/spawn worker|exit status 125|name already in use|no such image|cannot connect to the docker/i.test(s)) return e.infra;
   if (/timeout|timed out/i.test(s)) return e.timeout;
   return e.generic;
 }
@@ -511,7 +546,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
           setStreaming(true);
           setActivity({ label: activityFor(ev, t.activity), since: Date.now() });
           setLive({ ...r.render() });
-          if (ev.type === 'error') setLiveError(humanizeError(ev.content as string | undefined, t.errors));
+          if (ev.type === 'error') setLiveError(humanizeError(ev.content as string | undefined, t.errors, modelLabel(modelGroups, modelRef.current)));
         }
         if (res === 'terminal') finalize(f.sessionId!);
       } else if (f.type === 'session_attached') {
@@ -707,7 +742,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
             const line = buf.slice(0, nl).trim(); buf = buf.slice(nl + 1);
             if (!line.startsWith('data:')) continue;
             let ev: { type?: string; content?: string }; try { ev = JSON.parse(line.slice(5).trim()); } catch { continue; }
-            if (ev.type === 'error') { pushError(sid, humanizeError(ev.content, t.errors)); }
+            if (ev.type === 'error') { pushError(sid, humanizeError(ev.content, t.errors, modelLabel(modelGroups, modelRef.current))); }
             if (ev.type === 'done') sawDone = true;
           }
         }
