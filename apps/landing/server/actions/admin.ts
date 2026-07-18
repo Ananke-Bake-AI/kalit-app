@@ -920,7 +920,10 @@ export async function getAdminActiveBuilds() {
       s.model,
       s.title,
       s.updated_at,
-      s.tokens_spent,
+      COALESCE((
+        SELECT SUM(ue.tokens_in + ue.tokens_out)
+        FROM usage_events ue WHERE ue.session_id = s.id::text
+      ), 0) AS tokens_spent,
       u.email AS user_email,
       p.external_project_id,
       left(COALESCE(NULLIF(p.display_name, ''), NULLIF(p.title, ''), p.prompt), 80) AS project_name
@@ -974,7 +977,10 @@ export async function getAdminRecentProjects(params: { page?: number; limit?: nu
         p.visibility,
         p.subdomain,
         p.vercel_url,
-        p.tokens_spent,
+        COALESCE((
+          SELECT SUM(ue.tokens_in + ue.tokens_out)
+          FROM usage_events ue WHERE ue.session_id = p.broker_session_id
+        ), 0) AS tokens_spent,
         p.created_at,
         u.email AS user_email
       FROM flow_projects p
