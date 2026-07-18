@@ -896,24 +896,108 @@ export async function getAdminRevenue() {
 
 // ─── Monitoring ─────────────────────────────────────────
 
-export async function getAdminJobs(params: { status?: string; page?: number; limit?: number }) {
+// Live RAM generation — sessions currently running a worker turn. The taskforce
+// `Job` table is dead (0 rows); real generation lives in the broker-owned
+// flow_chat_sessions / flow_projects tables, which are NOT modeled in Prisma →
+// raw SQL (same pattern as getDeployments above).
+export async function getAdminActiveBuilds() {
   await requireAdmin()
 
-  const { status, page = 1, limit = 20 } = params
-  const where = status ? { status: status as never } : {}
+  const rows = await prisma.$queryRaw<
+    {
+      id: string
+      model: string | null
+      title: string | null
+      user_email: string | null
+      project_name: string | null
+      external_project_id: string | null
+      tokens_spent: unknown
+      updated_at: Date
+    }[]
+  >`
+    SELECT
+      s.id,
+      s.model,
+      s.title,
+      s.updated_at,
+      s.tokens_spent,
+      u.email AS user_email,
+      p.external_project_id,
+      left(COALESCE(NULLIF(p.display_name, ''), NULLIF(p.title, ''), p.prompt), 80) AS project_name
+    FROM flow_chat_sessions s
+    LEFT JOIN "User" u ON u.id = s.user_id
+    LEFT JOIN flow_projects p ON p.broker_session_id = s.id::text
+    WHERE s.is_processing = true
+    ORDER BY s.updated_at DESC
+    LIMIT 50
+  `
 
-  const [jobs, total] = await Promise.all([
-    prisma.job.findMany({
-      where,
-      include: { org: true },
-      orderBy: { createdAt: "desc" },
-      skip: (page - 1) * limit,
-      take: limit
-    }),
-    prisma.job.count({ where })
+  const builds = rows.map((r) => ({
+    id: r.id,
+    model: r.model,
+    title: r.title,
+    userEmail: r.user_email,
+    projectName: r.project_name,
+    externalProjectId: r.external_project_id,
+    tokensSpent: r.tokens_spent ? Number(r.tokens_spent) : 0,
+    updatedAt: r.updated_at.toISOString()
+  }))
+  return { builds, total: builds.length }
+}
+
+export async function getAdminRecentProjects(params: { page?: number; limit?: number }) {
+  await requireAdmin()
+
+  const { page = 1, limit = 20 } = params
+  const offset = (page - 1) * limit
+
+  const [rows, countRows] = await Promise.all([
+    prisma.$queryRaw<
+      {
+        external_project_id: string
+        name: string | null
+        status: string | null
+        project_type: string | null
+        visibility: string | null
+        subdomain: string | null
+        vercel_url: string | null
+        tokens_spent: unknown
+        created_at: Date
+        user_email: string | null
+      }[]
+    >`
+      SELECT
+        p.external_project_id,
+        left(COALESCE(NULLIF(p.display_name, ''), NULLIF(p.title, ''), p.prompt), 80) AS name,
+        p.status,
+        p.project_type,
+        p.visibility,
+        p.subdomain,
+        p.vercel_url,
+        p.tokens_spent,
+        p.created_at,
+        u.email AS user_email
+      FROM flow_projects p
+      LEFT JOIN "User" u ON u.id = p.user_id
+      ORDER BY p.created_at DESC
+      LIMIT ${limit} OFFSET ${offset}
+    `,
+    prisma.$queryRaw<{ count: bigint }[]>`SELECT count(*)::bigint AS count FROM flow_projects`
   ])
 
-  return { jobs, total, page, limit, totalPages: Math.ceil(total / limit) }
+  const total = Number(countRows[0]?.count ?? 0)
+  const projects = rows.map((r) => ({
+    externalProjectId: r.external_project_id,
+    name: r.name,
+    status: r.status,
+    projectType: r.project_type,
+    visibility: r.visibility,
+    published: Boolean(r.subdomain || r.vercel_url),
+    tokensSpent: r.tokens_spent ? Number(r.tokens_spent) : 0,
+    createdAt: r.created_at.toISOString(),
+    userEmail: r.user_email
+  }))
+  return { projects, total, page, limit, totalPages: Math.max(1, Math.ceil(total / limit)) }
 }
 
 export async function getAdminUsageRecords(params: { page?: number; limit?: number }) {

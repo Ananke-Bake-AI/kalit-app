@@ -3,45 +3,64 @@
 import { Badge } from "@/components/badge"
 import { Button } from "@/components/button"
 import { SurfacePanel } from "@/components/surface-panel"
-import { getAdminJobs, getAdminUsageRecords } from "@/server/actions/admin"
-import { useState, useTransition } from "react"
+import {
+  getAdminActiveBuilds,
+  getAdminRecentProjects,
+  getAdminUsageRecords
+} from "@/server/actions/admin"
+import { useEffect, useState, useTransition } from "react"
 import s from "./monitoring.module.scss"
 
-type JobsData = Awaited<ReturnType<typeof getAdminJobs>>
+type BuildsData = Awaited<ReturnType<typeof getAdminActiveBuilds>>
+type ProjectsData = Awaited<ReturnType<typeof getAdminRecentProjects>>
 type UsageData = Awaited<ReturnType<typeof getAdminUsageRecords>>
 
-const JOB_STATUS_COLORS: Record<string, "success" | undefined> = {
-  SUCCEEDED: "success",
-  RUNNING: "success"
+const PROJECT_STATUS_COLORS: Record<string, "success" | undefined> = {
+  ready: "success",
+  completed: "success",
+  active: "success"
+}
+
+function fmtTime(iso: string) {
+  return new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+}
+function fmtDate(iso: string) {
+  return new Date(iso).toLocaleDateString()
 }
 
 export function MonitoringClient({
-  initialJobs,
+  initialBuilds,
+  initialProjects,
   initialUsage
 }: {
-  initialJobs: JobsData
+  initialBuilds: BuildsData
+  initialProjects: ProjectsData
   initialUsage: UsageData
 }) {
-  const [jobs, setJobs] = useState(initialJobs)
+  const [builds, setBuilds] = useState(initialBuilds)
+  const [projects, setProjects] = useState(initialProjects)
   const [usage, setUsage] = useState(initialUsage)
-  const [statusFilter, setStatusFilter] = useState("")
   const [isPending, startTransition] = useTransition()
 
-  const refreshJobs = (params: { status?: string; page?: number }) => {
+  // Live builds: poll every 10s so "who's generating right now" stays current
+  // without a manual refresh — this panel is the real-time health signal.
+  useEffect(() => {
+    const t = setInterval(() => {
+      getAdminActiveBuilds()
+        .then(setBuilds)
+        .catch(() => {})
+    }, 10_000)
+    return () => clearInterval(t)
+  }, [])
+
+  const refreshProjects = (page: number) => {
     startTransition(async () => {
-      const result = await getAdminJobs({
-        status: params.status || undefined,
-        page: params.page,
-        limit: 20
-      })
-      setJobs(result)
+      setProjects(await getAdminRecentProjects({ page, limit: 20 }))
     })
   }
-
   const refreshUsage = (page: number) => {
     startTransition(async () => {
-      const result = await getAdminUsageRecords({ page, limit: 20 })
-      setUsage(result)
+      setUsage(await getAdminUsageRecords({ page, limit: 20 }))
     })
   }
 
@@ -49,68 +68,95 @@ export function MonitoringClient({
     <>
       <SurfacePanel
         spaced
-        title="Jobs"
-        subtitle={`${jobs.total} total job${jobs.total !== 1 ? "s" : ""}`}
-        headerAside={
-          <select
-            value={statusFilter}
-            onChange={(e) => {
-              setStatusFilter(e.target.value)
-              refreshJobs({ status: e.target.value, page: 1 })
-            }}
-            className={s.filter}
-          >
-            <option value="">All statuses</option>
-            <option value="QUEUED">Queued</option>
-            <option value="RUNNING">Running</option>
-            <option value="SUCCEEDED">Succeeded</option>
-            <option value="FAILED">Failed</option>
-            <option value="CANCELLED">Cancelled</option>
-          </select>
+        title="Active generations"
+        subtitle={
+          builds.total > 0
+            ? `${builds.total} building right now`
+            : "Nothing building right now"
         }
       >
         <div className={s.table}>
           <div className={s.tableHeader}>
-            <span>Organization</span>
-            <span>Suite</span>
-            <span>Type</span>
+            <span>User</span>
+            <span>Model</span>
+            <span>Project</span>
+            <span>Tokens</span>
+            <span>Started</span>
             <span>Status</span>
-            <span>Credits</span>
-            <span>Created</span>
           </div>
 
-          {jobs.jobs.map((job) => (
-            <div key={job.id} className={s.tableRow}>
-              <span className={s.orgName}>{job.org.name}</span>
-              <span>{job.suiteId}</span>
-              <span>{job.type}</span>
+          {builds.builds.map((b) => (
+            <div key={b.id} className={s.tableRow}>
+              <span className={s.orgName}>{b.userEmail ?? "—"}</span>
+              <span>{b.model ?? "—"}</span>
+              <span>{b.projectName ?? b.externalProjectId ?? "—"}</span>
+              <span>{b.tokensSpent.toLocaleString()}</span>
+              <span className={s.date}>{fmtTime(b.updatedAt)}</span>
               <span>
-                <Badge variant={JOB_STATUS_COLORS[job.status]}>{job.status}</Badge>
+                <Badge variant="success">RUNNING</Badge>
               </span>
-              <span>{job.creditsUsed}</span>
-              <span className={s.date}>{job.createdAt.toLocaleDateString()}</span>
             </div>
           ))}
 
-          {jobs.jobs.length === 0 && <div className={s.empty}>No jobs found.</div>}
+          {builds.builds.length === 0 && (
+            <div className={s.empty}>No active builds right now.</div>
+          )}
+        </div>
+      </SurfacePanel>
+
+      <SurfacePanel
+        spaced
+        title="Recent projects"
+        subtitle={`${projects.total} total project${projects.total !== 1 ? "s" : ""}`}
+      >
+        <div className={s.table}>
+          <div className={s.tableHeader}>
+            <span>Project</span>
+            <span>User</span>
+            <span>Status</span>
+            <span>Published</span>
+            <span>Tokens</span>
+            <span>Created</span>
+          </div>
+
+          {projects.projects.map((p) => (
+            <div key={p.externalProjectId} className={s.tableRow}>
+              <span className={s.orgName}>{p.name ?? p.externalProjectId}</span>
+              <span>{p.userEmail ?? "—"}</span>
+              <span>
+                {p.status ? (
+                  <Badge variant={PROJECT_STATUS_COLORS[p.status]}>{p.status}</Badge>
+                ) : (
+                  "—"
+                )}
+              </span>
+              <span>{p.published ? <Badge variant="success">Live</Badge> : "—"}</span>
+              <span>{p.tokensSpent.toLocaleString()}</span>
+              <span className={s.date}>{fmtDate(p.createdAt)}</span>
+            </div>
+          ))}
+
+          {projects.projects.length === 0 && (
+            <div className={s.empty}>No projects found.</div>
+          )}
         </div>
 
-        {jobs.totalPages > 1 && (
+        {projects.totalPages > 1 && (
           <div className={s.pagination}>
             <Button
               variant="secondary"
-              disabled={jobs.page <= 1 || isPending}
-              onClick={() => refreshJobs({ status: statusFilter, page: jobs.page - 1 })}
+              disabled={projects.page <= 1 || isPending}
+              onClick={() => refreshProjects(projects.page - 1)}
             >
               Previous
             </Button>
             <span className={s.pageInfo}>
-              Page {jobs.page} of {jobs.totalPages}
+              Page {projects.page} of {projects.totalPages}
             </span>
             <Button
               variant="secondary"
-              disabled={jobs.page >= jobs.totalPages || isPending}
-              onClick={() => refreshJobs({ status: statusFilter, page: jobs.page + 1 })}
+              disabled={projects.page >= projects.totalPages || isPending}
+              onClick={() => refreshProjects(projects.page + 1)}
             >
               Next
             </Button>
