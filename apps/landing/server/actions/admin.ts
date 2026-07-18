@@ -992,6 +992,8 @@ export async function getAdminRecentProjects(params: { page?: number; limit?: nu
     status: r.status,
     projectType: r.project_type,
     visibility: r.visibility,
+    subdomain: r.subdomain,
+    vercelUrl: r.vercel_url,
     published: Boolean(r.subdomain || r.vercel_url),
     tokensSpent: r.tokens_spent ? Number(r.tokens_spent) : 0,
     createdAt: r.created_at.toISOString(),

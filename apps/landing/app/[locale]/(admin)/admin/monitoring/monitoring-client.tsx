@@ -28,6 +28,23 @@ function fmtDate(iso: string) {
   return new Date(iso).toLocaleDateString()
 }
 
+// Live RAM preview, served by the broker and reachable same-origin through the
+// /api/broker/* → broker /api/flow/* rewrite (next.config.ts).
+function ramPreviewHref(externalProjectId: string) {
+  return `/api/broker/ram-preview/${externalProjectId}/`
+}
+// A project's best preview target: its published site if it has one, else the
+// live RAM preview.
+function projectPreviewHref(p: {
+  externalProjectId: string
+  subdomain: string | null
+  vercelUrl: string | null
+}) {
+  if (p.subdomain) return `https://${p.subdomain}.flow.kalit.ai`
+  if (p.vercelUrl) return p.vercelUrl
+  return ramPreviewHref(p.externalProjectId)
+}
+
 export function MonitoringClient({
   initialBuilds,
   initialProjects,
@@ -76,7 +93,7 @@ export function MonitoringClient({
         }
       >
         <div className={s.table}>
-          <div className={s.tableHeader}>
+          <div className={`${s.tableHeader} ${s.buildsGrid}`}>
             <span>User</span>
             <span>Model</span>
             <span>Project</span>
@@ -86,11 +103,24 @@ export function MonitoringClient({
           </div>
 
           {builds.builds.map((b) => (
-            <div key={b.id} className={s.tableRow}>
+            <div key={b.id} className={`${s.tableRow} ${s.buildsGrid}`}>
               <span className={s.orgName}>{b.userEmail ?? "—"}</span>
               <span>{b.model ?? "—"}</span>
-              <span>{b.projectName ?? b.externalProjectId ?? "—"}</span>
-              <span>{b.tokensSpent.toLocaleString()}</span>
+              <span>
+                {b.externalProjectId ? (
+                  <a
+                    className={s.link}
+                    href={ramPreviewHref(b.externalProjectId)}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {b.projectName ?? b.externalProjectId}
+                  </a>
+                ) : (
+                  (b.projectName ?? "—")
+                )}
+              </span>
+              <span className={s.num}>{b.tokensSpent.toLocaleString()}</span>
               <span className={s.date}>{fmtTime(b.updatedAt)}</span>
               <span>
                 <Badge variant="success">RUNNING</Badge>
@@ -110,7 +140,7 @@ export function MonitoringClient({
         subtitle={`${projects.total} total project${projects.total !== 1 ? "s" : ""}`}
       >
         <div className={s.table}>
-          <div className={s.tableHeader}>
+          <div className={`${s.tableHeader} ${s.projectsGrid}`}>
             <span>Project</span>
             <span>User</span>
             <span>Status</span>
@@ -120,8 +150,17 @@ export function MonitoringClient({
           </div>
 
           {projects.projects.map((p) => (
-            <div key={p.externalProjectId} className={s.tableRow}>
-              <span className={s.orgName}>{p.name ?? p.externalProjectId}</span>
+            <div key={p.externalProjectId} className={`${s.tableRow} ${s.projectsGrid}`}>
+              <span className={s.orgName}>
+                <a
+                  className={s.link}
+                  href={projectPreviewHref(p)}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {p.name ?? p.externalProjectId}
+                </a>
+              </span>
               <span>{p.userEmail ?? "—"}</span>
               <span>
                 {p.status ? (
@@ -131,7 +170,7 @@ export function MonitoringClient({
                 )}
               </span>
               <span>{p.published ? <Badge variant="success">Live</Badge> : "—"}</span>
-              <span>{p.tokensSpent.toLocaleString()}</span>
+              <span className={s.num}>{p.tokensSpent.toLocaleString()}</span>
               <span className={s.date}>{fmtDate(p.createdAt)}</span>
             </div>
           ))}

@@ -93,3 +93,48 @@
   font-size: 0.85rem;
   color: var(--text-secondary);
 }
+
+// Column templates tuned to the RAM-monitoring content (long emails + project
+// names) — applied ALONGSIDE .tableHeader / .tableRow, overriding only the grid.
+// Active generations: User | Model | Project | Tokens | Started | Status.
+.buildsGrid {
+  grid-template-columns: 1.6fr 1fr 1.5fr 0.6fr 0.6fr 0.8fr;
+}
+// Recent projects: Project | User | Status | Published | Tokens | Created.
+.projectsGrid {
+  grid-template-columns: 1.7fr 1.6fr 0.8fr 0.8fr 0.6fr 0.7fr;
+}
+
+// Grid cells default to min-width:auto, which lets long emails / project names
+// blow out the track and misalign every column. Force min-width:0 + ellipsis so
+// each cell stays within its fr track and truncates cleanly.
+.buildsGrid > span,
+.projectsGrid > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Tabular figures so token counts line up digit-for-digit.
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+// Preview link on a project/build name.
+.link {
+  color: var(--accent, var(--text));
+  text-decoration: none;
+  font-weight: 500;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+@include max($responsive) {
+  .buildsGrid,
+  .projectsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
