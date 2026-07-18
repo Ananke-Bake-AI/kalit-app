@@ -15,8 +15,18 @@ export default async function AdminMonitoringPage() {
     getAdminUsageRecords({ page: 1, limit: 20 })
   ])
 
+  // RAM previews are served from the BROKER origin (broker-api.kalit.ai), not
+  // proxied under kalit.ai — the dev-server's absolute asset paths (/@vite/…,
+  // /src/…) must resolve against the broker root. Same source as the share page.
+  const brokerPublic = (
+    process.env.NEXT_PUBLIC_BROKER_URL ||
+    process.env.BROKER_URL ||
+    ""
+  ).replace(/\/+$/, "")
+
   return (
     <MonitoringClient
+      brokerPublic={brokerPublic}
       initialBuilds={builds}
       initialProjects={projects}
       initialUsage={usage}

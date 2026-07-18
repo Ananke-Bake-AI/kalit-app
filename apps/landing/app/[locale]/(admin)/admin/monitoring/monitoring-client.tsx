@@ -28,28 +28,33 @@ function fmtDate(iso: string) {
   return new Date(iso).toLocaleDateString()
 }
 
-// Live RAM preview, served by the broker and reachable same-origin through the
-// /api/broker/* → broker /api/flow/* rewrite (next.config.ts).
-function ramPreviewHref(externalProjectId: string) {
-  return `/api/broker/ram-preview/${externalProjectId}/`
+// Live RAM preview — served from the BROKER origin (broker-api.kalit.ai), NOT
+// proxied under kalit.ai, so the dev-server's absolute asset paths resolve.
+function ramPreviewHref(brokerPublic: string, externalProjectId: string) {
+  return `${brokerPublic}/api/flow/ram-preview/${externalProjectId}/`
 }
 // A project's best preview target: its published site if it has one, else the
 // live RAM preview.
-function projectPreviewHref(p: {
-  externalProjectId: string
-  subdomain: string | null
-  vercelUrl: string | null
-}) {
+function projectPreviewHref(
+  brokerPublic: string,
+  p: {
+    externalProjectId: string
+    subdomain: string | null
+    vercelUrl: string | null
+  }
+) {
   if (p.subdomain) return `https://${p.subdomain}.flow.kalit.ai`
   if (p.vercelUrl) return p.vercelUrl
-  return ramPreviewHref(p.externalProjectId)
+  return ramPreviewHref(brokerPublic, p.externalProjectId)
 }
 
 export function MonitoringClient({
+  brokerPublic,
   initialBuilds,
   initialProjects,
   initialUsage
 }: {
+  brokerPublic: string
   initialBuilds: BuildsData
   initialProjects: ProjectsData
   initialUsage: UsageData
@@ -110,7 +115,7 @@ export function MonitoringClient({
                 {b.externalProjectId ? (
                   <a
                     className={s.link}
-                    href={ramPreviewHref(b.externalProjectId)}
+                    href={ramPreviewHref(brokerPublic, b.externalProjectId)}
                     target="_blank"
                     rel="noreferrer"
                   >
@@ -154,7 +159,7 @@ export function MonitoringClient({
               <span className={s.orgName}>
                 <a
                   className={s.link}
-                  href={projectPreviewHref(p)}
+                  href={projectPreviewHref(brokerPublic, p)}
                   target="_blank"
                   rel="noreferrer"
                 >
