@@ -9,12 +9,42 @@ import {
   getAdminModels,
   setModelAdminOnly,
   setModelEnabled,
+  setModelParams,
   setModelTier,
 } from "@/server/actions/admin"
 import { useEffect, useState, useTransition } from "react"
 import s from "./models.module.scss"
 
 type ModelRow = Awaited<ReturnType<typeof getAdminModels>>[number]
+
+// Inline editor for the total / active parameter counts (informational). Local
+// state, commits onBlur only if changed — avoids a call per keystroke.
+function ParamsCell({
+  id,
+  total,
+  active,
+  disabled,
+  onSave,
+}: {
+  id: string
+  total: string
+  active: string
+  disabled: boolean
+  onSave: (id: string, total: string, active: string) => void
+}) {
+  const [t, setT] = useState(total)
+  const [a, setA] = useState(active)
+  const commit = () => {
+    if (t !== total || a !== active) onSave(id, t, a)
+  }
+  return (
+    <span className={s.params}>
+      <input className={s.pinput} value={t} placeholder="total" disabled={disabled} onChange={(e) => setT(e.target.value)} onBlur={commit} />
+      <span className={s.psep}>/</span>
+      <input className={s.pinput} value={a} placeholder="active" disabled={disabled} onChange={(e) => setA(e.target.value)} onBlur={commit} />
+    </span>
+  )
+}
 
 const TIERS = ["free", "starter", "pro", "enterprise"] as const
 const PROVIDERS = ["ollama", "anthropic", "deepseek", "runpod", "openai", "mistral"] as const
@@ -84,6 +114,8 @@ export function ModelsClient({ initialModels }: { initialModels: ModelRow[] }) {
   const [nProvider, setNProvider] = useState<string>("ollama")
   const [nTier, setNTier] = useState<string>("starter")
   const [nAdmin, setNAdmin] = useState(false)
+  const [nTotal, setNTotal] = useState("")
+  const [nActive, setNActive] = useState("")
   const submitAdd = () => {
     if (!nId.trim() || !nLabel.trim()) {
       setErr("Name and technical ID are required")
@@ -96,10 +128,14 @@ export function ModelsClient({ initialModels }: { initialModels: ModelRow[] }) {
         provider: nProvider,
         minTier: nTier,
         adminOnly: nAdmin,
+        paramsTotal: nTotal,
+        paramsActive: nActive,
       })
       setNId("")
       setNLabel("")
       setNAdmin(false)
+      setNTotal("")
+      setNActive("")
       return next
     })
   }
@@ -124,6 +160,7 @@ export function ModelsClient({ initialModels }: { initialModels: ModelRow[] }) {
             <span>Health</span>
             <span>Model</span>
             <span>Provider</span>
+            <span>Params (total / active)</span>
             <span>Min tier</span>
             <span>Enabled</span>
             <span>Admin-only</span>
@@ -138,6 +175,15 @@ export function ModelsClient({ initialModels }: { initialModels: ModelRow[] }) {
                 <span className={s.id}>{m.id}</span>
               </span>
               <span title={`API family: ${m.provider}`}>{realProvider(m.id, m.provider)}</span>
+              <span>
+                <ParamsCell
+                  id={m.id}
+                  total={m.paramsTotal}
+                  active={m.paramsActive}
+                  disabled={isPending}
+                  onSave={(id, t, a) => run(() => setModelParams(id, t, a))}
+                />
+              </span>
               <span>
                 <select
                   className={s.select}
@@ -222,6 +268,14 @@ export function ModelsClient({ initialModels }: { initialModels: ModelRow[] }) {
                 </option>
               ))}
             </select>
+          </label>
+          <label className={s.field}>
+            <span>Params total</span>
+            <input className={s.input} value={nTotal} onChange={(e) => setNTotal(e.target.value)} placeholder="e.g. 1T" />
+          </label>
+          <label className={s.field}>
+            <span>Params active</span>
+            <input className={s.input} value={nActive} onChange={(e) => setNActive(e.target.value)} placeholder="e.g. 32B" />
           </label>
           <label className={s.checkField}>
             <input type="checkbox" checked={nAdmin} onChange={(e) => setNAdmin(e.target.checked)} />

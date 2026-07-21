@@ -17,7 +17,7 @@
 .head,
 .row {
   display: grid;
-  grid-template-columns: 0.5fr 2.4fr 0.9fr 1fr 0.8fr 0.9fr 0.5fr;
+  grid-template-columns: 0.5fr 2fr 0.9fr 1.5fr 0.9fr 0.7fr 0.8fr 0.4fr;
   gap: var(--size-3);
   align-items: center;
   padding: var(--size-3) var(--size-5);
@@ -26,6 +26,29 @@
     grid-template-columns: 1fr 1fr;
     gap: var(--size-2);
   }
+}
+
+.params {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.pinput {
+  width: 52px;
+  min-width: 0;
+  appearance: none;
+  background: oklch(from var(--text) l c h / 0.05);
+  border: 1px solid oklch(from var(--text) l c h / 0.1);
+  border-radius: var(--radius-2);
+  padding: 0.3em 0.4em;
+  font-size: 0.78rem;
+  font-family: var(--font-mono, monospace);
+  color: var(--text);
+  text-align: center;
+}
+.psep {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
 }
 
 .head {

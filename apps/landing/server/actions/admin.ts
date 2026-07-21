@@ -1214,9 +1214,12 @@ export async function getAdminModels() {
       enabled: boolean
       admin_only: boolean
       sort_order: number
+      params_total: string | null
+      params_active: string | null
     }[]
   >`
-    SELECT id, label, provider, group_label, min_tier, enabled, admin_only, sort_order
+    SELECT id, label, provider, group_label, min_tier, enabled, admin_only, sort_order,
+           params_total, params_active
     FROM flow_models ORDER BY sort_order, group_label, label`
   return rows.map((r) => ({
     id: r.id,
@@ -1227,7 +1230,17 @@ export async function getAdminModels() {
     enabled: r.enabled,
     adminOnly: r.admin_only,
     sortOrder: r.sort_order,
+    paramsTotal: r.params_total ?? "",
+    paramsActive: r.params_active ?? "",
   }))
+}
+
+export async function setModelParams(id: string, paramsTotal: string, paramsActive: string) {
+  await requireAdmin()
+  await prisma.$executeRaw`
+    UPDATE flow_models SET params_total = ${paramsTotal.trim() || null}, params_active = ${paramsActive.trim() || null}, updated_at = NOW()
+    WHERE id = ${id}`
+  return getAdminModels()
 }
 
 export async function setModelEnabled(id: string, enabled: boolean) {
@@ -1256,6 +1269,8 @@ export async function addModel(input: {
   minTier: string
   groupLabel?: string
   adminOnly?: boolean
+  paramsTotal?: string
+  paramsActive?: string
 }) {
   await requireAdmin()
   const id = input.id.trim()
@@ -1265,14 +1280,17 @@ export async function addModel(input: {
   if (!id || !label || !provider) throw new Error("id, label and provider are required")
   if (!MODEL_TIERS.includes(minTier as ModelTier)) throw new Error("invalid tier")
   const groupLabel = (input.groupLabel || "").trim() || modelGroupForProvider(provider)
+  const pTotal = (input.paramsTotal || "").trim() || null
+  const pActive = (input.paramsActive || "").trim() || null
   const maxRows = await prisma.$queryRaw<{ m: number | null }[]>`SELECT MAX(sort_order) AS m FROM flow_models`
   const nextOrder = Number(maxRows[0]?.m ?? 0) + 1
   await prisma.$executeRaw`
-    INSERT INTO flow_models (id, label, provider, group_label, min_tier, admin_only, sort_order)
-    VALUES (${id}, ${label}, ${provider}, ${groupLabel}, ${minTier}, ${input.adminOnly ?? false}, ${nextOrder})
+    INSERT INTO flow_models (id, label, provider, group_label, min_tier, admin_only, sort_order, params_total, params_active)
+    VALUES (${id}, ${label}, ${provider}, ${groupLabel}, ${minTier}, ${input.adminOnly ?? false}, ${nextOrder}, ${pTotal}, ${pActive})
     ON CONFLICT (id) DO UPDATE SET
       label = EXCLUDED.label, provider = EXCLUDED.provider, group_label = EXCLUDED.group_label,
-      min_tier = EXCLUDED.min_tier, admin_only = EXCLUDED.admin_only, updated_at = NOW()`
+      min_tier = EXCLUDED.min_tier, admin_only = EXCLUDED.admin_only,
+      params_total = EXCLUDED.params_total, params_active = EXCLUDED.params_active, updated_at = NOW()`
   return getAdminModels()
 }
 

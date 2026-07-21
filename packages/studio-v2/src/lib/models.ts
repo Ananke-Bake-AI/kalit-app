@@ -22,6 +22,8 @@ export interface ModelDef {
   minTier?: Tier;
   locked?: boolean;
   available?: boolean;
+  paramsTotal?: string;  // indicatif (ex "1T")
+  paramsActive?: string; // indicatif (ex "32B", params actifs MoE)
 }
 export interface ModelGroup { label: string; models: ModelDef[]; }
 
