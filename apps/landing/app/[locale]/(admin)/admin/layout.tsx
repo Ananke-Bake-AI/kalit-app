@@ -15,6 +15,7 @@ const TABS = [
   { icon: "hugeicons:building-01", href: "/admin/organizations", label: "Organizations" },
   { icon: "hugeicons:dollar-02", href: "/admin/revenue", label: "Revenue" },
   { icon: "hugeicons:activity-01", href: "/admin/monitoring", label: "Monitoring" },
+  { icon: "hugeicons:ai-brain-03", href: "/admin/models", label: "Models" },
   { icon: "hugeicons:chart-line-data-02", href: "/admin/console", label: "Console" },
   { icon: "hugeicons:cloud-server", href: "/admin/deployments", label: "Deployments" },
   { icon: "hugeicons:star-circle", href: "/admin/featured-projects", label: "Featured" },

@@ -1185,3 +1185,99 @@ export async function deleteBlogPost(id: string) {
   return { success: true }
 }
 
+
+// ─── Model catalogue (flow_models, broker-owned) ─────────
+// Admin-managed source of truth for the studio model list. The broker reads
+// this table (models.Store, 30s cache) → edits apply within ~30s. All raw SQL:
+// flow_models is broker-owned, not modeled in Prisma.
+
+const MODEL_TIERS = ["free", "starter", "pro", "enterprise"] as const
+type ModelTier = (typeof MODEL_TIERS)[number]
+
+function modelGroupForProvider(provider: string): string {
+  switch (provider) {
+    case "anthropic": return "Claude"
+    case "ollama": return "Ollama Cloud"
+    default: return "Other models"
+  }
+}
+
+export async function getAdminModels() {
+  await requireAdmin()
+  const rows = await prisma.$queryRaw<
+    {
+      id: string
+      label: string
+      provider: string
+      group_label: string
+      min_tier: string
+      enabled: boolean
+      admin_only: boolean
+      sort_order: number
+    }[]
+  >`
+    SELECT id, label, provider, group_label, min_tier, enabled, admin_only, sort_order
+    FROM flow_models ORDER BY sort_order, group_label, label`
+  return rows.map((r) => ({
+    id: r.id,
+    label: r.label,
+    provider: r.provider,
+    groupLabel: r.group_label,
+    minTier: r.min_tier,
+    enabled: r.enabled,
+    adminOnly: r.admin_only,
+    sortOrder: r.sort_order,
+  }))
+}
+
+export async function setModelEnabled(id: string, enabled: boolean) {
+  await requireAdmin()
+  await prisma.$executeRaw`UPDATE flow_models SET enabled = ${enabled}, updated_at = NOW() WHERE id = ${id}`
+  return getAdminModels()
+}
+
+export async function setModelAdminOnly(id: string, adminOnly: boolean) {
+  await requireAdmin()
+  await prisma.$executeRaw`UPDATE flow_models SET admin_only = ${adminOnly}, updated_at = NOW() WHERE id = ${id}`
+  return getAdminModels()
+}
+
+export async function setModelTier(id: string, tier: string) {
+  await requireAdmin()
+  if (!MODEL_TIERS.includes(tier as ModelTier)) throw new Error("invalid tier")
+  await prisma.$executeRaw`UPDATE flow_models SET min_tier = ${tier}, updated_at = NOW() WHERE id = ${id}`
+  return getAdminModels()
+}
+
+export async function addModel(input: {
+  id: string
+  label: string
+  provider: string
+  minTier: string
+  groupLabel?: string
+  adminOnly?: boolean
+}) {
+  await requireAdmin()
+  const id = input.id.trim()
+  const label = input.label.trim()
+  const provider = input.provider.trim()
+  const minTier = input.minTier
+  if (!id || !label || !provider) throw new Error("id, label and provider are required")
+  if (!MODEL_TIERS.includes(minTier as ModelTier)) throw new Error("invalid tier")
+  const groupLabel = (input.groupLabel || "").trim() || modelGroupForProvider(provider)
+  const maxRows = await prisma.$queryRaw<{ m: number | null }[]>`SELECT MAX(sort_order) AS m FROM flow_models`
+  const nextOrder = Number(maxRows[0]?.m ?? 0) + 1
+  await prisma.$executeRaw`
+    INSERT INTO flow_models (id, label, provider, group_label, min_tier, admin_only, sort_order)
+    VALUES (${id}, ${label}, ${provider}, ${groupLabel}, ${minTier}, ${input.adminOnly ?? false}, ${nextOrder})
+    ON CONFLICT (id) DO UPDATE SET
+      label = EXCLUDED.label, provider = EXCLUDED.provider, group_label = EXCLUDED.group_label,
+      min_tier = EXCLUDED.min_tier, admin_only = EXCLUDED.admin_only, updated_at = NOW()`
+  return getAdminModels()
+}
+
+export async function deleteModel(id: string) {
+  await requireAdmin()
+  await prisma.$executeRaw`DELETE FROM flow_models WHERE id = ${id}`
+  return getAdminModels()
+}
