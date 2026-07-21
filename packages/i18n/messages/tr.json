@@ -206,7 +206,6 @@
     "seats": "koltuk",
     "currentPlanHint": "Faturalandırma, erişim ve limitler burada senkronize.",
     "freeTrial": "Ücretsiz",
-    "trialHint": "Deneme süreniz {date} tarihinde sona eriyor.",
     "creditsHint": "Bu ay için kullanılabilir.",
     "jobsHint": "Sırada veya çalışıyor.",
     "seatsHint": "Sahipler, editörler ve işbirlikçiler.",
@@ -933,8 +932,6 @@
   "billing": {
     "upgrade": "Yükselt",
     "pickPlan": "Plan seç",
-    "trialDaysLeft": "Ücretsiz denemenin {count} günü kaldı",
-    "trialBannerBody": "denemeden sonra erişiminizi korumak için şimdi bir plan seçin",
     "freePlanLabel": "Ücretsiz plan",
     "freeBannerBody": "ayda {credits} kredi — daha fazla kapasite ve koltuk için yükseltin"
   }

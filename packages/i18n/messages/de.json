@@ -206,7 +206,6 @@
     "seats": "Plätze",
     "currentPlanHint": "Abrechnung, Zugang und Limits hier synchronisiert.",
     "freeTrial": "Kostenlos",
-    "trialHint": "Ihre Testversion läuft am {date} ab.",
     "creditsHint": "Verfügbar für diesen Monat.",
     "jobsHint": "In Warteschlange oder laufend.",
     "seatsHint": "Inhaber, Bearbeiter und Mitarbeiter.",
@@ -933,8 +932,6 @@
   "billing": {
     "upgrade": "Upgrade",
     "pickPlan": "Plan wählen",
-    "trialDaysLeft": "Noch {count} Tage Testphase",
-    "trialBannerBody": "wähle jetzt einen Plan, um den Zugang nach Ablauf zu behalten",
     "freePlanLabel": "Gratis-Plan",
     "freeBannerBody": "{credits} Credits / Monat — upgrade für mehr Kapazität und Team-Plätze"
   }

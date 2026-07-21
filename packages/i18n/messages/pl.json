@@ -206,7 +206,6 @@
     "seats": "miejsc",
     "currentPlanHint": "Rozliczenia, dostęp i limity zsynchronizowane tutaj.",
     "freeTrial": "Darmowy",
-    "trialHint": "Twój okres próbny wygasa {date}.",
     "creditsHint": "Dostępne w tym miesiącu.",
     "jobsHint": "W kolejce lub w trakcie realizacji.",
     "seatsHint": "Właściciele, edytorzy i współpracownicy.",
@@ -933,8 +932,6 @@
   "billing": {
     "upgrade": "Ulepsz",
     "pickPlan": "Wybierz plan",
-    "trialDaysLeft": "Pozostało {count} dni darmowego okresu",
-    "trialBannerBody": "wybierz plan teraz, aby zachować dostęp po zakończeniu okresu próbnego",
     "freePlanLabel": "Plan darmowy",
     "freeBannerBody": "{credits} kredytów / mies — ulepsz, aby uzyskać większą pojemność i miejsca"
   }

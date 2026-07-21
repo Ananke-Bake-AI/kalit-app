@@ -206,7 +206,6 @@
     "seats": "plaatsen",
     "currentPlanHint": "Facturering, toegang en limieten hier gesynchroniseerd.",
     "freeTrial": "Gratis",
-    "trialHint": "Uw proefperiode verloopt op {date}.",
     "creditsHint": "Beschikbaar voor deze maand.",
     "jobsHint": "In wachtrij of actief in de suites.",
     "seatsHint": "Eigenaren, editors en medewerkers.",
@@ -933,8 +932,6 @@
   "billing": {
     "upgrade": "Upgraden",
     "pickPlan": "Plan kiezen",
-    "trialDaysLeft": "Nog {count} dagen gratis proefperiode",
-    "trialBannerBody": "kies nu een plan om je toegang te behouden na de proefperiode",
     "freePlanLabel": "Gratis plan",
     "freeBannerBody": "{credits} credits / maand — upgrade voor meer capaciteit en team-slots"
   }

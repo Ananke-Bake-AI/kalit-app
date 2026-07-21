@@ -206,7 +206,6 @@
     "seats": "seats",
     "currentPlanHint": "Billing, access, and execution limits stay synced here.",
     "freeTrial": "Free",
-    "trialHint": "Your trial expires on {date}.",
     "creditsHint": "Available for this calendar month.",
     "jobsHint": "Queued or currently running across the suite.",
     "seatsHint": "Owners, editors, and collaborators in this workspace.",
@@ -1010,8 +1009,6 @@
   "billing": {
     "upgrade": "Upgrade",
     "pickPlan": "Pick a plan",
-    "trialDaysLeft": "{count} days of free trial left",
-    "trialBannerBody": "pick a plan now to keep your access after the trial ends",
     "freePlanLabel": "Free plan",
     "freeBannerBody": "{credits} credits / month — upgrade for more capacity and team seats"
   }

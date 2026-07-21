@@ -206,7 +206,6 @@
     "seats": "席",
     "currentPlanHint": "請求、アクセス、制限がここで同期されます。",
     "freeTrial": "無料",
-    "trialHint": "トライアルは {date} に終了します。",
     "creditsHint": "今月利用可能なクレジット。",
     "jobsHint": "待機中または実行中のジョブ。",
     "seatsHint": "オーナー、エディター、コラボレーター。",
@@ -933,8 +932,6 @@
   "billing": {
     "upgrade": "アップグレード",
     "pickPlan": "プランを選ぶ",
-    "trialDaysLeft": "無料トライアル残り{count}日",
-    "trialBannerBody": "今プランを選んで、トライアル終了後もアクセスを維持しましょう",
     "freePlanLabel": "無料プラン",
     "freeBannerBody": "{credits} クレジット / 月 — アップグレードで容量とシート数を増やせます"
   }

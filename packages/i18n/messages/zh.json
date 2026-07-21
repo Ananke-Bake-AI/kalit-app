@@ -206,7 +206,6 @@
     "seats": "个席位",
     "currentPlanHint": "账单、访问权限和限制在此同步。",
     "freeTrial": "免费",
-    "trialHint": "您的试用期将于 {date} 到期。",
     "creditsHint": "本月可用。",
     "jobsHint": "排队中或正在运行。",
     "seatsHint": "所有者、编辑者和协作者。",
@@ -933,8 +932,6 @@
   "billing": {
     "upgrade": "升级",
     "pickPlan": "选择套餐",
-    "trialDaysLeft": "免费试用还剩 {count} 天",
-    "trialBannerBody": "立即选择套餐，以在试用结束后保留访问权限",
     "freePlanLabel": "免费套餐",
     "freeBannerBody": "每月 {credits} 积分 — 升级以获得更多容量和团队席位"
   }

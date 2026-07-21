@@ -206,7 +206,6 @@
     "seats": "석",
     "currentPlanHint": "결제, 접근, 제한이 여기서 동기화됩니다.",
     "freeTrial": "무료",
-    "trialHint": "체험 기간이 {date}에 만료됩니다.",
     "creditsHint": "이번 달 사용 가능 크레딧.",
     "jobsHint": "대기 중이거나 실행 중인 작업.",
     "seatsHint": "소유자, 편집자, 협업자.",
@@ -933,8 +932,6 @@
   "billing": {
     "upgrade": "업그레이드",
     "pickPlan": "플랜 선택",
-    "trialDaysLeft": "무료 체험 {count}일 남음",
-    "trialBannerBody": "지금 플랜을 선택하여 체험 종료 후에도 액세스를 유지하세요",
     "freePlanLabel": "무료 플랜",
     "freeBannerBody": "월 {credits} 크레딧 — 더 많은 용량과 좌석을 위해 업그레이드하세요"
   }

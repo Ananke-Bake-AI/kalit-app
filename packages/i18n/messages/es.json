@@ -206,7 +206,6 @@
     "seats": "plazas",
     "currentPlanHint": "Facturación, acceso y límites sincronizados aquí.",
     "freeTrial": "Gratis",
-    "trialHint": "Tu prueba expira el {date}.",
     "creditsHint": "Disponibles este mes.",
     "jobsHint": "En cola o ejecutándose en las suites.",
     "seatsHint": "Propietarios, editores y colaboradores.",
@@ -933,8 +932,6 @@
   "billing": {
     "upgrade": "Actualizar",
     "pickPlan": "Elegir plan",
-    "trialDaysLeft": "Quedan {count} días de prueba gratuita",
-    "trialBannerBody": "elige un plan ahora para mantener tu acceso al final de la prueba",
     "freePlanLabel": "Plan gratuito",
     "freeBannerBody": "{credits} créditos / mes — sube de plan para más capacidad y asientos"
   }

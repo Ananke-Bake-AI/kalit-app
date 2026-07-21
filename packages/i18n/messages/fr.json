@@ -206,7 +206,6 @@
     "seats": "places",
     "currentPlanHint": "Facturation, accès et limites synchronisés ici.",
     "freeTrial": "Gratuit",
-    "trialHint": "Votre essai expire le {date}.",
     "creditsHint": "Disponibles pour ce mois.",
     "jobsHint": "En attente ou en cours sur les suites.",
     "seatsHint": "Propriétaires, éditeurs et collaborateurs.",
@@ -1010,8 +1009,6 @@
   "billing": {
     "upgrade": "Passer à un plan payant",
     "pickPlan": "Choisir un plan",
-    "trialDaysLeft": "Il reste {count} jours d'essai gratuit",
-    "trialBannerBody": "choisis un plan dès maintenant pour garder ton accès à la fin de l'essai",
     "freePlanLabel": "Plan gratuit",
     "freeBannerBody": "{credits} crédits / mois — passe à un plan supérieur pour plus de capacité et de places"
   }

@@ -206,7 +206,6 @@
     "seats": "platser",
     "currentPlanHint": "Fakturering, åtkomst och gränser synkade här.",
     "freeTrial": "Gratis",
-    "trialHint": "Din provperiod går ut {date}.",
     "creditsHint": "Tillgängligt denna månad.",
     "jobsHint": "I kö eller körs just nu.",
     "seatsHint": "Ägare, redigerare och medarbetare.",
@@ -933,8 +932,6 @@
   "billing": {
     "upgrade": "Uppgradera",
     "pickPlan": "Välj plan",
-    "trialDaysLeft": "{count} dagar kvar av gratis provperiod",
-    "trialBannerBody": "välj en plan nu för att behålla åtkomsten efter provperioden",
     "freePlanLabel": "Gratisplan",
     "freeBannerBody": "{credits} krediter / månad — uppgradera för mer kapacitet och teamplatser"
   }
