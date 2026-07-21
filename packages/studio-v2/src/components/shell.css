@@ -225,7 +225,10 @@
 .sv-tab:hover { color: var(--sv-text-2); }
 .sv-tab--on { background: var(--sv-surface-2); color: var(--sv-text); }
 .sv-prev__bar-r { margin-left: auto; display: flex; align-items: center; gap: 4px; }
-.sv-prev__body { flex: 1; min-height: 0; position: relative; background: #fff; }
+/* Fond sombre (couleur du cover CSS-ready du broker) : pendant le bref chargement
+   de l'iframe, on ne flashe plus du blanc avant que la page (cover puis site stylé)
+   peigne. Évite le FOUC blanc perçu au reveal. */
+.sv-prev__body { flex: 1; min-height: 0; position: relative; background: #0b0b0f; }
 /* Bouton "en ligne" (projet publié) */
 .sv-live { color: var(--sv-text); border-color: color-mix(in srgb, var(--sv-ok) 45%, var(--sv-line)); background: color-mix(in srgb, var(--sv-ok) 12%, transparent); font-weight: 600; text-decoration: none; }
 .sv-live:hover { border-color: var(--sv-ok); background: color-mix(in srgb, var(--sv-ok) 18%, transparent); }

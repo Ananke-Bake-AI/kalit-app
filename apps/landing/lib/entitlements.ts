@@ -79,14 +79,18 @@ export async function resolveEntitlements(orgId: string): Promise<ResolvedEntitl
     }
   }
 
-  // If no Stripe subscription set planKey, derive it from manual entitlements
-  // by matching monthly.credits (each plan has a unique amount: 100/500/2000).
-  // Without this, an admin-assigned Enterprise org reports planKey="free"
-  // because planKey was only ever written from a Subscription row.
+  // Tier (planKey) is EXPLICIT — from a Stripe subscription (above) or a manual
+  // `plan.tier` entitlement. It is NEVER inferred from the credit amount: credits
+  // are a consumption budget, not a capability level. The old code derived the
+  // tier from monthly.credits, which let a large grant silently unlock premium
+  // models and disagreed with the broker's own thresholds. Decoupled 2026-07-22
+  // (assignPlan now writes plan.tier; existing comps were backfilled).
   if (defaults.planKey === "free") {
-    if (defaults.creditsPerMonth >= 2000) defaults.planKey = "enterprise"
-    else if (defaults.creditsPerMonth >= 500) defaults.planKey = "pro"
-    else if (defaults.creditsPerMonth >= 100) defaults.planKey = "starter"
+    const tierEnt = overrides.find((e) => e.key === "plan.tier")
+    const tier = (tierEnt?.value as { tier?: string } | undefined)?.tier
+    if (tier === "enterprise" || tier === "pro" || tier === "starter") {
+      defaults.planKey = tier
+    }
   }
 
   return defaults

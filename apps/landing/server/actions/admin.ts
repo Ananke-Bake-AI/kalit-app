@@ -586,6 +586,15 @@ export async function assignPlan(orgId: string, planKey: string, expiresAt?: str
     create: { orgId, key: "max.members", value: { amount: plan.maxMembers }, source: "MANUAL", expiresAt: expiry }
   })
 
+  // Set the EXPLICIT tier. The broker (model gating) and landing read `plan.tier`,
+  // never the credit amount — credits are a budget, not a capability level. Without
+  // this a comp'd org would resolve to free tier after the 2026-07-22 decoupling.
+  await prisma.entitlement.upsert({
+    where: { orgId_key: { orgId, key: "plan.tier" } },
+    update: { value: { tier: plan.key }, source: "MANUAL", expiresAt: expiry },
+    create: { orgId, key: "plan.tier", value: { tier: plan.key }, source: "MANUAL", expiresAt: expiry }
+  })
+
   return { success: true, plan: plan.name }
 }
 

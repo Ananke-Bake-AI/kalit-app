@@ -73,7 +73,7 @@ export interface Strings {
     bash: string; task: string; browser: string; assets: string; tool: string;
     working: string; starting: string; uploading: string; compacting: string;
   };
-  errors: { rate: string; credits: string; timeout: string; cyber: string; overloaded: string; provider: string; auth: string; contextFull: string; oom: string; network: string; refusalGeneric: string; invalidModel: string; infra: string; clone: string; generic: string; upload: string };
+  errors: { rate: string; credits: string; timeout: string; cyber: string; overloaded: string; provider: string; auth: string; contextFull: string; oom: string; network: string; refusalGeneric: string; invalidModel: string; infra: string; clone: string; usageLimit: string; usageLimitSoon: string; generic: string; upload: string };
   del: {
     title: string; sessionOnly: string; sessionOnlyHint: string;
     projectToo: string; projectTooHint: string; plainHint: string;
@@ -232,6 +232,8 @@ const fr: Strings = {
     invalidModel: "Ce modèle ne supporte pas cette opération (ex. images). Choisis un autre modèle.",
     infra: "Erreur d'infrastructure au lancement de la génération. Réessaie ; si ça persiste, contacte le support.",
     clone: 'Impossible de cloner le dépôt (accès refusé ou dépôt introuvable). Vérifie la connexion GitHub.',
+    usageLimit: "Limite d'usage Claude atteinte sur l'abonnement partagé ({reset}). Réessayer maintenant ne changera rien — choisis un autre modèle (ex. DeepSeek ou Kimi) ou attends le reset.",
+    usageLimitSoon: 'reset bientôt',
     generic: 'Une erreur est survenue pendant la génération. Réessaie.',
     upload: "L'upload des fichiers a échoué (réseau ou fichier trop lourd). Réessaie.",
   },
@@ -478,6 +480,8 @@ const en: Strings = {
     invalidModel: "This model doesn't support this operation (e.g. images). Pick another model.",
     infra: 'Infrastructure error starting the build. Retry; if it persists, contact support.',
     clone: "Couldn't clone the repository (access denied or not found). Check the GitHub connection.",
+    usageLimit: "Claude usage limit reached on the shared subscription ({reset}). Retrying now won't help — pick another model (e.g. DeepSeek or Kimi) or wait for the reset.",
+    usageLimitSoon: 'resets soon',
     generic: 'An error occurred during generation. Try again.',
     upload: 'File upload failed (network or file too large). Try again.',
   },

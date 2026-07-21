@@ -132,6 +132,13 @@ function humanizeError(raw: string | undefined, e: Strings['errors'], model?: st
   // Auth service (token OAuth expiré/rotaté) → bloque TOUS les users : dire que
   // retry est vain, c'est global. Avant le pattern 50x large.
   if (/401|authentication_error|invalid.{0,3}(api.?key|x-api-key)|oauth.{0,20}(expired|invalid)|invalid bearer|unauthorized/i.test(s)) return e.auth;
+  // Abonnement Claude Max (OAuth) épuisé — "You've hit your (weekly) limit · resets
+  // 8pm (UTC)". GLOBAL (token OAuth partagé par tous les users anthropic:*) → retry
+  // inutile avant le reset. On extrait l'heure de reset pour l'afficher. Avant 429.
+  if (/hit your (weekly |daily )?limit|usage limit reached|quota (has been )?exceeded/i.test(s)) {
+    const reset = s.match(/resets?\b[^.·\n]*/i)?.[0]?.trim();
+    return e.usageLimit.replace('{reset}', reset || e.usageLimitSoon);
+  }
   // 529 overloaded (capacité serveur) ≠ 429 rate-limit (quota user). 529 d'abord.
   if (/529|overloaded/i.test(s)) return e.overloaded;
   if (/429|rate.?limit/i.test(s)) return e.rate;
