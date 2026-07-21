@@ -34,8 +34,11 @@ export function ModelSelector({ value, onChange, isAdmin, groups: groupsProp }: 
                 // locked = tier de l'user en dessous du minTier du modèle (upsell).
                 const locked = m.locked === true;
                 const disabled = unavailable || locked;
-                // Tag du tier requis (masqué pour free).
-                const tierTag = m.minTier && m.minTier !== 'free' ? m.minTier.toUpperCase() : null;
+                // Tag du tier pour TOUS les modèles (FREE inclus, en gris muté) —
+                // couleur : verrouillé → warn, free → muté, payant dispo → accent.
+                const tier = m.minTier || 'free';
+                const tierTag = tier.toUpperCase();
+                const tierColor = locked ? 'var(--sv-warn)' : tier === 'free' ? 'var(--sv-text-3)' : 'var(--sv-accent-2)';
                 return (
                 <button key={m.id} disabled={disabled}
                   className={'sv-model__opt' + (m.id === value ? ' sv-model__opt--on' : '') + (disabled ? ' sv-model__opt--off' : '')}
@@ -44,9 +47,7 @@ export function ModelSelector({ value, onChange, isAdmin, groups: groupsProp }: 
                   <span className={'sv-model__dot sv-model__dot--' + m.provider} /> {m.label}
                   {unavailable
                     ? <span className="sv-model__tag sv-model__tag--off">{st.modelOffline}</span>
-                    : tierTag
-                    ? <span className="sv-model__tag" style={{ color: locked ? 'var(--sv-warn)' : 'var(--sv-accent-2)' }}>{tierTag}</span>
-                    : null}
+                    : <span className="sv-model__tag" style={{ color: tierColor }}>{tierTag}</span>}
                 </button>
                 );
               })}

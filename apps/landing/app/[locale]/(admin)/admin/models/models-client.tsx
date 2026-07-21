@@ -19,6 +19,19 @@ type ModelRow = Awaited<ReturnType<typeof getAdminModels>>[number]
 const TIERS = ["free", "starter", "pro", "enterprise"] as const
 const PROVIDERS = ["ollama", "anthropic", "openai", "mistral"] as const
 
+// Le vrai provider est dérivé de l'ID (le champ `provider` en base est la
+// "famille d'API" : deepseek/runpod routent en protocole openai-compatible via la
+// gateway → afficher openai était trompeur). anthropic:… / cloud/… / deepseek/… / runpod/…
+function realProvider(id: string, fallback: string): string {
+  if (id.startsWith("anthropic:")) return "anthropic"
+  const i = id.indexOf("/")
+  if (i > 0) {
+    const p = id.slice(0, i)
+    return p === "cloud" ? "ollama cloud" : p
+  }
+  return fallback
+}
+
 const TIER_COLOR: Record<string, string> = {
   free: "var(--text-secondary)",
   starter: "var(--accent)",
@@ -124,7 +137,7 @@ export function ModelsClient({ initialModels }: { initialModels: ModelRow[] }) {
                 <span className={s.label}>{m.label}</span>
                 <span className={s.id}>{m.id}</span>
               </span>
-              <span>{m.provider}</span>
+              <span title={`API family: ${m.provider}`}>{realProvider(m.id, m.provider)}</span>
               <span>
                 <select
                   className={s.select}
