@@ -53,8 +53,6 @@ const STANDARD_EVENTS: Record<string, string> = {
   signup_completed: "CompleteRegistration",
   sign_up: "CompleteRegistration", // legacy alias
   account_created: "CompleteRegistration", // magnet
-  // Trial activation — onboarding completed, 14-day trial granted.
-  trial_started: "StartTrial",
   // Checkout opened (paywall → Stripe).
   checkout_started: "InitiateCheckout",
   upgrade_started: "InitiateCheckout", // legacy alias
@@ -100,12 +98,6 @@ export function forwardEventToPixel(event: string, params: Record<string, unknow
     // Checkout Session id. Kept out of custom data; passed as the fbq option.
     const eventID = typeof params.eventID === "string" ? params.eventID : undefined
     fbqTrack("Purchase", { currency, ...(value != null ? { value } : {}) }, eventID)
-    return
-  }
-
-  if (standard === "StartTrial") {
-    // Free 14-day trial — Meta expects a value/currency on StartTrial; 0 is fine.
-    fbqTrack("StartTrial", { value: 0, currency: DEFAULT_CURRENCY })
     return
   }
 

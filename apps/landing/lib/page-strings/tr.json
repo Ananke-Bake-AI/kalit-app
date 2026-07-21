@@ -13,14 +13,14 @@
     "oneTimeLabel": "tek seferlik",
     "faqTitle": "Fiyat SSS",
     "planOutcomes": {
-      "free": "14 günlük ücretsiz deneme — tüm paketler, 5 üretim. Kart gerekmez.",
+      "free": "Her ay 15 kredi, sonsuza dek ücretsiz — tüm paketler. Kart gerekmez.",
       "starter": "Ayda bir cilalı landing veya küçük bir MVP yayınla.",
       "pro": "Tam bir ürün inşa et ve iyileştir, veya ajans müşteri işlerini yürüt.",
       "enterprise": "Flow + Pentest + Search'ü sınırsız koltukla kullan.",
       "custom": "Özel koltuk sayıları, ajans araçları, hacim fiyatlandırması — ekibine göre uyarlanmış."
     },
     "planCtas": {
-      "free": "Ücretsiz denemeyi başlat",
+      "free": "Ücretsiz başla",
       "starter": "Starter'ı başlat",
       "pro": "Pro'yu başlat",
       "enterprise": "Enterprise'ı başlat",

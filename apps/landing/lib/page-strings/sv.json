@@ -13,14 +13,14 @@
     "oneTimeLabel": "engångs",
     "faqTitle": "FAQ om priser",
     "planOutcomes": {
-      "free": "14 dagars gratis testperiod — alla sviter, 5 genereringar. Inget kort krävs.",
+      "free": "15 krediter varje månad, gratis för alltid — alla sviter. Inget kort krävs.",
       "starter": "Publicera en polerad landningssida eller liten MVP per månad.",
       "pro": "Bygg och iterera en hel produkt, eller kör byråarbete åt kunder.",
       "enterprise": "Kör Flow + Pentest + Search med obegränsade platser.",
       "custom": "Anpassade antal platser, byråverktyg, volympriser — skräddarsytt för ditt team."
     },
     "planCtas": {
-      "free": "Starta gratis testperiod",
+      "free": "Kom igång gratis",
       "starter": "Börja med Starter",
       "pro": "Börja med Pro",
       "enterprise": "Börja med Enterprise",

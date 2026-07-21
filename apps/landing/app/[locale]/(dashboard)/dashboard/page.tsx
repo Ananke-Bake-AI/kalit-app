@@ -62,10 +62,8 @@ export default async function DashboardPage() {
       label: t("dashboard.currentPlan"),
       value: entitlements.planKey
         ? entitlements.planKey.charAt(0).toUpperCase() + entitlements.planKey.slice(1)
-        : entitlements.isTrial ? t("dashboard.freeTrial") : enabledSuites.length > 0 ? "Custom" : "Free",
-      hint: entitlements.isTrial && entitlements.trialExpiresAt
-        ? t("dashboard.trialHint", { date: entitlements.trialExpiresAt.toLocaleDateString() })
-        : t("dashboard.currentPlanHint")
+        : enabledSuites.length > 0 ? "Custom" : "Free",
+      hint: t("dashboard.currentPlanHint")
     },
     {
       label: t("dashboard.creditsRemaining"),

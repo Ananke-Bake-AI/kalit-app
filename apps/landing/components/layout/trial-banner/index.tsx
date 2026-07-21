@@ -17,11 +17,8 @@ const COOLDOWN_MS = 24 * 60 * 60 * 1000
 /**
  * Top-of-page nudge for users without a paid Stripe subscription.
  *
- * Two flavors, picked by `summary.isTrial`:
- *   - Trialing (Free + active trial window) → countdown copy
- *     "🎁 N days of free trial left · Pick a plan →"
- *   - Free, trial expired or never started → soft upgrade prompt
- *     "Free plan · 15 credits/mo · Upgrade for more →"
+ * Free plan → soft upgrade prompt
+ *   "Free plan · 15 credits/mo · Upgrade for more →"
  *
  * Hidden as soon as the org becomes paid. Dismissible per session so a
  * user who just chose to wait doesn't see it on every page nav (we
@@ -63,25 +60,15 @@ export function TrialBanner() {
   if (summary.isPaid) return null
   if (dismissed) return null
 
-  const trialing = summary.isTrial && summary.trialDaysLeft !== null
-
   return (
-    <div className={`${s.banner} ${trialing ? s.urgent : s.soft}`}>
+    <div className={`${s.banner} ${s.soft}`}>
       <div className={s.content}>
-        <Icon icon={trialing ? "hugeicons:gift" : "hugeicons:rocket-02"} />
-        {trialing ? (
-          <span className={s.text}>
-            <strong>{t("billing.trialDaysLeft", { count: summary.trialDaysLeft! })}</strong>
-            {" — "}
-            {t("billing.trialBannerBody")}
-          </span>
-        ) : (
-          <span className={s.text}>
-            <strong>{t("billing.freePlanLabel")}</strong>
-            {" — "}
-            {t("billing.freeBannerBody", { credits: summary.planMonthly })}
-          </span>
-        )}
+        <Icon icon="hugeicons:rocket-02" />
+        <span className={s.text}>
+          <strong>{t("billing.freePlanLabel")}</strong>
+          {" — "}
+          {t("billing.freeBannerBody", { credits: summary.planMonthly })}
+        </span>
         <Link href="/settings/billing" className={s.cta}>
           {t("billing.pickPlan")}
           <Icon icon="hugeicons:arrow-right-01" />

@@ -184,7 +184,7 @@
     "verifySuccessBody1": "Din e-post har verifierats.",
     "verifySuccessBody2": "Du har nu full åtkomst till alla Kalit-funktioner.",
     "verifyPendingTitle": "Kolla din e-post",
-    "verifyPendingBody": "Vi har skickat en verifieringslänk. Klicka för att låsa upp dashboard, Studio och din 14-dagars gratis provperiod.",
+    "verifyPendingBody": "Vi har skickat en verifieringslänk. Klicka för att låsa upp dashboard och Studio och börja bygga gratis.",
     "verifyPendingHint": "Inget mejl? Kolla skräpposten eller skicka igen nedan. Länken går ut efter 24 timmar.",
     "verifyFailedTitle": "Verifiering misslyckades",
     "backToSignIn": "Tillbaka till inloggning"
@@ -205,7 +205,7 @@
     "unlimitedSeats": "Obegränsade platser",
     "seats": "platser",
     "currentPlanHint": "Fakturering, åtkomst och gränser synkade här.",
-    "freeTrial": "Gratis provperiod",
+    "freeTrial": "Gratis",
     "trialHint": "Din provperiod går ut {date}.",
     "creditsHint": "Tillgängligt denna månad.",
     "jobsHint": "I kö eller körs just nu.",
@@ -347,7 +347,7 @@
   },
   "suiteLanding": {
     "getStarted": "Kom igång",
-    "startFreeTrial": "Starta gratis provperiod",
+    "startFreeTrial": "Kom igång gratis",
     "contactSales": "Kontakta sälj",
     "tryFree": "Prova gratis",
     "learnMore": "Läs mer",

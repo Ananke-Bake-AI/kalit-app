@@ -13,14 +13,14 @@
     "oneTimeLabel": "一次性",
     "faqTitle": "价格 FAQ",
     "planOutcomes": {
-      "free": "14 天免费试用 — 全部套件，5 次生成。无需信用卡。",
+      "free": "每月 15 积分，永久免费 — 全部套件。无需信用卡。",
       "starter": "每月发布一个精致的着陆站点或小型 MVP。",
       "pro": "构建和迭代完整产品,或运行机构客户工作。",
       "enterprise": "使用无限席位运行 Flow + Pentest + Search。",
       "custom": "自定义席位数、机构工具、批量定价 — 为你的团队量身定制。"
     },
     "planCtas": {
-      "free": "开始免费试用",
+      "free": "免费开始",
       "starter": "开始 Starter",
       "pro": "开始 Pro",
       "enterprise": "开始 Enterprise",

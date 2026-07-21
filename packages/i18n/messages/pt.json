@@ -184,7 +184,7 @@
     "verifySuccessBody1": "Seu e-mail foi verificado com sucesso.",
     "verifySuccessBody2": "Você agora tem acesso completo a todos os recursos do Kalit.",
     "verifyPendingTitle": "Verifique seu e-mail",
-    "verifyPendingBody": "Enviamos um link de verificação. Clique para desbloquear o painel, o Studio e seu teste gratuito de 14 dias.",
+    "verifyPendingBody": "Enviamos um link de verificação. Clique para desbloquear o painel e o Studio e começar a criar de graça.",
     "verifyPendingHint": "Não recebeu? Veja o spam ou reenvie abaixo. O link expira em 24 horas.",
     "verifyFailedTitle": "Falha na verificação",
     "backToSignIn": "Voltar ao login"
@@ -205,7 +205,7 @@
     "unlimitedSeats": "Vagas ilimitadas",
     "seats": "vagas",
     "currentPlanHint": "Faturamento, acesso e limites sincronizados aqui.",
-    "freeTrial": "Teste gratuito",
+    "freeTrial": "Grátis",
     "trialHint": "Seu teste expira em {date}.",
     "creditsHint": "Disponíveis neste mês.",
     "jobsHint": "Na fila ou em execução nas suites.",
@@ -347,7 +347,7 @@
   },
   "suiteLanding": {
     "getStarted": "Começar",
-    "startFreeTrial": "Teste gratuito",
+    "startFreeTrial": "Começar grátis",
     "contactSales": "Falar com vendas",
     "tryFree": "Experimente grátis",
     "learnMore": "Saiba mais",

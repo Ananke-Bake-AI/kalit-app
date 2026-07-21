@@ -305,14 +305,20 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
 
   useEffect(() => { loadSessions(); loadStorage(); }, [loadSessions, loadStorage]);
 
-  // Catalogue des modèles + disponibilité, servi par le broker. Une fois au mount.
+  // Catalogue des modèles + dispo + gating tier, servi par le broker. Une fois au mount.
   useEffect(() => {
     let stop = false;
     api.json<{ groups?: ModelGroup[] }>('/api/broker/models').then((d) => {
-      if (!stop && d?.groups && d.groups.length) setModelGroups(d.groups);
+      if (stop || !d?.groups || !d.groups.length) return;
+      setModelGroups(d.groups);
+      // Si le modèle courant (ex. kimi sauvé en localStorage) est verrouillé pour
+      // ce tier, retomber sur le défaut — sinon le broker le downgraderait en
+      // silence à chaque envoi et le sélecteur montrerait un modèle grisé « choisi ».
+      const cur = d.groups.flatMap((g) => g.models).find((m) => m.id === modelRef.current);
+      if (cur?.locked) setModel(DEFAULT_MODEL_ID);
     });
     return () => { stop = true; };
-  }, [api]);
+  }, [api, setModel]);
 
   // Preview + file-tree : poll workspace-tree de la session active (contrat §4).
   const HIDDEN = new Set(['node_modules', '.pnpm-store', '.git', '.claude', '.feed', '.playwright-mcp']);

@@ -29,12 +29,9 @@ export async function completeOnboarding(input: OnboardingInput) {
     slug = `${slug}-${Date.now().toString(36)}`
   }
 
-  // Trial: 14 days, all suites, 50 credits
-  const trialExpiry = new Date()
-  trialExpiry.setDate(trialExpiry.getDate() + 14)
-
-  const trialSuites = ["flow", "marketing", "pentest", "search"]
-
+  // No trial grant: every new org gets the perpetual FREE tier (15 credits/month
+  // + Flow) from resolveEntitlements' baseline — no entitlement rows needed here.
+  // Paid tiers are granted later via a Stripe subscription / admin entitlements.
   const result = await prisma.$transaction(async (tx) => {
     const org = await tx.organization.create({
       data: {
@@ -46,27 +43,6 @@ export async function completeOnboarding(input: OnboardingInput) {
             userId: session.user.id,
             role: "OWNER",
             isCurrent: true,
-          },
-        },
-        entitlements: {
-          createMany: {
-            data: [
-              ...trialSuites.map((suiteId) => ({
-                key: `suite.${suiteId}.access`,
-                value: { granted: true },
-                source: "TRIAL" as const,
-                expiresAt: trialExpiry,
-              })),
-              {
-                key: "monthly.credits",
-                // 15 credits (5× less than Starter's 75) — a guided demo
-                // of the paid suites, not a free tier. After day 14 (trial
-                // expiry) they fall back to the FREE_PLAN allotment.
-                value: { amount: 15 },
-                source: "TRIAL" as const,
-                expiresAt: trialExpiry,
-              },
-            ],
           },
         },
       },

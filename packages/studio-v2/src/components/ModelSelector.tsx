@@ -29,19 +29,24 @@ export function ModelSelector({ value, onChange, isAdmin, groups: groupsProp }: 
             <div key={g.label}>
               <div className="sv-model__grp">{g.label}</div>
               {g.models.map((m) => {
-                // available absent (fallback) = supposé dispo ; false = grisé/non sélectionnable.
+                // available absent (fallback) = supposé dispo ; false = provider down.
                 const unavailable = m.available === false;
+                // locked = tier de l'user en dessous du minTier du modèle (upsell).
+                const locked = m.locked === true;
+                const disabled = unavailable || locked;
+                // Tag du tier requis (masqué pour free).
+                const tierTag = m.minTier && m.minTier !== 'free' ? m.minTier.toUpperCase() : null;
                 return (
-                <button key={m.id} disabled={unavailable}
-                  className={'sv-model__opt' + (m.id === value ? ' sv-model__opt--on' : '') + (unavailable ? ' sv-model__opt--off' : '')}
-                  title={unavailable ? st.modelUnavailable : undefined}
-                  onClick={() => { if (!unavailable) { onChange(m.id); setOpen(false); } }}>
+                <button key={m.id} disabled={disabled}
+                  className={'sv-model__opt' + (m.id === value ? ' sv-model__opt--on' : '') + (disabled ? ' sv-model__opt--off' : '')}
+                  title={unavailable ? st.modelUnavailable : locked && tierTag ? `${tierTag}+` : undefined}
+                  onClick={() => { if (!disabled) { onChange(m.id); setOpen(false); } }}>
                   <span className={'sv-model__dot sv-model__dot--' + m.provider} /> {m.label}
                   {unavailable
                     ? <span className="sv-model__tag sv-model__tag--off">{st.modelOffline}</span>
-                    : m.admin
-                    ? <span className="sv-model__tag" style={{ color: 'var(--sv-warn)' }}>ADMIN</span>
-                    : m.pro && <span className="sv-model__tag" style={{ color: 'var(--sv-accent-2)' }}>PRO</span>}
+                    : tierTag
+                    ? <span className="sv-model__tag" style={{ color: locked ? 'var(--sv-warn)' : 'var(--sv-accent-2)' }}>{tierTag}</span>
+                    : null}
                 </button>
                 );
               })}

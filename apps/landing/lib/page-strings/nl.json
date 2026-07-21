@@ -13,14 +13,14 @@
     "oneTimeLabel": "eenmalig",
     "faqTitle": "FAQ over prijzen",
     "planOutcomes": {
-      "free": "14 dagen gratis — alle suites, 5 generaties. Geen kaart nodig.",
+      "free": "15 credits per maand, voor altijd gratis — alle suites. Geen kaart nodig.",
       "starter": "Publiceer één gepolijste landingspagina of klein MVP per maand.",
       "pro": "Bouw en itereer een volledig product, of voer klantwerk uit voor bureaus.",
       "enterprise": "Gebruik Flow + Pentest + Search met onbeperkte zetels.",
       "custom": "Aangepaste aantallen zetels, bureautools, volumeprijzen — op maat van je team."
     },
     "planCtas": {
-      "free": "Start gratis proefperiode",
+      "free": "Gratis beginnen",
       "starter": "Starter beginnen",
       "pro": "Pro beginnen",
       "enterprise": "Enterprise beginnen",

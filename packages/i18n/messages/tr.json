@@ -184,7 +184,7 @@
     "verifySuccessBody1": "E-postanız başarıyla doğrulandı.",
     "verifySuccessBody2": "Artık tüm Kalit özelliklerine tam erişiminiz var.",
     "verifyPendingTitle": "E-postanızı kontrol edin",
-    "verifyPendingBody": "Doğrulama bağlantısı gönderdik. Tıklayarak panel, Studio ve 14 günlük ücretsiz denemenizin kilidini açın.",
+    "verifyPendingBody": "Doğrulama bağlantısı gönderdik. Panel ve Studio'nun kilidini açmak ve ücretsiz oluşturmaya başlamak için tıklayın.",
     "verifyPendingHint": "Almadınız mı? Spam'i kontrol edin veya aşağıdan yeniden gönderin. Bağlantı 24 saat sonra dolar.",
     "verifyFailedTitle": "Doğrulama başarısız",
     "backToSignIn": "Girişe geri dön"
@@ -205,7 +205,7 @@
     "unlimitedSeats": "Sınırsız",
     "seats": "koltuk",
     "currentPlanHint": "Faturalandırma, erişim ve limitler burada senkronize.",
-    "freeTrial": "Ücretsiz deneme",
+    "freeTrial": "Ücretsiz",
     "trialHint": "Deneme süreniz {date} tarihinde sona eriyor.",
     "creditsHint": "Bu ay için kullanılabilir.",
     "jobsHint": "Sırada veya çalışıyor.",
@@ -347,7 +347,7 @@
   },
   "suiteLanding": {
     "getStarted": "Başlayın",
-    "startFreeTrial": "Ücretsiz deneyin",
+    "startFreeTrial": "Ücretsiz başla",
     "contactSales": "Satışla iletişime geçin",
     "tryFree": "Ücretsiz deneyin",
     "learnMore": "Daha fazla bilgi",

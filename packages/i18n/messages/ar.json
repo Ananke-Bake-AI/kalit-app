@@ -184,7 +184,7 @@
     "verifySuccessBody1": "تم التحقق من بريدك الإلكتروني بنجاح.",
     "verifySuccessBody2": "لديك الآن وصول كامل إلى جميع ميزات Kalit.",
     "verifyPendingTitle": "تحقق من بريدك",
-    "verifyPendingBody": "أرسلنا رابط تحقق إلى بريدك. اضغط عليه لفتح لوحة التحكم وStudio والنسخة التجريبية المجانية لمدة 14 يومًا.",
+    "verifyPendingBody": "أرسلنا رابط تحقق إلى بريدك. اضغط عليه لفتح لوحة التحكم وStudio والبدء في البناء مجاناً.",
     "verifyPendingHint": "لم يصل؟ تحقق من الرسائل غير المرغوب فيها أو أعد الإرسال أدناه. ينتهي الرابط بعد 24 ساعة.",
     "verifyFailedTitle": "فشل التحقق",
     "backToSignIn": "العودة إلى تسجيل الدخول"
@@ -205,7 +205,7 @@
     "unlimitedSeats": "غير محدود",
     "seats": "مقاعد",
     "currentPlanHint": "الفواتير والوصول والحدود متزامنة هنا.",
-    "freeTrial": "تجربة مجانية",
+    "freeTrial": "مجاني",
     "trialHint": "تنتهي فترتك التجريبية في {date}.",
     "creditsHint": "متاحة لهذا الشهر.",
     "jobsHint": "في الانتظار أو قيد التنفيذ.",
@@ -347,7 +347,7 @@
   },
   "suiteLanding": {
     "getStarted": "ابدأ الآن",
-    "startFreeTrial": "ابدأ التجربة المجانية",
+    "startFreeTrial": "ابدأ مجاناً",
     "contactSales": "تواصل مع المبيعات",
     "tryFree": "جرّبه مجانًا",
     "learnMore": "اعرف المزيد",

@@ -13,14 +13,14 @@
     "oneTimeLabel": "einmalig",
     "faqTitle": "Preise FAQ",
     "planOutcomes": {
-      "free": "14 Tage kostenlos — alle Suites, 5 Generierungen. Keine Karte nötig.",
+      "free": "15 Credits jeden Monat, für immer kostenlos — alle Suites. Keine Karte nötig.",
       "starter": "Veröffentliche eine polierte Landingpage oder ein kleines MVP pro Monat.",
       "pro": "Baue und iteriere ein komplettes Produkt, oder erledige Agentur-Kundenarbeit.",
       "enterprise": "Nutze Flow + Pentest + Search mit unbegrenzten Plätzen.",
       "custom": "Individuelle Platzzahlen, Agentur-Tools, Volumenpreise — maßgeschneidert für dein Team."
     },
     "planCtas": {
-      "free": "Kostenlos testen",
+      "free": "Kostenlos loslegen",
       "starter": "Starter starten",
       "pro": "Pro starten",
       "enterprise": "Enterprise starten",

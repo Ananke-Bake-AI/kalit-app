@@ -12,17 +12,15 @@ export interface ResolvedEntitlements {
 }
 
 export async function resolveEntitlements(orgId: string): Promise<ResolvedEntitlements> {
-  // Locked baseline — what an org gets with NO active subscription and NO
-  // active trial. Every org is granted a 14-day TRIAL on onboarding; while it
-  // is live the TRIAL overrides below grant Flow + 15 credits, and a paid
-  // subscription grants its plan. When the trial expires its entitlements drop
-  // out of the override query (expiresAt filter), so the org falls back to
-  // THIS: a hard paywall — zero credits and no suite access until they buy.
-  // There is no perpetual free usage tier (the "Free" card in plans.ts is
-  // marketing display only — it represents the 14-day trial, not ongoing use).
+  // Free baseline — what an org gets with NO active subscription. This is the
+  // perpetual FREE tier: 15 credits/month + Flow (studio) access, no time limit.
+  // (The old model granted a 14-day TRIAL on onboarding then dropped to a hard
+  // paywall of 0 credits; that trial is gone — free is now ongoing.) Credits are
+  // aggregated per calendar month, so this number simply resets each month; paid
+  // subscriptions and manual entitlements below raise it for higher tiers.
   const defaults: ResolvedEntitlements = {
-    suites: { flow: false, marketing: false, pentest: false, search: false },
-    creditsPerMonth: 0,
+    suites: { flow: true, marketing: false, pentest: false, search: false },
+    creditsPerMonth: 15,
     maxMembers: 1,
     planKey: "free",
     isTrial: false,

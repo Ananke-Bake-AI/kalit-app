@@ -304,7 +304,7 @@ export async function sendVerificationEmail(email: string, token: string) {
       <div style="margin-top: 28px; padding: 16px; background: #f9fafb; border-radius: 8px;">
         <p style="margin: 0 0 4px; font-size: 13px; font-weight: 600; color: #374151;">What's next?</p>
         <p style="margin: 0; font-size: 13px; color: #6b7280; line-height: 1.5;">
-          After verifying, you'll get a 14-day free trial with access to all suites — Project, Flow, Marketing, Pentest, and Search — plus 50 credits to get started.
+          After verifying, you're on the free plan with access to all suites — Project, Flow, Marketing, Pentest, and Search — plus 15 credits every month, free forever. No credit card required.
         </p>
       </div>
       <p style="color: #9ca3af; font-size: 13px; margin-top: 24px;">

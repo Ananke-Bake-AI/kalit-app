@@ -25,25 +25,21 @@ export function formatStorage(mb: number): string {
   return mb >= 1024 ? `${mb / 1024} GB` : `${mb} MB`
 }
 
-// The "free" entry is the 14-DAY TRIAL, not a perpetual free tier. Signing up
-// grants full access to every suite + 15 credits for 14 days (see
-// server/actions/onboarding.ts) — i.e. 5× less than Starter's 75. After that
-// the org is hard-paywalled (0 credits, no suites — enforced in
-// lib/entitlements.ts). The fields below are display/lookup only; the real
-// trial allocation is the onboarding grant.
+// The "free" entry is the perpetual FREE tier (no time limit): 15 credits/month
+// + Kalit Flow (studio) access. The baseline in lib/entitlements.ts grants
+// exactly this to any org without a paid subscription.
 export const FREE_PLAN: PlanConfig = {
   key: "free",
-  name: "Free trial",
+  name: "Free",
   monthlyPrice: 0,
   suites: ["flow"],
   creditsPerMonth: 15,
   maxMembers: 1,
   storageMB: 200,
   features: [
-    "Full access for 14 days",
     "15 credits / month",
+    "Kalit Flow (studio) access",
     "200 MB storage",
-    "Every suite included",
     "No credit card required",
   ],
 }

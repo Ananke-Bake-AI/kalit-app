@@ -184,7 +184,7 @@
     "verifySuccessBody1": "Deine E-Mail wurde erfolgreich verifiziert.",
     "verifySuccessBody2": "Du hast jetzt vollen Zugriff auf alle Kalit-Funktionen.",
     "verifyPendingTitle": "Prüfe deine E-Mails",
-    "verifyPendingBody": "Wir haben dir einen Verifizierungslink gesendet. Klicke ihn an, um Dashboard, Studio und deine 14-tägige Testversion freizuschalten.",
+    "verifyPendingBody": "Wir haben dir einen Verifizierungslink gesendet. Klicke ihn an, um Dashboard und Studio freizuschalten und kostenlos loszulegen.",
     "verifyPendingHint": "Nichts angekommen? Spam-Ordner prüfen oder unten erneut senden. Der Link läuft nach 24 Stunden ab.",
     "verifyFailedTitle": "Verifizierung fehlgeschlagen",
     "backToSignIn": "Zurück zur Anmeldung"
@@ -205,7 +205,7 @@
     "unlimitedSeats": "Unbegrenzte Plätze",
     "seats": "Plätze",
     "currentPlanHint": "Abrechnung, Zugang und Limits hier synchronisiert.",
-    "freeTrial": "Kostenlose Testversion",
+    "freeTrial": "Kostenlos",
     "trialHint": "Ihre Testversion läuft am {date} ab.",
     "creditsHint": "Verfügbar für diesen Monat.",
     "jobsHint": "In Warteschlange oder laufend.",
@@ -347,7 +347,7 @@
   },
   "suiteLanding": {
     "getStarted": "Loslegen",
-    "startFreeTrial": "Kostenlos testen",
+    "startFreeTrial": "Kostenlos loslegen",
     "contactSales": "Vertrieb kontaktieren",
     "tryFree": "Kostenlos ausprobieren",
     "learnMore": "Mehr erfahren",

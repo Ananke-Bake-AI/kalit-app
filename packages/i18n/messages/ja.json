@@ -184,7 +184,7 @@
     "verifySuccessBody1": "メールアドレスの確認が完了しました。",
     "verifySuccessBody2": "すべての Kalit 機能にアクセスできます。",
     "verifyPendingTitle": "メールを確認してください",
-    "verifyPendingBody": "確認リンクを送信しました。クリックしてダッシュボード、Studio、14日間の無料トライアルを開始してください。",
+    "verifyPendingBody": "確認リンクを送信しました。クリックしてダッシュボードとStudioを解除し、無料で作り始めましょう。",
     "verifyPendingHint": "メールが届かない場合は迷惑メールフォルダを確認するか、下のボタンで再送してください。リンクの有効期限は24時間です。",
     "verifyFailedTitle": "確認に失敗しました",
     "backToSignIn": "ログインに戻る"
@@ -205,7 +205,7 @@
     "unlimitedSeats": "無制限",
     "seats": "席",
     "currentPlanHint": "請求、アクセス、制限がここで同期されます。",
-    "freeTrial": "無料トライアル",
+    "freeTrial": "無料",
     "trialHint": "トライアルは {date} に終了します。",
     "creditsHint": "今月利用可能なクレジット。",
     "jobsHint": "待機中または実行中のジョブ。",
@@ -347,7 +347,7 @@
   },
   "suiteLanding": {
     "getStarted": "今すぐ始める",
-    "startFreeTrial": "無料トライアル開始",
+    "startFreeTrial": "無料で始める",
     "contactSales": "営業に問い合わせ",
     "tryFree": "無料で試す",
     "learnMore": "詳しく見る",

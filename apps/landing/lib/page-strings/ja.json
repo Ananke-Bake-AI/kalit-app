@@ -13,14 +13,14 @@
     "oneTimeLabel": "1回限り",
     "faqTitle": "料金に関するFAQ",
     "planOutcomes": {
-      "free": "14日間の無料トライアル — 全スイート、5回の生成。カード不要。",
+      "free": "毎月15クレジット、ずっと無料 — 全スイート。カード不要。",
       "starter": "毎月1つの洗練されたランディングサイトまたは小さなMVPを公開。",
       "pro": "本格的な製品を構築・反復、またはエージェンシーのクライアント業務を実行。",
       "enterprise": "無制限のシートでFlow + Pentest + Searchを実行。",
       "custom": "カスタムシート数、エージェンシーツール、ボリューム価格 — チームに合わせて構築。"
     },
     "planCtas": {
-      "free": "無料トライアルを開始",
+      "free": "無料で始める",
       "starter": "Starterを始める",
       "pro": "Proを始める",
       "enterprise": "Enterpriseを始める",

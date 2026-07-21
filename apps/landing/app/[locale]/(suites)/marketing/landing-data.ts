@@ -57,6 +57,6 @@ export const marketingFeatureCards: SuiteLandingFeatureCard[] = [
 
 export const marketingPlans: Omit<PlanProps, "action">[] = createPublicPaidPlans({
   starterButtonText: "Get started",
-  proButtonText: "Start free trial",
+  proButtonText: "Get started",
   enterpriseButtonText: "Get started",
 })

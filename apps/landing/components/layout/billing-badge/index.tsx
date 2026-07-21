@@ -13,9 +13,8 @@ import s from "./billing-badge.module.scss"
  * specifically the moment Free users decide they want more, the path
  * to /settings/billing is right there next to their avatar.
  *
- * Three visual states:
- *   - Free, no trial   → bright "Upgrade" pill (highest contrast, accent gradient)
- *   - Free, trialing   → "Trial · Nd left" pill, same accent (urgency)
+ * Two visual states:
+ *   - Free             → bright "Upgrade" pill (highest contrast, accent gradient)
  *   - Paid             → muted "Plan · X cr" pill with a thin usage bar
  *
  * Always links to /settings/billing. No close button — this is the CTA,
@@ -36,20 +35,7 @@ export function BillingBadge({ summary, className }: BillingBadgeProps) {
     ? Math.min(100, Math.round((summary.used / summary.total) * 100))
     : 0
 
-  // Free + trial (most aggressive CTA — countdown + accent gradient)
-  if (isFree && summary.isTrial && summary.trialDaysLeft !== null) {
-    return (
-      <Link href="/settings/billing" className={clsx(s.badge, s.accent, className)}>
-        <Icon icon="hugeicons:gift" className={s.icon} />
-        <span className={s.text}>
-          {t("billing.trialDaysLeft", { count: summary.trialDaysLeft })}
-        </span>
-        <span className={s.cta}>{t("billing.upgrade")}</span>
-      </Link>
-    )
-  }
-
-  // Free, no trial — straight Upgrade pill
+  // Free — straight Upgrade pill
   if (isFree) {
     return (
       <Link href="/settings/billing" className={clsx(s.badge, s.accent, className)}>
