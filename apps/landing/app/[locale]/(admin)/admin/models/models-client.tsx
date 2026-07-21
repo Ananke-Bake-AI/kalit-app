@@ -17,7 +17,7 @@ import s from "./models.module.scss"
 type ModelRow = Awaited<ReturnType<typeof getAdminModels>>[number]
 
 const TIERS = ["free", "starter", "pro", "enterprise"] as const
-const PROVIDERS = ["ollama", "anthropic", "openai", "mistral"] as const
+const PROVIDERS = ["ollama", "anthropic", "deepseek", "runpod", "openai", "mistral"] as const
 
 // Le vrai provider est dérivé de l'ID (le champ `provider` en base est la
 // "famille d'API" : deepseek/runpod routent en protocole openai-compatible via la

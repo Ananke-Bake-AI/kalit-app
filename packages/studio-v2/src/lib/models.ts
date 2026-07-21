@@ -16,7 +16,9 @@ export type Tier = 'free' | 'starter' | 'pro' | 'enterprise';
 export interface ModelDef {
   id: string;
   label: string;
-  provider: 'ollama' | 'anthropic' | 'mistral' | 'openai';
+  // Qui SERT le modèle (ollama, anthropic, deepseek, runpod, openai, mistral…).
+  // Ouvert (l'admin peut ajouter n'importe quel provider) ; pilote la pastille.
+  provider: string;
   minTier?: Tier;
   locked?: boolean;
   available?: boolean;
@@ -43,16 +45,17 @@ export const MODEL_GROUPS: ModelGroup[] = [
   {
     label: 'DeepSeek',
     models: [
-      // API DeepSeek native via la gateway. Accessible dès le tier FREE.
-      { id: 'deepseek/deepseek-chat', label: 'deepseek-chat', provider: 'openai', minTier: 'free' },
-      { id: 'deepseek/deepseek-reasoner', label: 'deepseek-reasoner', provider: 'openai', minTier: 'free' },
+      // API DeepSeek native via la gateway (protocole openai-compatible, mais le
+      // provider = DeepSeek). Accessible dès le tier FREE.
+      { id: 'deepseek/deepseek-chat', label: 'deepseek-chat', provider: 'deepseek', minTier: 'free' },
+      { id: 'deepseek/deepseek-reasoner', label: 'deepseek-reasoner', provider: 'deepseek', minTier: 'free' },
     ],
   },
   {
     // Modèles uncensored auto-hébergés (RunPod) via la gateway. Starter+.
     label: 'Permissive models',
     models: [
-      { id: 'runpod/qwen-instruct', label: 'Qwen3.5 9B (Claude-distill) — uncensored', provider: 'openai', minTier: 'starter' },
+      { id: 'runpod/qwen-instruct', label: 'Qwen3.5 9B (Claude-distill) — uncensored', provider: 'runpod', minTier: 'starter' },
     ],
   },
   {
