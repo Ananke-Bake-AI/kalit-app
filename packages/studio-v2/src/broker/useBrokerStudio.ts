@@ -276,17 +276,12 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   // Empêche les frames tardives de reconstruire le live APRÈS le chargement des
   // messages persistés → sinon doublons (live + persisté).
   const turnActive = useRef(false);
-  // Analytics : UNE seule issue (generation_succeeded/failed) par tour — l'erreur
-  // peut arriver par le POST SSE ET par le WS, et finalize suit toujours.
-  const turnOutcomeTracked = useRef(true);
-  const trackTurnEnd = useCallback((ok: boolean, reason?: string) => {
-    if (turnOutcomeTracked.current) return;
-    turnOutcomeTracked.current = true;
-    pushDataLayer(ok ? 'generation_succeeded' : 'generation_failed', {
-      session: activeRef.current ?? undefined,
-      ...(reason ? { reason: reason.slice(0, 120) } : {}),
-    });
-  }, []);
+  // generation_started/_succeeded/_failed are fired SERVER-SIDE by the broker
+  // (source of truth — the frontend misses turns when the tab closes mid-run,
+  // and headless/API runs have no browser at all). See the broker's
+  // internal/broker/analytics.go → landing /api/internal/analytics-event.
+  // Deliberately NOT fired here, to avoid GA4 double-counting (GA4 custom
+  // events don't dedup by id the way Meta does).
 
   const socket = useBrokerSocket(useCallback(() => client.connectWebSocket(), [client]));
 
@@ -581,7 +576,6 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
           setLive({ ...r.render() });
           if (ev.type === 'error') {
             const msg = humanizeError(ev.content as string | undefined, t.errors, modelLabel(modelGroups, modelRef.current));
-            trackTurnEnd(false, msg);
             setLiveError(msg);
           }
         }
@@ -608,7 +602,6 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     // thinking ni d'étiquette d'activité en temps réel.
     if (sid === activeRef.current) {
       turnActive.current = false;
-      trackTurnEnd(true); // no-op si une erreur a déjà tracké l'issue du tour
       setLive(null); setStreaming(false); setActivity(null);
       loadMessages(sid);
     }
@@ -616,7 +609,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     // La taille R2 grandit après le tour (backup async côté broker) → on
     // rafraîchit la jauge avec un léger délai pour laisser le backup finir.
     setTimeout(() => { loadStorage(); }, 4000);
-  }, [loadMessages, loadSessions, loadStorage, trackTurnEnd]);
+  }, [loadMessages, loadSessions, loadStorage]);
 
   // Finalisation de secours quand le run se termine par une erreur SSE (le WS
   // n'émet pas toujours session_stream_closed dans ce cas).
@@ -625,9 +618,8 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   // loadMessages (qui recharge les messages persistés du serveur).
   const pushError = useCallback((sid: string, content: string) => {
     if (sid !== activeRef.current) return;
-    trackTurnEnd(false, content);
     setLiveError(content); setLive(null); setStreaming(false); setActivity(null);
-  }, [trackTurnEnd]);
+  }, []);
 
   const select = useCallback((id: string) => {
     // Rétention : ré-ouverture d'un projet existant depuis la sidebar.
@@ -721,8 +713,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     const sid = await ensureSession();
     if (!sid) return;
     pushDataLayer(isFirstPrompt ? 'first_prompt_submitted' : 'prompt_submitted', { session: sid, model: modelRef.current });
-    pushDataLayer('generation_started', { session: sid });
-    turnOutcomeTracked.current = false;
+    // generation_started is fired server-side by the broker (see comment above).
     setPending([]);
     // Feedback immédiat : message optimiste + activité, AVANT l'upload (sinon
     // l'UI paraît figée le temps du téléversement).
@@ -774,7 +765,6 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
       const connectRepo = pr ? { host: 'github.com', repoFullName: pr.repoFullName, defaultBranch: pr.defaultBranch, authKind: 'github_app', installationId: Number(pr.installationId), mode: 'pr' } : undefined;
       const r = await client.fetch(`/api/broker/sessions/${sid}/messages`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: body, language: lang, progressMode: 'default', suite: 'project', model: modelRef.current, precision: precisionRef.current, taskforceModelProvider: DEFAULT_TF_PROVIDER, requestId: 'r' + Date.now(), connectRepo }) });
       if (r.status === 402) {
-        turnOutcomeTracked.current = true; // pas un échec de génération : paywall
         pushDataLayer('credits_exhausted', { surface: 'studio' });
         pushDataLayer('paywall_viewed', { surface: 'studio', mode: 'out_of_credits' });
         setOutOfCredits(true); finalizeSoft(); setBaseMessages((m) => m.filter((x) => !x.id.startsWith('temp-'))); return;
@@ -783,7 +773,6 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
       if (r.status === 403) {
         const d = await r.json().catch(() => null);
         if (d?.error === 'storage_limit') {
-          turnOutcomeTracked.current = true;
           pushDataLayer('paywall_viewed', { surface: 'studio', mode: 'storage_limit' });
           setStorageBlocked(true); finalizeSoft(); setBaseMessages((m) => m.filter((x) => !x.id.startsWith('temp-'))); return;
         }
@@ -813,13 +802,12 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
       // la session active. On met juste à jour la liste (statut) dans tous les cas.
       if (sid === activeRef.current) {
         turnActive.current = false;
-        trackTurnEnd(true);
         finalizeSoft();
         loadMessages(sid);   // sync l'état persisté (ex: QCM en attente de réponse)
       }
       loadSessions();
     }
-  }, [pending, ensureSession, uploadPending, pushError, client, lang, loadSessions, trackTurnEnd]);
+  }, [pending, ensureSession, uploadPending, pushError, client, lang, loadSessions]);
 
   // Drain la file d'attente : quand le tour se termine (streaming → false) et qu'il
   // reste des prompts empilés, on envoie le suivant. sendRef évite un cycle de deps

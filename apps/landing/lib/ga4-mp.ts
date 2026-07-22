@@ -96,28 +96,94 @@ export async function sendGa4Purchase(
     return
   }
 
-  const base = input.debug ? MP_DEBUG_URL : MP_COLLECT_URL
-  const url = `${base}?measurement_id=${GA4_MEASUREMENT_ID}&api_secret=${encodeURIComponent(apiSecret)}`
+  return postGa4(apiSecret, buildPayload(input), input.debug, "purchase")
+}
 
+/**
+ * POST an assembled MP body to GA4's collect (or debug) endpoint. Shared by
+ * the purchase path and the generic event path. Returns the parsed validation
+ * response in debug mode, else void. Never throws.
+ */
+async function postGa4(
+  apiSecret: string,
+  body: Record<string, unknown>,
+  debug: boolean | undefined,
+  label: string,
+): Promise<unknown> {
+  const base = debug ? MP_DEBUG_URL : MP_COLLECT_URL
+  const url = `${base}?measurement_id=${GA4_MEASUREMENT_ID}&api_secret=${encodeURIComponent(apiSecret)}`
   try {
     const res = await fetch(url, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify(buildPayload(input)),
+      body: JSON.stringify(body),
     })
     // The live collect endpoint returns 204 with no body; the debug endpoint
     // returns 200 with validationMessages.
-    if (input.debug) {
-      const json = await res.json().catch(() => ({}))
-      return json
-    }
+    if (debug) return await res.json().catch(() => ({}))
     if (!res.ok && res.status !== 204) {
       const detail = await res.text().catch(() => "")
-      console.error(`[ga4-mp] purchase rejected (${res.status}): ${detail}`)
+      console.error(`[ga4-mp] ${label} rejected (${res.status}): ${detail}`)
     }
   } catch (err) {
-    console.error("[ga4-mp] purchase request failed:", (err as Error).message)
+    console.error(`[ga4-mp] ${label} request failed:`, (err as Error).message)
   }
+}
+
+export interface Ga4EventInput {
+  /** GA4 event name (e.g. "generation_succeeded"). */
+  eventName: string
+  /** client_id — real one from `_ga` when available, else a deterministic per-user id (see deterministicClientId). */
+  clientId: string
+  sessionId?: string | null
+  /** GA4 user_id — the app user id, so events group per user even without the real cookie client_id. */
+  userId?: string | null
+  params?: Record<string, unknown>
+  debug?: boolean
+}
+
+/**
+ * Send an arbitrary GA4 event via the Measurement Protocol. Used for
+ * backend-truth funnel events (e.g. the broker's generation lifecycle) that
+ * the browser can't reliably fire. No-ops without the API secret or a
+ * client_id; never throws. Returns validationMessages when `debug: true`.
+ */
+export async function sendGa4Event(input: Ga4EventInput): Promise<unknown> {
+  const apiSecret = await getGa4MpApiSecret()
+  if (!apiSecret) return
+  if (!input.clientId) {
+    console.warn(`[ga4-mp] skipped ${input.eventName} — no client_id`)
+    return
+  }
+  const params: Record<string, unknown> = {
+    engagement_time_msec: 100,
+    ...(input.sessionId ? { session_id: input.sessionId } : {}),
+    ...(input.params || {}),
+  }
+  const body: Record<string, unknown> = {
+    client_id: input.clientId,
+    ...(input.userId ? { user_id: input.userId } : {}),
+    events: [{ name: input.eventName, params }],
+  }
+  return postGa4(apiSecret, body, input.debug, input.eventName)
+}
+
+/**
+ * A stable GA4 client_id derived from an app user/org id, for server-side
+ * events fired when the real `_ga` cookie isn't in reach (e.g. the broker).
+ * Format matches GA4's `<random>.<timestamp>` shape so MP accepts it; it groups
+ * a user's events together but does NOT tie back to their original ad click
+ * (that needs the real cookie client_id — a future refinement).
+ */
+export function deterministicClientId(id: string): string {
+  let h = 0
+  for (let i = 0; i < id.length; i++) {
+    h = (h * 31 + id.charCodeAt(i)) >>> 0
+  }
+  // Second field is a pseudo-timestamp seed derived from the id (no Date.now
+  // so the same id always maps to the same client_id).
+  const seed = 1000000000 + (h % 1000000000)
+  return `${h}.${seed}`
 }
 
 /**
