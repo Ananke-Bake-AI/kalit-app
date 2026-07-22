@@ -883,7 +883,8 @@ export function useStudioChat(options: UseStudioChatOptions): UseStudioChatApi {
       prompt_length: message.length,
       attachments: files?.length ?? 0,
     })
-    pushDataLayer("generation_started", { session: sessionId })
+    // generation_started is fired SERVER-SIDE by the broker now (single source
+    // of truth) — firing it here too would double-count in GA4.
 
     // Capture the originating sessionId so every state mutation below
     // can be gated against `activeSessionRef.current`. Without these

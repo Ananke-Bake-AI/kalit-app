@@ -429,17 +429,21 @@ export function ProjectEditor() {
   useEffect(() => {
     if (!id) return
     const g = genTrackRef.current
+    // generation_started/_succeeded/_failed are now fired SERVER-SIDE by the
+    // broker (single source of truth — it catches turns with no browser too),
+    // so this legacy editor must NOT fire them or the same turn double-counts
+    // (GA4 custom events don't dedup). We still track `started` to tell a
+    // build-we-watched from a reopen, and still fire project_reopened (a
+    // retention signal the broker doesn't emit).
     if (pageState === "polling" && !g.started) {
       g.started = true
-      pushDataLayer("generation_started", { project: id })
     } else if (pageState === "preview" && !g.ended) {
       g.ended = true
-      // started → we watched it build → success. Otherwise it loaded already
-      // finished → the user reopened an existing project.
-      pushDataLayer(g.started ? "generation_succeeded" : "project_reopened", { project: id })
+      // Didn't watch a build → the user reopened an already-finished project.
+      // (A build we watched has its generation_succeeded fired by the broker.)
+      if (!g.started) pushDataLayer("project_reopened", { project: id })
     } else if (pageState === "error" && !g.ended) {
       g.ended = true
-      pushDataLayer("generation_failed", { project: id, reason: errorMessage || "unknown" })
     }
   }, [pageState, id, errorMessage])
 
