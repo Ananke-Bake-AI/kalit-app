@@ -95,7 +95,7 @@
       width: 65px;
       margin-left: -1em;
       height: 100px;
-      z-index: 100%;
+      z-index: 1; // était `100%` (invalide → ignoré) ; simple pont de survol
       position: absolute;
       pointer-events: none;
     }

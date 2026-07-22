@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation"
 import type { Metadata } from "next"
+import { getPageStrings } from "@/lib/page-strings"
+import { isValidLocale, type Locale } from "@/lib/i18n"
 
 // Page publique read-only d'une conversation partagée (type ChatGPT /share/<id>).
 // Aucune auth. noindex (norme post-incident ChatGPT×Google). Le contenu est déjà
@@ -23,10 +25,12 @@ async function fetchShare(shareId: string): Promise<SharePayload | null> {
   }
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ shareId: string }> }): Promise<Metadata> {
-  const { shareId } = await params
+export async function generateMetadata({ params }: { params: Promise<{ locale: string; shareId: string }> }): Promise<Metadata> {
+  const { locale: raw, shareId } = await params
+  const locale = isValidLocale(raw) ? (raw as Locale) : "en"
   const data = await fetchShare(shareId)
-  const title = data?.title ? `${data.title} · Kalit` : "Conversation partagée · Kalit"
+  const p = (await getPageStrings(locale)).share
+  const title = data?.title ? `${data.title} · Kalit` : `${p.tag} · Kalit`
   return { title, robots: { index: false, follow: false } }
 }
 
@@ -48,9 +52,11 @@ export default async function SharePage({
 }: {
   params: Promise<{ locale: string; shareId: string }>
 }) {
-  const { locale, shareId } = await params
+  const { locale: raw, shareId } = await params
+  const locale = isValidLocale(raw) ? (raw as Locale) : "en"
   const data = await fetchShare(shareId)
   if (!data) notFound()
+  const p = (await getPageStrings(locale)).share
 
   const site = data.site || {}
   const messages = data.messages || []
@@ -72,12 +78,12 @@ export default async function SharePage({
 
       <header className="kshare__top">
         <a className="kshare__brand" href={`/${locale}`}>◆ Kalit</a>
-        <span className="kshare__tag">Conversation partagée</span>
-        <a className="kshare__cta" href={`/${locale}/studio`}>Créez le vôtre →</a>
+        <span className="kshare__tag">{p.tag}</span>
+        <a className="kshare__cta" href={`/${locale}/studio`}>{p.createYours}</a>
       </header>
 
       <div className="kshare__wrap">
-        <h1 className="kshare__title">{data.title || "Conversation"}</h1>
+        <h1 className="kshare__title">{data.title || p.conversationTitle}</h1>
 
         {liveUrl ? (
           <section className="kshare__artifact">
@@ -88,14 +94,14 @@ export default async function SharePage({
               <iframe src={liveUrl} title="preview" loading="lazy" />
             </div>
             <a className="kshare__visit" href={liveUrl} target="_blank" rel="noreferrer nofollow">
-              {site.published ? "Voir le site en ligne ↗" : "Ouvrir la preview ↗"}
+              {site.published ? p.viewLive : p.openPreview}
             </a>
           </section>
         ) : thumbUrl ? (
           <section className="kshare__artifact">
             <div className="kshare__preview kshare__preview--img">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={thumbUrl} alt={data.title || "Aperçu du projet"} loading="lazy" />
+              <img src={thumbUrl} alt={data.title || p.previewAlt} loading="lazy" />
             </div>
           </section>
         ) : null}
@@ -108,7 +114,7 @@ export default async function SharePage({
                 {segments(m.content).map((s, i) =>
                   s.type === "refinement" ? (
                     <details key={i} className="kshare__refine">
-                      <summary>✨ Prompt affiné</summary>
+                      <summary>✨ {p.refinedPrompt}</summary>
                       <div className="kshare__pre">{s.content}</div>
                     </details>
                   ) : (
@@ -118,12 +124,12 @@ export default async function SharePage({
               </div>
             </div>
           ))}
-          {messages.length === 0 && <p className="kshare__empty">Cette conversation est vide.</p>}
+          {messages.length === 0 && <p className="kshare__empty">{p.empty}</p>}
         </section>
 
         <footer className="kshare__foot">
           <a className="kshare__cta kshare__cta--big" href={`/${locale}/studio`}>
-            Générez votre site avec Kalit →
+            {p.generateCta}
           </a>
         </footer>
       </div>

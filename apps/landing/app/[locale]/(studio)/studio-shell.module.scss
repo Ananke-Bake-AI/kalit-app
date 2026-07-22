@@ -58,9 +58,17 @@
     // (.sv-chat__bar / .sv-prev__bar, statiques). On le remet en flux normal + on
     // annule son stacking-context → il se pose au-dessus de .main sans chevaucher.
     // .chrome header = spécificité (0,1,1) > .header (0,1,0), donc pas de !important.
+    //
+    // ⚠ On NE met PAS `z-index: auto` : ça annulait le stacking-context du header,
+    // donc le MENU DÉROULANT ouvert (enfant position:absolute, fond glass-75)
+    // tombait au niveau de base et le contenu studio transparaissait / peignait
+    // par-dessus → menu semi-transparent et « cassé » sur mobile. On garde le
+    // header EN FLUX avec `position: relative` (pas de sticky → pas de détachement
+    // iOS Safari), et un z-index élevé rétablit un stacking-context au-dessus du
+    // studio pour que le dropdown se pose opaque par-dessus quand il est ouvert.
     :global(header) {
-      position: static;
-      z-index: auto;
+      position: relative;
+      z-index: 1000;
     }
   }
 }

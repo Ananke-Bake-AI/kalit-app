@@ -78,6 +78,17 @@
       }
     ]
   },
+  "share": {
+    "tag": "Conversation partagée",
+    "createYours": "Créez le vôtre →",
+    "conversationTitle": "Conversation",
+    "viewLive": "Voir le site en ligne ↗",
+    "openPreview": "Ouvrir la preview ↗",
+    "previewAlt": "Aperçu du projet",
+    "refinedPrompt": "Prompt affiné",
+    "empty": "Cette conversation est vide.",
+    "generateCta": "Générez votre site avec Kalit →"
+  },
   "security": {
     "metaTitle": "Sécurité - Kalit AI",
     "metaDescription": "Comment Kalit AI protège vos données : chiffrement lors du transit et au repos, traitement dans la région UE, fournisseurs OAuth, liste des sous-traitants, divulgation des vulnérabilités et réponse aux incidents.",

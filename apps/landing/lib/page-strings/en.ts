@@ -97,6 +97,19 @@ export const EN_PAGE_STRINGS = {
     ]
   },
 
+  // ─── Public shared-conversation page (/share/[id]) ───────
+  share: {
+    tag: "Shared conversation",
+    createYours: "Create your own →",
+    conversationTitle: "Conversation",
+    viewLive: "View the live site ↗",
+    openPreview: "Open the preview ↗",
+    previewAlt: "Project preview",
+    refinedPrompt: "Refined prompt",
+    empty: "This conversation is empty.",
+    generateCta: "Generate your site with Kalit →"
+  },
+
   // ─── Security page ───────────────────────────────────────
   security: {
     metaTitle: "Security - Kalit AI",
