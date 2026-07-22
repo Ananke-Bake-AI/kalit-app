@@ -87,7 +87,7 @@ export const Header = ({ initialSession = null }: HeaderProps) => {
             })}
           </span>
         </Link>
-        <Nav />
+        <Nav loggedIn={!!resolvedSession?.user} />
         <LanguageSwitcher className={s.langSwitcher} />
         <button
           className={s.themeToggle}
@@ -195,9 +195,18 @@ export const Header = ({ initialSession = null }: HeaderProps) => {
               {t("auth.signIn")}
             </Button>
           ) : (
-            <Button className={s.btn} circle href="/studio">
-              {t("nav.getStarted")}
-            </Button>
+            <>
+              {/* Mobile: the "Why Kalit?→Login" nav swap lives inside the
+                  collapsed hamburger, so logged-out returning users get a
+                  visible Login next to "Get started" here without opening the
+                  menu. Hidden on desktop (the Nav row already shows it). */}
+              <Link href="/login" className={s.loginLink}>
+                {t("auth.signIn")}
+              </Link>
+              <Button className={s.btn} circle href="/studio">
+                {t("nav.getStarted")}
+              </Button>
+            </>
           )
         )}
 

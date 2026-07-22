@@ -69,6 +69,29 @@
     }
   }
 
+  // Discreet Login entry for logged-out users, sitting to the LEFT of and
+  // adjacent to the "Get started" CTA. Mobile-only: on desktop the Login lives
+  // in the Nav row (Why-Kalit slot), so this is hidden there. Its own
+  // `margin-left: auto` absorbs the free space and parks it right next to the
+  // button (whose own auto then has no space left → no gap between them).
+  .loginLink {
+    font-size: 0.8em;
+    margin-left: auto;
+    padding: 0.5em 0.9em;
+    border-radius: var(--radius-rounded);
+    color: var(--text);
+    white-space: nowrap;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: oklch(from var(--text) l c h / 0.06);
+    }
+
+    @include min($responsiveNav) {
+      display: none;
+    }
+  }
+
   .langSwitcher {
     @include max($responsiveNav) {
       display: none;
@@ -189,7 +212,14 @@
       z-index: 5;
       svg {
         * {
-          stroke: var(--white) !important;
+          // The mobile logo pill is filled with `--color` (= `--text` on the
+          // default page, a brand color on suite pages). Forcing the glyph to
+          // pure white broke in dark mode: there `--text` is near-white, so a
+          // white logo sat invisibly on a light-grey pill. `--body` is the
+          // background token — always the opposite lightness of `--text` — so it
+          // contrasts on the default pill in BOTH themes, and stays ~white on the
+          // (light) brand pills in light mode. Guaranteed-visible logo.
+          stroke: var(--body) !important;
         }
       }
     }

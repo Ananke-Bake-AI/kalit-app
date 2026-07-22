@@ -155,6 +155,16 @@
   }
 }
 
+// Login link that reuses the "Why Kalit?" slot for logged-out users. Discreet
+// outlined pill on desktop so it reads as an action (returning-user entry point)
+// without competing with the "Get started" CTA; on mobile it stays a plain
+// full-width menu row like the other nav items.
+.loginLink {
+  @include min($responsiveNav) {
+    border: 1px solid oklch(from var(--text) l c h / 0.15);
+  }
+}
+
 .sub {
   --sub-padding: var(--size-3);
   transition:

@@ -13,7 +13,7 @@ import s from "./nav.module.scss"
 const NAV_SUITE_IDS = new Set(["flow", "pentest", "search"])
 const navSuites = SUITES.filter((suite) => NAV_SUITE_IDS.has(suite.id))
 
-export const Nav = () => {
+export const Nav = ({ loggedIn = false }: { loggedIn?: boolean }) => {
   const { nav, subOpen, setSubOpen, setNav } = useAppStore()
   const t = useTranslation()
 
@@ -72,11 +72,23 @@ export const Nav = () => {
             {t("nav.howItWorks")}
           </Link>
         </li>
-        <li>
-          <Link href="/#why-kalit" className={s.link}>
-            {t("nav.whyKalit")}
-          </Link>
-        </li>
+        {/* Logged-out returning users need a discreet way back IN without going
+            through the "Get started" acquisition funnel (which nudges signup /
+            subscribe). We reuse the "Why Kalit?" slot for a Login link when the
+            user has no session; logged-in users keep the marketing anchor. */}
+        {loggedIn ? (
+          <li>
+            <Link href="/#why-kalit" className={s.link}>
+              {t("nav.whyKalit")}
+            </Link>
+          </li>
+        ) : (
+          <li>
+            <Link href="/login" className={clsx(s.link, s.loginLink)}>
+              {t("auth.signIn")}
+            </Link>
+          </li>
+        )}
       </ul>
     </nav>
   )
