@@ -10,6 +10,8 @@ interface Props {
   activeId: string | null;
   user: { name: string; credits?: number };
   storage?: { usedBytes: number; limitBytes: number } | null;
+  // Consommation de crédits ("tokens Kalit") du compte sur la période — used/total.
+  tokenUsage?: { used: number; total: number } | null;
   onSelect: (id: string) => void;
   onNew: () => void;
   onDelete: (id: string, mode: 'session' | 'project') => void;
@@ -42,7 +44,7 @@ function loadPinned(): Set<string> {
   return new Set();
 }
 
-export function Sidebar({ sessions, activeId, user, storage, onSelect, onNew, onDelete, onRename }: Props) {
+export function Sidebar({ sessions, activeId, user, storage, tokenUsage, onSelect, onNew, onDelete, onRename }: Props) {
   const st = useStrings();
   const [q, setQ] = useState('');
   const [deleting, setDeleting] = useState<Session | null>(null);
@@ -156,6 +158,22 @@ export function Sidebar({ sessions, activeId, user, storage, onSelect, onNew, on
           </>
         )}
       </div>
+      {/* Consommation de crédits ("tokens Kalit") du compte, juste au-dessus du
+          stockage — même gauge, warn quand on approche de l'épuisement. */}
+      {tokenUsage && tokenUsage.total > 0 && (() => {
+        const pct = Math.min(100, Math.round((tokenUsage.used / tokenUsage.total) * 100));
+        const warn = pct >= 80;
+        return (
+          <div className={'sv-storage' + (warn ? ' sv-storage--warn' : '')}>
+            <div className="sv-storage__head">
+              <span>{st.usage.label}</span>
+              <span className="sv-storage__num">{tokenUsage.used.toLocaleString()} / {tokenUsage.total.toLocaleString()}</span>
+            </div>
+            <div className="sv-storage__bar"><span style={{ width: pct + '%' }} /></div>
+            {warn && <div className="sv-storage__warn">{st.usage.low}</div>}
+          </div>
+        );
+      })()}
       {storage && storage.limitBytes > 0 && (() => {
         const pct = Math.min(100, Math.round((storage.usedBytes / storage.limitBytes) * 100));
         const warn = pct >= 80;

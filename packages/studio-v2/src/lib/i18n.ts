@@ -83,6 +83,7 @@ export interface Strings {
   };
   deployBlocked: { title: string; body: string; close: string };
   storage: { label: string; almostFull: string; blockedTitle: string; blockedBody: string; close: string };
+  usage: { label: string; low: string };
   fullscreen: string;
   precision: { label: string; hint: string };
   promptQuality: string;
@@ -267,6 +268,7 @@ const fr: Strings = {
     blockedBody: "Tu as atteint la limite de stockage de ton offre. Supprime un projet pour libérer de l'espace, ou passe à une offre supérieure pour créer de nouveaux projets. Tes projets existants restent modifiables.",
     close: 'Compris',
   },
+  usage: { label: 'Crédits', low: 'Crédits bientôt épuisés' },
   fullscreen: 'Plein écran',
   precision: { label: 'Precision', hint: 'Mode Precision (Pro) — vérification visuelle de chaque composant pour un rendu quasi sans bug. Plus lent et plus coûteux.' },
   promptQuality: 'Indicateur de richesse du prompt (clic pour activer/désactiver)',
@@ -520,6 +522,7 @@ const en: Strings = {
     blockedBody: "You've reached your plan's storage limit. Delete a project to free up space, or upgrade your plan to start new ones. Your existing projects stay editable.",
     close: 'Got it',
   },
+  usage: { label: 'Credits', low: 'Credits almost used up' },
   fullscreen: 'Fullscreen',
   precision: { label: 'Precision', hint: 'Precision mode (Pro) — visually verifies every component for a near-zero-bug render. Slower and more expensive.' },
   promptQuality: 'Prompt richness indicator (click to toggle)',

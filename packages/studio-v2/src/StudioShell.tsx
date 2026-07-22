@@ -64,6 +64,7 @@ export interface StudioShellProps {
   deployBlocked?: boolean;
   onDismissDeployBlocked?: () => void;
   storage?: { usedBytes: number; limitBytes: number } | null;
+  tokenUsage?: { used: number; total: number } | null;
   storageBlocked?: boolean;
   onDismissStorageBlocked?: () => void;
   domain?: DomainState;
@@ -203,7 +204,7 @@ export function StudioShell(props: StudioShellProps) {
       ref={shellRef}
       style={splitPx != null ? ({ '--sv-chat-w': splitPx + 'px' } as CSSProperties) : undefined}
     >
-      <Sidebar sessions={props.sessions} activeId={props.activeId} user={props.user} storage={props.storage ?? null} onSelect={selectMobile} onNew={() => { props.onNew(); setPane('chat'); }} onDelete={props.onDelete} onRename={props.onRename} />
+      <Sidebar sessions={props.sessions} activeId={props.activeId} user={props.user} storage={props.storage ?? null} tokenUsage={props.tokenUsage ?? null} onSelect={selectMobile} onNew={() => { props.onNew(); setPane('chat'); }} onDelete={props.onDelete} onRename={props.onRename} />
       <Chat
         title={active?.title ?? t.newProject}
         messages={props.messages} streaming={props.streaming} activity={props.activity}

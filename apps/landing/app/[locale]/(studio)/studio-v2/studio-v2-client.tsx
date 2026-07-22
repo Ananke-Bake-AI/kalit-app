@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react"
 import { createBrokerClient } from "@kalit/broker-client"
 import { StudioShell, useBrokerStudio } from "@kalit/studio-v2"
 import { StudioAuthModal } from "@/components/studio-auth-modal"
+import { useBillingSummary } from "@/lib/use-billing-summary"
 
 // Token: NextAuth (/api/broker/token) en prod. En dev, un ?devtoken=<jwt> permet
 // de tester sans login (Google OAuth ne marche pas sur localhost).
@@ -43,6 +44,12 @@ export function StudioV2Client({ initialSessionId }: { initialSessionId?: string
   const meId = (session?.user as { id?: string } | undefined)?.id
   const s = useBrokerStudio(client, lang, wsBaseUrl, meId)
   const user = { name: session?.user?.name || session?.user?.email || "" }
+
+  // Consommation de crédits ("tokens Kalit") du compte, affichée dans la sidebar
+  // au-dessus du stockage. Le BillingSummaryProvider enveloppe tout le studio
+  // (studio-shell.tsx) → le summary est dispo ici. total = allocation + bonus.
+  const { summary: billing } = useBillingSummary()
+  const tokenUsage = billing && billing.total > 0 ? { used: billing.used, total: billing.total } : null
 
   // Funnel Kimi : le studio est ouvert aux visiteurs anonymes. L'auth
   // n'apparaît (modal) qu'au moment d'ENVOYER un prompt ; le brouillon est
@@ -131,7 +138,7 @@ export function StudioV2Client({ initialSessionId }: { initialSessionId?: string
         isAdmin={(session?.user as { isAdmin?: boolean } | undefined)?.isAdmin === true}
         precision={s.precision} onPrecisionChange={s.setPrecision}
         deployBlocked={s.deployBlocked} onDismissDeployBlocked={s.dismissDeployBlocked}
-        storage={s.storage} storageBlocked={s.storageBlocked} onDismissStorageBlocked={s.dismissStorageBlocked}
+        storage={s.storage} tokenUsage={tokenUsage} storageBlocked={s.storageBlocked} onDismissStorageBlocked={s.dismissStorageBlocked}
         domain={s.domain} onConnectDomain={s.connectDomain} onRemoveDomain={s.removeDomain}
         publishResult={s.publishResult} onClearPublishResult={s.clearPublishResult}
         previewActivity={s.previewActivity}
