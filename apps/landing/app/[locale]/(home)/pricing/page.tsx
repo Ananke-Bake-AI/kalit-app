@@ -152,16 +152,12 @@ export default async function PricingPage({
           />
         </aside>
 
-        {showFxDisclaimer && (
-          <p className={s.fxDisclaimer}>{p.fxDisclaimer}</p>
-        )}
-
-        {/* AI models by plan — collapsible comparison matrix, derived live from
-            flow_models (families x tiers, cumulative checkmarks). Collapsed by
-            default so it stays compact; opens for users who want the detail. */}
+        {/* AI models by plan — open, titled comparison matrix, derived live from
+            flow_models (families x tiers, cumulative). Placed right under the plans
+            so users immediately see which models each tier unlocks. */}
         {modelMatrixRows.length > 0 && (
-          <details className={s.modelsCompare} name="pricing-models">
-            <summary>{p.modelsTitle}</summary>
+          <section className={s.modelsSection}>
+            <h2 className={s.sectionTitle}>{p.modelsTitle}</h2>
             <p className={s.modelsNote}>{p.modelsNote}</p>
             <div className={s.modelsTableWrap}>
               <table className={s.modelsTable}>
@@ -190,7 +186,11 @@ export default async function PricingPage({
                 </tbody>
               </table>
             </div>
-          </details>
+          </section>
+        )}
+
+        {showFxDisclaimer && (
+          <p className={s.fxDisclaimer}>{p.fxDisclaimer}</p>
         )}
 
         <h2 className={s.sectionTitle}>{p.packsTitle}</h2>

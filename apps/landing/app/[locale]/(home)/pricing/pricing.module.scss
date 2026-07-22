@@ -389,41 +389,23 @@
   }
 }
 
-// AI models by plan — collapsible comparison matrix (families x tiers), derived
-// live from flow_models. Collapsed by default, compact, table scrolls on narrow
-// screens so the page body never scrolls sideways.
-.modelsCompare {
-  @include glass-panel(0.9rem);
-  padding: 0.9rem 1.1rem;
-  margin-block: 1.5rem 0;
-
-  summary {
-    cursor: pointer;
-    font-weight: 600;
-    color: var(--text);
-    font-size: 0.95rem;
-    list-style: none;
-
-    &::-webkit-details-marker { display: none; }
-    &::before {
-      content: "\25B8"; // ▸
-      display: inline-block;
-      margin-right: 0.5rem;
-      color: var(--text-secondary);
-      transition: transform 0.15s ease;
-    }
-  }
-  &[open] > summary::before { transform: rotate(90deg); }
+// AI models by plan — open, titled comparison matrix (families x tiers), derived
+// live from flow_models. Always visible under the plans; the table sits in a panel
+// and scrolls horizontally on narrow screens (the page body never scrolls sideways).
+.modelsSection {
+  margin-block: 0.5rem 0;
 }
 
 .modelsNote {
-  margin: 0.6rem 0 0.9rem;
+  margin: 0 0 1rem;
   color: var(--text-secondary);
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   line-height: 1.55;
 }
 
 .modelsTableWrap {
+  @include glass-panel(0.9rem);
+  padding: 0.5rem 0.75rem;
   overflow-x: auto;
 }
 
