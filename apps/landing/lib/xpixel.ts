@@ -35,11 +35,13 @@ const X_EVENT_IDS: Record<string, string> = {
   signup_completed: "tw-rd3n8-13lm06",
   sign_up: "tw-rd3n8-13lm06", // legacy alias
   account_created: "tw-rd3n8-13lm06", // magnet
-  // TODO(christian): purchase + checkout need their X event IDs to optimize
-  // for sales — copy them from Events Manager (</> icon) and uncomment:
-  // subscription_started: "tw-rd3n8-XXXXX", // Purchase
-  // purchase_completed: "tw-rd3n8-XXXXX", // Purchase (credit packs)
-  // checkout_started: "tw-rd3n8-XXXXX", // Begin checkout
+  // Purchase — carries value/currency + conversion_id = Stripe Checkout Session
+  // id (threaded as `eventID` by CheckoutSuccessTracker), so X dedups reloads
+  // of the success page. Covers both subscriptions and credit packs.
+  subscription_started: "tw-rd3n8-13lm02",
+  purchase_completed: "tw-rd3n8-13lm02",
+  // Begin checkout — paywall/pricing → Stripe.
+  checkout_started: "tw-rd3n8-13lm05",
 }
 
 /**
