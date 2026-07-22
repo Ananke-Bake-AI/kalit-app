@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import type { FileNode, PreviewMode } from '../lib/types';
+import { pushDataLayer } from '../lib/analytics';
 import { IconCode, IconExpand, IconEye, IconFolder, IconFile, IconRefresh, IconLogo, IconDownload, IconUsers, IconGlobe, IconDots, IconGit } from '../lib/icons';
 import { useStrings } from '../lib/i18n';
 import { DomainManager } from './DomainManager';
@@ -180,6 +181,9 @@ export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing
   const t = useStrings();
   const [domainOpen, setDomainOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  // app_preview_rendered : une fois par projet (previewUrl), pas à chaque reload
+  // de l'iframe (le poll du tree + les re-render la remontent souvent).
+  const previewTrackedRef = useRef<string | null>(null);
   const [githubOpen, setGithubOpen] = useState(false);
   const [publishOpen, setPublishOpen] = useState(false);
   const canShare = !!canShareProject && !!onCreateInvite && !!onListInvites && !!onRevokeInvite;
@@ -235,7 +239,17 @@ export function Preview({ mode, onMode, previewUrl, tree, publishUrl, publishing
         // « pas encore de site » ; rien du tout → accueil + suggestions.
         hasSiteNow
           ? <div className="sv-prev__body">
-              <iframe className="sv-prev__frame" src={previewUrl ?? undefined} title="preview" />
+              <iframe
+                className="sv-prev__frame"
+                src={previewUrl ?? undefined}
+                title="preview"
+                onLoad={() => {
+                  if (previewUrl && previewTrackedRef.current !== previewUrl) {
+                    previewTrackedRef.current = previewUrl;
+                    pushDataLayer('app_preview_rendered', {});
+                  }
+                }}
+              />
               {building && <ActivityStrip steps={activitySteps} fileWrite={fileWrite} />}
             </div>
           : building

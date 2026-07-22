@@ -630,6 +630,8 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   }, [trackTurnEnd]);
 
   const select = useCallback((id: string) => {
+    // Rétention : ré-ouverture d'un projet existant depuis la sidebar.
+    pushDataLayer('project_reopened', { session: id });
     setQueued([]); // la file d'attente est scopée à la session active
     // activeRef mis à jour SYNCHRONEMENT : sur une re-souscription (curseur > 0),
     // le broker envoie session_attached immédiatement (sans session_context) —

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useStrings } from '../lib/i18n';
+import { pushDataLayer } from '../lib/analytics';
 import { IconClose, IconTrash } from '../lib/icons';
 import type { ProjectInvite } from '../broker/useBrokerStudio';
 
@@ -33,6 +34,7 @@ export function ShareDialog({ onCreate, onList, onRevoke, onClose }: Props) {
     const r = await onCreate({ role, email: email.trim() || undefined });
     setBusy(false);
     if (!r?.url) { setErr(st.errors.generic); return; }
+    pushDataLayer('collaborator_invited', { role, has_email: !!email.trim() });
     setLink(r.url);
     setEmail('');
     refresh();
