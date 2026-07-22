@@ -154,11 +154,23 @@ export interface MetaServerEventInput {
  * broker's generation lifecycle). No-ops without a token; never throws.
  */
 export async function sendMetaEvent(input: MetaServerEventInput): Promise<void> {
+  const userData = buildUserData(input)
+  // Meta REQUIRES at least one customer-information parameter (hashed email,
+  // _fbp/_fbc, IP, UA…). A server event with none is rejected 400 (subcode
+  // 2804050 "no customer information parameters") — so don't even send it.
+  // This happens for backend events whose user can't be resolved to an email
+  // (orphan/anonymous sessions); GA4 still records them, Meta simply can't
+  // match them to anyone, so there's nothing to gain from the call.
+  if (Object.keys(userData).length === 0) {
+    console.warn(`[meta-capi] skipped "${input.eventName}" — no match data (would 400)`)
+    return
+  }
+
   const eventData: Record<string, unknown> = {
     event_name: input.eventName,
     event_time: input.eventTimeSeconds ?? Math.floor(Date.now() / 1000),
     action_source: input.actionSource || "system_generated",
-    user_data: buildUserData(input),
+    user_data: userData,
     ...(input.eventId ? { event_id: input.eventId } : {}),
     ...(input.customData ? { custom_data: input.customData } : {}),
   }
