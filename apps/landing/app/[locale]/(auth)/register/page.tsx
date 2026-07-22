@@ -76,11 +76,12 @@ export default function RegisterPage() {
   }
 
   const handleOAuth = async (provider: string) => {
-    // OAuth does a full-page redirect, so push before navigating. Completion
-    // can't be confirmed post-redirect here, so fire it optimistically (same
-    // behaviour as before) alongside the started signal.
+    // OAuth does a full-page redirect, so push the intent signal before
+    // navigating. signup_completed is NOT fired here anymore: firing it on
+    // click counted existing users + abandoned OAuth consents as conversions
+    // (Meta showed ~1k signups for ~600 accounts). It now fires post-redirect
+    // from SignupConversionTracker, only when the account was truly created.
     pushDataLayer("signup_started", { method: provider })
-    pushDataLayer("signup_completed", { method: provider })
     await signIn(provider, { callbackUrl: destUrl() })
   }
 

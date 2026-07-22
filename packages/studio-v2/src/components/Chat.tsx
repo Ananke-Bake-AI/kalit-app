@@ -5,6 +5,7 @@ import { ModelSelector } from './ModelSelector';
 import { useStrings } from '../lib/i18n';
 import { Md } from '../lib/markdown';
 import { type PromptLevel } from '../lib/promptQuality';
+import { pushDataLayer } from '../lib/analytics';
 
 // Immersive/focus toggle: hides the global Kalit header + banners so the studio
 // fills the whole viewport. The focus state lives in the landing's
@@ -359,7 +360,7 @@ export function Chat({ title, messages, streaming, activity, model, modelGroups,
       {outOfCredits && (
         <div className="sv-credits" role="alert">
           <span className="sv-credits__msg">{st.errors.credits}</span>
-          <a className="sv-btn sv-btn--primary sv-credits__cta" href={pricingHref || '/pricing'}>{st.upgrade}</a>
+          <a className="sv-btn sv-btn--primary sv-credits__cta" href={pricingHref || '/pricing'} onClick={() => pushDataLayer('upgrade_clicked', { surface: 'studio', mode: 'out_of_credits' })}>{st.upgrade}</a>
         </div>
       )}
 

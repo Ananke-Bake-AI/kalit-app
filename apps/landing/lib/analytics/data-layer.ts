@@ -8,13 +8,16 @@
  * funnel event flows through, and it fans out to every destination:
  *
  *   1. GTM dataLayer  — `window.dataLayer.push({ event, … })`. This is the feed
- *                       GTM builds tags on. **X (Twitter) is wired here**: the
- *                       X base pixel + conversion tags live inside the GTM
- *                       container (GTM-WNSM869M) and trigger off these
- *                       `{ event }` objects — no code-side twq needed.
+ *                       GTM builds tags on; the X *engagement* tags in the GTM
+ *                       container (GTM-WNSM869M) trigger off these `{ event }`
+ *                       objects.
  *   2. GA4            — `gtag('event', <name>, …)` directly, so every custom
  *                       event lands in GA4 without needing a matching GTM tag.
  *   3. Meta Pixel     — standard event when mapped, else trackCustom (fbpixel.ts).
+ *   4. X Pixel        — code-side `twq()` for the mapped ad conversions
+ *                       (xpixel.ts). The GTM-container X conversion tags still
+ *                       listen for the pre-Jun-30 event names and are dead;
+ *                       conversions X optimizes on must not depend on them.
  *
  * `<name>` is the canonical event name from the funnel taxonomy (the CMO spec).
  * Fire canonical names everywhere and the dashboards line up across GTM/X, GA4,
@@ -26,6 +29,7 @@
  */
 
 import { forwardEventToPixel } from "@/lib/fbpixel"
+import { forwardEventToXPixel } from "@/lib/xpixel"
 
 declare global {
   interface Window {
@@ -62,4 +66,7 @@ export function pushDataLayer(event: string, params: Record<string, unknown> = {
 
   // 3) Meta Pixel — standard event when mapped, else custom event.
   forwardEventToPixel(event, params)
+
+  // 4) X Pixel — conversion events with a mapped X event ID (signup, purchase…).
+  forwardEventToXPixel(event, params)
 }

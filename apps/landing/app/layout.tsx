@@ -5,7 +5,9 @@ import { Suspense } from "react"
 import { Toast } from "@/components/layout/toast"
 import { GARouteTracker } from "@/components/analytics/ga-route-tracker"
 import { AnalyticsBridge } from "@/components/analytics/analytics-bridge"
+import { SignupConversionTracker } from "@/components/analytics/signup-conversion-tracker"
 import { FB_PIXEL_ID } from "@/lib/fbpixel"
+import { X_PIXEL_ID } from "@/lib/xpixel"
 import "@/styles/globals.scss"
 import { fonts } from "./fonts"
 
@@ -29,6 +31,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="preconnect" href="https://connect.facebook.net" />
         <link rel="dns-prefetch" href="https://connect.facebook.net" />
+        <link rel="preconnect" href="https://static.ads-twitter.com" />
+        <link rel="dns-prefetch" href="https://static.ads-twitter.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         {/* Single gtag.js bootstrap. Loader src uses the GA4 ID so
@@ -76,6 +80,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             __html: `!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${FB_PIXEL_ID}');`
           }}
         />
+        {/* X (Twitter) Pixel — base code (uwt.js) + config. The snippet
+            no-ops if the GTM container's X base tag already defined `twq`
+            (and vice-versa: GTM's copy guards on the same global), so pixel
+            page views are never double-loaded. Conversions (signup, and
+            purchase/checkout once their event IDs are mapped) fire code-side
+            from lib/xpixel.ts via pushDataLayer — the GTM-container X
+            conversion tags still trigger on pre-Jun-30 event names and no
+            longer fire. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `!function(e,t,n,s,u,a){e.twq||(s=e.twq=function(){s.exe?s.exe.apply(s,arguments):s.queue.push(arguments);},s.version='1.1',s.queue=[],u=t.createElement(n),u.async=!0,u.src='https://static.ads-twitter.com/uwt.js',a=t.getElementsByTagName(n)[0],a.parentNode.insertBefore(u,a))}(window,document,'script');twq('config','${X_PIXEL_ID}');`
+          }}
+        />
       </head>
       <body className={fonts}>
         {/* Google Tag Manager (noscript) fallback. Required by GTM's
@@ -113,6 +130,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         {/* Registers window.__kalitTrack so the studio-ui package fans events
             out through the same GTM/X + GA4 + Meta dispatcher. */}
         <AnalyticsBridge />
+        {/* One-shot OAuth signup conversion (fires post-redirect, only for
+            genuinely NEW accounts — see the component's docblock). */}
+        <SignupConversionTracker />
       </body>
     </html>
   )

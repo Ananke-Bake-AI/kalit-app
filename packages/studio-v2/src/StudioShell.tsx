@@ -6,6 +6,7 @@ import { Chat } from './components/Chat';
 import { Preview } from './components/Preview';
 import { IconFolder, IconEye } from './lib/icons';
 import { StringsContext, stringsFor } from './lib/i18n';
+import { pushDataLayer } from './lib/analytics';
 import './styles/theme.css';
 import './components/shell.css';
 
@@ -265,7 +266,7 @@ export function StudioShell(props: StudioShellProps) {
             <h3 className="sv-modal__title">{t.storage.blockedTitle}</h3>
             <p className="sv-modal__sub">{t.storage.blockedBody}</p>
             <div className="sv-modal__row">
-              <a className="sv-btn sv-btn--primary" href={`/${props.lang || 'en'}/pricing`} target="_blank" rel="noreferrer">{t.upgrade}</a>
+              <a className="sv-btn sv-btn--primary" href={`/${props.lang || 'en'}/pricing`} target="_blank" rel="noreferrer" onClick={() => pushDataLayer('upgrade_clicked', { surface: 'studio', mode: 'storage_limit' })}>{t.upgrade}</a>
               <button className="sv-btn sv-btn--ghost" onClick={() => props.onDismissStorageBlocked?.()}>{t.storage.close}</button>
             </div>
           </div>

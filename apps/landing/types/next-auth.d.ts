@@ -11,6 +11,10 @@ declare module "next-auth" {
       orgId: string | null
       emailVerified: boolean
       isAdmin: boolean
+      /** Set only on the session created right after the adapter created the
+       *  user (OAuth signup) — drives the one-shot signup conversion event. */
+      signupAt?: number
+      signupMethod?: string
     }
   }
 }
@@ -25,5 +29,7 @@ declare module "next-auth/jwt" {
     orgId?: string | null
     emailVerified?: boolean
     isAdmin?: boolean
+    signupAt?: number
+    signupMethod?: string
   }
 }

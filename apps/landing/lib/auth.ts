@@ -28,6 +28,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // Run the base jwt callback from authConfig
       const token = await authConfig.callbacks!.jwt!(params)
 
+      // Analytics: trigger === "signUp" means the adapter just CREATED this
+      // user (first-ever OAuth sign-in). Stamp the moment + method so the
+      // client can fire the signup conversion exactly once, post-redirect —
+      // the register page used to fire it optimistically on OAuth button
+      // *click*, which counted existing users logging in and abandoned OAuth
+      // attempts (Meta reported ~1k CompleteRegistration for ~600 accounts).
+      // Account linking to an existing user triggers "signIn", not "signUp",
+      // so returning users can never re-stamp.
+      if (params.trigger === "signUp") {
+        token.signupAt = Date.now()
+        token.signupMethod = params.account?.provider ?? "oauth"
+      }
+
       // On sign-in or when key fields are missing/falsy, re-check DB
       // This ensures OAuth users get onboardingDone, orgId, etc. that
       // the Prisma adapter doesn't include in the default user object.
@@ -72,7 +85,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return token
     },
     async session(params) {
-      return authConfig.callbacks!.session!(params)
+      const session = await authConfig.callbacks!.session!(params)
+      // Surface the signup stamp so SignupConversionTracker (client) can fire
+      // the conversion once. Time-boxed client-side; harmless to expose.
+      if (session.user && typeof params.token.signupAt === "number") {
+        session.user.signupAt = params.token.signupAt
+        session.user.signupMethod = (params.token.signupMethod as string) ?? "oauth"
+      }
+      return session
     },
   },
   providers: [

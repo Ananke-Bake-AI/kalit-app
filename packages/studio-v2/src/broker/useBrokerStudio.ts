@@ -11,6 +11,7 @@ import { StreamReducer, choiceFromInput, type RawEvent } from './reducer';
 import { DEFAULT_MODEL_ID, modelGroupsFor, type ModelGroup } from '../lib/models';
 import { deriveActivity, hasFileActivity, flattenSizes } from '../lib/activity';
 import { stringsFor, type Strings } from '../lib/i18n';
+import { pushDataLayer } from '../lib/analytics';
 
 export interface DnsRecord { type: string; name: string; value: string; }
 export interface DomainState { customDomain: string | null; status: string | null; dnsRecords: DnsRecord[] | null; }
@@ -263,6 +264,9 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   // retrouve la session via son projectId.
   const sessionsRef = useRef(sessions);
   sessionsRef.current = sessions;
+  // Pour first_prompt_submitted (send est un useCallback sans dep baseMessages).
+  const baseMessagesRef = useRef(baseMessages);
+  baseMessagesRef.current = baseMessages;
   const projectIdRef = useRef<string | null>(null);
   projectIdRef.current = projectId;
   // Session pour les ops git : activeId, sinon la session du projet courant.
@@ -272,6 +276,17 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   // Empêche les frames tardives de reconstruire le live APRÈS le chargement des
   // messages persistés → sinon doublons (live + persisté).
   const turnActive = useRef(false);
+  // Analytics : UNE seule issue (generation_succeeded/failed) par tour — l'erreur
+  // peut arriver par le POST SSE ET par le WS, et finalize suit toujours.
+  const turnOutcomeTracked = useRef(true);
+  const trackTurnEnd = useCallback((ok: boolean, reason?: string) => {
+    if (turnOutcomeTracked.current) return;
+    turnOutcomeTracked.current = true;
+    pushDataLayer(ok ? 'generation_succeeded' : 'generation_failed', {
+      session: activeRef.current ?? undefined,
+      ...(reason ? { reason: reason.slice(0, 120) } : {}),
+    });
+  }, []);
 
   const socket = useBrokerSocket(useCallback(() => client.connectWebSocket(), [client]));
 
@@ -377,6 +392,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
 
   const publish = useCallback(async () => {
     if (!projectId) return;
+    pushDataLayer('publish_started', { target: 'subdomain' });
     setPublishing(true);
     // RE-publish : r\u00e9utiliser le sous-domaine d\u00e9j\u00e0 publi\u00e9 (URL stable). Sinon
     // (1\u00e8re publication) le d\u00e9river du titre de session.
@@ -392,15 +408,17 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
       setPublishUrl(url);
       setSubdomain(payload?.subdomain ?? slug);
       setPublishResult({ phase: 'ok', url });
+      pushDataLayer('publish_succeeded', { target: 'subdomain' });
     }
     // 422 = backend project → publishing is front-end only for now.
-    else if (r && r.status === 422) { setDeployBlocked(true); }
+    else if (r && r.status === 422) { setDeployBlocked(true); pushDataLayer('deploy_failed', { target: 'subdomain', reason: 'backend_project' }); }
     // 413 = site over Vercel's 10 MB upload limit → show the size explicitly.
     else if (r && r.status === 413) {
       const j = await r.json().catch(() => null);
       setPublishResult({ phase: 'too_large', sizeBytes: j?.sizeBytes, limitBytes: j?.limitBytes });
+      pushDataLayer('deploy_failed', { target: 'subdomain', reason: 'too_large' });
     }
-    else { setPublishResult({ phase: 'error' }); }
+    else { setPublishResult({ phase: 'error' }); pushDataLayer('deploy_failed', { target: 'subdomain', reason: 'error' }); }
     setPublishing(false);
   }, [projectId, client, sessions]);
 
@@ -413,6 +431,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     const j = r ? await r.json().catch(() => null) : null;
     if (r && r.ok && j?.data) {
       setDomain({ customDomain: j.data.domain ?? dom, status: j.data.status ?? 'pending', dnsRecords: j.data.dnsRecords ?? null });
+      pushDataLayer('custom_domain_connected', { domain: dom.toLowerCase() });
       return { ok: true };
     }
     return { ok: false, error: j?.error };
@@ -474,7 +493,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
           method: 'PUT', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ host: 'github.com', repoFullName: opts.repoFullName, defaultBranch: opts.defaultBranch, authKind: 'github_app', installationId: Number(opts.installationId), mode: 'pr' }),
         });
-        if (r.ok) return { ok: true };
+        if (r.ok) { pushDataLayer('integration_connected', { integration: 'repo', method: 'github_app' }); return { ok: true }; }
         let msg = 'HTTP ' + r.status;
         try { const j = await r.json(); if (j?.error) msg = j.error as string; } catch { /* no json */ }
         return { ok: false, error: msg };
@@ -494,6 +513,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   // (auth NextAuth côté serveur + stream fiable) → blob → téléchargement navigateur.
   const download = useCallback(async () => {
     if (!projectId || downloading) return;
+    pushDataLayer('ship_clicked', { action: 'download_code' });
     setDownloading(true);
     try {
       const r = await fetch(`/api/repositories/${projectId}/download`);
@@ -559,7 +579,11 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
           setStreaming(true);
           setActivity({ label: activityFor(ev, t.activity), since: Date.now() });
           setLive({ ...r.render() });
-          if (ev.type === 'error') setLiveError(humanizeError(ev.content as string | undefined, t.errors, modelLabel(modelGroups, modelRef.current)));
+          if (ev.type === 'error') {
+            const msg = humanizeError(ev.content as string | undefined, t.errors, modelLabel(modelGroups, modelRef.current));
+            trackTurnEnd(false, msg);
+            setLiveError(msg);
+          }
         }
         if (res === 'terminal') finalize(f.sessionId!);
       } else if (f.type === 'session_attached') {
@@ -584,6 +608,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     // thinking ni d'étiquette d'activité en temps réel.
     if (sid === activeRef.current) {
       turnActive.current = false;
+      trackTurnEnd(true); // no-op si une erreur a déjà tracké l'issue du tour
       setLive(null); setStreaming(false); setActivity(null);
       loadMessages(sid);
     }
@@ -591,7 +616,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     // La taille R2 grandit après le tour (backup async côté broker) → on
     // rafraîchit la jauge avec un léger délai pour laisser le backup finir.
     setTimeout(() => { loadStorage(); }, 4000);
-  }, [loadMessages, loadSessions, loadStorage]);
+  }, [loadMessages, loadSessions, loadStorage, trackTurnEnd]);
 
   // Finalisation de secours quand le run se termine par une erreur SSE (le WS
   // n'émet pas toujours session_stream_closed dans ce cas).
@@ -600,8 +625,9 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   // loadMessages (qui recharge les messages persistés du serveur).
   const pushError = useCallback((sid: string, content: string) => {
     if (sid !== activeRef.current) return;
+    trackTurnEnd(false, content);
     setLiveError(content); setLive(null); setStreaming(false); setActivity(null);
-  }, []);
+  }, [trackTurnEnd]);
 
   const select = useCallback((id: string) => {
     setQueued([]); // la file d'attente est scopée à la session active
@@ -634,6 +660,7 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
     const created = await api.json<{ session: ChatSessionDTO }>('/api/broker/sessions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: modelRef.current, taskforceModelProvider: DEFAULT_TF_PROVIDER }) });
     if (!created?.session) return null;
     const sid = created.session.id;
+    pushDataLayer('project_created', { session: sid, model: modelRef.current });
     setSessions((s) => [dtoToSession(created.session), ...s]);
     setActiveId(sid); activeRef.current = sid; socket.subscribe(sid);
     return sid;
@@ -687,8 +714,13 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   const send = useCallback(async (text: string) => {
     const items = pending;
     if (!text.trim() && !items.length) return;
+    // Funnel (activation) : compté AVANT d'ajouter le message optimiste.
+    const isFirstPrompt = baseMessagesRef.current.filter((m) => m.role === 'user').length === 0;
     const sid = await ensureSession();
     if (!sid) return;
+    pushDataLayer(isFirstPrompt ? 'first_prompt_submitted' : 'prompt_submitted', { session: sid, model: modelRef.current });
+    pushDataLayer('generation_started', { session: sid });
+    turnOutcomeTracked.current = false;
     setPending([]);
     // Feedback immédiat : message optimiste + activité, AVANT l'upload (sinon
     // l'UI paraît figée le temps du téléversement).
@@ -739,11 +771,20 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
       if (pr) setPendingRepo(null);
       const connectRepo = pr ? { host: 'github.com', repoFullName: pr.repoFullName, defaultBranch: pr.defaultBranch, authKind: 'github_app', installationId: Number(pr.installationId), mode: 'pr' } : undefined;
       const r = await client.fetch(`/api/broker/sessions/${sid}/messages`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: body, language: lang, progressMode: 'default', suite: 'project', model: modelRef.current, precision: precisionRef.current, taskforceModelProvider: DEFAULT_TF_PROVIDER, requestId: 'r' + Date.now(), connectRepo }) });
-      if (r.status === 402) { setOutOfCredits(true); finalizeSoft(); setBaseMessages((m) => m.filter((x) => !x.id.startsWith('temp-'))); return; }
+      if (r.status === 402) {
+        turnOutcomeTracked.current = true; // pas un échec de génération : paywall
+        pushDataLayer('credits_exhausted', { surface: 'studio' });
+        pushDataLayer('paywall_viewed', { surface: 'studio', mode: 'out_of_credits' });
+        setOutOfCredits(true); finalizeSoft(); setBaseMessages((m) => m.filter((x) => !x.id.startsWith('temp-'))); return;
+      }
       // 403 storage_limit : le broker refuse une NOUVELLE création (quota plein).
       if (r.status === 403) {
         const d = await r.json().catch(() => null);
-        if (d?.error === 'storage_limit') { setStorageBlocked(true); finalizeSoft(); setBaseMessages((m) => m.filter((x) => !x.id.startsWith('temp-'))); return; }
+        if (d?.error === 'storage_limit') {
+          turnOutcomeTracked.current = true;
+          pushDataLayer('paywall_viewed', { surface: 'studio', mode: 'storage_limit' });
+          setStorageBlocked(true); finalizeSoft(); setBaseMessages((m) => m.filter((x) => !x.id.startsWith('temp-'))); return;
+        }
       }
       if (r.body) {
         const reader = r.body.getReader(); const dec = new TextDecoder(); let buf = '';
@@ -770,12 +811,13 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
       // la session active. On met juste à jour la liste (statut) dans tous les cas.
       if (sid === activeRef.current) {
         turnActive.current = false;
+        trackTurnEnd(true);
         finalizeSoft();
         loadMessages(sid);   // sync l'état persisté (ex: QCM en attente de réponse)
       }
       loadSessions();
     }
-  }, [pending, ensureSession, uploadPending, pushError, client, lang, loadSessions]);
+  }, [pending, ensureSession, uploadPending, pushError, client, lang, loadSessions, trackTurnEnd]);
 
   // Drain la file d'attente : quand le tour se termine (streaming → false) et qu'il
   // reste des prompts empilés, on envoie le suivant. sendRef évite un cycle de deps
