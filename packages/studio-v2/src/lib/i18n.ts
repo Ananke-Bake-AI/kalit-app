@@ -63,6 +63,8 @@ export interface Strings {
   untitled: string;
   errorLabel: string;
   upgrade: string;
+  modelLocked: string;
+  freeModel: { title: string; body: string };
   recents: string;
   pinned: string;
   pin: string;
@@ -205,6 +207,11 @@ const fr: Strings = {
   untitled: 'Sans titre',
   errorLabel: 'Erreur',
   upgrade: 'Passer à une offre supérieure',
+  modelLocked: 'Débloquez ce modèle avec une offre supérieure',
+  freeModel: {
+    title: 'Généré avec le modèle gratuit',
+    body: '{model} est le modèle gratuit de Kalit. Les offres payantes débloquent des modèles bien plus capables, pour un design et un code nettement meilleurs.',
+  },
   recents: 'Récents',
   pinned: 'Épinglés',
   pin: 'Épingler',
@@ -453,6 +460,11 @@ const en: Strings = {
   untitled: 'Untitled',
   errorLabel: 'Error',
   upgrade: 'Upgrade your plan',
+  modelLocked: 'Unlock this model with a higher plan',
+  freeModel: {
+    title: 'Built with the free model',
+    body: '{model} is the free model. Paid plans unlock far more capable models, with much better design and code.',
+  },
   recents: 'Recents',
   pinned: 'Pinned',
   pin: 'Pin',

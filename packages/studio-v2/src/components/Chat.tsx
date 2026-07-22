@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState, type DragEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type DragEvent } from 'react';
 import type { Activity, Message, Segment } from '../lib/types';
 import { IconAttach, IconSend, IconStop, IconClose } from '../lib/icons';
 import { ModelSelector } from './ModelSelector';
+import { labelFor } from '../lib/models';
 import { useStrings } from '../lib/i18n';
 import { Md } from '../lib/markdown';
 import { type PromptLevel } from '../lib/promptQuality';
@@ -230,6 +231,30 @@ function SegmentView({ s, onChoiceAnswer, onToolClick }: { s: Segment; onChoiceA
 export function Chat({ title, messages, streaming, activity, model, modelGroups, onModelChange, onSend, onStop, onChoiceAnswer, ctxPercent, attachments = [], uploading, onAddFiles, onRemoveAttachment, outOfCredits, pricingHref, checkPromptQuality, isAdmin, precision, onPrecisionChange, onShare, canShare, queued = [], onQueuePrompt, onCancelQueued, meId }: Props) {
   const st = useStrings();
   const [val, setVal] = useState('');
+
+  // Carte "généré avec le modèle gratuit" : attribue la qualité du résultat au
+  // modèle (pas à Kalit) au moment exact où l'utilisateur la juge, avec un CTA
+  // upgrade. Uniquement pour un compte free (tous les modèles payants locked)
+  // ayant généré avec un modèle free. Jamais pendant le stream, jamais empilée
+  // sur la bannière crédits, refermable 7 jours.
+  const UPSELL_HIDE_KEY = 'sv-free-upsell-until';
+  const [upsellHidden, setUpsellHidden] = useState(true);
+  useEffect(() => {
+    try { setUpsellHidden(Date.now() < Number(localStorage.getItem(UPSELL_HIDE_KEY) || 0)); }
+    catch { setUpsellHidden(false); }
+  }, []);
+  const dismissUpsell = () => {
+    setUpsellHidden(true);
+    try { localStorage.setItem(UPSELL_HIDE_KEY, String(Date.now() + 7 * 24 * 3600 * 1000)); } catch { /* ignore */ }
+  };
+  const allModels = useMemo(() => (modelGroups ?? []).flatMap((g) => g.models), [modelGroups]);
+  const onFreeTier = useMemo(() => {
+    const paid = allModels.filter((m) => (m.minTier || 'free') !== 'free');
+    return paid.length > 0 && paid.every((m) => m.locked === true);
+  }, [allModels]);
+  const currentIsFree = (allModels.find((m) => m.id === model)?.minTier || 'free') === 'free';
+  const hasResult = messages.some((m) => m.role === 'assistant');
+  const showFreeUpsell = onFreeTier && currentIsFree && hasResult && !streaming && !outOfCredits && !upsellHidden;
   // Historique des prompts envoyés (terminal-style ↑/↓), persisté pour ne pas
   // les perdre au reload. histPos = -1 → brouillon courant ; 0..n → navigation.
   const HIST_KEY = 'sv-prompt-history';
@@ -314,7 +339,7 @@ export function Chat({ title, messages, streaming, activity, model, modelGroups,
               {st.share.button}
             </button>
           )}
-          <ModelSelector value={model} onChange={onModelChange} isAdmin={isAdmin} groups={modelGroups} />
+          <ModelSelector value={model} onChange={onModelChange} isAdmin={isAdmin} groups={modelGroups} pricingHref={pricingHref} />
           {onPrecisionChange && (
             <button
               className={'sv-btn sv-btn--ghost sv-chat__precision' + (precision ? ' sv-chat__precision--on' : '')}
@@ -361,6 +386,17 @@ export function Chat({ title, messages, streaming, activity, model, modelGroups,
         <div className="sv-credits" role="alert">
           <span className="sv-credits__msg">{st.errors.credits}</span>
           <a className="sv-btn sv-btn--primary sv-credits__cta" href={pricingHref || '/pricing'} onClick={() => pushDataLayer('upgrade_clicked', { surface: 'studio', mode: 'out_of_credits' })}>{st.upgrade}</a>
+        </div>
+      )}
+
+      {showFreeUpsell && (
+        <div className="sv-upsell" role="note">
+          <div className="sv-upsell__txt">
+            <strong>{st.freeModel.title}</strong>
+            <span>{st.freeModel.body.replace('{model}', labelFor(model))}</span>
+          </div>
+          <a className="sv-btn sv-btn--primary sv-upsell__cta" href={pricingHref || '/pricing'} target="_blank" rel="noreferrer" onClick={() => pushDataLayer('upgrade_clicked', { surface: 'studio', mode: 'free_model_result' })}>{st.upgrade}</a>
+          <button className="sv-upsell__x" aria-label={st.del.cancel} onClick={dismissUpsell}><IconClose width={12} height={12} /></button>
         </div>
       )}
 
