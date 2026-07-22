@@ -15,6 +15,7 @@ import { useClickOutside, useElementSize } from "@reactuses/core"
 import clsx from "clsx"
 import type { Session } from "next-auth"
 import { signOut, useSession } from "next-auth/react"
+import { usePathname } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 import { BillingBadge } from "../billing-badge"
 import { Nav } from "../nav"
@@ -33,6 +34,8 @@ interface HeaderProps {
 // badge collapses gracefully.
 export const Header = ({ initialSession = null }: HeaderProps) => {
   const { nav, setNav, page } = useAppStore()
+  const pathname = usePathname() || ""
+  const onStudioPage = /\/studio(\/|$)/.test(pathname)
   const { data: session, status } = useSession()
   const { darkMode, toggleTheme } = useTheme()
   const t = useTranslation()
@@ -185,9 +188,17 @@ export const Header = ({ initialSession = null }: HeaderProps) => {
           </div>
           </>
         ) : (
-          <Button className={s.btn} circle href="/register">
-            {t("nav.getStarted")}
-          </Button>
+          onStudioPage ? (
+            // Already in the studio: "Get started" would be a no-op link to
+            // the page they're on. Offer sign-in instead, returning here.
+            <Button className={s.btn} circle href="/login?callbackUrl=%2Fstudio">
+              {t("auth.signIn")}
+            </Button>
+          ) : (
+            <Button className={s.btn} circle href="/studio">
+              {t("nav.getStarted")}
+            </Button>
+          )
         )}
 
         <button className={s.bnav} onClick={() => setNav(!nav)} aria-label="Navigation">

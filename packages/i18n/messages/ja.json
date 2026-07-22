@@ -13,9 +13,9 @@
     "language": "言語"
   },
   "hero": {
-    "subtitle": "早期アクセス — Flow + Pentest + Search",
-    "title1": "サイトを公開",
-    "title2": "公開前にスキャン",
+    "subtitle": "Kalit Studio：無料で開始、カード不要",
+    "title1": "最高のAIモデルで",
+    "title2": "ウェブサイトを構築",
     "promptPlaceholder": "必要なローンチサイトを説明してください...",
     "findMySuite": "Kalitで開始",
     "recommended": "おすすめのスイート",
@@ -24,7 +24,17 @@
     "placeholder1": "必要なローンチサイトを説明してください...",
     "placeholder2": "必要なローンチサイトを説明してください...",
     "placeholder3": "必要なローンチサイトを説明してください...",
-    "placeholder4": "公開前にステージングアプリをスキャン..."
+    "placeholder4": "公開前にステージングアプリをスキャン...",
+    "lead": "ひとつのサブスクで、トップモデルすべて。Kalit がサイトを構築し、必要な画像を正確に見つけ、テストして公開まで行います。あなたは説明するだけ。",
+    "ctaPrimary": "無料で作り始める",
+    "ctaSecondary": "実際の制作例を見る",
+    "ctaPrimaryAuthed": "Studio を開く",
+    "tier": {
+      "free": "無料",
+      "starter": "Starter",
+      "pro": "Pro",
+      "enterprise": "Enterprise"
+    }
   },
   "suites": {
     "flow": "Flow",
@@ -50,9 +60,9 @@
     "searchFree": "無料"
   },
   "stack": {
-    "subtitle": "Flow + Pentest",
-    "title": "サイトを公開 -> 公開前にスキャン",
-    "description": "Kalit Flow はローンチページを作成して公開します。Kalit Pentest は公開前に許可済みターゲットをスキャンします。"
+    "subtitle": "さらにその先へ",
+    "title": "サイト公開後は、セキュリティと市場調査を",
+    "description": "Kalit Pentest はサイトやステージング環境への承認済みセキュリティスキャンを実行。Kalit Search はトラフィックに投資する前に市場を調査します。"
   },
   "architecture": {
     "subtitle": "アーキテクチャ",
@@ -65,26 +75,28 @@
   },
   "features": {
     "subtitle": "仕組み",
-    "title": "サイトを公開. 公開前にスキャン.",
-    "description": "Kalit Flow はローンチページを作成して公開します。Kalit Pentest は公開前に許可済みターゲットをスキャンします。",
-    "agents": "専門AIエージェントがチームとして連携",
-    "agentsDesc": "各エージェントが役割を担当 - 企画、コーディング、デザイン、テスト、デプロイ。あなたの代わりに連携します。",
-    "references": "プロジェクトを説明し、参考資料を追加",
-    "referencesDesc": "スクリーンショットを共有し、必要なものを説明するだけ。エージェントがあなたのビジョンに合わせます。コーディング不要。",
-    "parallel": "Flow + Pentest",
-    "parallelDesc": "Kalit Flow はローンチページを作成して公開します。Kalit Pentest は公開前に許可済みターゲットをスキャンします。",
-    "deploy": "ワンクリックで公開 - ホスティング込み",
-    "deployDesc": "Kalit Flow はローンチページを作成して公開します。Kalit Pentest は公開前に許可済みターゲットをスキャンします。"
+    "title": "ひとつのプロンプトから公開サイトまで",
+    "description": "作りたいものを説明するだけ。Kalit が計画し、構築し、アセットを見つけ、実際のブラウザでテストして、本物のURLで公開します。",
+    "agents": "あなたのプロジェクトに、AIのフルチームを",
+    "agentsDesc": "プランナーが作業をタスクに分解し、開発者・デザイナーエージェントが並行して構築、すべて自動でマージされます。",
+    "references": "アイデア、スクリーンショット、ファイルから始める",
+    "referencesDesc": "参考資料を追加して、必要なものを説明するだけ。短いプロンプトは自動で補完され、イメージどおりの結果になります。コードは不要です。",
+    "parallel": "find-assets が頼んだとおりの本物の画像を取得",
+    "parallelDesc": "ウェブとオリジナルソースを検索し、各候補を視覚的に確認して、サイトに必要な正確なサイズと形式で画像、アイコン、音声、3Dを届けます。",
+    "deploy": "ワンクリックで公開、ホスティング込み",
+    "deployDesc": "実際のブラウザでテストし、安定したHTTPS URLで公開。何度再デプロイしてもリンクは変わりません。"
   },
   "join": {
-    "subtitle": "始めましょう",
-    "title": "Flow + Pentest",
-    "description": "Kalit Flow はローンチページを作成して公開します。Kalit Pentest は公開前に許可済みターゲットをスキャンします。",
+    "subtitle": "実際の動きを見る",
+    "title": "Studio が構築する様子をライブで",
+    "description": "ファイルの書き込み、アセットの発見、実ブラウザでのテスト、そのすべてが目の前でストリーミングされます。毎月15クレジット付きで無料スタート、カード不要。",
     "mute": "ミュート",
     "unmute": "ミュート解除",
     "play": "再生",
     "pause": "一時停止",
-    "restart": "最初から"
+    "restart": "最初から",
+    "ctaPrimary": "無料で作り始める",
+    "ctaSecondary": "料金を見る"
   },
   "portfolio": {
     "subtitle": "Kalitポートフォリオ",
@@ -830,8 +842,8 @@
     "downloadRequiresPaid": "コードのエクスポートには有料プランが必要です。プロジェクトをダウンロードするには Starter にアップグレードしてください。"
   },
   "seo": {
-    "homeTitle": "サイトを公開 - 公開前にスキャン",
-    "homeDescription": "Kalit Flow はローンチページを作成して公開します。Kalit Pentest は公開前に許可済みターゲットをスキャンします。",
+    "homeTitle": "最高のAIモデルでウェブサイトを構築",
+    "homeDescription": "Kalit Studio はひとつのプロンプトからサイトを構築・公開。トップAIモデルすべてをひとつのサブスクで、find-assets が必要な画像やコンテンツを正確に見つけます。無料プラン、カード不要。",
     "flowTitle": "Kalit Flow - AIが作るローンチページと完全なアプリ",
     "flowDescription": "Kalit Flow はプロンプトをローンチページや完全なアプリに変えます — デザイン、コピー、構造、フロントエンド、バックエンド、デプロイ込み。",
     "marketingTitle": "Kalit Marketing - 獲得キャンペーンの企画・作成・実行・最適化",

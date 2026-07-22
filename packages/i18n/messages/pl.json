@@ -13,9 +13,9 @@
     "language": "Język"
   },
   "hero": {
-    "subtitle": "Wczesny dostęp — Flow + Pentest + Search",
-    "title1": "Uruchom swoja strone",
-    "title2": "Skanuj przed publikacja",
+    "subtitle": "Kalit Studio: zacznij za darmo, bez karty",
+    "title1": "Zbuduj swoją stronę",
+    "title2": "z najlepszymi modelami AI",
     "promptPlaceholder": "Opisz strone startowa, ktorej potrzebujesz...",
     "findMySuite": "Uruchom z Kalit",
     "recommended": "Rekomendowany pakiet",
@@ -24,7 +24,17 @@
     "placeholder1": "Opisz strone startowa, ktorej potrzebujesz...",
     "placeholder2": "Opisz strone startowa, ktorej potrzebujesz...",
     "placeholder3": "Opisz strone startowa, ktorej potrzebujesz...",
-    "placeholder4": "Scan my staging app before launch..."
+    "placeholder4": "Scan my staging app before launch...",
+    "lead": "Jedna subskrypcja, wszystkie topowe modele. Kalit buduje Twoją stronę, znajduje dokładnie te obrazy, których potrzebuje, testuje ją i publikuje. Ty tylko ją opisujesz.",
+    "ctaPrimary": "Zacznij budować za darmo",
+    "ctaSecondary": "Zobacz prawdziwe projekty",
+    "ctaPrimaryAuthed": "Otwórz Studio",
+    "tier": {
+      "free": "Za darmo",
+      "starter": "Starter",
+      "pro": "Pro",
+      "enterprise": "Enterprise"
+    }
   },
   "suites": {
     "flow": "Flow",
@@ -50,9 +60,9 @@
     "searchFree": "Za darmo"
   },
   "stack": {
-    "subtitle": "Flow + Pentest",
-    "title": "Uruchom swoja strone -> Skanuj przed publikacja",
-    "description": "Kalit Flow tworzy i wdraza strony startowe. Kalit Pentest skanuje autoryzowane cele przed publikacja."
+    "subtitle": "Idź dalej",
+    "title": "Strona działa? Zabezpiecz ją i zbadaj rynek",
+    "description": "Kalit Pentest wykonuje autoryzowany skan bezpieczeństwa Twojej strony lub stagingu. Kalit Search bada rynek, zanim wydasz pieniądze na ruch."
   },
   "architecture": {
     "subtitle": "Architektura",
@@ -65,26 +75,28 @@
   },
   "features": {
     "subtitle": "Jak to działa",
-    "title": "Uruchom swoja strone. Skanuj przed publikacja.",
-    "description": "Kalit Flow tworzy i wdraza strony startowe. Kalit Pentest skanuje autoryzowane cele przed publikacja.",
-    "agents": "Wyspecjalizowani agenci AI koordynowani jako jeden zespół",
-    "agentsDesc": "Każdy agent odpowiada za swoją rolę - planowanie, kodowanie, design, testowanie, wdrożenie. Koordynują się między sobą, więc Ty nie musisz.",
-    "references": "Opisz swój projekt, dodaj referencje i zasoby",
-    "referencesDesc": "Udostępnij zrzuty ekranu, opisz, czego potrzebujesz, a agenci zrealizują Twoją wizję. Bez programowania.",
-    "parallel": "Flow + Pentest",
-    "parallelDesc": "Kalit Flow tworzy i wdraza strony startowe. Kalit Pentest skanuje autoryzowane cele przed publikacja.",
-    "deploy": "Publikuj jednym kliknięciem - hosting w cenie",
-    "deployDesc": "Kalit Flow tworzy i wdraza strony startowe. Kalit Pentest skanuje autoryzowane cele przed publikacja."
+    "title": "Od jednego promptu do działającej strony",
+    "description": "Opisz, czego chcesz. Kalit planuje, buduje, znajduje zasoby, testuje w prawdziwej przeglądarce i publikuje stronę pod prawdziwym adresem URL.",
+    "agents": "Pełny zespół AI przy Twoim projekcie",
+    "agentsDesc": "Planista dzieli pracę na zadania, agenci-deweloperzy i projektanci budują je równolegle, a wszystko scala się automatycznie.",
+    "references": "Zacznij od swoich pomysłów, zrzutów i plików",
+    "referencesDesc": "Dodaj referencje i opisz, czego potrzebujesz. Krótkie prompty są automatycznie wzbogacane, by wynik odpowiadał temu, co miałeś na myśli. Bez kodowania.",
+    "parallel": "find-assets zdobywa prawdziwe obrazy, o które prosisz",
+    "parallelDesc": "Przeszukuje internet i oryginalne źródła, sprawdza każde trafienie wizualnie i dostarcza obrazy, ikony, audio i 3D w dokładnie takim rozmiarze i formacie, jakiego potrzebuje Twoja strona.",
+    "deploy": "Jedno kliknięcie i działasz, hosting w cenie",
+    "deployDesc": "Przetestowana w prawdziwej przeglądarce, opublikowana pod stabilnym adresem HTTPS. Wdrażaj ile chcesz, link się nie zmienia."
   },
   "join": {
-    "subtitle": "Zacznij",
-    "title": "Flow + Pentest",
-    "description": "Kalit Flow tworzy i wdraza strony startowe. Kalit Pentest skanuje autoryzowane cele przed publikacja.",
+    "subtitle": "Zobacz to w akcji",
+    "title": "Patrz, jak Studio buduje na żywo",
+    "description": "Zapisywane pliki, znalezione zasoby, strona testowana w prawdziwej przeglądarce, wszystko na Twoich oczach. Zacznij za darmo z 15 kredytami miesięcznie, bez karty.",
     "mute": "Wycisz",
     "unmute": "Włącz dźwięk",
     "play": "Odtwórz",
     "pause": "Pauza",
-    "restart": "Od nowa"
+    "restart": "Od nowa",
+    "ctaPrimary": "Zacznij budować za darmo",
+    "ctaSecondary": "Zobacz cennik"
   },
   "portfolio": {
     "subtitle": "Portfolio Kalit",
@@ -830,8 +842,8 @@
     "downloadRequiresPaid": "Eksport kodu wymaga planu płatnego. Przejdź na Starter, aby pobrać projekt."
   },
   "seo": {
-    "homeTitle": "Uruchom swoja strone - Skanuj przed publikacja",
-    "homeDescription": "Kalit Flow tworzy i wdraza strony startowe. Kalit Pentest skanuje autoryzowane cele przed publikacja.",
+    "homeTitle": "Zbuduj stronę z najlepszymi modelami AI",
+    "homeDescription": "Kalit Studio buduje i publikuje Twoją stronę z jednego promptu. Wszystkie topowe modele AI w jednej subskrypcji, a find-assets znajduje dokładnie te obrazy i treści, których potrzebujesz. Darmowy plan, bez karty.",
     "flowTitle": "Kalit Flow - Strony launchowe i pełne aplikacje od AI",
     "flowDescription": "Kalit Flow zamienia prompt w stronę launchową lub pełną aplikację — design, copy, struktura, frontend, backend i deploy w zestawie.",
     "marketingTitle": "Kalit Marketing - Planuj, twórz, uruchamiaj i optymalizuj kampanie pozyskiwania klientów",

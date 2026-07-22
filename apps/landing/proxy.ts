@@ -66,9 +66,17 @@ export const proxy = auth((req) => {
     return localeRewrite(req, pathname, locale)
   }
 
+  // Kimi-style funnel: /studio is open to anonymous visitors. They can look
+  // around and type; the sign-in modal only appears when they try to send a
+  // prompt, and after auth they resume the same session in free mode.
+  const isStudioPage = barePath === "/studio" || barePath.startsWith("/studio/")
+
   const isAppPage = appPages.some((p) => barePath === p || barePath.startsWith(`${p}/`))
   if (isAppPage) {
     if (!isAuthenticated) {
+      if (isStudioPage) {
+        return localeRewrite(req, pathname, locale)
+      }
       // Stale or shared links into /settings/billing shouldn't dump
       // visitors at /login with no context. Redirect them to the
       // public /pricing page instead — they can browse plans, click
@@ -95,13 +103,16 @@ export const proxy = auth((req) => {
     const isMagnetEntry =
       barePath.startsWith("/studio") && req.nextUrl.searchParams.has("magnet")
 
+    // The whole /studio surface now works like the magnet entry: unverified
+    // and pre-onboarding users get in (the broker token route auto-provisions
+    // their org on demand), and verification/payment are gated at ship/own.
     const emailVerified = !!session?.user?.emailVerified
-    const allowUnverified = barePath === "/settings/profile" || isMagnetEntry
+    const allowUnverified = barePath === "/settings/profile" || isMagnetEntry || isStudioPage
     if (!emailVerified && !allowUnverified) {
       return NextResponse.redirect(new URL(localePath("/verify-email", locale), req.url))
     }
 
-    if (!session?.user?.onboardingDone && !isMagnetEntry) {
+    if (!session?.user?.onboardingDone && !isMagnetEntry && !isStudioPage) {
       return NextResponse.redirect(new URL(localePath("/setup", locale), req.url))
     }
 

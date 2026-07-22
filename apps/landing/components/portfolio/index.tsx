@@ -46,6 +46,8 @@ export interface PortfolioProps {
   suiteId?: SuiteId
   /** Page marketing pour le callback login (ex. `/pentest`). */
   marketingPath?: string
+  /** CTA de conversion affiché en premier ; l'autre bouton passe en secondaire. */
+  cta?: { text: string; href: string }
   className?: string
 }
 
@@ -58,6 +60,7 @@ export function Portfolio({
   suiteAppUrl,
   suiteId,
   marketingPath = FLOW_MARKETING_PATH,
+  cta,
   className
 }: PortfolioProps) {
   const trackRef = useRef<HTMLDivElement | null>(null)
@@ -164,15 +167,22 @@ export function Portfolio({
         </div>
       </div>
       <Container>
-        {suiteAppUrl && suiteId ? (
-          <FlowSuiteCtaButton suiteId={suiteId} suiteAppUrl={suiteAppUrl} marketingPath={marketingPath} className={s.btn} circle>
-            {buttonText}
-          </FlowSuiteCtaButton>
-        ) : (
-          <Button className={s.btn} circle href={link ?? "/"}>
-            {buttonText}
-          </Button>
-        )}
+        <div className={s.ctas}>
+          {cta && (
+            <Button className={s.btn} circle href={cta.href} data-button-id="portfolio-studio">
+              {cta.text}
+            </Button>
+          )}
+          {suiteAppUrl && suiteId ? (
+            <FlowSuiteCtaButton suiteId={suiteId} suiteAppUrl={suiteAppUrl} marketingPath={marketingPath} className={s.btn} circle>
+              {buttonText}
+            </FlowSuiteCtaButton>
+          ) : (
+            <Button className={s.btn} circle href={link ?? "/"} variant={cta ? "secondary" : undefined}>
+              {buttonText}
+            </Button>
+          )}
+        </div>
       </Container>
     </section>
   )

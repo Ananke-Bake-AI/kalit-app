@@ -13,9 +13,9 @@
     "language": "Språk"
   },
   "hero": {
-    "subtitle": "Tidig åtkomst — Flow + Pentest + Search",
-    "title1": "Lansera din webbplats",
-    "title2": "Skanna fore go-live",
+    "subtitle": "Kalit Studio: gratis att börja, inget kort krävs",
+    "title1": "Bygg din webbplats",
+    "title2": "med de bästa AI-modellerna",
     "promptPlaceholder": "Beskriv lanseringssidan du behover...",
     "findMySuite": "Starta med Kalit",
     "recommended": "Rekommenderad svit",
@@ -24,7 +24,17 @@
     "placeholder1": "Beskriv lanseringssidan du behover...",
     "placeholder2": "Beskriv lanseringssidan du behover...",
     "placeholder3": "Beskriv lanseringssidan du behover...",
-    "placeholder4": "Scan my staging app before launch..."
+    "placeholder4": "Scan my staging app before launch...",
+    "lead": "En prenumeration, alla toppmodeller. Kalit bygger din webbplats, hittar exakt rätt bilder, testar den och lägger ut den. Du behöver bara beskriva den.",
+    "ctaPrimary": "Börja bygga gratis",
+    "ctaSecondary": "Se riktiga projekt",
+    "ctaPrimaryAuthed": "Öppna Studio",
+    "tier": {
+      "free": "Gratis",
+      "starter": "Starter",
+      "pro": "Pro",
+      "enterprise": "Enterprise"
+    }
   },
   "suites": {
     "flow": "Flow",
@@ -50,9 +60,9 @@
     "searchFree": "Gratis"
   },
   "stack": {
-    "subtitle": "Flow + Pentest",
-    "title": "Lansera din webbplats -> Skanna fore go-live",
-    "description": "Kalit Flow skapar och publicerar lanseringssidor. Kalit Pentest skannar auktoriserade mal fore go-live."
+    "subtitle": "Gå längre",
+    "title": "Sajten live? Säkra den och studera din marknad",
+    "description": "Kalit Pentest kör en auktoriserad säkerhetsskanning av din sajt eller staging. Kalit Search undersöker din marknad innan du lägger pengar på trafik."
   },
   "architecture": {
     "subtitle": "Arkitekturen",
@@ -64,27 +74,29 @@
     "titleBold": "en modell"
   },
   "features": {
-    "subtitle": "Hur det fungerar",
-    "title": "Lansera din webbplats. Skanna fore go-live.",
-    "description": "Kalit Flow skapar och publicerar lanseringssidor. Kalit Pentest skannar auktoriserade mal fore go-live.",
-    "agents": "Specialiserade AI-agenter koordinerade som ett team",
-    "agentsDesc": "Varje agent hanterar en roll - planering, kodning, design, testning, driftsättning. De koordinerar sig så att du inte behöver göra det.",
-    "references": "Beskriv ditt projekt, lägg till referenser och material",
-    "referencesDesc": "Dela skärmbilder, beskriv vad du behöver och låt agenterna matcha din vision. Ingen kodning krävs.",
-    "parallel": "Flow + Pentest",
-    "parallelDesc": "Kalit Flow skapar och publicerar lanseringssidor. Kalit Pentest skannar auktoriserade mal fore go-live.",
-    "deploy": "Gå live med ett klick - hosting ingår",
-    "deployDesc": "Kalit Flow skapar och publicerar lanseringssidor. Kalit Pentest skannar auktoriserade mal fore go-live."
+    "subtitle": "Så fungerar det",
+    "title": "Från en prompt till en live-webbplats",
+    "description": "Beskriv vad du vill ha. Kalit planerar, bygger, hittar resurserna, testar i en riktig webbläsare och lägger ut sajten på en riktig URL.",
+    "agents": "Ett komplett AI-team på ditt projekt",
+    "agentsDesc": "En planerare delar upp arbetet i uppgifter, utvecklar- och designeragenter bygger dem parallellt, och allt slås ihop automatiskt.",
+    "references": "Utgå från dina idéer, skärmdumpar och filer",
+    "referencesDesc": "Lägg till referenser och beskriv vad du behöver. Korta promptar berikas automatiskt så att resultatet stämmer med det du tänkte dig. Ingen kod krävs.",
+    "parallel": "find-assets hämtar de riktiga bilder du bad om",
+    "parallelDesc": "Det söker på webben och i originalkällor, kontrollerar varje träff visuellt och levererar bilder, ikoner, ljud och 3D i exakt den storlek och det format din sajt behöver.",
+    "deploy": "Ett klick och du är live, hosting ingår",
+    "deployDesc": "Testad i en riktig webbläsare, publicerad på en stabil HTTPS-URL. Deploya hur ofta du vill, länken ändras aldrig."
   },
   "join": {
-    "subtitle": "Kom igång",
-    "title": "Flow + Pentest",
-    "description": "Kalit Flow skapar och publicerar lanseringssidor. Kalit Pentest skannar auktoriserade mal fore go-live.",
+    "subtitle": "Se det arbeta",
+    "title": "Se Studio bygga, live",
+    "description": "Filer skrivs, resurser hittas, din sajt testas i en riktig webbläsare, allt strömmar framför dig. Börja gratis med 15 krediter i månaden, inget kort krävs.",
     "mute": "Tysta",
     "unmute": "Slå på ljud",
     "play": "Spela",
     "pause": "Pausa",
-    "restart": "Börja om"
+    "restart": "Börja om",
+    "ctaPrimary": "Börja bygga gratis",
+    "ctaSecondary": "Se priser"
   },
   "portfolio": {
     "subtitle": "Kalit Portfolio",
@@ -830,8 +842,8 @@
     "downloadRequiresPaid": "Att exportera koden kräver ett betalt abonnemang. Uppgradera till Starter för att ladda ner ditt projekt."
   },
   "seo": {
-    "homeTitle": "Lansera din webbplats - Skanna fore go-live",
-    "homeDescription": "Kalit Flow skapar och publicerar lanseringssidor. Kalit Pentest skannar auktoriserade mal fore go-live.",
+    "homeTitle": "Bygg din webbplats med de bästa AI-modellerna",
+    "homeDescription": "Kalit Studio bygger och publicerar din webbplats från en prompt. Alla topp-AI-modeller i en prenumeration, och find-assets hittar exakt de bilder och det innehåll din sajt behöver. Gratisplan, inget kort krävs.",
     "flowTitle": "Kalit Flow - Lanseringssidor och hela appar byggda av AI",
     "flowDescription": "Kalit Flow gör en prompt till en lanseringssida eller hel app — design, copy, struktur, frontend, backend och deploy ingår.",
     "marketingTitle": "Kalit Marketing - Planera, skapa, kör och optimera förvärvskampanjer",

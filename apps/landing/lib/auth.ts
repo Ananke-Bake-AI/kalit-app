@@ -44,7 +44,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // On sign-in or when key fields are missing/falsy, re-check DB
       // This ensures OAuth users get onboardingDone, orgId, etc. that
       // the Prisma adapter doesn't include in the default user object.
-      if (params.user || !token.emailVerified || token.isAdmin === undefined || params.trigger === "update") {
+      // !token.orgId: the studio funnel auto-provisions the org AFTER
+      // sign-in (broker token route), so keep re-checking until it exists.
+      if (params.user || !token.emailVerified || token.isAdmin === undefined || !token.orgId || params.trigger === "update") {
         if (token.email) {
           const dbUser = await prisma.user.findUnique({
             where: { email: token.email.toLowerCase() },

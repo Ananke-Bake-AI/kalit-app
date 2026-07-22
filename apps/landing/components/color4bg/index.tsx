@@ -5,10 +5,13 @@ import {
   AestheticFluidBg,
   BlurGradientBg
 } from "color4bg"
-import { useEffect, useId, useMemo, useRef } from "react"
+import { useEffect, useMemo, useRef } from "react"
 import s from "./color4bg.module.scss"
 
 const DEFAULT_BG_COLORS: string[] = ["#91E500", "#8200DF", "#12BCFF", "#91E500", "#2F44FF", "#8200DF", "#91E500"]
+
+// Client-only counter for container DOM ids (see the note in the effect).
+let nextInstanceId = 1
 
 const BgClassByStyle = {
   "aesthetic-fluid": AestheticFluidBg,
@@ -36,13 +39,16 @@ export const Color4Bg = ({ style, colors, seed = 1000, loop = true, className, n
   const containerRef = useRef<HTMLDivElement>(null)
   const paletteKey = useMemo(() => JSON.stringify(colors ?? null), [colors])
 
-  const reactId = useId()
-  const containerId = `color4bg-${reactId.replace(/:/g, "")}`
-
   useEffect(() => {
     const el = containerRef.current
     const BgClass = BgClassByStyle[style]
     if (!el || !BgClass) return
+
+    // The lib looks the container up by DOM id. Assign it here, client-only:
+    // rendering a useId-based id into the SSR html desynced during hydration
+    // on some pages and killed every instance with a getComputedStyle crash.
+    if (!el.id) el.id = `color4bg-${nextInstanceId++}`
+    const containerId = el.id
 
     let instance: Color4BgInstance | null = null
     let resizeObserver: ResizeObserver | null = null
@@ -115,7 +121,7 @@ export const Color4Bg = ({ style, colors, seed = 1000, loop = true, className, n
         }
       }
     }
-  }, [style, containerId, colors, paletteKey, seed, loop, noise])
+  }, [style, colors, paletteKey, seed, loop, noise])
 
-  return <div id={containerId} ref={containerRef} className={clsx(s.root, className)} />
+  return <div ref={containerRef} className={clsx(s.root, className)} />
 }

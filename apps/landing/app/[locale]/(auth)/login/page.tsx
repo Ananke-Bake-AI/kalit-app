@@ -161,7 +161,16 @@ function LoginForm() {
               </div>
 
               <p className={s.footer}>
-                {t("auth.noAccount")} <Link href="/register">{t("auth.createOne")}</Link>
+                {t("auth.noAccount")}{" "}
+                <Link
+                  href={
+                    searchParams.get("callbackUrl")
+                      ? `/register?callbackUrl=${encodeURIComponent(callbackUrl)}`
+                      : "/register"
+                  }
+                >
+                  {t("auth.createOne")}
+                </Link>
               </p>
             </form>
           </div>

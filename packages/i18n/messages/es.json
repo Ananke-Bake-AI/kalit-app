@@ -13,9 +13,9 @@
     "language": "Idioma"
   },
   "hero": {
-    "subtitle": "Acceso anticipado — Flow + Pentest + Search",
-    "title1": "Lanza tu sitio",
-    "title2": "Escanea antes de salir",
+    "subtitle": "Kalit Studio: gratis para empezar, sin tarjeta",
+    "title1": "Crea tu sitio web",
+    "title2": "con los mejores modelos de IA",
     "promptPlaceholder": "Describe el sitio de lanzamiento que necesitas...",
     "findMySuite": "Lanzar con Kalit",
     "recommended": "Suite recomendada",
@@ -24,7 +24,17 @@
     "placeholder1": "Crea una landing de lanzamiento para mi startup de IA con precios...",
     "placeholder2": "Crea una página de lista de espera para mi SaaS y publícala...",
     "placeholder3": "Crea una página de lanzamiento para Product Hunt con testimonios y FAQ...",
-    "placeholder4": "Escanea mi app de staging antes del lanzamiento..."
+    "placeholder4": "Escanea mi app de staging antes del lanzamiento...",
+    "lead": "Una suscripción, todos los mejores modelos. Kalit construye tu sitio, encuentra las imágenes exactas que necesita, lo prueba y lo publica. Tú solo lo describes.",
+    "ctaPrimary": "Empieza a crear gratis",
+    "ctaSecondary": "Ver proyectos reales",
+    "ctaPrimaryAuthed": "Abrir Studio",
+    "tier": {
+      "free": "Gratis",
+      "starter": "Starter",
+      "pro": "Pro",
+      "enterprise": "Enterprise"
+    }
   },
   "suites": {
     "flow": "Flow",
@@ -50,9 +60,9 @@
     "searchFree": "Gratis"
   },
   "stack": {
-    "subtitle": "Stack de lanzamiento",
-    "title": "De la página de lanzamiento al chequeo de seguridad",
-    "description": "Empieza con Kalit Flow para crear y desplegar tu sitio público, luego usa Kalit Pentest para escanear objetivos autorizados antes del anuncio."
+    "subtitle": "Ve más allá",
+    "title": "¿Sitio en línea? Asegúralo y estudia tu mercado",
+    "description": "Kalit Pentest ejecuta un escaneo de seguridad autorizado sobre tu sitio o staging. Kalit Search investiga tu mercado antes de invertir en tráfico."
   },
   "architecture": {
     "subtitle": "La arquitectura",
@@ -65,26 +75,28 @@
   },
   "features": {
     "subtitle": "Cómo funciona",
-    "title": "Creado para el momento del lanzamiento público",
-    "description": "Pasa de la idea a una página de lanzamiento en vivo, y valida los riesgos de seguridad evidentes antes de enviar tráfico.",
-    "agents": "Agentes de IA especializados coordinados como un equipo",
-    "agentsDesc": "Cada agente gestiona un rol - planificación, código, diseño, pruebas, despliegue. Se coordinan para que tú no tengas que hacerlo.",
-    "references": "Describe tu proyecto, añade referencias y recursos",
-    "referencesDesc": "Comparte capturas de pantalla, describe lo que necesitas y deja que los agentes se adapten a tu visión. Sin necesidad de código.",
-    "parallel": "Une lanzamiento y seguridad",
-    "parallelDesc": "Crea la página, itera copy y visuales, y ejecuta un escaneo pre-lanzamiento sin salir del flujo de Kalit.",
-    "deploy": "Publica con un clic - hosting incluido",
-    "deployDesc": "Publica landing pages, redespliega cambios y pasa la URL en vivo a Pentest cuando estés listo para validarla."
+    "title": "De un prompt a un sitio en línea",
+    "description": "Describe lo que quieres. Kalit lo planifica, lo construye, encuentra los assets, lo prueba en un navegador real y lo publica en una URL real.",
+    "agents": "Un equipo completo de IA en tu proyecto",
+    "agentsDesc": "Un planificador divide el trabajo en tareas, agentes desarrolladores y diseñadores las construyen en paralelo, y todo se fusiona automáticamente.",
+    "references": "Parte de tus ideas, capturas y archivos",
+    "referencesDesc": "Añade referencias y describe lo que necesitas. Los prompts cortos se enriquecen automáticamente para ajustarse a lo que tenías en mente. Sin código.",
+    "parallel": "find-assets consigue las imágenes reales que pediste",
+    "parallelDesc": "Busca en la web y en fuentes originales, comprueba cada resultado visualmente y entrega imágenes, iconos, audio y 3D en el tamaño y formato exactos que tu sitio necesita.",
+    "deploy": "Un clic y estás en línea, hosting incluido",
+    "deployDesc": "Probado en un navegador real, publicado en una URL HTTPS estable. Redespliega cuanto quieras, el enlace nunca cambia."
   },
   "join": {
-    "subtitle": "Empezar",
-    "title": "Empieza con Flow. Añade Pentest antes del lanzamiento.",
-    "description": "Usa Flow para crear la página pública y luego ejecuta un chequeo de seguridad autorizado en tu app, API u objetivo de staging.",
+    "subtitle": "Míralo en acción",
+    "title": "Mira a Studio construir, en directo",
+    "description": "Archivos escritos, assets encontrados, tu sitio probado en un navegador real, todo en directo ante ti. Empieza gratis con 15 créditos al mes, sin tarjeta.",
     "mute": "Silenciar",
     "unmute": "Activar sonido",
     "play": "Reproducir",
     "pause": "Pausar",
-    "restart": "Reiniciar"
+    "restart": "Reiniciar",
+    "ctaPrimary": "Empieza a crear gratis",
+    "ctaSecondary": "Ver precios"
   },
   "portfolio": {
     "subtitle": "Portfolio Kalit",
@@ -830,8 +842,8 @@
     "downloadRequiresPaid": "Exportar el código requiere un plan de pago. Actualiza a Starter para descargar tu proyecto."
   },
   "seo": {
-    "homeTitle": "Lanza tu sitio y escanea antes de salir",
-    "homeDescription": "Kalit ayuda a fundadores a crear páginas de lanzamiento con Flow, desplegarlas en vivo y ejecutar escaneos pre-lanzamiento autorizados con Pentest.",
+    "homeTitle": "Crea tu sitio web con los mejores modelos de IA",
+    "homeDescription": "Kalit Studio construye y despliega tu sitio desde un prompt. Todos los mejores modelos de IA en una suscripción, y find-assets consigue las imágenes y contenidos exactos que necesitas. Plan gratis, sin tarjeta.",
     "flowTitle": "Kalit Flow - Páginas y apps completas creadas por IA",
     "flowDescription": "Kalit Flow convierte un prompt en una página de lanzamiento o una app completa — diseño, copy, estructura, frontend, backend y despliegue incluidos.",
     "marketingTitle": "Kalit Marketing - Planifica, crea, ejecuta y optimiza campañas de adquisición",

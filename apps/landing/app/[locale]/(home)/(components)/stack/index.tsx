@@ -16,7 +16,7 @@ import { Navigation } from "swiper/modules"
 import { Swiper, SwiperRef, SwiperSlide } from "swiper/react"
 import s from "./stack.module.scss"
 
-const LAUNCH_SUITE_IDS = new Set(["flow", "pentest"])
+const LAUNCH_SUITE_IDS = new Set(["pentest", "search"])
 const launchSuites = SUITES.filter((suite) => LAUNCH_SUITE_IDS.has(suite.id))
 
 export const Stack = () => {

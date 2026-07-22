@@ -13,9 +13,9 @@
     "language": "Idioma"
   },
   "hero": {
-    "subtitle": "Acesso antecipado — Flow + Pentest + Search",
-    "title1": "Lance seu site",
-    "title2": "Escaneie antes do go-live",
+    "subtitle": "Kalit Studio: grátis para começar, sem cartão",
+    "title1": "Crie o seu site",
+    "title2": "com os melhores modelos de IA",
     "promptPlaceholder": "Descreva o site de lançamento que você precisa...",
     "findMySuite": "Lançar com Kalit",
     "recommended": "Suite recomendada",
@@ -24,7 +24,17 @@
     "placeholder1": "Descreva o site de lançamento que você precisa...",
     "placeholder2": "Descreva o site de lançamento que você precisa...",
     "placeholder3": "Descreva o site de lançamento que você precisa...",
-    "placeholder4": "Scan my staging app before launch..."
+    "placeholder4": "Scan my staging app before launch...",
+    "lead": "Uma subscrição, todos os melhores modelos. O Kalit constrói o seu site, encontra as imagens exatas de que precisa, testa-o e coloca-o no ar. Você só o descreve.",
+    "ctaPrimary": "Comece a criar grátis",
+    "ctaSecondary": "Ver projetos reais",
+    "ctaPrimaryAuthed": "Abrir o Studio",
+    "tier": {
+      "free": "Grátis",
+      "starter": "Starter",
+      "pro": "Pro",
+      "enterprise": "Enterprise"
+    }
   },
   "suites": {
     "flow": "Flow",
@@ -50,9 +60,9 @@
     "searchFree": "Grátis"
   },
   "stack": {
-    "subtitle": "Flow + Pentest",
-    "title": "Lance seu site -> Escaneie antes do go-live",
-    "description": "Kalit Flow cria e publica páginas de lançamento. Kalit Pentest escaneia alvos autorizados antes do go-live."
+    "subtitle": "Vá mais longe",
+    "title": "Site no ar? Proteja-o e estude o seu mercado",
+    "description": "O Kalit Pentest executa um scan de segurança autorizado no seu site ou staging. O Kalit Search investiga o seu mercado antes de investir em tráfego."
   },
   "architecture": {
     "subtitle": "A Arquitetura",
@@ -65,26 +75,28 @@
   },
   "features": {
     "subtitle": "Como funciona",
-    "title": "Lance seu site. Escaneie antes do go-live.",
-    "description": "Kalit Flow cria e publica páginas de lançamento. Kalit Pentest escaneia alvos autorizados antes do go-live.",
-    "agents": "Agentes de IA especializados coordenados como uma equipe",
-    "agentsDesc": "Cada agente cuida de um papel - planejamento, código, design, testes, implantação. Eles se coordenam para que você não precise.",
-    "references": "Descreva seu projeto, adicione referências e recursos",
-    "referencesDesc": "Compartilhe capturas de tela, descreva o que precisa e deixe os agentes se adaptarem à sua visão. Sem necessidade de código.",
-    "parallel": "Flow + Pentest",
-    "parallelDesc": "Kalit Flow cria e publica páginas de lançamento. Kalit Pentest escaneia alvos autorizados antes do go-live.",
-    "deploy": "Publique com um clique - hospedagem inclusa",
-    "deployDesc": "Kalit Flow cria e publica páginas de lançamento. Kalit Pentest escaneia alvos autorizados antes do go-live."
+    "title": "De um prompt a um site no ar",
+    "description": "Descreva o que quer. O Kalit planeia, constrói, encontra os assets, testa num navegador real e coloca o site no ar numa URL real.",
+    "agents": "Uma equipa completa de IA no seu projeto",
+    "agentsDesc": "Um planeador divide o trabalho em tarefas, agentes programadores e designers constroem em paralelo, e tudo se funde automaticamente.",
+    "references": "Parta das suas ideias, capturas e ficheiros",
+    "referencesDesc": "Adicione referências e descreva o que precisa. Prompts curtos são enriquecidos automaticamente para corresponder ao que tinha em mente. Sem código.",
+    "parallel": "find-assets consegue as imagens reais que pediu",
+    "parallelDesc": "Pesquisa na web e em fontes originais, verifica cada resultado visualmente e entrega imagens, ícones, áudio e 3D no tamanho e formato exatos de que o seu site precisa.",
+    "deploy": "Um clique e está no ar, alojamento incluído",
+    "deployDesc": "Testado num navegador real, publicado numa URL HTTPS estável. Redeploye quantas vezes quiser, o link nunca muda."
   },
   "join": {
-    "subtitle": "Começar",
-    "title": "Flow + Pentest",
-    "description": "Kalit Flow cria e publica páginas de lançamento. Kalit Pentest escaneia alvos autorizados antes do go-live.",
+    "subtitle": "Veja a funcionar",
+    "title": "Veja o Studio a construir, ao vivo",
+    "description": "Ficheiros escritos, assets encontrados, o seu site testado num navegador real, tudo em direto à sua frente. Comece grátis com 15 créditos por mês, sem cartão.",
     "mute": "Silenciar",
     "unmute": "Ativar som",
     "play": "Reproduzir",
     "pause": "Pausar",
-    "restart": "Reiniciar"
+    "restart": "Reiniciar",
+    "ctaPrimary": "Comece a criar grátis",
+    "ctaSecondary": "Ver preços"
   },
   "portfolio": {
     "subtitle": "Portfolio Kalit",
@@ -830,8 +842,8 @@
     "downloadRequiresPaid": "Exportar o código requer um plano pago. Faça upgrade para o Starter para baixar seu projeto."
   },
   "seo": {
-    "homeTitle": "Lance seu site - Escaneie antes do go-live",
-    "homeDescription": "Kalit Flow cria e publica páginas de lançamento. Kalit Pentest escaneia alvos autorizados antes do go-live.",
+    "homeTitle": "Crie o seu site com os melhores modelos de IA",
+    "homeDescription": "O Kalit Studio constrói e publica o seu site a partir de um prompt. Todos os melhores modelos de IA numa subscrição, e o find-assets encontra as imagens e conteúdos exatos de que precisa. Plano gratuito, sem cartão.",
     "flowTitle": "Kalit Flow - Páginas e apps completos criados por IA",
     "flowDescription": "Kalit Flow transforma um prompt em página de lançamento ou app completo — design, copy, estrutura, frontend, backend e deploy incluídos.",
     "marketingTitle": "Kalit Marketing - Planeje, crie, execute e otimize campanhas de aquisição",

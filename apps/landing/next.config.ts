@@ -1,6 +1,14 @@
+import path from "node:path"
 import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
+  // Pin the workspace root to this monorepo. Without it, any stray lockfile
+  // in a parent folder makes turbopack index and watch ALL of ~/Desktop/work/
+  // kalitai (every sibling repo), eating gigabytes of RAM and freezing the
+  // machine.
+  turbopack: {
+    root: path.join(__dirname, "../..")
+  },
   serverExternalPackages: ["bcryptjs"],
   transpilePackages: ["@kalit/broker-client", "@kalit/i18n", "@kalit/studio-ui", "@kalit/studio-v2"],
   images: {

@@ -2,7 +2,7 @@
 
 import type { Session } from "next-auth"
 import type { ReactNode } from "react"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
 import NextTopLoader from "nextjs-toploader"
@@ -65,14 +65,14 @@ function StudioShellInner({ children, session }: { children: ReactNode; session:
 }
 
 export const StudioShell = ({ children, session = null }: StudioShellProps) => {
-  const [initialFocus, setInitialFocus] = useState<boolean>(false)
+  // The studio ALWAYS opens fullscreen (app-like, no marketing chrome,
+  // Kimi-style). No localStorage read here on purpose: honoring a persisted
+  // opt-out made stale values yank the site header back right after the
+  // fullscreen first paint. The in-studio toggle still works, it just only
+  // lasts for the current visit.
+  const initialFocus = true
   const router = useRouter()
   const searchParams = useSearchParams()
-
-  useEffect(() => {
-    if (typeof window === "undefined") return
-    setInitialFocus(window.localStorage.getItem(FOCUS_STORAGE_KEY) === "1")
-  }, [])
 
   const hostValue = useMemo(
     () => ({

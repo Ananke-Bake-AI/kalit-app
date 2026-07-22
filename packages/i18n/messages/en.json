@@ -13,9 +13,9 @@
     "language": "Language"
   },
   "hero": {
-    "subtitle": "Early access — Flow + Pentest + Search",
-    "title1": "Launch your site",
-    "title2": "Scan before go-live",
+    "subtitle": "Kalit Studio: free to start, no card needed",
+    "title1": "Build your website",
+    "title2": "with the best AI models",
     "promptPlaceholder": "Describe the launch site you need...",
     "findMySuite": "Launch with Kalit",
     "recommended": "Recommended suite",
@@ -24,7 +24,17 @@
     "placeholder1": "Create a launch landing page for my AI startup with pricing...",
     "placeholder2": "Build a waitlist page for my SaaS and deploy it live...",
     "placeholder3": "Create a Product Hunt launch page with testimonials and FAQ...",
-    "placeholder4": "Scan my staging app for security issues before launch..."
+    "placeholder4": "Scan my staging app for security issues before launch...",
+    "lead": "One subscription, every top model. Kalit builds your site, finds the exact images it needs, tests it and puts it live. You just describe it.",
+    "ctaPrimary": "Start building free",
+    "ctaSecondary": "See what people built",
+    "ctaPrimaryAuthed": "Open Studio",
+    "tier": {
+      "free": "Free",
+      "starter": "Starter",
+      "pro": "Pro",
+      "enterprise": "Enterprise"
+    }
   },
   "suites": {
     "flow": "Flow",
@@ -50,9 +60,9 @@
     "searchFree": "Free"
   },
   "stack": {
-    "subtitle": "Launch stack",
-    "title": "From launch page to security check",
-    "description": "Start with Kalit Flow to create and deploy your public site, then use Kalit Pentest to scan authorized targets before you announce."
+    "subtitle": "Go further",
+    "title": "Live site? Secure it, then study your market",
+    "description": "Kalit Pentest runs an authorized security scan on your site or staging target. Kalit Search researches your market before you spend on traffic."
   },
   "architecture": {
     "subtitle": "The Architecture",
@@ -65,26 +75,28 @@
   },
   "features": {
     "subtitle": "How it works",
-    "title": "Built for the public launch moment",
-    "description": "Go from idea to live launch page, then validate the obvious security risks before you drive traffic.",
-    "agents": "Specialized AI agents coordinated as one team",
-    "agentsDesc": "Each agent handles a role - planning, coding, design, testing, deployment. They coordinate so you don't have to.",
-    "references": "Describe your project, add references and assets",
-    "referencesDesc": "Share screenshots, describe what you need, and let the agents match your vision. No coding required.",
-    "parallel": "Pair launch and security workflows",
-    "parallelDesc": "Create the page, iterate on copy and visuals, then run a pre-launch scan without leaving the Kalit workflow.",
-    "deploy": "Go live with one click - hosting included",
-    "deployDesc": "Publish landing pages, redeploy edits, and hand the live URL to Pentest when you are ready to validate it."
+    "title": "From one prompt to a live website",
+    "description": "Describe what you want. Kalit plans it, builds it, finds the assets, tests it in a real browser and puts it live on a real URL.",
+    "agents": "A full AI team on your project",
+    "agentsDesc": "A planner splits the work into tasks, developer and designer agents build them in parallel, and everything merges automatically.",
+    "references": "Start from your ideas, screenshots and files",
+    "referencesDesc": "Drop in references and describe what you need. Short prompts get enriched automatically so the result matches what you had in mind. No coding required.",
+    "parallel": "find-assets gets the real images you asked for",
+    "parallelDesc": "It searches the web and original sources, checks every match visually, and delivers images, icons, audio and 3D at the exact size and format your site needs.",
+    "deploy": "One click and you're live, hosting included",
+    "deployDesc": "Tested in a real browser, published on a stable HTTPS URL. Redeploy as often as you want, the link never changes."
   },
   "join": {
-    "subtitle": "Get started",
-    "title": "Start with Flow. Add Pentest before launch.",
-    "description": "Use Flow to create the public page, then run an authorized security check on your app, API, or staging target.",
+    "subtitle": "See it work",
+    "title": "Watch Studio build, live",
+    "description": "Files written, assets found, your site tested in a real browser, all streaming in front of you. Start free with 15 credits a month, no card needed.",
     "mute": "Mute",
     "unmute": "Unmute",
     "play": "Play",
     "pause": "Pause",
-    "restart": "Restart"
+    "restart": "Restart",
+    "ctaPrimary": "Start building free",
+    "ctaSecondary": "See pricing"
   },
   "portfolio": {
     "subtitle": "Kalit Portfolio",
@@ -907,8 +919,8 @@
     "downloadRequiresPaid": "Exporting your code requires a paid plan. Upgrade to Starter to download your project."
   },
   "seo": {
-    "homeTitle": "Launch your site and scan before go-live",
-    "homeDescription": "Kalit helps founders create AI launch pages with Flow, deploy them live, and run authorized pre-launch security scans with Pentest.",
+    "homeTitle": "Build your website with the best AI models",
+    "homeDescription": "Kalit Studio builds and deploys your website from one prompt. Every top AI model in one subscription, and find-assets fetches the exact images and content your site needs. Free plan, no card needed.",
     "flowTitle": "Kalit Flow - Launch pages and full apps built by AI",
     "flowDescription": "Kalit Flow turns a prompt into a live launch page or a full app — design, copy, structure, frontend, backend, and deploy included.",
     "marketingTitle": "Kalit Marketing - Plan, create, run, and optimize acquisition campaigns",

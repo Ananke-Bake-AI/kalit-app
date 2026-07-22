@@ -13,9 +13,9 @@
     "language": "Dil"
   },
   "hero": {
-    "subtitle": "Erken erişim — Flow + Pentest + Search",
-    "title1": "Siteni yayina al",
-    "title2": "Canliya gecmeden tara",
+    "subtitle": "Kalit Studio: ücretsiz başlayın, kart gerekmez",
+    "title1": "Web sitenizi",
+    "title2": "en iyi yapay zeka modelleriyle kurun",
     "promptPlaceholder": "Ihtiyacin olan lansman sitesini anlat...",
     "findMySuite": "Kalit ile başlat",
     "recommended": "Önerilen paket",
@@ -24,7 +24,17 @@
     "placeholder1": "Ihtiyacin olan lansman sitesini anlat...",
     "placeholder2": "Ihtiyacin olan lansman sitesini anlat...",
     "placeholder3": "Ihtiyacin olan lansman sitesini anlat...",
-    "placeholder4": "Scan my staging app before launch..."
+    "placeholder4": "Scan my staging app before launch...",
+    "lead": "Tek abonelik, tüm üst düzey modeller. Kalit sitenizi kurar, tam ihtiyaç duyduğu görselleri bulur, test eder ve yayına alır. Siz sadece anlatın.",
+    "ctaPrimary": "Ücretsiz kurmaya başla",
+    "ctaSecondary": "Gerçek projeleri gör",
+    "ctaPrimaryAuthed": "Studio'yu aç",
+    "tier": {
+      "free": "Ücretsiz",
+      "starter": "Starter",
+      "pro": "Pro",
+      "enterprise": "Enterprise"
+    }
   },
   "suites": {
     "flow": "Flow",
@@ -50,9 +60,9 @@
     "searchFree": "Ücretsiz"
   },
   "stack": {
-    "subtitle": "Flow + Pentest",
-    "title": "Siteni yayina al -> Canliya gecmeden tara",
-    "description": "Kalit Flow lansman sayfalari olusturur ve yayina alir. Kalit Pentest canliya gecmeden once yetkili hedefleri tarar."
+    "subtitle": "Daha ileri git",
+    "title": "Site yayında mı? Güvenliğini sağla, pazarını araştır",
+    "description": "Kalit Pentest, siteniz veya staging ortamınız üzerinde yetkili bir güvenlik taraması yapar. Kalit Search, trafiğe para harcamadan önce pazarınızı araştırır."
   },
   "architecture": {
     "subtitle": "Mimari",
@@ -65,26 +75,28 @@
   },
   "features": {
     "subtitle": "Nasıl çalışır",
-    "title": "Siteni yayina al. Canliya gecmeden tara.",
-    "description": "Kalit Flow lansman sayfalari olusturur ve yayina alir. Kalit Pentest canliya gecmeden once yetkili hedefleri tarar.",
-    "agents": "Tek bir takım olarak koordine edilen uzman AI ajanları",
-    "agentsDesc": "Her ajan bir rol üstlenir - planlama, kodlama, tasarım, test, dağıtım. Siz uğraşmak zorunda kalmadan kendi aralarında koordine olurlar.",
-    "references": "Projenizi açıklayın, referanslar ve dosyalar ekleyin",
-    "referencesDesc": "Ekran görüntüleri paylaşın, ihtiyacınızı açıklayın ve ajanların vizyonunuzu gerçekleştirmesine izin verin. Kodlama gerekmez.",
-    "parallel": "Flow + Pentest",
-    "parallelDesc": "Kalit Flow lansman sayfalari olusturur ve yayina alir. Kalit Pentest canliya gecmeden once yetkili hedefleri tarar.",
-    "deploy": "Tek tıkla yayına alın - barındırma dahil",
-    "deployDesc": "Kalit Flow lansman sayfalari olusturur ve yayina alir. Kalit Pentest canliya gecmeden once yetkili hedefleri tarar."
+    "title": "Tek bir prompttan yayındaki siteye",
+    "description": "Ne istediğinizi anlatın. Kalit planlar, kurar, varlıkları bulur, gerçek bir tarayıcıda test eder ve siteyi gerçek bir URL'de yayına alır.",
+    "agents": "Projenizde eksiksiz bir yapay zeka ekibi",
+    "agentsDesc": "Bir planlayıcı işi görevlere böler, geliştirici ve tasarımcı ajanlar bunları paralel kurar, her şey otomatik birleşir.",
+    "references": "Fikirlerinizden, ekran görüntülerinizden ve dosyalarınızdan başlayın",
+    "referencesDesc": "Referans ekleyin, ihtiyacınızı anlatın. Kısa promptlar otomatik zenginleştirilir, sonuç aklınızdakine uyar. Kod gerekmez.",
+    "parallel": "find-assets istediğiniz gerçek görselleri getirir",
+    "parallelDesc": "Webde ve orijinal kaynaklarda arar, her eşleşmeyi görsel olarak doğrular ve görselleri, ikonları, sesi ve 3D'yi sitenizin ihtiyaç duyduğu tam boyut ve formatta teslim eder.",
+    "deploy": "Tek tık ve yayındasınız, barındırma dahil",
+    "deployDesc": "Gerçek bir tarayıcıda test edilir, sabit bir HTTPS URL'de yayımlanır. İstediğiniz kadar yeniden dağıtın, bağlantı asla değişmez."
   },
   "join": {
-    "subtitle": "Başlayın",
-    "title": "Flow + Pentest",
-    "description": "Kalit Flow lansman sayfalari olusturur ve yayina alir. Kalit Pentest canliya gecmeden once yetkili hedefleri tarar.",
+    "subtitle": "İş başında izleyin",
+    "title": "Studio'nun kuruşunu canlı izleyin",
+    "description": "Dosyalar yazılır, varlıklar bulunur, siteniz gerçek tarayıcıda test edilir, hepsi gözünüzün önünde akar. Ayda 15 kredi ile ücretsiz başlayın, kart gerekmez.",
     "mute": "Sesi kapat",
     "unmute": "Sesi aç",
     "play": "Oynat",
     "pause": "Duraklat",
-    "restart": "Yeniden başlat"
+    "restart": "Yeniden başlat",
+    "ctaPrimary": "Ücretsiz kurmaya başla",
+    "ctaSecondary": "Fiyatları gör"
   },
   "portfolio": {
     "subtitle": "Kalit Portföy",
@@ -830,8 +842,8 @@
     "downloadRequiresPaid": "Kodu dışa aktarmak ücretli bir plan gerektirir. Projeni indirmek için Starter'a geç."
   },
   "seo": {
-    "homeTitle": "Siteni yayina al - Canliya gecmeden tara",
-    "homeDescription": "Kalit Flow lansman sayfalari olusturur ve yayina alir. Kalit Pentest canliya gecmeden once yetkili hedefleri tarar.",
+    "homeTitle": "Web sitenizi en iyi yapay zeka modelleriyle kurun",
+    "homeDescription": "Kalit Studio tek bir prompttan sitenizi kurar ve yayınlar. Tüm üst düzey yapay zeka modelleri tek abonelikte, find-assets ihtiyacınız olan görsel ve içerikleri tam isabetle bulur. Ücretsiz plan, kart gerekmez.",
     "flowTitle": "Kalit Flow - AI ile inşa edilen lansman sayfaları ve tam uygulamalar",
     "flowDescription": "Kalit Flow bir prompttan lansman sayfası veya tam uygulama üretir — tasarım, metin, yapı, frontend, backend ve deploy dahil.",
     "marketingTitle": "Kalit Marketing - Müşteri kazanım kampanyalarını planlayın, oluşturun, yürütün ve optimize edin",

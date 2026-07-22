@@ -1,47 +1,44 @@
 "use client"
 
+import { Button } from "@/components/button"
+import { Color4Bg } from "@/components/color4bg"
 import { Container } from "@/components/container"
-import { HeroPromptChat, heroPromptChatStyles as promptChat } from "@/components/hero-prompt-chat"
-import { Icon } from "@/components/icon"
-import { Logo } from "@/components/logo"
-import { Powered } from "@/components/models/powered"
+import { Marquee } from "@/components/marquee"
 import { RevealText } from "@/components/reveal-text"
 import { Subtitle } from "@/components/subtitle"
-import { useAnimatedPlaceholder } from "@/hooks/use-animated-placeholder"
-import { localePath } from "@/lib/i18n"
-import { createStudioSession, studioLoginHref } from "@/lib/studio-redirect"
-import { detectSuiteFromPrompt, getHeroPromptSuites, getSuiteDisplayTitle, type SuiteConfig } from "@/lib/suites"
 import { useI18n } from "@/stores/i18n"
 import { useGSAP } from "@gsap/react"
+import clsx from "clsx"
 import gsap from "gsap"
 import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
-import { useCallback, useRef, useState } from "react"
+import { useRef } from "react"
 import s from "./hero.module.scss"
 import { Lines } from "./lines"
 
-const PLACEHOLDER_KEYS = ["hero.placeholder1", "hero.placeholder2", "hero.placeholder3", "hero.placeholder4"]
+// User-facing model catalog, mirroring the broker's tier gating
+// (kalit-broker internal/models/catalog.go). Names are not translated.
+type ModelTier = "free" | "starter" | "pro" | "enterprise"
+const MODELS: { name: string; tier: ModelTier }[] = [
+  { name: "DeepSeek V4", tier: "free" },
+  { name: "Kimi K2.7", tier: "starter" },
+  { name: "Qwen3-Coder", tier: "starter" },
+  { name: "GLM-5", tier: "starter" },
+  { name: "MiniMax M3", tier: "starter" },
+  { name: "GPT-OSS 120B", tier: "starter" },
+  { name: "Claude Sonnet 4.6", tier: "pro" },
+  { name: "Claude Opus 4.8", tier: "pro" },
+  { name: "Claude Fable 5", tier: "enterprise" }
+]
+
+// The Marquee loops by translating -50% of its content: the single set must be
+// wider than any viewport, so render the catalog twice inside one set.
+const MARQUEE_MODELS = [...MODELS, ...MODELS]
 
 export const Hero = () => {
-  const router = useRouter()
   const { status } = useSession()
   const { locale, t } = useI18n()
-  const PLACEHOLDERS = PLACEHOLDER_KEYS.map((k) => t(k))
-  const [promptValue, setPromptValue] = useState("")
-  const [matchedSuite, setMatchedSuite] = useState<SuiteConfig | null>(null)
-  const [isThinking, setIsThinking] = useState(false)
-  const promptRef = useRef<HTMLTextAreaElement | null>(null)
   const titleRef = useRef<HTMLDivElement>(null)
   const hasAnimatedRef = useRef(false)
-
-  const {
-    timelineRef: promptTimelineRef,
-    handleFocus: handlePromptFocus,
-    handleBlur: handlePromptBlur
-  } = useAnimatedPlaceholder(promptRef, {
-    phrases: PLACEHOLDERS,
-    focusedPlaceholder: t("hero.promptPlaceholder")
-  })
 
   useGSAP(() => {
     const el = titleRef.current
@@ -52,173 +49,60 @@ export const Hero = () => {
     // that wait was pushing LCP to ~10s. GSAP only enhances from here.
     if (!hasAnimatedRef.current) {
       hasAnimatedRef.current = true
-      gsap
-        .timeline()
-        .fromTo(el, { scale: 1.15 }, { scale: 1, duration: 2, ease: "back.inOut" })
-        .fromTo(
-          "[data-cards] > *",
-          { scale: 0 },
-          { scale: 1, stagger: 0.25, duration: 1, ease: "back.out", delay: 0 },
-          "<0.5"
-        )
+      gsap.timeline().fromTo(el, { scale: 1.15 }, { scale: 1, duration: 2, ease: "back.inOut" })
     }
   }, [locale])
 
-  const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setPromptValue(e.target.value)
-    if (matchedSuite) setMatchedSuite(null)
-    if (isThinking) setIsThinking(false)
-  }
-
-  const handleSubmit = useCallback(async () => {
-    const trimmed = promptValue.trim()
-    if (!trimmed) return
-    if (status === "loading") return
-
-    // When authenticated, detect suite and go straight to Studio
-    if (status === "authenticated") {
-      setIsThinking(true)
-      setMatchedSuite(null)
-      const detected = detectSuiteFromPrompt(trimmed)
-      const suiteId = (detected?.id || "flow") as import("@/lib/suites").SuiteId
-      const url = await createStudioSession(trimmed, suiteId)
-      router.push(localePath(url, locale))
-      return
-    }
-
-    // Unauthenticated: show recommendation card
-    setIsThinking(true)
-    setMatchedSuite(null)
-    setTimeout(() => {
-      setIsThinking(false)
-      setMatchedSuite(detectSuiteFromPrompt(trimmed))
-    }, 800)
-  }, [promptValue, status, router, locale])
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
-      handleSubmit()
-    }
-  }
-
-  const handleSuiteClick = useCallback(
-    async (suiteId: string) => {
-      const trimmed = promptValue.trim()
-      if (!trimmed) return
-      if (status === "loading") return
-      const sid = suiteId as import("@/lib/suites").SuiteId
-      if (status === "authenticated") {
-        const url = await createStudioSession(trimmed, sid)
-        router.push(localePath(url, locale))
-        return
-      }
-      router.push(localePath(studioLoginHref(trimmed, sid), locale))
-    },
-    [promptValue, router, status, locale]
-  )
-
-  const handleQuickSelect = async (suite: SuiteConfig) => {
-    setPromptValue(suite.quickPrompt)
-    promptTimelineRef.current?.pause()
-
-    // When authenticated, go straight to Studio
-    if (status === "authenticated") {
-      setIsThinking(true)
-      const sid = suite.id as import("@/lib/suites").SuiteId
-      const url = await createStudioSession(suite.quickPrompt, sid)
-      router.push(localePath(url, locale))
-      return
-    }
-
-    setIsThinking(true)
-    setTimeout(() => {
-      setIsThinking(false)
-      setMatchedSuite(suite)
-    }, 600)
-  }
+  // Everyone lands straight in Studio (Kimi-style funnel): anonymous
+  // visitors get the sign-in modal there only when they try to build.
+  const primaryHref = "/studio"
 
   return (
     <section className={s.hero}>
-      <Container>
-        <Subtitle>{t("hero.subtitle")}</Subtitle>
-        <div ref={titleRef} className={s.title}>
-          <RevealText tag="h1" key={`reveal-${locale}`}>
-            <span>{t("hero.title1")}</span>
-            <span>{t("hero.title2")}</span>
-          </RevealText>
-        </div>
-        <div data-reveal>
-          <HeroPromptChat
-            layout="centered"
-            textareaRef={promptRef}
-            value={promptValue}
-            placeholder={t("hero.promptPlaceholder")}
-            onChange={handlePromptChange}
-            onFocus={handlePromptFocus}
-            onBlur={handlePromptBlur}
-            onKeyDown={handleKeyDown}
-            onSend={handleSubmit}
-            sendLabel={t("hero.findMySuite")}
-            sendLogoId="kalit"
-            footer={
-              <>
-                <Lines />
-                <div className={promptChat.quick}>
-                  {getHeroPromptSuites().map((suite) => (
-                    <button
-                      key={suite.id}
-                      type="button"
-                      style={{ "--suite-color": suite.color } as React.CSSProperties}
-                      onClick={() => handleQuickSelect(suite)}
-                    >
-                      <span className={promptChat.quickIcon}>
-                        <Logo id={suite.id} />
-                      </span>
-                      <span>{getSuiteDisplayTitle(suite)}</span>
-                    </button>
-                  ))}
-                </div>
-              </>
-            }
-          >
-            {isThinking ? (
-              <div className={promptChat.thinking}>
-                <div className={promptChat.dots}>
-                  <span />
-                  <span />
-                  <span />
-                </div>
-                <span>{t("hero.analyzing")}</span>
+      <div className={s.main}>
+        <Container>
+          <Subtitle>{t("hero.subtitle")}</Subtitle>
+          <div ref={titleRef} className={s.title}>
+            <RevealText tag="h1" key={`reveal-${locale}`}>
+              <span>{t("hero.title1")}</span>
+              <span>{t("hero.title2")}</span>
+            </RevealText>
+          </div>
+          <div className={s.center} data-reveal>
+            <Lines />
+            <div className={s.panel}>
+              <p className={s.lead}>{t("hero.lead")}</p>
+              <div className={s.actions}>
+                <Button href={primaryHref} circle className={s.btn} data-button-id="hero-studio">
+                  {status === "authenticated" ? t("hero.ctaPrimaryAuthed") : t("hero.ctaPrimary")}
+                </Button>
+                <Button href="#projects" variant="secondary" className={s.btn} data-button-id="hero-projects">
+                  {t("hero.ctaSecondary")}
+                </Button>
               </div>
-            ) : null}
-
-            {matchedSuite && !isThinking ? (
-              <div className={promptChat.result} style={{ "--suite-color": matchedSuite.color } as React.CSSProperties}>
-                <div className={promptChat.resultHeader}>
-                  <Icon icon="hugeicons:sparkles" />
-                  <span>{t("hero.recommended")}</span>
-                </div>
-                <button
-                  className={promptChat.resultCard}
-                  type="button"
-                  onClick={() => handleSuiteClick(matchedSuite.id)}
-                >
-                  <div className={promptChat.resultIcon}>
-                    <Logo id={matchedSuite.id} />
-                  </div>
-                  <div className={promptChat.resultInfo}>
-                    <strong>Kalit {getSuiteDisplayTitle(matchedSuite)}</strong>
-                    <span>{matchedSuite.matchDescription}</span>
-                  </div>
-                  <Icon icon="hugeicons:arrow-right-02" className={promptChat.resultArrow} />
-                </button>
-              </div>
-            ) : null}
-          </HeroPromptChat>
+            </div>
+            <div className={s.aura} aria-hidden>
+              <Color4Bg style="blur-gradient" />
+            </div>
+          </div>
+        </Container>
+      </div>
+      <div className={s.bottom}>
+        <div className={s.powered} data-reveal>
+          <h2>{t("hero.poweredBy")}</h2>
         </div>
-        <Powered title={t("hero.poweredBy")} />
-      </Container>
+        <div className={s.models} data-reveal>
+          <Marquee factor={4}>
+            {MARQUEE_MODELS.map((model, i) => (
+              <span key={`${model.name}-${i}`} className={clsx(s.model, s[model.tier])}>
+                <i aria-hidden />
+                {model.name}
+                <em>{t(`hero.tier.${model.tier}`)}</em>
+              </span>
+            ))}
+          </Marquee>
+        </div>
+      </div>
     </section>
   )
 }

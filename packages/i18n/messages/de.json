@@ -13,9 +13,9 @@
     "language": "Sprache"
   },
   "hero": {
-    "subtitle": "Early Access — Flow + Pentest + Search",
-    "title1": "Starte deine Website",
-    "title2": "Scanne vor dem Go-live",
+    "subtitle": "Kalit Studio: kostenlos starten, keine Karte nötig",
+    "title1": "Baue deine Website",
+    "title2": "mit den besten KI-Modellen",
     "promptPlaceholder": "Beschreibe die Launch-Website, die du brauchst...",
     "findMySuite": "Mit Kalit starten",
     "recommended": "Empfohlene Suite",
@@ -24,7 +24,17 @@
     "placeholder1": "Beschreibe die Launch-Website, die du brauchst...",
     "placeholder2": "Beschreibe die Launch-Website, die du brauchst...",
     "placeholder3": "Beschreibe die Launch-Website, die du brauchst...",
-    "placeholder4": "Scan my staging app before launch..."
+    "placeholder4": "Scan my staging app before launch...",
+    "lead": "Ein Abo, alle Top-Modelle. Kalit baut deine Website, findet genau die passenden Bilder, testet sie und stellt sie live. Du beschreibst nur, was du willst.",
+    "ctaPrimary": "Kostenlos loslegen",
+    "ctaSecondary": "Echte Projekte ansehen",
+    "ctaPrimaryAuthed": "Studio öffnen",
+    "tier": {
+      "free": "Gratis",
+      "starter": "Starter",
+      "pro": "Pro",
+      "enterprise": "Enterprise"
+    }
   },
   "suites": {
     "flow": "Flow",
@@ -50,9 +60,9 @@
     "searchFree": "Kostenlos"
   },
   "stack": {
-    "subtitle": "Flow + Pentest",
-    "title": "Starte deine Website -> Scanne vor dem Go-live",
-    "description": "Kalit Flow erstellt und deployt Launch-Seiten. Kalit Pentest scannt autorisierte Ziele vor dem Go-live."
+    "subtitle": "Geh weiter",
+    "title": "Website live? Absichern und den Markt verstehen",
+    "description": "Kalit Pentest führt einen autorisierten Sicherheitsscan deiner Website oder Staging-Umgebung durch. Kalit Search analysiert deinen Markt, bevor du in Traffic investierst."
   },
   "architecture": {
     "subtitle": "Die Architektur",
@@ -64,27 +74,29 @@
     "titleBold": "ein Modell"
   },
   "features": {
-    "subtitle": "So funktioniert's",
-    "title": "Starte deine Website. Scanne vor dem Go-live.",
-    "description": "Kalit Flow erstellt und deployt Launch-Seiten. Kalit Pentest scannt autorisierte Ziele vor dem Go-live.",
-    "agents": "Spezialisierte KI-Agenten als koordiniertes Team",
-    "agentsDesc": "Jeder Agent übernimmt eine Rolle - Planung, Code, Design, Tests, Deployment. Sie koordinieren sich, damit du es nicht musst.",
-    "references": "Beschreibe dein Projekt, füge Referenzen hinzu",
-    "referencesDesc": "Teile Screenshots, beschreibe was du brauchst und lass die Agenten deine Vision umsetzen. Keine Programmierkenntnisse nötig.",
-    "parallel": "Flow + Pentest",
-    "parallelDesc": "Kalit Flow erstellt und deployt Launch-Seiten. Kalit Pentest scannt autorisierte Ziele vor dem Go-live.",
-    "deploy": "Mit einem Klick live - Hosting inklusive",
-    "deployDesc": "Kalit Flow erstellt und deployt Launch-Seiten. Kalit Pentest scannt autorisierte Ziele vor dem Go-live."
+    "subtitle": "So funktioniert es",
+    "title": "Von einem Prompt zur Live-Website",
+    "description": "Beschreibe, was du willst. Kalit plant, baut, findet die Assets, testet im echten Browser und stellt die Seite auf einer echten URL live.",
+    "agents": "Ein komplettes KI-Team für dein Projekt",
+    "agentsDesc": "Ein Planer zerlegt die Arbeit in Aufgaben, Entwickler- und Designer-Agenten bauen parallel, und alles wird automatisch zusammengeführt.",
+    "references": "Starte mit deinen Ideen, Screenshots und Dateien",
+    "referencesDesc": "Füge Referenzen hinzu und beschreibe, was du brauchst. Knappe Prompts werden automatisch angereichert, damit das Ergebnis deiner Vorstellung entspricht. Kein Code nötig.",
+    "parallel": "find-assets liefert die echten Bilder, die du wolltest",
+    "parallelDesc": "Es durchsucht das Web und Originalquellen, prüft jeden Treffer visuell und liefert Bilder, Icons, Audio und 3D in exakt der Größe und dem Format, das deine Seite braucht.",
+    "deploy": "Ein Klick und du bist live, Hosting inklusive",
+    "deployDesc": "Im echten Browser getestet, auf einer stabilen HTTPS-URL veröffentlicht. Deploye so oft du willst, der Link bleibt gleich."
   },
   "join": {
-    "subtitle": "Loslegen",
-    "title": "Flow + Pentest",
-    "description": "Kalit Flow erstellt und deployt Launch-Seiten. Kalit Pentest scannt autorisierte Ziele vor dem Go-live.",
+    "subtitle": "Sieh es arbeiten",
+    "title": "Sieh Studio live bauen",
+    "description": "Dateien werden geschrieben, Assets gefunden, deine Seite im echten Browser getestet, alles live vor deinen Augen. Starte kostenlos mit 15 Credits im Monat, ohne Karte.",
     "mute": "Stummschalten",
     "unmute": "Ton einschalten",
     "play": "Abspielen",
     "pause": "Pause",
-    "restart": "Neu starten"
+    "restart": "Neu starten",
+    "ctaPrimary": "Kostenlos loslegen",
+    "ctaSecondary": "Preise ansehen"
   },
   "portfolio": {
     "subtitle": "Kalit Portfolio",
@@ -830,8 +842,8 @@
     "downloadRequiresPaid": "Der Code-Export erfordert einen kostenpflichtigen Plan. Wechsle zu Starter, um dein Projekt herunterzuladen."
   },
   "seo": {
-    "homeTitle": "Starte deine Website - Scanne vor dem Go-live",
-    "homeDescription": "Kalit Flow erstellt und deployt Launch-Seiten. Kalit Pentest scannt autorisierte Ziele vor dem Go-live.",
+    "homeTitle": "Baue deine Website mit den besten KI-Modellen",
+    "homeDescription": "Kalit Studio baut und veröffentlicht deine Website aus einem Prompt. Alle Top-KI-Modelle in einem Abo, und find-assets findet genau die Bilder und Inhalte, die deine Seite braucht. Kostenloser Plan, keine Karte nötig.",
     "flowTitle": "Kalit Flow - Launch-Seiten und komplette Apps mit KI",
     "flowDescription": "Kalit Flow macht aus einem Prompt eine Launch-Seite oder eine komplette App — Design, Copy, Struktur, Frontend, Backend und Deploy inklusive.",
     "marketingTitle": "Kalit Marketing - Akquisekampagnen planen, erstellen, durchführen und optimieren",

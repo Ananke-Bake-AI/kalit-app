@@ -23,7 +23,15 @@
 
   .btn {
     font-size: 1.15em;
+  }
+
+  .ctas {
     margin-top: var(--spacing-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--size-4);
+    flex-wrap: wrap;
   }
 }
 

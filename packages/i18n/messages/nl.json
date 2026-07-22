@@ -13,9 +13,9 @@
     "language": "Taal"
   },
   "hero": {
-    "subtitle": "Vroege toegang — Flow + Pentest + Search",
-    "title1": "Lanceer je site",
-    "title2": "Scan voor go-live",
+    "subtitle": "Kalit Studio: gratis starten, geen kaart nodig",
+    "title1": "Bouw je website",
+    "title2": "met de beste AI-modellen",
     "promptPlaceholder": "Beschrijf de lanceersite die je nodig hebt...",
     "findMySuite": "Starten met Kalit",
     "recommended": "Aanbevolen suite",
@@ -24,7 +24,17 @@
     "placeholder1": "Beschrijf de lanceersite die je nodig hebt...",
     "placeholder2": "Beschrijf de lanceersite die je nodig hebt...",
     "placeholder3": "Beschrijf de lanceersite die je nodig hebt...",
-    "placeholder4": "Scan my staging app before launch..."
+    "placeholder4": "Scan my staging app before launch...",
+    "lead": "Eén abonnement, alle topmodellen. Kalit bouwt je website, vindt precies de juiste afbeeldingen, test hem en zet hem live. Jij hoeft hem alleen te beschrijven.",
+    "ctaPrimary": "Gratis beginnen met bouwen",
+    "ctaSecondary": "Bekijk echte projecten",
+    "ctaPrimaryAuthed": "Studio openen",
+    "tier": {
+      "free": "Gratis",
+      "starter": "Starter",
+      "pro": "Pro",
+      "enterprise": "Enterprise"
+    }
   },
   "suites": {
     "flow": "Flow",
@@ -50,9 +60,9 @@
     "searchFree": "Gratis"
   },
   "stack": {
-    "subtitle": "Flow + Pentest",
-    "title": "Lanceer je site -> Scan voor go-live",
-    "description": "Kalit Flow maakt en publiceert launchpagina's. Kalit Pentest scant geautoriseerde doelen voor go-live."
+    "subtitle": "Ga verder",
+    "title": "Site live? Beveilig hem en bestudeer je markt",
+    "description": "Kalit Pentest voert een geautoriseerde beveiligingsscan uit op je site of staging. Kalit Search onderzoekt je markt voordat je in verkeer investeert."
   },
   "architecture": {
     "subtitle": "De Architectuur",
@@ -65,26 +75,28 @@
   },
   "features": {
     "subtitle": "Hoe het werkt",
-    "title": "Lanceer je site. Scan voor go-live.",
-    "description": "Kalit Flow maakt en publiceert launchpagina's. Kalit Pentest scant geautoriseerde doelen voor go-live.",
-    "agents": "Gespecialiseerde AI-agents gecoördineerd als één team",
-    "agentsDesc": "Elke agent vervult een rol - planning, ontwikkeling, design, testen, deployment. Ze coördineren zodat jij dat niet hoeft te doen.",
-    "references": "Beschrijf je project, voeg referenties en bestanden toe",
-    "referencesDesc": "Deel screenshots, beschrijf wat je nodig hebt en laat de agents je visie waarmaken. Geen programmeerkennis vereist.",
-    "parallel": "Flow + Pentest",
-    "parallelDesc": "Kalit Flow maakt en publiceert launchpagina's. Kalit Pentest scant geautoriseerde doelen voor go-live.",
-    "deploy": "Ga live met één klik - hosting inbegrepen",
-    "deployDesc": "Kalit Flow maakt en publiceert launchpagina's. Kalit Pentest scant geautoriseerde doelen voor go-live."
+    "title": "Van één prompt naar een live website",
+    "description": "Beschrijf wat je wilt. Kalit plant, bouwt, vindt de assets, test in een echte browser en zet de site live op een echte URL.",
+    "agents": "Een volledig AI-team op je project",
+    "agentsDesc": "Een planner verdeelt het werk in taken, developer- en designer-agenten bouwen ze parallel, en alles wordt automatisch samengevoegd.",
+    "references": "Begin met je ideeën, screenshots en bestanden",
+    "referencesDesc": "Voeg referenties toe en beschrijf wat je nodig hebt. Korte prompts worden automatisch verrijkt zodat het resultaat klopt met wat je in gedachten had. Geen code nodig.",
+    "parallel": "find-assets haalt de echte afbeeldingen die je vroeg",
+    "parallelDesc": "Het doorzoekt het web en originele bronnen, controleert elke match visueel en levert afbeeldingen, iconen, audio en 3D in precies het formaat en de afmetingen die je site nodig heeft.",
+    "deploy": "Eén klik en je bent live, hosting inbegrepen",
+    "deployDesc": "Getest in een echte browser, gepubliceerd op een stabiele HTTPS-URL. Deploy zo vaak je wilt, de link verandert nooit."
   },
   "join": {
-    "subtitle": "Aan de slag",
-    "title": "Flow + Pentest",
-    "description": "Kalit Flow maakt en publiceert launchpagina's. Kalit Pentest scant geautoriseerde doelen voor go-live.",
+    "subtitle": "Zie het werken",
+    "title": "Kijk hoe Studio live bouwt",
+    "description": "Bestanden geschreven, assets gevonden, je site getest in een echte browser, alles live voor je ogen. Begin gratis met 15 credits per maand, zonder kaart.",
     "mute": "Dempen",
     "unmute": "Geluid aan",
     "play": "Afspelen",
     "pause": "Pauze",
-    "restart": "Opnieuw"
+    "restart": "Opnieuw",
+    "ctaPrimary": "Gratis beginnen met bouwen",
+    "ctaSecondary": "Bekijk prijzen"
   },
   "portfolio": {
     "subtitle": "Kalit Portfolio",
@@ -830,8 +842,8 @@
     "downloadRequiresPaid": "Code exporteren vereist een betaald abonnement. Upgrade naar Starter om je project te downloaden."
   },
   "seo": {
-    "homeTitle": "Lanceer je site - Scan voor go-live",
-    "homeDescription": "Kalit Flow maakt en publiceert launchpagina's. Kalit Pentest scant geautoriseerde doelen voor go-live.",
+    "homeTitle": "Bouw je website met de beste AI-modellen",
+    "homeDescription": "Kalit Studio bouwt en publiceert je website vanuit één prompt. Alle top-AI-modellen in één abonnement, en find-assets vindt precies de afbeeldingen en content die je site nodig heeft. Gratis plan, geen kaart nodig.",
     "flowTitle": "Kalit Flow - Launchpaginas en complete apps door AI",
     "flowDescription": "Kalit Flow maakt van een prompt een launchpagina of complete app — design, copy, structuur, frontend, backend en deploy inbegrepen.",
     "marketingTitle": "Kalit Marketing - Plan, creëer, voer uit en optimaliseer acquisitiecampagnes",

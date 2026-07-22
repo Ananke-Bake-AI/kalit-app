@@ -2,14 +2,31 @@
 
 .hero {
   padding: calc(16px + 12 * (100vw - 320px) / 1080) 0 0;
+  // The aura and decorative lines intentionally overshoot the container;
+  // without clipping they widen the page and shift the whole layout.
+  overflow-x: clip;
+  display: flex;
+  flex-direction: column;
 
   @include min($responsive) {
     text-align: center;
+    // Fill the first viewport (sticky header is ~126px tall and in flow) so
+    // the content centers and the model marquee sits right at the fold.
+    min-height: calc(100svh - 126px);
 
     .btn {
       font-size: 1.25em;
     }
   }
+}
+
+// Grows to fill the viewport space above the marquee and centers the
+// title + card block inside it.
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .title {
@@ -57,6 +74,161 @@
       position: relative;
     }
   }
+}
+
+// Wrapper sized like the old prompt-chat card: the decorative lines anchor to
+// this box and their inner ends tuck under the glass card, exactly like the
+// original hero hid them under the prompt surface.
+.center {
+  position: relative;
+  z-index: 2;
+  max-width: 680px;
+  margin: var(--size-10) auto 0;
+
+  @include max($responsive) {
+    max-width: none;
+    margin-top: var(--size-8);
+  }
+}
+
+// The glass surface itself, same recipe as the original prompt-chat shell,
+// now holding the lead + CTAs so the text reads over the colored background.
+// NOT named .card: the legacy floating-agent-card styles below already use
+// that name and CSS modules would merge the two rule sets.
+.panel {
+  position: relative;
+  z-index: 5;
+  padding: var(--size-7);
+  background: linear-gradient(to bottom, var(--glass-50), var(--glass-75));
+  @include cornerShape(var(--radius-1));
+  @include border-glass(var(--gradient-border-glass-3));
+
+  @include max($responsive) {
+    padding: var(--size-5);
+  }
+}
+
+.lead {
+  margin: 0 auto;
+  max-width: 560px;
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  text-wrap: balance;
+  font-size: calc(16px + 3 * (100vw - 320px) / 1080);
+
+  @include max($responsive) {
+    text-align: left;
+    margin-inline: 0;
+  }
+}
+
+.actions {
+  margin-top: var(--size-6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-4);
+  flex-wrap: wrap;
+
+  @include max($responsive) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--size-3);
+
+    .btn {
+      width: 100%;
+      justify-content: center;
+      text-align: center;
+    }
+  }
+}
+
+// Bottom strip of the first viewport: caption + full-bleed model marquee.
+.bottom {
+  margin-top: var(--size-10);
+  padding-bottom: var(--size-6);
+}
+
+// "Powered by leading AI models" caption above the marquee, same treatment as
+// the Powered strip the original hero ended with.
+.powered {
+  text-align: center;
+  color: var(--text-secondary);
+
+  h2 {
+    font-family: var(--font-main);
+    font-size: 1em;
+    font-weight: 300;
+  }
+}
+
+// Full-bleed catalog marquee: model pills scrolling edge to edge, faded out
+// on both sides.
+.models {
+  margin-top: var(--size-5);
+  padding-block: var(--size-2);
+  @include mask(linear-gradient(to right, transparent, #000 12%, #000 88%, transparent));
+}
+
+.model {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  margin-right: var(--size-3);
+  padding: 0.55em 1.1em;
+  background: var(--glass-50);
+  border: 1px solid oklch(from var(--white) l c h / 0.25);
+  border-radius: var(--radius-rounded);
+  font-family: var(--font-mono);
+  font-size: calc(12px + 2 * (100vw - 320px) / 1080);
+  white-space: nowrap;
+
+  i {
+    width: 0.55em;
+    height: 0.55em;
+    border-radius: var(--radius-rounded);
+    background-color: var(--tier-color);
+    flex-shrink: 0;
+  }
+
+  em {
+    font-style: normal;
+    font-size: 0.7em;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+  }
+
+  &.free {
+    --tier-color: var(--color-1);
+  }
+
+  &.starter {
+    --tier-color: var(--color-2);
+  }
+
+  &.pro {
+    --tier-color: var(--color-3);
+  }
+
+  &.enterprise {
+    --tier-color: var(--color-4);
+  }
+}
+
+// Moving light behind the glass card: the Color4Bg canvas (mounted
+// client-side) with the exact inset/mask/opacity the original prompt-chat bg
+// used, so the glow hugs the card instead of washing out the whole hero.
+.aura {
+  position: absolute;
+  z-index: -1;
+  inset: -50% -20%;
+  pointer-events: none;
+  background-color: var(--bg-1);
+  opacity: 0.55;
+  @include mask(radial-gradient(ellipse at 50% 45%, #000 12%, transparent 58%));
 }
 
 .cards {

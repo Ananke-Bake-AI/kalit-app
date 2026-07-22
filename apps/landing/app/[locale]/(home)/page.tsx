@@ -26,23 +26,26 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <Stack />
+      <div id="projects" style={{ scrollMarginTop: 110 }}>
+        <Portfolio
+          key={`portfolio-${locale}`}
+          subtitle={t("portfolio.subtitle")}
+          heading={
+            <>
+              {t("portfolio.realProjects")} <Underline>{t("portfolio.builtAndShipped")}</Underline>{" "}
+              {t("portfolio.byFounders")}
+            </>
+          }
+          paragraph={t("portfolio.exploreMore")}
+          buttonText={t("portfolio.exploreMore")}
+          link="/discover"
+          cta={{ text: t("hero.ctaPrimary"), href: "/studio" }}
+        />
+      </div>
       <Architecture />
       <Features />
       <Join />
-      <Portfolio
-        key={`portfolio-${locale}`}
-        subtitle={t("portfolio.subtitle")}
-        heading={
-          <>
-            {t("portfolio.realProjects")} <Underline>{t("portfolio.builtAndShipped")}</Underline>{" "}
-            {t("portfolio.byFounders")}
-          </>
-        }
-        paragraph={t("portfolio.exploreMore")}
-        buttonText={t("portfolio.exploreMore")}
-        link="/discover"
-      />
+      <Stack />
     </>
   )
 }

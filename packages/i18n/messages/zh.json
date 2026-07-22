@@ -13,9 +13,9 @@
     "language": "语言"
   },
   "hero": {
-    "subtitle": "抢先体验 — Flow + Pentest + Search",
-    "title1": "发布你的网站",
-    "title2": "上线前扫描",
+    "subtitle": "Kalit Studio：免费开始，无需绑卡",
+    "title1": "用最强的 AI 模型",
+    "title2": "构建你的网站",
     "promptPlaceholder": "描述你需要的发布网站...",
     "findMySuite": "用 Kalit 开启",
     "recommended": "推荐套件",
@@ -24,7 +24,17 @@
     "placeholder1": "描述你需要的发布网站...",
     "placeholder2": "描述你需要的发布网站...",
     "placeholder3": "描述你需要的发布网站...",
-    "placeholder4": "上线前扫描我的预发布应用..."
+    "placeholder4": "上线前扫描我的预发布应用...",
+    "lead": "一份订阅，所有顶级模型。Kalit 为你构建网站、精确找到所需图片、完成测试并发布上线。你只需要描述它。",
+    "ctaPrimary": "免费开始构建",
+    "ctaSecondary": "查看真实项目",
+    "ctaPrimaryAuthed": "打开 Studio",
+    "tier": {
+      "free": "免费",
+      "starter": "Starter",
+      "pro": "Pro",
+      "enterprise": "Enterprise"
+    }
   },
   "suites": {
     "flow": "Flow",
@@ -50,9 +60,9 @@
     "searchFree": "免费"
   },
   "stack": {
-    "subtitle": "Flow + Pentest",
-    "title": "发布你的网站 -> 上线前扫描",
-    "description": "Kalit Flow 创建并部署发布页。Kalit Pentest 在上线前扫描已授权目标。"
+    "subtitle": "更进一步",
+    "title": "网站上线了？先加固安全，再研究市场",
+    "description": "Kalit Pentest 对你的网站或预发环境执行授权安全扫描。Kalit Search 在你投放流量之前研究你的市场。"
   },
   "architecture": {
     "subtitle": "架构",
@@ -65,26 +75,28 @@
   },
   "features": {
     "subtitle": "工作原理",
-    "title": "发布你的网站. 上线前扫描.",
-    "description": "Kalit Flow 创建并部署发布页。Kalit Pentest 在上线前扫描已授权目标。",
-    "agents": "专业 AI 代理协同工作如同一个团队",
-    "agentsDesc": "每个代理负责一个角色 - 规划、编码、设计、测试、部署。它们自动协调，无需您手动管理。",
-    "references": "描述您的项目，添加参考资料和素材",
-    "referencesDesc": "分享截图、描述您的需求，让代理匹配您的愿景。无需编程。",
-    "parallel": "Flow + Pentest",
-    "parallelDesc": "Kalit Flow 创建并部署发布页。Kalit Pentest 在上线前扫描已授权目标。",
-    "deploy": "一键上线 - 含托管服务",
-    "deployDesc": "Kalit Flow 创建并部署发布页。Kalit Pentest 在上线前扫描已授权目标。"
+    "title": "从一句提示到上线网站",
+    "description": "描述你想要什么。Kalit 负责规划、构建、寻找素材，在真实浏览器中测试，然后在真实 URL 上发布。",
+    "agents": "为你的项目配备完整的 AI 团队",
+    "agentsDesc": "规划者把工作拆成任务，开发和设计智能体并行构建，一切自动合并。",
+    "references": "从你的想法、截图和文件开始",
+    "referencesDesc": "放入参考资料，描述你的需求。简短的提示会自动补充完善，让结果符合你的设想。无需写代码。",
+    "parallel": "find-assets 拿到你要的真实图片",
+    "parallelDesc": "它搜索网络和原始来源，逐一目视核对每个匹配，并按网站所需的精确尺寸和格式交付图片、图标、音频和 3D 素材。",
+    "deploy": "一键上线，含托管",
+    "deployDesc": "在真实浏览器中测试，发布到稳定的 HTTPS URL。随时重新部署，链接永不改变。"
   },
   "join": {
-    "subtitle": "开始使用",
-    "title": "Flow + Pentest",
-    "description": "Kalit Flow 创建并部署发布页。Kalit Pentest 在上线前扫描已授权目标。",
+    "subtitle": "亲眼见证",
+    "title": "实时观看 Studio 构建",
+    "description": "写入文件、找到素材、在真实浏览器中测试，全程在你眼前实时呈现。免费开始，每月 15 积分，无需绑卡。",
     "mute": "静音",
     "unmute": "取消静音",
     "play": "播放",
     "pause": "暂停",
-    "restart": "重新播放"
+    "restart": "重新播放",
+    "ctaPrimary": "免费开始构建",
+    "ctaSecondary": "查看价格"
   },
   "portfolio": {
     "subtitle": "Kalit 作品集",
@@ -830,8 +842,8 @@
     "downloadRequiresPaid": "导出代码需要付费套餐。升级到 Starter 即可下载您的项目。"
   },
   "seo": {
-    "homeTitle": "发布你的网站 - 上线前扫描",
-    "homeDescription": "Kalit Flow 创建并部署发布页。Kalit Pentest 在上线前扫描已授权目标。",
+    "homeTitle": "用最强的 AI 模型构建你的网站",
+    "homeDescription": "Kalit Studio 从一句提示构建并发布你的网站。一份订阅畅享所有顶级 AI 模型，find-assets 精确找到所需图片与内容。免费方案，无需绑卡。",
     "flowTitle": "Kalit Flow - 由 AI 构建的发布页与完整应用",
     "flowDescription": "Kalit Flow 把一个提示词变成发布页或完整应用 — 设计、文案、结构、前端、后端、部署全包。",
     "marketingTitle": "Kalit Marketing - 策划、创建、执行和优化获客活动",

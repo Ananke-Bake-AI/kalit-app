@@ -5,18 +5,12 @@ import { Color4Bg } from "@/components/color4bg"
 import { Container } from "@/components/container"
 import { Heading } from "@/components/heading"
 import { Icon } from "@/components/icon"
-import { Link } from "@/components/link"
-import { Logo } from "@/components/logo"
-import { SUITES } from "@/lib/suites"
 import { useTranslation } from "@/stores/i18n"
 import { useGSAP } from "@gsap/react"
 import clsx from "clsx"
 import gsap from "gsap"
 import { useRef, useState } from "react"
 import s from "./join.module.scss"
-
-const LAUNCH_SUITE_IDS = new Set(["flow", "pentest", "search"])
-const launchSuites = SUITES.filter((suite) => LAUNCH_SUITE_IDS.has(suite.id))
 
 export const Join = () => {
   const t = useTranslation()
@@ -152,26 +146,12 @@ export const Join = () => {
             />
           </svg>
           <div ref={listRef} className={s.list}>
-            {launchSuites.map((suite) => (
-              <div className={s.item} key={suite.id} style={{ "--color": suite.color } as React.CSSProperties}>
-                <div className={s.top}>
-                  <Link href={`/${suite.id}`} className={s.icon}>
-                    <Logo id={suite.id} />
-                  </Link>
-                  <div className={s.name}>
-                    <span>kalit</span> <strong>{suite.title}</strong>
-                  </div>
-                </div>
-                <Button
-                  href={`/login?suite=${suite.id}`}
-                  className={s.btn}
-                  data-button-id={suite.id}
-                  variant="tertiary"
-                >
-                  {t(`suites.${suite.id}Btn`)}
-                </Button>
-              </div>
-            ))}
+            <Button href="/studio" circle data-button-id="join-studio">
+              {t("join.ctaPrimary")}
+            </Button>
+            <Button href="/pricing" variant="secondary" data-button-id="join-pricing">
+              {t("join.ctaSecondary")}
+            </Button>
           </div>
           <div className={s.bg}>
             <Color4Bg className={s.gradient} style="blur-gradient" />
