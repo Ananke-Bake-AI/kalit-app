@@ -114,3 +114,22 @@
     background: linear-gradient(90deg, oklch(0.78 0.18 80), oklch(0.7 0.21 50));
   }
 }
+
+// Free: the SAME informative consumption pill as paid (so the user sees their
+// usage), with a subtle brand-accent border + an upgrade arrow keeping the
+// upgrade path visible — it used to be a bare "Upgrade" pill that hid the usage.
+.free {
+  border-color: oklch(0.55 0.27 280 / 0.35);
+
+  &:hover {
+    border-color: oklch(0.55 0.27 280 / 0.55);
+  }
+
+  .upIcon {
+    font-weight: 700;
+    font-size: 0.9rem;
+    line-height: 1;
+    color: #8a6bff;
+    margin-left: -0.1rem;
+  }
+}

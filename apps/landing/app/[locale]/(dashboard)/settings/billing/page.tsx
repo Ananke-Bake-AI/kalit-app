@@ -39,7 +39,7 @@ export default async function BillingPage() {
   // UsageRecord.credits is Decimal — sums come back with float dust
   // (e.g. 29.256499999999505). Round everything here for display; the
   // raw breakdown still drives credit gating server-side.
-  const planMonthly = breakdown.planMonthly
+  const planMonthly = Math.round(breakdown.planMonthly)
   const bonus = Math.round(breakdown.bonus)
   const totalUsedRaw = Math.round(breakdown.used)
   // Split used credits across the plan first, spillover into the bonus

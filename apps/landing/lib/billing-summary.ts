@@ -70,11 +70,11 @@ async function _getBillingSummaryUncached(orgId: string): Promise<BillingSummary
     isTrial: entitlements.isTrial,
     trialDaysLeft,
     trialExpiresAt: entitlements.trialExpiresAt,
-    planMonthly: breakdown.planMonthly,
+    planMonthly: Math.round(breakdown.planMonthly),
     bonus: Math.round(breakdown.bonus),
     remaining: Math.max(0, Math.round(breakdown.remaining)),
     used: Math.max(0, Math.round(breakdown.used)),
-    total: breakdown.planMonthly + Math.round(breakdown.bonus),
+    total: Math.round(breakdown.planMonthly) + Math.round(breakdown.bonus),
     cancelAtPeriodEnd: subscription?.cancelAtPeriodEnd ?? false,
     periodEnd: subscription?.currentPeriodEnd ?? null,
   }
