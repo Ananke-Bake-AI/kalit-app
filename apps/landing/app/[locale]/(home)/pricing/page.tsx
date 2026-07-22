@@ -6,6 +6,7 @@ import { isValidLocale, type Locale } from "@/lib/i18n"
 import { MetadataSeo } from "@/lib/metadata"
 import { getPageStrings } from "@/lib/page-strings"
 import { CREDIT_PACKS, FREE_PLAN, PLANS } from "@/lib/plans"
+import { getPublicModels, modelMatrix, tierRank } from "@/lib/model-tiers"
 import { PricingCta, PricingPackCta } from "./pricing-cta"
 import { PricingViewed } from "./pricing-viewed"
 import s from "./pricing.module.scss"
@@ -50,6 +51,10 @@ export default async function PricingPage({
   const planPrices = await formatLocalizedPrices(ALL_PLANS.map((p) => p.monthlyPrice))
   const packPrices = await formatLocalizedPrices(CREDIT_PACKS.map((c) => c.priceCents))
   const showFxDisclaimer = planPrices.some((p) => p.converted)
+
+  // Model access matrix — derived live from the broker-owned flow_models catalogue
+  // (families + min tier), so it tracks whatever the admin has enabled/re-tiered.
+  const modelMatrixRows = modelMatrix(await getPublicModels())
 
   const offers = ALL_PLANS.map((plan) => ({
     "@type": "Offer",
@@ -149,6 +154,43 @@ export default async function PricingPage({
 
         {showFxDisclaimer && (
           <p className={s.fxDisclaimer}>{p.fxDisclaimer}</p>
+        )}
+
+        {/* AI models by plan — collapsible comparison matrix, derived live from
+            flow_models (families x tiers, cumulative checkmarks). Collapsed by
+            default so it stays compact; opens for users who want the detail. */}
+        {modelMatrixRows.length > 0 && (
+          <details className={s.modelsCompare} name="pricing-models">
+            <summary>{p.modelsTitle}</summary>
+            <p className={s.modelsNote}>{p.modelsNote}</p>
+            <div className={s.modelsTableWrap}>
+              <table className={s.modelsTable}>
+                <thead>
+                  <tr>
+                    <th scope="col">{p.modelsColLabel}</th>
+                    {ALL_PLANS.map((pl) => (
+                      <th scope="col" key={pl.key}>{pl.name}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {modelMatrixRows.map((row) => (
+                    <tr key={row.family}>
+                      <th scope="row">{row.family}</th>
+                      {ALL_PLANS.map((pl) => {
+                        const on = row.rank <= tierRank(pl.key)
+                        return (
+                          <td key={pl.key} data-on={on}>
+                            <span aria-hidden="true">{on ? "✓" : "–"}</span>
+                          </td>
+                        )
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </details>
         )}
 
         <h2 className={s.sectionTitle}>{p.packsTitle}</h2>

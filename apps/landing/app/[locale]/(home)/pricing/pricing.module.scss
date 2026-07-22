@@ -388,3 +388,74 @@
     line-height: 1.6;
   }
 }
+
+// AI models by plan — collapsible comparison matrix (families x tiers), derived
+// live from flow_models. Collapsed by default, compact, table scrolls on narrow
+// screens so the page body never scrolls sideways.
+.modelsCompare {
+  @include glass-panel(0.9rem);
+  padding: 0.9rem 1.1rem;
+  margin-block: 1.5rem 0;
+
+  summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text);
+    font-size: 0.95rem;
+    list-style: none;
+
+    &::-webkit-details-marker { display: none; }
+    &::before {
+      content: "\25B8"; // ▸
+      display: inline-block;
+      margin-right: 0.5rem;
+      color: var(--text-secondary);
+      transition: transform 0.15s ease;
+    }
+  }
+  &[open] > summary::before { transform: rotate(90deg); }
+}
+
+.modelsNote {
+  margin: 0.6rem 0 0.9rem;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+
+.modelsTableWrap {
+  overflow-x: auto;
+}
+
+.modelsTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  min-width: 26rem;
+
+  th,
+  td {
+    padding: 0.5rem 0.6rem;
+    text-align: center;
+    border-bottom: 1px solid oklch(from var(--text) l c h / 0.08);
+  }
+  thead th {
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+  thead th:first-child { text-align: left; }
+  tbody th[scope="row"] {
+    text-align: left;
+    color: var(--text);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  tbody tr:last-child th,
+  tbody tr:last-child td { border-bottom: 0; }
+
+  td[data-on="true"] span { color: var(--color-4); font-weight: 700; }
+  td[data-on="false"] span { color: oklch(from var(--text) l c h / 0.25); }
+}

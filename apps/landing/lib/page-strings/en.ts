@@ -27,6 +27,9 @@ export const EN_PAGE_STRINGS = {
     packsNote: "One-time packs sit on top of your subscription. Useful for a busy launch week or a single Pentest scan.",
     oneTimeLabel: "one-time",
     fxDisclaimer: "Approximate local price. The exact amount in your card's currency is shown at checkout.",
+    modelsTitle: "AI models by plan",
+    modelsNote: "Higher plans unlock more capable models. Each plan includes every model at its tier and below.",
+    modelsColLabel: "Model",
     faqTitle: "Pricing FAQ",
     planOutcomes: {
       free: "15 credits every month, free forever — every suite. No card required.",
