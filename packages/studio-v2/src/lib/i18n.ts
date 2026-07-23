@@ -76,7 +76,7 @@ export interface Strings {
     bash: string; task: string; browser: string; assets: string; tool: string;
     working: string; starting: string; uploading: string; compacting: string;
   };
-  errors: { rate: string; credits: string; timeout: string; cyber: string; overloaded: string; provider: string; auth: string; contextFull: string; oom: string; network: string; refusalGeneric: string; invalidModel: string; infra: string; clone: string; usageLimit: string; usageLimitSoon: string; generic: string; upload: string };
+  errors: { rate: string; credits: string; timeout: string; cyber: string; overloaded: string; provider: string; modelDown: string; auth: string; contextFull: string; oom: string; network: string; refusalGeneric: string; invalidModel: string; infra: string; clone: string; usageLimit: string; usageLimitSoon: string; generic: string; upload: string };
   del: {
     title: string; sessionOnly: string; sessionOnlyHint: string;
     projectToo: string; projectTooHint: string; plainHint: string;
@@ -234,6 +234,7 @@ const fr: Strings = {
     cyber: '{model} a bloqué ce projet : son garde-fou de sécurité le considère comme un sujet cybersécurité. Essaie un autre modèle (via le sélecteur) ou un projet différent.',
     overloaded: 'Le service Claude est temporairement surchargé. Réessaie dans un instant.',
     provider: 'Le fournisseur du modèle sélectionné est momentanément indisponible. Réessaie ou choisis un autre modèle.',
+    modelDown: "Ce modèle n'est actuellement pas disponible. Réessaie avec un autre modèle.",
     auth: "Problème d'authentification côté service — ce n'est pas ta faute. On corrige ; réessaie dans quelques minutes ou contacte le support.",
     contextFull: 'Le projet est devenu trop volumineux pour ce modèle. Démarre un nouveau projet ou choisis un modèle à plus grande fenêtre de contexte.',
     oom: 'La génération a dépassé la mémoire disponible. Simplifie la demande ou découpe-la en étapes.',
@@ -489,6 +490,7 @@ const en: Strings = {
     cyber: '{model} blocked this project: its safety guardrail flags it as a cybersecurity topic. Try a different model (via the selector) or another project.',
     overloaded: 'Claude is temporarily overloaded. Try again in a moment.',
     provider: "The selected model's provider is momentarily unavailable. Retry or pick another model.",
+    modelDown: "This model is currently unavailable. Please try again with a different model.",
     auth: "Service-side authentication problem — not on your end. We're on it; retry shortly or contact support.",
     contextFull: 'This project has grown too large for this model. Start a new project or pick a larger-context model.',
     oom: 'The build ran out of memory. Simplify the request or split it into steps.',

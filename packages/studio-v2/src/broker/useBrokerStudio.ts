@@ -140,6 +140,11 @@ function humanizeError(raw: string | undefined, e: Strings['errors'], model?: st
     const reset = s.match(/resets?\b[^.·\n]*/i)?.[0]?.trim();
     return e.usageLimit.replace('{reset}', reset || e.usageLimitSoon);
   }
+  // Compte provider du modèle épuisé/suspendu (ex Moonshot/kimi « insufficient
+  // balance », « exceeded_current_quota_error »). Arrive en 429 → DOIT passer AVANT
+  // le check 429 générique, sinon on afficherait « rate limit, réessaie » (faux :
+  // réessayer le même modèle ne changera rien). Message neutre côté user.
+  if (/insufficient balance|exceeded_current_quota|is suspended|account (is )?suspended/i.test(s)) return e.modelDown;
   // 529 overloaded (capacité serveur) ≠ 429 rate-limit (quota user). 529 d'abord.
   if (/529|overloaded/i.test(s)) return e.overloaded;
   if (/429|rate.?limit/i.test(s)) return e.rate;
