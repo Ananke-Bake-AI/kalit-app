@@ -32,6 +32,7 @@ export interface Strings {
   ctxUsed: string;
   composerPlaceholder: string;
   attach: string;
+  attachNoVision: string;
   agentModel: string;
   navProjects: string;
   navChat: string;
@@ -158,6 +159,7 @@ const fr: Strings = {
   ctxUsed: 'Contexte utilisé',
   composerPlaceholder: 'Décris ce que tu veux construire…',
   attach: 'Joindre un fichier',
+  attachNoVision: "Ce modèle ne lit pas les images. Choisis un modèle avec vision pour joindre une image.",
   agentModel: "Modèle de l'agent",
   navProjects: 'Projets',
   navChat: 'Chat',
@@ -412,6 +414,7 @@ const en: Strings = {
   ctxUsed: 'Context used',
   composerPlaceholder: 'Describe what you want to build…',
   attach: 'Attach a file',
+  attachNoVision: "This model can't read images. Pick a vision model to attach one.",
   agentModel: 'Agent model',
   navProjects: 'Projects',
   navChat: 'Chat',

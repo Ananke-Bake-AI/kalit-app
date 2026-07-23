@@ -24,6 +24,10 @@ export interface ModelDef {
   available?: boolean;
   paramsTotal?: string;  // indicatif (ex "1T")
   paramsActive?: string; // indicatif (ex "32B", params actifs MoE)
+  // Le modèle accepte les images en entrée (multimodal). Fourni par le backend
+  // (/api/flow/models, admin-toggleable). Absent = inconnu → on assume oui
+  // (fail-open) pour ne pas bloquer si le catalogue est ancien.
+  vision?: boolean;
 }
 export interface ModelGroup { label: string; models: ModelDef[]; }
 

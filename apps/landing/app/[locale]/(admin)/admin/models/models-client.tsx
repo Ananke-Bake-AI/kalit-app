@@ -11,6 +11,7 @@ import {
   setModelEnabled,
   setModelParams,
   setModelTier,
+  setModelVision,
 } from "@/server/actions/admin"
 import { useEffect, useState, useTransition } from "react"
 import s from "./models.module.scss"
@@ -164,6 +165,7 @@ export function ModelsClient({ initialModels }: { initialModels: ModelRow[] }) {
             <span>Min tier</span>
             <span>Enabled</span>
             <span>Admin-only</span>
+            <span>Vision</span>
             <span />
           </div>
 
@@ -217,6 +219,17 @@ export function ModelsClient({ initialModels }: { initialModels: ModelRow[] }) {
                   disabled={isPending}
                   onClick={() => run(() => setModelAdminOnly(m.id, !m.adminOnly))}
                   title={m.adminOnly ? "Admin-only — click to make public" : "Public — click to restrict to admins"}
+                >
+                  <span className={s.knob} />
+                </button>
+              </span>
+              <span>
+                <button
+                  className={s.toggle}
+                  data-on={m.vision}
+                  disabled={isPending}
+                  onClick={() => run(() => setModelVision(m.id, !m.vision))}
+                  title={m.vision ? "Vision ON — accepts images. Click to disable (images stripped, no crash)" : "No vision — images are stripped. Click to enable if the model reads images"}
                 >
                   <span className={s.knob} />
                 </button>

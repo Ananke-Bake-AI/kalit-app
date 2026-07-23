@@ -286,6 +286,12 @@ export function Chat({ title, messages, streaming, activity, model, modelGroups,
     return () => { alive = false; clearTimeout(id); };
   }, [val, haloOn, checkPromptQuality]);
   const level: PromptLevel = haloOn ? (modelLevel ?? 'none') : 'none';
+  // Le modèle sélectionné accepte-t-il les images ? (flag catalogue admin-toggleable,
+  // remonté via modelGroups). Fail-open : inconnu/ancien catalogue ⇒ on autorise, pour
+  // ne jamais bloquer à tort. Sert à griser le bouton pièce-jointe (garde UX en amont ;
+  // le worker + la gateway strip couvrent déjà le crash côté backend).
+  const modelSupportsImages =
+    (modelGroups ?? []).flatMap((g) => g.models).find((x) => x.id === model)?.vision !== false;
   const feedRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
@@ -452,7 +458,7 @@ export function Chat({ title, messages, streaming, activity, model, modelGroups,
             placeholder={st.composerPlaceholder} rows={1}
           />
           <div className="sv-composer__row">
-            <button className="sv-btn sv-btn--ghost sv-btn--icon" title={st.attach} onClick={() => fileRef.current?.click()} disabled={!onAddFiles}><IconAttach /></button>
+            <button className="sv-btn sv-btn--ghost sv-btn--icon" title={modelSupportsImages ? st.attach : st.attachNoVision} onClick={() => fileRef.current?.click()} disabled={!onAddFiles || !modelSupportsImages}><IconAttach /></button>
             <input ref={fileRef} type="file" multiple style={{ display: 'none' }} onChange={(e) => { pickFiles(e.target.files); e.target.value = ''; }} />
             <button type="button" className={'sv-qtoggle' + (haloOn ? ' sv-qtoggle--on' : '')} onClick={toggleHalo} title={st.promptQuality + (haloOn && level !== 'none' ? ' — ' + st.promptLevels[level] : '')} aria-label={st.promptQuality}>
               <span className={'sv-qtoggle__dot' + (haloOn && level !== 'none' ? ' sv-q--' + level : '')} />

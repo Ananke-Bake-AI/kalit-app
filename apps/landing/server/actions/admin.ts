@@ -1225,10 +1225,11 @@ export async function getAdminModels() {
       sort_order: number
       params_total: string | null
       params_active: string | null
+      vision: boolean
     }[]
   >`
     SELECT id, label, provider, group_label, min_tier, enabled, admin_only, sort_order,
-           params_total, params_active
+           params_total, params_active, COALESCE(vision, FALSE) AS vision
     FROM flow_models ORDER BY sort_order, group_label, label`
   return rows.map((r) => ({
     id: r.id,
@@ -1241,6 +1242,7 @@ export async function getAdminModels() {
     sortOrder: r.sort_order,
     paramsTotal: r.params_total ?? "",
     paramsActive: r.params_active ?? "",
+    vision: r.vision,
   }))
 }
 
@@ -1261,6 +1263,15 @@ export async function setModelEnabled(id: string, enabled: boolean) {
 export async function setModelAdminOnly(id: string, adminOnly: boolean) {
   await requireAdmin()
   await prisma.$executeRaw`UPDATE flow_models SET admin_only = ${adminOnly}, updated_at = NOW() WHERE id = ${id}`
+  return getAdminModels()
+}
+
+export async function setModelVision(id: string, vision: boolean) {
+  await requireAdmin()
+  // Whether the model accepts image input. Drives the studio composer (attach
+  // gated), the RAM worker (no image Read / screenshots for a non-vision model)
+  // and the gateway (image strip) — the broker reads this within its 30s cache.
+  await prisma.$executeRaw`UPDATE flow_models SET vision = ${vision}, updated_at = NOW() WHERE id = ${id}`
   return getAdminModels()
 }
 
