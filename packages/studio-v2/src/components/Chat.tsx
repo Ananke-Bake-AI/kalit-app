@@ -300,7 +300,9 @@ export function Chat({ title, messages, streaming, activity, model, modelGroups,
   const [toolModal, setToolModal] = useState<{ name: string; input: string } | null>(null);
   const [shareOpen, setShareOpen] = useState(false);
 
-  const pickFiles = (fl: FileList | null) => { if (fl && fl.length && onAddFiles) onAddFiles(Array.from(fl)); };
+  // Ignore les fichiers (bouton ET drag-drop) si le modèle n'a pas la vision —
+  // cohérent avec le bouton d'upload masqué.
+  const pickFiles = (fl: FileList | null) => { if (!modelSupportsImages) return; if (fl && fl.length && onAddFiles) onAddFiles(Array.from(fl)); };
   const onDrop = (e: DragEvent<HTMLElement>) => { e.preventDefault(); setDragging(false); pickFiles(e.dataTransfer.files); };
 
   useEffect(() => { feedRef.current?.scrollTo({ top: feedRef.current.scrollHeight }); }, [messages, activity]);
@@ -458,7 +460,13 @@ export function Chat({ title, messages, streaming, activity, model, modelGroups,
             placeholder={st.composerPlaceholder} rows={1}
           />
           <div className="sv-composer__row">
-            <button className="sv-btn sv-btn--ghost sv-btn--icon" title={modelSupportsImages ? st.attach : st.attachNoVision} onClick={() => fileRef.current?.click()} disabled={!onAddFiles || !modelSupportsImages}><IconAttach /></button>
+            {/* Upload d'images masqué quand le modèle sélectionné n'a pas la vision :
+                inutile de proposer une pièce jointe qu'il ne peut pas lire (le
+                backend la stripperait de toute façon). Réapparaît dès qu'un modèle
+                vision est choisi. */}
+            {modelSupportsImages && (
+              <button className="sv-btn sv-btn--ghost sv-btn--icon" title={st.attach} onClick={() => fileRef.current?.click()} disabled={!onAddFiles}><IconAttach /></button>
+            )}
             <input ref={fileRef} type="file" multiple style={{ display: 'none' }} onChange={(e) => { pickFiles(e.target.files); e.target.value = ''; }} />
             <button type="button" className={'sv-qtoggle' + (haloOn ? ' sv-qtoggle--on' : '')} onClick={toggleHalo} title={st.promptQuality + (haloOn && level !== 'none' ? ' — ' + st.promptLevels[level] : '')} aria-label={st.promptQuality}>
               <span className={'sv-qtoggle__dot' + (haloOn && level !== 'none' ? ' sv-q--' + level : '')} />
