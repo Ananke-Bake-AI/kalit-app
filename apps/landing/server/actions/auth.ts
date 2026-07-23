@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { sendVerificationEmail } from "@/lib/email"
 import { registerSchema, type RegisterInput } from "@/schemas/auth"
+import { isDisposableEmail } from "@/lib/disposable-email-domains"
 import bcrypt from "bcryptjs"
 import crypto from "crypto"
 
@@ -20,6 +21,12 @@ export async function register(input: RegisterInput) {
   // admin checks). Without this, a capital-cased signup (e.g. "Foo@gmail.com")
   // can't be matched by the lowercased lookups and breaks login + admin.
   const email = parsed.data.email.toLowerCase()
+
+  // Refuse disposable/throwaway inboxes (yopmail, mailinator, temp-mail, …) —
+  // they're free credit-farming/trial-abuse vectors. See disposable-email-domains.
+  if (isDisposableEmail(email)) {
+    return { error: "Please use a permanent email address — temporary/disposable email providers aren't allowed." }
+  }
 
   const existing = await prisma.user.findUnique({ where: { email } })
   if (existing) {

@@ -4,6 +4,7 @@ import Facebook from "next-auth/providers/facebook"
 import GitHub from "next-auth/providers/github"
 import Google from "next-auth/providers/google"
 import LinkedIn from "next-auth/providers/linkedin"
+import { isDisposableEmail } from "@/lib/disposable-email-domains"
 
 /**
  * Config partagée (Edge / middleware) : pas d’adapter Prisma ni de Credentials ici.
@@ -45,6 +46,14 @@ export default {
     })
   ],
   callbacks: {
+    // Refuse disposable/throwaway inboxes (yopmail, mailinator, temp-mail, …) at
+    // the door — for OAuth AND credentials. This also LOCKS OUT any existing
+    // account that was created with one (it can no longer sign in). Pure lookup,
+    // edge-safe. Returning false sends the user to /login with an error.
+    async signIn({ user }) {
+      if (isDisposableEmail(user?.email)) return false
+      return true
+    },
     async jwt({ token, user, trigger, session }) {
       if (user) {
         token.userId = user.id
