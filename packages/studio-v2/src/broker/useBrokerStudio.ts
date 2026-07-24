@@ -140,11 +140,16 @@ function humanizeError(raw: string | undefined, e: Strings['errors'], model?: st
     const reset = s.match(/resets?\b[^.·\n]*/i)?.[0]?.trim();
     return e.usageLimit.replace('{reset}', reset || e.usageLimitSoon);
   }
-  // Compte provider du modèle épuisé/suspendu (ex Moonshot/kimi « insufficient
-  // balance », « exceeded_current_quota_error »). Arrive en 429 → DOIT passer AVANT
-  // le check 429 générique, sinon on afficherait « rate limit, réessaie » (faux :
-  // réessayer le même modèle ne changera rien). Message neutre côté user.
-  if (/insufficient balance|exceeded_current_quota|is suspended|account (is )?suspended/i.test(s)) return e.modelDown;
+  // Compte/quota provider du modèle épuisé — arrive en 429 mais réessayer ne sert
+  // à RIEN (contrairement à un vrai rate-limit) :
+  //   • Moonshot/kimi « insufficient balance » / « exceeded_current_quota_error »
+  //   • Ollama Cloud « reached your session usage limit … ollama.com/upgrade »
+  //     (l'abonnement cloud partagé de TOUS les modèles cloud/* est épuisé).
+  // DOIT passer AVANT le check 429 générique. On NE route PAS vers usageLimit :
+  // celui-ci est Claude-spécifique et suggère « DeepSeek ou Kimi » = justement des
+  // cloud/* aussi impactés. Message neutre modelDown → « choisis un autre modèle »
+  // (l'user bascule vers Claude ou deepseek natif, un autre provider).
+  if (/insufficient balance|exceeded_current_quota|is suspended|account (is )?suspended|reached your [^.]{0,25}usage limit|session usage limit|ollama\.com\/upgrade|add extra usage/i.test(s)) return e.modelDown;
   // 529 overloaded (capacité serveur) ≠ 429 rate-limit (quota user). 529 d'abord.
   if (/529|overloaded/i.test(s)) return e.overloaded;
   if (/429|rate.?limit/i.test(s)) return e.rate;
