@@ -1282,6 +1282,43 @@ export async function setModelTier(id: string, tier: string) {
   return getAdminModels()
 }
 
+// ─── Per-tier default model (flow_model_defaults, broker-owned) ──────────
+// The fresh-session default model per tier. The broker seeds this table once
+// (models.DefaultModelForTier) and reads it via models.Store (30s cache) for the
+// studio's initial selection AND the downgrade fallback. Admin edits apply within
+// ~30s. Raw SQL: broker-owned, not modeled in Prisma.
+
+export async function getModelDefaults() {
+  await requireAdmin()
+  const rows = await prisma.$queryRaw<{ tier: string; model_id: string }[]>`
+    SELECT tier, model_id FROM flow_model_defaults`
+  const byTier: Record<string, string> = {}
+  for (const r of rows) byTier[r.tier] = r.model_id
+  return byTier
+}
+
+export async function setModelDefault(tier: string, modelId: string) {
+  await requireAdmin()
+  if (!MODEL_TIERS.includes(tier as ModelTier)) throw new Error("invalid tier")
+  const id = modelId.trim()
+  if (!id) throw new Error("model id required")
+  // Guard: the chosen default must exist, be enabled, and be usable by THIS tier
+  // (min_tier <= tier) — otherwise the tier would start on a locked/hidden model.
+  const rank: Record<ModelTier, number> = { free: 0, starter: 1, pro: 2, enterprise: 3 }
+  const rows = await prisma.$queryRaw<{ min_tier: string; enabled: boolean }[]>`
+    SELECT min_tier, enabled FROM flow_models WHERE id = ${id}`
+  const m = rows[0]
+  if (!m) throw new Error("unknown model")
+  if (!m.enabled) throw new Error("model is disabled")
+  if (rank[(m.min_tier as ModelTier) ?? "free"] > rank[tier as ModelTier]) {
+    throw new Error(`${id} requires a higher tier than ${tier}`)
+  }
+  await prisma.$executeRaw`
+    INSERT INTO flow_model_defaults (tier, model_id) VALUES (${tier}, ${id})
+    ON CONFLICT (tier) DO UPDATE SET model_id = EXCLUDED.model_id, updated_at = NOW()`
+  return getModelDefaults()
+}
+
 export async function addModel(input: {
   id: string
   label: string

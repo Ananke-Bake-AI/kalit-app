@@ -335,14 +335,26 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
   // Catalogue des modèles + dispo + gating tier, servi par le broker. Une fois au mount.
   useEffect(() => {
     let stop = false;
-    api.json<{ groups?: ModelGroup[] }>('/api/broker/models').then((d) => {
+    api.json<{ groups?: ModelGroup[]; defaultModel?: string }>('/api/broker/models').then((d) => {
       if (stop || !d?.groups || !d.groups.length) return;
       setModelGroups(d.groups);
-      // Si le modèle courant (ex. kimi sauvé en localStorage) est verrouillé pour
-      // ce tier, retomber sur le défaut — sinon le broker le downgraderait en
-      // silence à chaque envoi et le sélecteur montrerait un modèle grisé « choisi ».
-      const cur = d.groups.flatMap((g) => g.models).find((m) => m.id === modelRef.current);
-      if (cur?.locked) setModel(DEFAULT_MODEL_ID);
+      // Défaut renvoyé par le broker = le défaut configuré pour le TIER de l'user
+      // (free→deepseek-chat, starter→kimi-k2.7-code, pro/ent→opus…). Fallback local
+      // si absent.
+      const def = d.defaultModel || DEFAULT_MODEL_ID;
+      let saved: string | null = null;
+      try { saved = localStorage.getItem('kalit.studio.model'); } catch { /* ignore */ }
+      if (!saved) {
+        // L'user n'a jamais choisi → démarrer sur le défaut de son tier (reflet,
+        // non persisté : reste adaptatif au tier tant qu'il ne choisit pas).
+        setModelState(def);
+      } else {
+        // Modèle sauvé verrouillé pour ce tier → retomber sur le défaut du tier,
+        // sinon le broker le downgraderait en silence et le sélecteur montrerait
+        // un modèle grisé « choisi ».
+        const cur = d.groups.flatMap((g) => g.models).find((m) => m.id === saved);
+        if (cur?.locked) setModel(def);
+      }
     });
     return () => { stop = true; };
   }, [api, setModel]);

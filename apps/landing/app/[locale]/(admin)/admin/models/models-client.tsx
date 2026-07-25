@@ -7,7 +7,9 @@ import {
   addModel,
   deleteModel,
   getAdminModels,
+  getModelDefaults,
   setModelAdminOnly,
+  setModelDefault,
   setModelEnabled,
   setModelParams,
   setModelTier,
@@ -70,11 +72,30 @@ const TIER_COLOR: Record<string, string> = {
   enterprise: "var(--text)",
 }
 
+const TIER_RANK: Record<string, number> = { free: 0, starter: 1, pro: 2, enterprise: 3 }
+
 export function ModelsClient({ initialModels }: { initialModels: ModelRow[] }) {
   const [models, setModels] = useState(initialModels)
   const [health, setHealth] = useState<Record<string, boolean>>({})
   const [isPending, startTransition] = useTransition()
   const [err, setErr] = useState<string | null>(null)
+  // Per-tier fresh-session default model (flow_model_defaults). Loaded on mount.
+  const [defaults, setDefaults] = useState<Record<string, string>>({})
+  useEffect(() => {
+    getModelDefaults()
+      .then(setDefaults)
+      .catch(() => {})
+  }, [])
+  const runDefault = (tier: string, modelId: string) => {
+    setErr(null)
+    startTransition(async () => {
+      try {
+        setDefaults(await setModelDefault(tier, modelId))
+      } catch (e) {
+        setErr(e instanceof Error ? e.message : "Action failed")
+      }
+    })
+  }
 
   // Live health (provider up / oauth present) from the broker's annotated /models.
   // Only enabled + admin-visible models appear there → others show "n/a".
@@ -249,6 +270,44 @@ export function ModelsClient({ initialModels }: { initialModels: ModelRow[] }) {
             </div>
           ))}
           {models.length === 0 && <div className={s.empty}>No models. Add one below.</div>}
+        </div>
+      </SurfacePanel>
+
+      <SurfacePanel
+        spaced
+        title="Default model per tier"
+        subtitle="The model a fresh studio session starts on for each plan — and the model a user is downgraded to if they pick one above their tier. Only models enabled AND usable by that tier are listed."
+      >
+        <div className={s.add}>
+          {TIERS.map((tier) => {
+            const eligible = models.filter(
+              (m) => m.enabled && TIER_RANK[m.minTier] <= TIER_RANK[tier],
+            )
+            const current = defaults[tier] ?? ""
+            return (
+              <label key={tier} className={s.field}>
+                <span style={{ color: TIER_COLOR[tier], textTransform: "capitalize" }}>{tier}</span>
+                <select
+                  className={s.select}
+                  value={current}
+                  disabled={isPending}
+                  onChange={(e) => runDefault(tier, e.target.value)}
+                >
+                  {/* If the stored default isn't in the eligible set (e.g. it got
+                      disabled or re-tiered), still show it so the admin sees the
+                      current value rather than a silent mismatch. */}
+                  {current && !eligible.some((m) => m.id === current) && (
+                    <option value={current}>{current} (⚠ not eligible)</option>
+                  )}
+                  {eligible.map((m) => (
+                    <option key={m.id} value={m.id}>
+                      {m.label} — {m.id}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )
+          })}
         </div>
       </SurfacePanel>
 

@@ -38,11 +38,9 @@ export const MODEL_GROUPS: ModelGroup[] = [
       { id: 'cloud/kimi-k2.5:cloud', label: 'kimi-k2.5', provider: 'ollama', minTier: 'starter' },
       { id: 'cloud/kimi-k2.6:cloud', label: 'kimi-k2.6', provider: 'ollama', minTier: 'starter' },
       { id: 'cloud/kimi-k2.7-code:cloud', label: 'kimi-k2.7-code', provider: 'ollama', minTier: 'starter' },
-      { id: 'cloud/qwen3-coder:480b-cloud', label: 'qwen3-coder 480b', provider: 'ollama', minTier: 'starter' },
-      { id: 'cloud/deepseek-v3.2:cloud', label: 'deepseek-v3.2', provider: 'ollama', minTier: 'free' },
-      { id: 'cloud/deepseek-v4-pro:cloud', label: 'deepseek-v4-pro', provider: 'ollama', minTier: 'free' },
+      // deepseek-v4-pro : starter (draine l'abonnement Ollama partagé — hors free).
+      { id: 'cloud/deepseek-v4-pro:cloud', label: 'deepseek-v4-pro', provider: 'ollama', minTier: 'starter' },
       { id: 'cloud/deepseek-v4-flash:cloud', label: 'deepseek-v4-flash', provider: 'ollama', minTier: 'free' },
-      { id: 'cloud/glm-5:cloud', label: 'glm-5', provider: 'ollama', minTier: 'starter' },
       { id: 'cloud/minimax-m3:cloud', label: 'minimax-m3', provider: 'ollama', minTier: 'starter' },
       { id: 'cloud/minimax-m2.5:cloud', label: 'minimax-m2.5', provider: 'ollama', minTier: 'starter' },
       { id: 'cloud/gpt-oss:120b-cloud', label: 'gpt-oss 120b', provider: 'ollama', minTier: 'starter' },
@@ -67,6 +65,8 @@ export const MODEL_GROUPS: ModelGroup[] = [
   {
     label: 'Claude',
     models: [
+      { id: 'anthropic:claude-opus-5', label: 'claude-opus-5', provider: 'anthropic', minTier: 'pro' },
+      { id: 'anthropic:claude-sonnet-5', label: 'claude-sonnet-5', provider: 'anthropic', minTier: 'pro' },
       { id: 'anthropic:claude-opus-4-8', label: 'claude-opus-4.8', provider: 'anthropic', minTier: 'pro' },
       { id: 'anthropic:claude-sonnet-4-6', label: 'claude-sonnet-4-6', provider: 'anthropic', minTier: 'pro' },
       { id: 'anthropic:claude-opus-4-6', label: 'claude-opus-4-6', provider: 'anthropic', minTier: 'pro' },
@@ -83,8 +83,9 @@ export function modelGroupsFor(_isAdmin: boolean): ModelGroup[] {
   return MODEL_GROUPS;
 }
 
-// Défaut = deepseek-v4-flash : utilisable par le tier FREE (kimi est désormais
-// starter+, il ne peut donc plus être le défaut d'un compte free).
-export const DEFAULT_MODEL_ID = 'cloud/deepseek-v4-flash:cloud';
+// Fallback local du défaut, AVANT que le broker ne renvoie le défaut du tier
+// (GET /api/broker/models → defaultModel). deepseek-chat = défaut free (API
+// DeepSeek directe, hors abonnement Ollama), utilisable par tous les tiers.
+export const DEFAULT_MODEL_ID = 'deepseek/deepseek-chat';
 export const ALL_MODELS = MODEL_GROUPS.flatMap((g) => g.models);
 export function labelFor(id: string): string { return ALL_MODELS.find((m) => m.id === id)?.label ?? id; }
