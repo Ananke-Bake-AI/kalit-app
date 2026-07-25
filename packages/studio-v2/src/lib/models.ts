@@ -49,10 +49,11 @@ export const MODEL_GROUPS: ModelGroup[] = [
   {
     label: 'DeepSeek',
     models: [
-      // API DeepSeek native via la gateway (protocole openai-compatible, mais le
-      // provider = DeepSeek). Accessible dès le tier FREE.
-      { id: 'deepseek/deepseek-chat', label: 'deepseek-chat', provider: 'deepseek', minTier: 'free' },
-      { id: 'deepseek/deepseek-reasoner', label: 'deepseek-reasoner', provider: 'deepseek', minTier: 'free' },
+      // API DeepSeek native via la gateway (provider = DeepSeek). Les noms
+      // deepseek-chat / deepseek-reasoner ont été RETIRÉS par DeepSeek (400) →
+      // noms v4. flash = free (défaut), pro = starter.
+      { id: 'deepseek/deepseek-v4-flash', label: 'deepseek-v4-flash', provider: 'deepseek', minTier: 'free' },
+      { id: 'deepseek/deepseek-v4-pro', label: 'deepseek-v4-pro', provider: 'deepseek', minTier: 'starter' },
     ],
   },
   {
@@ -84,8 +85,8 @@ export function modelGroupsFor(_isAdmin: boolean): ModelGroup[] {
 }
 
 // Fallback local du défaut, AVANT que le broker ne renvoie le défaut du tier
-// (GET /api/broker/models → defaultModel). deepseek-chat = défaut free (API
+// (GET /api/broker/models → defaultModel). deepseek-v4-flash = défaut free (API
 // DeepSeek directe, hors abonnement Ollama), utilisable par tous les tiers.
-export const DEFAULT_MODEL_ID = 'deepseek/deepseek-chat';
+export const DEFAULT_MODEL_ID = 'deepseek/deepseek-v4-flash';
 export const ALL_MODELS = MODEL_GROUPS.flatMap((g) => g.models);
 export function labelFor(id: string): string { return ALL_MODELS.find((m) => m.id === id)?.label ?? id; }
