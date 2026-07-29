@@ -29,6 +29,7 @@ export interface GithubApi {
   repos: (installationId: string) => Promise<GithubRepo[]>;
   connect: (opts: { repoFullName: string; defaultBranch: string; installationId: string }) => Promise<{ ok: boolean; error?: string }>;
   disconnect: () => Promise<boolean>;
+  openPr: (opts?: { title?: string; body?: string }) => Promise<{ ok: boolean; message?: string; prUrl?: string; error?: string }>;
   installUrl: string;
 }
 interface PublishInfo { subdomain?: string | null; subdomainUrl?: string | null; customDomain?: string | null; customDomainStatus?: string | null; }
@@ -522,6 +523,24 @@ export function useBrokerStudio(client: BrokerClient, lang: string = 'en', broke
       const sid = resolveGitSession(); if (!sid) return false;
       const r = await client.fetch(`/api/broker/sessions/${sid}/connect-repo`, { method: 'DELETE' }).catch(() => null);
       return !!(r && r.ok);
+    },
+    // Bouton « Push / Open PR » : déclenche la commande broker open_pr (commit +
+    // push branche kalit/studio + ouvre/maj la PR). Indépendant du modèle — le
+    // token reste 100% côté broker. Réponse : {ok, message, prUrl?}.
+    openPr: async (opts?: { title?: string; body?: string }): Promise<{ ok: boolean; message?: string; prUrl?: string; error?: string }> => {
+      const sid = resolveGitSession();
+      if (!sid) return { ok: false, error: 'no active session — open a project first' };
+      try {
+        const r = await client.fetch(`/api/broker/sessions/${sid}/open-pr`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title: opts?.title ?? '', body: opts?.body ?? '' }),
+        });
+        const j = await r.json().catch(() => ({}));
+        if (r.ok && j?.ok) { pushDataLayer('repo_pushed', { integration: 'repo' }); return { ok: true, message: j.message, prUrl: j.prUrl }; }
+        return { ok: false, error: (j?.error as string) || ('HTTP ' + r.status) };
+      } catch (e) {
+        return { ok: false, error: e instanceof Error ? e.message : 'request failed' };
+      }
     },
     installUrl: '/api/auth/github-app/install',
   }), [api, client]);

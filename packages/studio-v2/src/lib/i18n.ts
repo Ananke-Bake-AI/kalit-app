@@ -118,6 +118,7 @@ export interface Strings {
     needApp: string; notConfigured: string; installApp: string; account: string; searchRepo: string;
     loadingRepos: string; noRepos: string; privateBadge: string; manageRepos: string; connectFailed: string;
     importCta: string; willImport: string; remove: string;
+    pushNow: string; pushing: string; pushOpenPr: string; pushFailed: string;
   };
   theme: { toggle: string; light: string; dark: string };
 }
@@ -371,6 +372,10 @@ const fr: Strings = {
     privateBadge: 'privé',
     manageRepos: 'Gérer les dépôts…',
     connectFailed: 'La connexion a échoué. Réessaie.',
+    pushNow: 'Pousser vers GitHub',
+    pushing: 'Envoi en cours…',
+    pushOpenPr: 'Voir la pull request',
+    pushFailed: 'Le push a échoué',
     importCta: 'Importer un dépôt GitHub',
     willImport: 'sera importé et cloné à ton premier message',
     remove: 'Retirer',
@@ -630,6 +635,10 @@ const en: Strings = {
     importCta: 'Import a GitHub repository',
     willImport: 'will be imported and cloned on your first message',
     remove: 'Remove',
+    pushNow: 'Push to GitHub',
+    pushing: 'Pushing…',
+    pushOpenPr: 'View pull request',
+    pushFailed: 'Push failed',
   },
   theme: { toggle: 'Toggle theme', light: 'Light theme', dark: 'Dark theme' },
 };

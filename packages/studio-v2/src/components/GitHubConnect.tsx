@@ -26,6 +26,8 @@ export function GitHubConnect({ github, onClose, onPick }: Props) {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
   const [filter, setFilter] = useState('');
+  const [pushing, setPushing] = useState(false);
+  const [pushRes, setPushRes] = useState<{ message?: string; prUrl?: string } | null>(null);
 
   const load = useCallback(async () => {
     setErr('');
@@ -86,6 +88,17 @@ export function GitHubConnect({ github, onClose, onPick }: Props) {
     if (ok) { setLink(null); setPhase('loading'); load(); }
   };
 
+  // Bouton « Pousser vers GitHub » : commit + push + ouvre/maj la PR, côté broker
+  // (indépendant du modèle). Refusé si un build tourne (409 → message d'erreur).
+  const push = async () => {
+    if (pushing || busy) return;
+    setPushing(true); setErr(''); setPushRes(null);
+    const res = await github.openPr();
+    setPushing(false);
+    if (!res.ok) { setErr(res.error ? `${g.pushFailed} — ${res.error}` : g.pushFailed); return; }
+    setPushRes({ message: res.message, prUrl: res.prUrl });
+  };
+
   const shown = repos.filter((r) => !filter.trim() || r.fullName.toLowerCase().includes(filter.trim().toLowerCase()));
 
   return (
@@ -108,8 +121,17 @@ export function GitHubConnect({ github, onClose, onPick }: Props) {
                 <span className="sv-gh__repo-hint">{g.connectedHint.replace('{branch}', link.defaultBranch || 'main')}</span>
               </div>
             </div>
+            {pushRes && (
+              <div className="sv-gh__pushres">
+                <span className="sv-gh__pushmsg">{pushRes.message}</span>
+                {pushRes.prUrl && (
+                  <a className="sv-gh__prlink" href={pushRes.prUrl} target="_blank" rel="noreferrer">{g.pushOpenPr} ↗</a>
+                )}
+              </div>
+            )}
             <div className="sv-modal__row">
-              <button className="sv-btn sv-btn--ghost" disabled={busy} onClick={disconnect}>{busy ? '…' : g.disconnect}</button>
+              <button className="sv-btn sv-btn--primary" disabled={pushing || busy} onClick={push}>{pushing ? g.pushing : g.pushNow}</button>
+              <button className="sv-btn sv-btn--ghost" disabled={busy || pushing} onClick={disconnect}>{busy ? '…' : g.disconnect}</button>
             </div>
           </div>
         )}

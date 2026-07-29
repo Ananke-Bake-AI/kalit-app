@@ -572,6 +572,10 @@
 .sv-gh__repo-main { display: flex; flex-direction: column; min-width: 0; }
 .sv-gh__repo-name { font-weight: 600; font-family: ui-monospace, monospace; font-size: 13px; overflow: hidden; text-overflow: ellipsis; }
 .sv-gh__repo-hint { font-size: 12px; color: var(--sv-ink-3, #8a90a2); }
+.sv-gh__pushres { display: flex; flex-direction: column; gap: 6px; padding: 10px 14px; border: 1px solid var(--sv-line, #232838); border-radius: 10px; background: var(--sv-panel-2, #171b25); }
+.sv-gh__pushmsg { font-size: 12.5px; color: var(--sv-ink-2, #b7bccb); }
+.sv-gh__prlink { font-size: 13px; font-weight: 600; color: #46c98b; text-decoration: none; }
+.sv-gh__prlink:hover { text-decoration: underline; }
 .sv-gh__needapp { display: flex; flex-direction: column; gap: 12px; }
 .sv-gh__pick { display: flex; flex-direction: column; gap: 10px; }
 .sv-gh__list { display: flex; flex-direction: column; gap: 4px; max-height: 320px; overflow-y: auto; margin: 2px 0; }
